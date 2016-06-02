@@ -1,0 +1,16 @@
+version={0,0,1}
+
+function remote_supported_control_surfaces()
+	local surfaces =
+		{
+			{ manufacturer="Catblack", model="Launchpad Pro",
+				source="lpp.lua", picture="lpp.png",
+				in_ports={ {description="In Port"} },
+				out_ports={ {description="Out Port"},{description="LCD Port",optional=true} },
+				has_keyboard=true,
+				--setup_warning_text="This is a test.  Do you want to continue?"
+			},
+
+		}
+	return surfaces
+end

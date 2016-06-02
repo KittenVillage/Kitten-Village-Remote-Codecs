@@ -1,0 +1,21 @@
+Propellerhead Remote Mapping File
+File Format Version	1.0.0
+Control Surface Manufacturer	Curios Inventor
+Control Surface Model	Vmeter
+Map Version	1.0.0
+
+//
+// Vmeter Remote Map
+// by Catblack
+//
+
+Scope	Propellerheads	Master Keyboard
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	Keyboard		Keyboard
+Map	Pitch Bend Wheel		Pitch Bend
+Map	Modulation Wheel		Mod Wheel
+Map	Channel Aftertouch		Channel Pressure
+Map	Sustain Pedal		Damper Pedal
+Map	Expression Pedal		Expression
+Map	Breath		Breath
+

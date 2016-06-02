@@ -1,0 +1,150 @@
+version={1,1,1}
+
+function remote_supported_control_surfaces()
+	info = "VMeter codec for various modes."
+	action = ""
+	local surfaces =
+		{
+			{ 
+				manufacturer="Curious Inventor", model="VMeter Notes",
+				source="vmeter.lua", picture="vmeter.png",
+				in_ports={{description="In Port", optional=false}},
+				out_ports={{description="Out Port", optional=false}},
+				has_keyboard=true,
+				setup_info_text=info,
+				setup_user_action_text=action,
+			},
+
+			{ 
+				manufacturer="Curious Inventor", model="VMeter Drums",
+				source="vmeter.lua", picture="vmeter.png",
+				in_ports={{description="In Port", optional=false}},
+				out_ports={{description="Out Port", optional=false}},
+				has_keyboard=true,
+				setup_info_text=info,
+				setup_user_action_text=action,
+			},
+
+			{ 
+				manufacturer="Curious Inventor", model="VMeter Six Button",
+				source="vmeter.lua", picture="vmeter.png",
+				in_ports={{description="In Port", optional=false}},
+				out_ports={{description="Out Port", optional=false}},
+				has_keyboard=true,
+				setup_info_text=info,
+				setup_user_action_text=action,
+			},
+
+			{ 
+				manufacturer="Curious Inventor", model="VMeter Fader",
+				source="vmeter.lua", picture="vmeter.png",
+				in_ports={{description="In Port", optional=false}},
+				out_ports={{description="Out Port", optional=false}},
+				--has_keyboard=true,
+				setup_info_text=info,
+				setup_user_action_text=action,
+			},
+
+			{ 
+				manufacturer="Curious Inventor", model="VMeter Fader Single Cursor",
+				source="vmeter.lua", picture="vmeter.png",
+				in_ports={{description="In Port", optional=false}},
+				out_ports={{description="Out Port", optional=false}},
+				--has_keyboard=true,
+				setup_info_text=info,
+				setup_user_action_text=action,
+			},
+
+			{ 
+				manufacturer="Curious Inventor", model="VMeter Fader Fat Cursor",
+				source="vmeter.lua", picture="vmeter.png",
+				in_ports={{description="In Port", optional=false}},
+				out_ports={{description="Out Port", optional=false}},
+				--has_keyboard=true,
+				setup_info_text=info,
+				setup_user_action_text=action,
+			},
+
+			{ 
+				manufacturer="Curious Inventor", model="VMeter Fader Gravity",
+				source="vmeter.lua", picture="vmeter.png",
+				in_ports={{description="In Port", optional=false}},
+				out_ports={{description="Out Port", optional=false}},
+				--has_keyboard=true,
+				setup_info_text=info,
+				setup_user_action_text=action,
+			},
+
+			{ 
+				manufacturer="Curious Inventor", model="VMeter Game of Life Demo",
+				source="vmeter.lua", picture="vmeter.png",
+				in_ports={{description="In Port", optional=false}},
+				out_ports={{description="Out Port", optional=false}},
+				has_keyboard=true,
+				setup_info_text=info,
+				setup_user_action_text=action,
+			},
+
+			{ 
+				manufacturer="Curious Inventor", model="VMeter Pitch Wheel",
+				source="vmeter.lua", picture="vmeter.png",
+				in_ports={{description="In Port", optional=false}},
+				out_ports={{description="Out Port", optional=false}},
+				--has_keyboard=true,
+				setup_info_text=info,
+				setup_user_action_text=action,
+			},
+
+			{ 
+				manufacturer="Curious Inventor", model="VMeter Modulation Wheel",
+				source="vmeter.lua", picture="vmeter.png",
+				in_ports={{description="In Port", optional=false}},
+				out_ports={{description="Out Port", optional=false}},
+				--has_keyboard=true,
+				setup_info_text=info,
+				setup_user_action_text=action,
+			},
+
+
+			{ 
+				manufacturer="Curious Inventor", model="VMeter Crossfader",
+				source="vmeter.lua", picture="vmeter.png",
+				in_ports={{description="In Port", optional=false}},
+				out_ports={{description="Out Port", optional=false}},
+				--has_keyboard=true,
+				setup_info_text=info,
+				setup_user_action_text=action,
+			},
+
+			{ 
+				manufacturer="Curious Inventor", model="VMeter Button",
+				source="vmeter.lua", picture="vmeter.png",
+				in_ports={{description="In Port", optional=false}},
+				out_ports={{description="Out Port", optional=false}},
+				--has_keyboard=true,
+				setup_info_text=info,
+				setup_user_action_text=action,
+			},
+
+			{ 
+				manufacturer="Curious Inventor", model="VMeter Delta",
+				source="vmeter.lua", picture="vmeter.png",
+				in_ports={{description="In Port", optional=false}},
+				out_ports={{description="Out Port", optional=false}},
+				--has_keyboard=true,
+				setup_info_text=info,
+				setup_user_action_text=action,
+			},
+
+			{ 
+				manufacturer="Curious Inventor", model="VMeter Meter",
+				source="vmeter.lua", picture="vmeter.png",
+				in_ports={{description="In Port", optional=false}},
+				out_ports={{description="Out Port", optional=false}},
+				--has_keyboard=true,
+				setup_info_text=info,
+				setup_user_action_text=action,
+			},
+		}
+	return surfaces
+end
