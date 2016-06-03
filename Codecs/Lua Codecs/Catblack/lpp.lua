@@ -167,6 +167,7 @@ scale = scales[scalename]
 scale_int = 0;
 g_delivered_scale=0 --for change filter
 drum_mode = 0;
+--drum_tog = true -- force drums
 g_delivered_shift=0 --for change filter
 tranup_btn = 0 --transpose up button state up or down
 trandn_btn = 0 --transpose down button state up or down
@@ -946,8 +947,8 @@ function remote_process_midi(event)
 -- changed
 		scale_up = remote.match_midi("B? 5B 7F",event) --find Top Button 91
 		scale_dn = remote.match_midi("B? 5C 7F",event) --find Top Button 92
-		tran_up = remote.match_midi("B? 5D 7F",event) --find Top Button 93
-		tran_dn = remote.match_midi("B? 5E 7F",event) --find Top Button 94
+		tran_up  = remote.match_midi("B? 5D 7F",event) --find Top Button 93
+		tran_dn  = remote.match_midi("B? 5E 7F",event) --find Top Button 94
 --[[
 		
 		if(accent_pad and noscaleneeded) then
@@ -1415,6 +1416,9 @@ function remote_deliver_midi(maxbytes,port)
 				--set 7 seg display for major scale MA:
 				remote.make_midi("b0 22 16"),
 				remote.make_midi("b0 23 16"),
+
+
+
 				--function btns w,w,off,c,c,b,b,y
 				remote.make_midi("B0 5B 30"),
 				remote.make_midi("B0 5C 30"),
