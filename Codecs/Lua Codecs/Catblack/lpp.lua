@@ -152,6 +152,7 @@ transpose = 0
 
 
 
+
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 --WHAT TO KEEP??
@@ -943,10 +944,10 @@ function remote_process_midi(event)
 --		local accent_pad = remote.match_midi("<100x>? 50 zz",event) --find Pad 32
 		--fbtn note ons are velocity 64----------
 -- changed
-		scale_up = remote.match_midi("B? 5B 7F",event) --find F4
-		scale_dn = remote.match_midi("B? 5C 7F",event) --find F5
-		tran_up = remote.match_midi("B? 5D 7F",event) --find F6
-		tran_dn = remote.match_midi("B? 5E 7F",event) --find F7
+		scale_up = remote.match_midi("B? 5B 7F",event) --find Top Button 91
+		scale_dn = remote.match_midi("B? 5C 7F",event) --find Top Button 92
+		tran_up = remote.match_midi("B? 5D 7F",event) --find Top Button 93
+		tran_dn = remote.match_midi("B? 5E 7F",event) --find Top Button 94
 --[[
 		
 		if(accent_pad and noscaleneeded) then
@@ -1109,7 +1110,7 @@ function remote_deliver_midi(maxbytes,port)
 					rtevent = remote.make_midi("b0 23 "..c_two)
 					table.insert(lpp_events,rtevent)
 --]]
-					local transpose_event = make_lcd_midi_message("/Reason/0/BaseII/0/display/3/display/ "..transpose)
+					local transpose_event = make_lcd_midi_message("/Reason/0/LPP/0/display/3/display/ "..transpose)
 					table.insert(lcd_events,transpose_event)
 				else
 					--return to scale
@@ -1122,7 +1123,7 @@ function remote_deliver_midi(maxbytes,port)
 					rtevent = remote.make_midi("b0 23 "..sevseg[c_two])
 					table.insert(lpp_events,rtevent)
 --]]
-					local scalename_event = make_lcd_midi_message("/Reason/0/BaseII/0/display/2/display/ "..scalename)
+					local scalename_event = make_lcd_midi_message("/Reason/0/LPP/0/display/2/display/ "..scalename)
 					table.insert(lcd_events,scalename_event)
 				end
 			end
@@ -1146,7 +1147,7 @@ function remote_deliver_midi(maxbytes,port)
 			table.insert(lpp_events,rtevent)
 --]]
 			g_delivered_scale = scale_int
-			local scalename_event = make_lcd_midi_message("/Reason/0/BaseII/0/display/2/display/ "..scalename)
+			local scalename_event = make_lcd_midi_message("/Reason/0/LPP/0/display/2/display/ "..scalename)
 			table.insert(lcd_events,scalename_event)
 			if(noscaleneeded == false) then
 				do_update_pads = 1
@@ -1188,7 +1189,7 @@ function remote_deliver_midi(maxbytes,port)
 		if g_vartext_prev~=g_vartext then
 			--Let the LCD know what the variation is
 			local vartext = remote.get_item_text_value(g_var_item_index)
-			local var_event = make_lcd_midi_message("/Reason/0/BaseII/0/display/1/display "..vartext)
+			local var_event = make_lcd_midi_message("/Reason/0/LPP/0/display/1/display "..vartext)
 			table.insert(lcd_events,var_event)
 			g_vartext_prev = g_vartext
 			isvarchange = true
@@ -1214,7 +1215,7 @@ function remote_deliver_midi(maxbytes,port)
 				--if scopetext from _Scope item has changed	
 				if g_scopetext_prev~=g_scopetext then
 					--Let the LCD know what the device is
-					local const_event = make_lcd_midi_message("/Reason/0/BaseII/0/display/4/display "..g_scopetext)
+					local const_event = make_lcd_midi_message("/Reason/0/LPP/0/display/4/display "..g_scopetext)
 					table.insert(lcd_events,const_event)
 					--detect Redrum
 					if(g_scopetext=="Redrum") then
@@ -1241,7 +1242,7 @@ function remote_deliver_midi(maxbytes,port)
 				end
 			
 				--send LCD the Track name text----------------------------------------------------------------
-				local track_event = make_lcd_midi_message("/Reason/0/BaseII/0/display/0/display "..new_text)
+				local track_event = make_lcd_midi_message("/Reason/0/LPP/0/display/0/display "..new_text)
 				table.insert(lcd_events,track_event)
 				--see if there's a scale in the track text
 				local result = ""
@@ -1275,7 +1276,7 @@ function remote_deliver_midi(maxbytes,port)
 					use_global_scale = true
 				end
 				--send scale name to LCD----------------------------------------
-				local scalename_event = make_lcd_midi_message("/Reason/0/BaseII/0/display/2/display/ "..scalename)
+				local scalename_event = make_lcd_midi_message("/Reason/0/LPP/0/display/2/display/ "..scalename)
 				table.insert(lcd_events,scalename_event)
 		
 				---If it's not a Kong, and there's no scale in the Track name, set to global_scale
@@ -1304,7 +1305,7 @@ function remote_deliver_midi(maxbytes,port)
 				end
 				--send LCD transpose value
 				if(transpose_changed) then
-					local transpose_event = make_lcd_midi_message("/Reason/0/BaseII/0/display/1/display/ "..transpose)
+					local transpose_event = make_lcd_midi_message("/Reason/0/LPP/0/display/1/display/ "..transpose)
 					table.insert(lcd_events,transpose_event)
 				end
 			end
@@ -1651,6 +1652,7 @@ end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
+
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 --done ===============
 function remote_probe(manufacturer,model)
@@ -1763,8 +1765,8 @@ function update_slider(item)
 			wordcount = wordcount+1
 		end
 		wordcount = wordcount-1 --because wordcount is really an index starting at 1, to get the true count, we subtract 1
-		p_path = "/Reason/0/BaseII/0/Fader/"..(item-sli_start).."/lcd_name " -- "sli_start" (-4) because the sliders start at index 3 in table items, but we start our OSC Slider names at 0.
-		v_path = "/Reason/0/BaseII/0/Fader/"..(item-sli_start).."/lcd_value "
+		p_path = "/Reason/0/LPP/0/Fader/"..(item-sli_start).."/lcd_name " -- "sli_start" (-4) because the sliders start at index 3 in table items, but we start our OSC Slider names at 0.
+		v_path = "/Reason/0/LPP/0/Fader/"..(item-sli_start).."/lcd_value "
 		if(wordcount>2) then
 			p_text = string.format( table.concat( table_slice(textarray,1,-3)," " ) ) --from first element to 3rd to last element (everything but last 2 elements)
 			v_text = string.format( table.concat( table_slice(textarray,-2)," " ) ) --last 2 elements
