@@ -503,6 +503,33 @@ end
 
 function remote_process_midi(event)
 	-- local ret = nil
+-- Here's an interesting design pattern	
+--[[
+	ret = remote.match_midi("<100x>? yy zz",event) --find a note on or off
+-- we check the first remote.match_midi, and if there's no midi input, it's going to be nil.
+	if(ret~=nil) then 
+		tran_btn     = ret.z 
+		local notein = ret.y 
+		local valin  = ret.x	  -- note on = 1, note off = 0
+
+
+		local pad_1 = remote.match_midi("<100x>? 50 zz",event)	-- Local to this function, may be false!
+		if(pad_1.z > 12) then 
+			-- stuff
+		end
+		shift_btn = remote.match_midi("B? 5B 7F",event)				-- Global for use later, may be false!
+
+		if(shift_btn) then 
+			-- stuff
+		end
+
+	end
+
+
+--]]	
+	
+	
+	
 	if ((g_thismodel == "VMeter Fader Fat Cursor") or (g_thismodel == "VMeter Fader Single Cursor")) then
 		ret=remote.match_midi("b0 "..MIDI_POS_OUT_CTRL.." xx",event)
 		if ret~=nil then
