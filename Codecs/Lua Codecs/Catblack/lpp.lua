@@ -8,6 +8,7 @@
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
+
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- Variable defs
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -55,6 +56,7 @@ pclr[1]=3
 pclr[2]=13
 pclr[3]=5
 pclr[4]=21
+
 
 
 
@@ -1728,11 +1730,12 @@ function remote_prepare_for_use()
 	g_delivered_lcd_state = string.format("%-16.16s","Launchpad Pro")
 	local retEvents={
 		--default settings for Launchpad Pro
-		remote.make_midi("F0 00 20 29 02 10 21 01 F7"), -- set standalone mode
-		remote.make_midi("F0 00 20 29 02 10 2C 03 F7"), -- Programmer mode
-		remote.make_midi("F0 00 20 29 02 10 0E 00 F7"), -- Blank all
-		remote.make_midi("F0 00 20 29 02 10 14 32 00 07 05 52 65 61 73 6F 6E F7"), -- scroll Reason
-		remote.make_midi("F0 00 20 29 02 10 0A 63 32 F7"), --Front light
+		remote.make_midi("F0 00 20 29 02 10 21 01 F7", { port=1 }), -- set standalone mode
+		remote.make_midi("F0 00 20 29 02 10 2C 03 F7", { port=1 }), -- Programmer mode
+		remote.make_midi("F0 00 20 29 02 10 0E 00 F7", { port=1 }), -- Blank all
+		remote.make_midi("F0 00 20 29 02 10 0A 63 32 F7", { port=1 }), --Front light
+--		remote.make_midi("F0 00 20 29 02 10 14 32 00 07 05 52 65 61 73 6F 6E F7", { port=1 }), -- scroll Reason
+		remote.make_midi("F0 00 20 29 02 10 0A 63 32 F7", { port=1 }), --Front light
 --		remote.make_midi("F0 00 20 29 02 10	 F7"),
 --		remote.make_midi("F0 00 20 29 02 10	 F7"),
 --send all local off on settings ch 16	191,122,64 
