@@ -476,7 +476,6 @@ function remote_init(manufacturer, model)
 		
 		inputs={
 			{pattern="<100x>0 yy zz",	name="Keyboard"},
-	--		{pattern="b0 12 xx",        	name="Channel Aftertouch"},
 		} 
 		remote.define_auto_inputs(inputs)
 
@@ -690,43 +689,22 @@ function remote_init(manufacturer, model)
 	elseif model == "VMeter Meter" then
 		items=
 		{
-	--		{name="Keyboard",          	input="keyboard"},
-	--		{name="Pitch Bend Wheel",  	input="value",	               	min=0,	max=16383},
-	--		{name="Channel Aftertouch",	input="value",	               	min=0,	max=127},
-	--		{name="Modulation Wheel",  	input="value",	output="value",	min=0,	max=127},
-	--		{name="Sustain Pedal",     	input="value",	output="value",	min=0,	max=127},
-	--		{name="Expression Pedal",  	input="value",	output="value",	min=0,	max=127},
-	--		{name="Breath",            	input="value",	output="value",	min=0,	max=127},
-			{name="TouchPos",            	input="value",	output="value",	min=0,	max=127},
-		}
+			{name="Input",            	input="value",	output="value",	min=0,	max=127},
+			{name="Output",            	input="noinput",	output="value",	min=0,	max=127},
+	}
 		
 
 		remote.define_items(items)
 		
 		inputs={
 
-		
-	--		{pattern="<100x>0 yy zz",	name="Keyboard"},
-	--		{pattern="90 xx 00",     	name="Keyboard",         value="0", note="x", velocity="64"},
-	--		{pattern="e0 xx yy",     	name="Pitch Bend Wheel", value="y * 128 + x"},
-	--		{pattern="b0 11 xx",        	name="Channel Aftertouch"},
-	--		{pattern="b0 01 xx",     	name="Modulation Wheel"},
-	--		{pattern="b0 02 xx",     	name="Breath"},
-	--		{pattern="b0 0B xx",     	name="Expression Pedal"},
-	--		{pattern="b0 40 xx",     	name="Sustain Pedal"},
-			{pattern="b0 14 xx",     	name="TouchPos"},
+			{pattern="b0 14 xx",     	name="Input"},
 
 		}
 		remote.define_auto_inputs(inputs)
 
 		outputs={
-	--		{name="CC 00"           ,	pattern="b0 00 xx"},
-	--		{name="Modulation Wheel",	pattern="b0 01 xx"},
-	--		{name="Breath"          ,	pattern="b0 02 xx"},
-	--		{name="Expression Pedal",	pattern="b0 0B xx"},
-	--		{name="Sustain Pedal"   ,	pattern="b0 40 xx"},
-	--		{name="CC 127"          ,	pattern="b0 7F xx"},
-			{name="TouchPos"          ,	pattern="b0 14 xx"},
+		{name="Output"          ,	pattern="b0 14 xx"}, 
 		}
 		remote.define_auto_outputs(outputs)
 	
@@ -817,7 +795,7 @@ function remote_process_midi(event)
 					g_current_state=new_state
 					g_current_noteonoff = new_noteonoff
 				elseif g_last_noteonoff~=new_noteonoff then
-					g_current_noteonoff = new_noteonoff
+					--g_current_noteonoff = new_noteonoff -- let rmote_set_state handle... not while pressed.
 				end
 				return true -- changed
 -- 6 button tdb
@@ -838,7 +816,7 @@ function remote_set_state(changed_items)
 --remote.trace("setstate i :"..tostring(i).." : "..tostring(item_index).." val: "..tostring(remote.get_item_value(item_index)).."last del: ".. tostring(remote.get_item_value(g_last_state_delivered)))		
 -- 6 button tdb
 		if (g_thismodel == "VMeter Six Button") then -- 6 leds per note \ 0 and 127 blank
-			local new_state = item_index -- returns 1 to 6
+			local new_state = item_index -- returns 1 to 6, maybe 7?
 			local new_noteonoff = remote.get_item_value(item_index)
 			if (g_last_state_delivered~=new_state) then -- draw new note
 				g_current_state=new_state
@@ -862,6 +840,7 @@ function remote_set_state(changed_items)
 	end
 --[[
 -- All this removed because we want immediate output
+-- this is from incontrol deluxe example.
 
 	local now_ms = remote.get_time_ms()
 	if (now_ms-g_last_input_time) < 1000 then
@@ -913,7 +892,7 @@ function remote_deliver_midi(max_bytes,port)
 			ledoutput ={SetLEDArray(DrawBar(new_state, 5))}
 		elseif g_thismodel == "VMeter Notes" then
 			ledoutput ={SetLEDArray(DrawNote(new_state))}
-		elseif g_thismodel == "VMeter Six Button" then
+		elseif (g_thismodel == "VMeter Six Button") and (new_state < 7) then -- don't know if this could be 7/keyboard, but... I need keyboard as an input...
 			ledoutput ={SetLEDArray(DrawButton(new_state))}
 		elseif g_thismodel == "VMeter Drums" then
 			ledoutput ={SetLEDArray(DrawDrums(new_state))}

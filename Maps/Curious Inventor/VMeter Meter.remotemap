@@ -9,7 +9,7 @@ Map Version	1.0.0
 // by Catblack
 //
 
-Scope	Propellerheads	Master Keyboard
+Scope	Propellerheads	Reason Master Section
 //	Control Surface Item	Key	Remotable Item	Scale	Mode
 
-
+Map	Output		Master Level
