@@ -732,7 +732,7 @@ function remote_init(manufacturer, model)
 	
 		
 	end --if
-	g_item_index=table.getn(items) --remote_set_state needs this!
+--	g_item_index=table.getn(items) --remote_set_state needs this!
 end
 
 
@@ -833,15 +833,32 @@ end
 
 
 function remote_set_state(changed_items)
-
-		if item_index==g_item_index then
+	for i,item_index in ipairs(changed_items) do
+--		if item_index==g_item_index then
 --remote.trace("setstate i :"..tostring(i).." : "..tostring(item_index).." val: "..tostring(remote.get_item_value(item_index)).."last del: ".. tostring(remote.get_item_value(g_last_state_delivered)))		
-		
+-- 6 button tdb
+		if (g_thismodel == "VMeter Six Button") then -- 6 leds per note \ 0 and 127 blank
+			local new_state = item_index -- returns 1 to 6
+			local new_noteonoff = remote.get_item_value(item_index)
+			if (g_last_state_delivered~=new_state) then -- draw new note
+				g_current_state=new_state
+				g_current_noteonoff = new_noteonoff
+			elseif g_last_noteonoff~=new_noteonoff then
+				g_current_noteonoff = new_noteonoff
+			end
+			
+		else 	
 			local new_state=remote.get_item_value(item_index)
 			if g_last_state_delivered~=new_state then
 				g_current_state=new_state
 			end
+
 		end
+
+
+
+
+--		end
 	end
 --[[
 -- All this removed because we want immediate output

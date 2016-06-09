@@ -1,0 +1,426 @@
+Codecs/Lua Codecs/Akai/AKAI_MPD24.png
+Codecs/Lua Codecs/Akai/AkaiLPD8.lua
+Codecs/Lua Codecs/Akai/AkaiLPD8.luacodec
+Codecs/Lua Codecs/Akai/AkaiMPD18.lua
+Codecs/Lua Codecs/Akai/AkaiMPD18.luacodec
+Codecs/Lua Codecs/Akai/AkaiMPD24.luacodec
+Codecs/Lua Codecs/Akai/AkaiMPD32_400.lua
+Codecs/Lua Codecs/Akai/AkaiMPD32_400.luacodec
+Codecs/Lua Codecs/Akai/AkaiMPK225_103.lua
+Codecs/Lua Codecs/Akai/AkaiMPK225_103.luacodec
+Codecs/Lua Codecs/Akai/AkaiMPK249_406.lua
+Codecs/Lua Codecs/Akai/AkaiMPK249_406.luacodec
+Codecs/Lua Codecs/Akai/AkaiMPK261_406.lua
+Codecs/Lua Codecs/Akai/AkaiMPK261_406.luacodec
+Codecs/Lua Codecs/Akai/AkaiMPK49_406.lua
+Codecs/Lua Codecs/Akai/AkaiMPK49_406.luacodec
+Codecs/Lua Codecs/Akai/AkaiMPKmini.lua
+Codecs/Lua Codecs/Akai/AkaiMPKmini.luacodec
+Codecs/Lua Codecs/Akai/AkaiMPKmini.png
+Codecs/Lua Codecs/Akai/MPD32.png
+Codecs/Lua Codecs/Akai/MPK225_reason.png
+Codecs/Lua Codecs/Akai/MPK249_reason.png
+Codecs/Lua Codecs/Akai/MPK261_reason.png
+Codecs/Lua Codecs/Akai/MPK49_reason.png
+Codecs/Lua Codecs/Akai/akai_MPD18.png
+Codecs/Lua Codecs/Akai/akai_lpd8.png
+Codecs/Lua Codecs/Akai/mpd24.lua
+Codecs/Lua Codecs/Arturia/AE25.lua
+Codecs/Lua Codecs/Arturia/AE25.luacodec
+Codecs/Lua Codecs/Arturia/AE49.lua
+Codecs/Lua Codecs/Arturia/AE49.luacodec
+Codecs/Lua Codecs/Arturia/AE61.lua
+Codecs/Lua Codecs/Arturia/AE61.luacodec
+Codecs/Lua Codecs/Arturia/IconAL49.png
+Codecs/Lua Codecs/Arturia/IconSpark.png
+Codecs/Lua Codecs/Arturia/KEYLAB25.png
+Codecs/Lua Codecs/Arturia/KEYLAB49.png
+Codecs/Lua Codecs/Arturia/KEYLAB61.png
+Codecs/Lua Codecs/Arturia/Keylab25.lua
+Codecs/Lua Codecs/Arturia/Keylab25.luacodec
+Codecs/Lua Codecs/Arturia/Keylab49.lua
+Codecs/Lua Codecs/Arturia/Keylab49.luacodec
+Codecs/Lua Codecs/Arturia/Keylab61.lua
+Codecs/Lua Codecs/Arturia/Keylab61.luacodec
+Codecs/Lua Codecs/Arturia/Spark.lua
+Codecs/Lua Codecs/Arturia/Spark.luacodec
+Codecs/Lua Codecs/Arturia/iconAL61.png
+Codecs/Lua Codecs/Arturia/iconAP25.png
+Codecs/Lua Codecs/Arturia/minilab.lua
+Codecs/Lua Codecs/Arturia/minilab.luacodec
+Codecs/Lua Codecs/Arturia/minilab.png
+Codecs/Lua Codecs/CME/UF-series.lua
+Codecs/Lua Codecs/CME/UF-series.luacodec
+Codecs/Lua Codecs/CME/UF-series.png
+Codecs/Lua Codecs/Cakewalk/A-PRO.lua
+Codecs/Lua Codecs/Cakewalk/A-PRO.luacodec
+Codecs/Lua Codecs/Cakewalk/A-PRO.png
+Codecs/Lua Codecs/Edirol/PCR300.lua
+Codecs/Lua Codecs/Edirol/PCR300.luacodec
+Codecs/Lua Codecs/Edirol/PCR300.png
+Codecs/Lua Codecs/Frontier/AlphaTrack/AlphaTrack.lua
+Codecs/Lua Codecs/Frontier/AlphaTrack/AlphaTrack.luacodec
+Codecs/Lua Codecs/Frontier/AlphaTrack/AlphaTrack.png
+Codecs/Lua Codecs/KMI/QuNeo.lua
+Codecs/Lua Codecs/KMI/QuNeo.luacodec
+Codecs/Lua Codecs/KMI/QuNeo.png
+Codecs/Lua Codecs/KMI/QuNexus.lua
+Codecs/Lua Codecs/KMI/QuNexus.luacodec
+Codecs/Lua Codecs/KMI/QuNexus.png
+Codecs/Lua Codecs/Korg/TRITON taktile-25.lua
+Codecs/Lua Codecs/Korg/TRITON taktile-25.luacodec
+Codecs/Lua Codecs/Korg/TRITON taktile-25.png
+Codecs/Lua Codecs/Korg/TRITON taktile-49.lua
+Codecs/Lua Codecs/Korg/TRITON taktile-49.luacodec
+Codecs/Lua Codecs/Korg/TRITON taktile-49.png
+Codecs/Lua Codecs/Korg/microKEY25.lua
+Codecs/Lua Codecs/Korg/microKEY25.luacodec
+Codecs/Lua Codecs/Korg/microKEY25.png
+Codecs/Lua Codecs/Korg/microKEY37_61.lua
+Codecs/Lua Codecs/Korg/microKEY37_61.luacodec
+Codecs/Lua Codecs/Korg/microKEY37_61.png
+Codecs/Lua Codecs/Korg/nanoKEY.lua
+Codecs/Lua Codecs/Korg/nanoKEY.luacodec
+Codecs/Lua Codecs/Korg/nanoKEY.png
+Codecs/Lua Codecs/Korg/nanoKEY2.lua
+Codecs/Lua Codecs/Korg/nanoKEY2.luacodec
+Codecs/Lua Codecs/Korg/nanoKEY2.png
+Codecs/Lua Codecs/Korg/nanoKontrol.lua
+Codecs/Lua Codecs/Korg/nanoKontrol.luacodec
+Codecs/Lua Codecs/Korg/nanoKontrol.png
+Codecs/Lua Codecs/Korg/nanoKontrol2.lua
+Codecs/Lua Codecs/Korg/nanoKontrol2.luacodec
+Codecs/Lua Codecs/Korg/nanoKontrol2.png
+Codecs/Lua Codecs/Korg/nanoPad.lua
+Codecs/Lua Codecs/Korg/nanoPad.luacodec
+Codecs/Lua Codecs/Korg/nanoPad.png
+Codecs/Lua Codecs/Korg/nanoPad2.lua
+Codecs/Lua Codecs/Korg/nanoPad2.luacodec
+Codecs/Lua Codecs/Korg/nanoPad2.png
+Codecs/Lua Codecs/Korg/padKontrol.lua
+Codecs/Lua Codecs/Korg/padKontrol.luacodec
+Codecs/Lua Codecs/Korg/padKontrol.png
+Codecs/Lua Codecs/Korg/taktile-25.lua
+Codecs/Lua Codecs/Korg/taktile-25.luacodec
+Codecs/Lua Codecs/Korg/taktile-25.png
+Codecs/Lua Codecs/Korg/taktile-49.lua
+Codecs/Lua Codecs/Korg/taktile-49.luacodec
+Codecs/Lua Codecs/Korg/taktile-49.png
+Codecs/Lua Codecs/Line 6/FBV Express MkII.lua
+Codecs/Lua Codecs/Line 6/FBV Express MkII.luacodec
+Codecs/Lua Codecs/Line 6/FBV Express MkII.png
+Codecs/Lua Codecs/Line 6/FBV Shortboard MkII.lua
+Codecs/Lua Codecs/Line 6/FBV Shortboard MkII.luacodec
+Codecs/Lua Codecs/Line 6/FBV Shortboard MkII.png
+Codecs/Lua Codecs/Line 6/KB37.lua
+Codecs/Lua Codecs/Line 6/KB37.luacodec
+Codecs/Lua Codecs/Line 6/KB37.png
+Codecs/Lua Codecs/Line 6/Mobile Keys 25.lua
+Codecs/Lua Codecs/Line 6/Mobile Keys 25.luacodec
+Codecs/Lua Codecs/Line 6/Mobile Keys 25.png
+Codecs/Lua Codecs/Line 6/Mobile Keys 49.lua
+Codecs/Lua Codecs/Line 6/Mobile Keys 49.luacodec
+Codecs/Lua Codecs/Line 6/Mobile Keys 49.png
+Codecs/Lua Codecs/Livid/Alias8.lua
+Codecs/Lua Codecs/Livid/Alias8.png
+Codecs/Lua Codecs/Livid/Base.lua
+Codecs/Lua Codecs/Livid/Base.png
+Codecs/Lua Codecs/Livid/BaseII.lua
+Codecs/Lua Codecs/Livid/DS1.lua
+Codecs/Lua Codecs/Livid/DS1.png
+Codecs/Lua Codecs/Livid/GuitarWing.lua
+Codecs/Lua Codecs/Livid/GuitarWing.png
+Codecs/Lua Codecs/Livid/Livid.lua
+Codecs/Lua Codecs/Livid/Livid.luacodec
+Codecs/Lua Codecs/Livid/Ohm64.png
+Codecs/Lua Codecs/Livid/OhmRGB.lua
+Codecs/Lua Codecs/Livid/OhmRGB.png
+Codecs/Lua Codecs/Livid/block.png
+Codecs/Lua Codecs/Livid/code.lua
+Codecs/Lua Codecs/Livid/code.png
+Codecs/Lua Codecs/M-Audio/Axiom 25, 2nd gen.png
+Codecs/Lua Codecs/M-Audio/Axiom 25.png
+Codecs/Lua Codecs/M-Audio/Axiom 49, 2nd gen.png
+Codecs/Lua Codecs/M-Audio/Axiom 49.png
+Codecs/Lua Codecs/M-Audio/Axiom 61, 2nd gen.png
+Codecs/Lua Codecs/M-Audio/Axiom 61.png
+Codecs/Lua Codecs/M-Audio/Axiom Pro 25.png
+Codecs/Lua Codecs/M-Audio/Axiom Pro 49.png
+Codecs/Lua Codecs/M-Audio/Axiom Pro 61.png
+Codecs/Lua Codecs/M-Audio/Axiom.lua
+Codecs/Lua Codecs/M-Audio/Axiom.luacodec
+Codecs/Lua Codecs/M-Audio/Axiom2.lua
+Codecs/Lua Codecs/M-Audio/Axiom2.luacodec
+Codecs/Lua Codecs/M-Audio/Axiom25.lua
+Codecs/Lua Codecs/M-Audio/Axiompro.lua
+Codecs/Lua Codecs/M-Audio/Axiompro.luacodec
+Codecs/Lua Codecs/M-Audio/Oxygen 25.png
+Codecs/Lua Codecs/M-Audio/Oxygen 49 3rd.png
+Codecs/Lua Codecs/M-Audio/Oxygen 49.png
+Codecs/Lua Codecs/M-Audio/Oxygen 61 3rd.png
+Codecs/Lua Codecs/M-Audio/Oxygen 61.png
+Codecs/Lua Codecs/M-Audio/Oxygen 88.png
+Codecs/Lua Codecs/M-Audio/Oxygen 8v2.png
+Codecs/Lua Codecs/M-Audio/Oxygen.lua
+Codecs/Lua Codecs/M-Audio/Oxygen.luacodec
+Codecs/Lua Codecs/M-Audio/Oxygen3.lua
+Codecs/Lua Codecs/M-Audio/Oxygen3.luacodec
+Codecs/Lua Codecs/M-Audio/Oxygen8v2.lua
+Codecs/Lua Codecs/M-Audio/projectmix.luacodec
+Codecs/Lua Codecs/M-Audio/projectmixio.png
+Codecs/Lua Codecs/M-Audio/projectmixiocodec.lua
+Codecs/Lua Codecs/Mackie/mackie.luacodec
+Codecs/Lua Codecs/Mackie/mackiec4.png
+Codecs/Lua Codecs/Mackie/mackiecodec.lua
+Codecs/Lua Codecs/Mackie/mackiecomboleft.png
+Codecs/Lua Codecs/Mackie/mackiecomboright.png
+Codecs/Lua Codecs/Mackie/mackiecontrol.png
+Codecs/Lua Codecs/Mackie/mackieextender.png
+Codecs/Lua Codecs/Native Instruments/Audio Kontrol 1.lua
+Codecs/Lua Codecs/Native Instruments/Audio Kontrol 1.luacodec
+Codecs/Lua Codecs/Native Instruments/Audio Kontrol 1.png
+Codecs/Lua Codecs/Novation/Automap.png
+Codecs/Lua Codecs/Novation/Launchkey Keyboard.lua
+Codecs/Lua Codecs/Novation/Launchkey.lua
+Codecs/Lua Codecs/Novation/Launchkey.luacodec
+Codecs/Lua Codecs/Novation/Launchkey.png
+Codecs/Lua Codecs/Novation/Novation Automap Control.lua
+Codecs/Lua Codecs/Novation/Novation Automap Control.luacodec
+Codecs/Lua Codecs/Novation/Novation Automap Keyboard.lua
+Codecs/Lua Codecs/Novation/Novation Automap Keyboard.luacodec
+Codecs/Lua Codecs/Novation/Novation Keyboard.png
+Codecs/Lua Codecs/Teenage Engineering/OP-1.lua
+Codecs/Lua Codecs/Teenage Engineering/OP-1.luacodec
+Codecs/Lua Codecs/Teenage Engineering/OP-1.png
+Codecs/Lua Codecs/Tranzport/TranzPort.lua
+Codecs/Lua Codecs/Tranzport/TranzPort.png
+Codecs/Lua Codecs/Tranzport/tranzport.luacodec
+Codecs/MIDI Codecs/ControlFreak.midicodec
+Codecs/MIDI Codecs/ControlFreak.png
+Codecs/MIDI Codecs/ControlFreakLive.midicodec
+Codecs/MIDI Codecs/ControlFreakLive.png
+Codecs/MIDI Codecs/ControlFreakSE.midicodec
+Codecs/MIDI Codecs/ControlFreakSE.png
+Codecs/MIDI Codecs/Drehbank.midicodec
+Codecs/MIDI Codecs/Drehbank.png
+Codecs/MIDI Codecs/MIDI Controller Multi.midicodec
+Codecs/MIDI Codecs/MIDI Controller Multi.png
+Codecs/MIDI Codecs/MIDI Controller.midicodec
+Codecs/MIDI Codecs/MIDI Controller.png
+Codecs/MIDI Codecs/MIDI Keyboard Basic.midicodec
+Codecs/MIDI Codecs/MIDI Keyboard Basic.png
+Codecs/MIDI Codecs/MIDI Keyboard Multi.midicodec
+Codecs/MIDI Codecs/MIDI Keyboard Multi.png
+Codecs/MIDI Codecs/MIDI Keyboard.midicodec
+Codecs/MIDI Codecs/MIDI Keyboard.png
+Codecs/MIDI Codecs/MK-249C.midicodec
+Codecs/MIDI Codecs/MK-249C.png
+Codecs/MIDI Codecs/MK-425C.midicodec
+Codecs/MIDI Codecs/MK-425C.png
+Codecs/MIDI Codecs/MK-449C.midicodec
+Codecs/MIDI Codecs/MK-449C.png
+Codecs/MIDI Codecs/MK-461C.midicodec
+Codecs/MIDI Codecs/MK-461C.png
+Codecs/MIDI Codecs/O2.midicodec
+Codecs/MIDI Codecs/O2.png
+Codecs/MIDI Codecs/Oxygen 8 new.midicodec
+Codecs/MIDI Codecs/Oxygen 8 new.png
+Codecs/MIDI Codecs/Oxygen 8 old.midicodec
+Codecs/MIDI Codecs/Oxygen 8 old.png
+Codecs/MIDI Codecs/Ozone.midicodec
+Codecs/MIDI Codecs/Ozone.png
+Codecs/MIDI Codecs/Ozonic.midicodec
+Codecs/MIDI Codecs/Ozonic.png
+Codecs/MIDI Codecs/PC1600x.midicodec
+Codecs/MIDI Codecs/PC1600x.png
+Codecs/MIDI Codecs/PCR-1.midicodec
+Codecs/MIDI Codecs/PCR-1.png
+Codecs/MIDI Codecs/PCR-A30.midicodec
+Codecs/MIDI Codecs/PCR-A30.png
+Codecs/MIDI Codecs/PCR-M.midicodec
+Codecs/MIDI Codecs/PCR-M.png
+Codecs/MIDI Codecs/PCR-M1.midicodec
+Codecs/MIDI Codecs/PCR-M1.png
+Codecs/MIDI Codecs/PCR.midicodec
+Codecs/MIDI Codecs/PCR.png
+Codecs/MIDI Codecs/Phatboy.midicodec
+Codecs/MIDI Codecs/Phatboy.png
+Codecs/MIDI Codecs/Photon X25.midicodec
+Codecs/MIDI Codecs/Photon X25.png
+Codecs/MIDI Codecs/Pocket Control.midicodec
+Codecs/MIDI Codecs/Pocket Control.png
+Codecs/MIDI Codecs/Pocket Dial.midicodec
+Codecs/MIDI Codecs/Pocket Fader.midicodec
+Codecs/MIDI Codecs/Pocket Fader.png
+Codecs/MIDI Codecs/Pocket dial.png
+Codecs/MIDI Codecs/Pro88.midicodec
+Codecs/MIDI Codecs/Pro88.png
+Codecs/MIDI Codecs/Radium 49 old.midicodec
+Codecs/MIDI Codecs/Radium 49 old.png
+Codecs/MIDI Codecs/Radium 49.midicodec
+Codecs/MIDI Codecs/Radium 49.png
+Codecs/MIDI Codecs/Radium 61 old.midicodec
+Codecs/MIDI Codecs/Radium 61 old.png
+Codecs/MIDI Codecs/Radium 61.midicodec
+Codecs/MIDI Codecs/Radium 61.png
+Codecs/MIDI Codecs/ReMOTE 25.midicodec
+Codecs/MIDI Codecs/ReMOTE 25.png
+Codecs/MIDI Codecs/ReMOTE LE.midicodec
+Codecs/MIDI Codecs/ReMOTE LE.png
+Codecs/MIDI Codecs/Regelwerk.midicodec
+Codecs/MIDI Codecs/Regelwerk.png
+Codecs/MIDI Codecs/Spindoctor.midicodec
+Codecs/MIDI Codecs/Spindoctor.png
+Codecs/MIDI Codecs/UC-33.midicodec
+Codecs/MIDI Codecs/UC-33.png
+Codecs/MIDI Codecs/UC-33e.midicodec
+Codecs/MIDI Codecs/UC-33e.png
+Codecs/MIDI Codecs/UR-80.midicodec
+Codecs/MIDI Codecs/UR-80.png
+Codecs/MIDI Codecs/X-Station.midicodec
+Codecs/MIDI Codecs/X-Station.png
+Codecs/MIDI Codecs/X-session.midicodec
+Codecs/MIDI Codecs/X-session.png
+Codecs/MIDI Codecs/XioSynth.midicodec
+Codecs/MIDI Codecs/XioSynth.png
+Codecs/Lua Codecs/Curious Inventor/vmeter10.lua
+Codecs/Lua Codecs/Curious Inventor/vmeter11.lua
+Codecs/Lua Codecs/Curious Inventor/vmeter12.lua
+Codecs/Lua Codecs/Curious Inventor/vmeter13.lua
+Codecs/Lua Codecs/Curious Inventor/vmeter2.lua
+Codecs/Lua Codecs/Curious Inventor/vmeter3.lua
+Codecs/Lua Codecs/Curious Inventor/vmeter4.lua
+Codecs/Lua Codecs/Curious Inventor/vmeter5.lua
+Codecs/Lua Codecs/Curious Inventor/vmeter6.lua
+Codecs/Lua Codecs/Curious Inventor/vmeter7.lua
+Codecs/Lua Codecs/Curious Inventor/vmeter8.lua
+Codecs/Lua Codecs/Curious Inventor/vmeter9.lua
+Maps/Akai/AkaiLPD8.remotemap
+Maps/Akai/AkaiMPD18.remotemap
+Maps/Akai/AkaiMPD32_400.remotemap
+Maps/Akai/AkaiMPK225_103.remotemap
+Maps/Akai/AkaiMPK249_402.remotemap
+Maps/Akai/AkaiMPK261_402.remotemap
+Maps/Akai/AkaiMPK49_402.remotemap
+Maps/Akai/AkaiMPKmini.remotemap
+Maps/Akai/MPD24.remotemap
+Maps/Alesis/Photon X25.remotemap
+Maps/Arturia/AE25.remotemap
+Maps/Arturia/AE49.remotemap
+Maps/Arturia/AE61.remotemap
+Maps/Arturia/Keylab25.remotemap
+Maps/Arturia/Keylab49.remotemap
+Maps/Arturia/Keylab61.remotemap
+Maps/Arturia/Spark.remotemap
+Maps/Arturia/minilab.remotemap
+Maps/Behringer/BCF2000.remotemap
+Maps/Behringer/BCR2000.remotemap
+Maps/CME/UF-series.remotemap
+Maps/Cakewalk/A-PRO.remotemap
+Maps/Doepfer/Drehbank.remotemap
+Maps/Doepfer/Pocket Control.remotemap
+Maps/Doepfer/Pocket Dial.remotemap
+Maps/Doepfer/Pocket Fader.remotemap
+Maps/Doepfer/Regelwerk.remotemap
+Maps/Edirol/PCR-1.remotemap
+Maps/Edirol/PCR-300.remotemap
+Maps/Edirol/PCR-A30.remotemap
+Maps/Edirol/PCR-M.remotemap
+Maps/Edirol/PCR-M1.remotemap
+Maps/Edirol/PCR.remotemap
+Maps/Edirol/UR-80.remotemap
+Maps/Evolution/MK-249C.remotemap
+Maps/Evolution/MK-425C.remotemap
+Maps/Evolution/MK-449C.remotemap
+Maps/Evolution/MK-461C.remotemap
+Maps/Evolution/UC-33.remotemap
+Maps/Evolution/UC-33e.remotemap
+Maps/Evolution/X-Session.remotemap
+Maps/Frontier/AlphaTrack.remotemap
+Maps/Frontier/tranzport.remotemap
+Maps/KMI/QuNeo.remotemap
+Maps/KMI/QuNexus.remotemap
+Maps/Kenton/Control Freak Live.remotemap
+Maps/Kenton/Control Freak SE.remotemap
+Maps/Kenton/Control Freak.remotemap
+Maps/Kenton/Spin Doctor.remotemap
+Maps/Keyfax/Phatboy.remotemap
+Maps/Korg/Kontrol49.remotemap
+Maps/Korg/TRITON taktile-25.remotemap
+Maps/Korg/TRITON taktile-49.remotemap
+Maps/Korg/microKEY25.remotemap
+Maps/Korg/microKEY37_61.remotemap
+Maps/Korg/microKONTROL.remotemap
+Maps/Korg/nanoKEY.remotemap
+Maps/Korg/nanoKEY2.remotemap
+Maps/Korg/nanoKONTROL.remotemap
+Maps/Korg/nanoKONTROL2.remotemap
+Maps/Korg/nanoPAD.remotemap
+Maps/Korg/nanoPAD2.remotemap
+Maps/Korg/padKONTROL.remotemap
+Maps/Korg/taktile-25.remotemap
+Maps/Korg/taktile-49.remotemap
+Maps/Line 6/FBV Express MkII.remotemap
+Maps/Line 6/FBV Shortboard MkII.remotemap
+Maps/Line 6/KB37.remotemap
+Maps/Line 6/Mobile Keys 25.remotemap
+Maps/Line 6/Mobile Keys 49.remotemap
+Maps/Livid/Alias8.remotemap
+Maps/Livid/Base.remotemap
+Maps/Livid/BaseII.remotemap
+Maps/Livid/DS1.remotemap
+Maps/Livid/GuitarWing.remotemap
+Maps/Livid/Ohm64.remotemap
+Maps/Livid/OhmRGB.remotemap
+Maps/Livid/block.remotemap
+Maps/Livid/code.remotemap
+Maps/M-Audio/Axiom 25.remotemap
+Maps/M-Audio/Axiom 49.remotemap
+Maps/M-Audio/Axiom 61.remotemap
+Maps/M-Audio/Axiom Pro 25.remotemap
+Maps/M-Audio/Axiom Pro 49.remotemap
+Maps/M-Audio/Axiom Pro 61.remotemap
+Maps/M-Audio/Axiom25, 2nd gen.remotemap
+Maps/M-Audio/Axiom49, 2nd gen.remotemap
+Maps/M-Audio/Axiom61, 2nd gen.remotemap
+Maps/M-Audio/Keystation Pro-88.remotemap
+Maps/M-Audio/O2.remotemap
+Maps/M-Audio/Oxygen 25.remotemap
+Maps/M-Audio/Oxygen 49 3rd.remotemap
+Maps/M-Audio/Oxygen 49.remotemap
+Maps/M-Audio/Oxygen 61 3rd.remotemap
+Maps/M-Audio/Oxygen 61.remotemap
+Maps/M-Audio/Oxygen 8 new.remotemap
+Maps/M-Audio/Oxygen 8 old.remotemap
+Maps/M-Audio/Oxygen 88.remotemap
+Maps/M-Audio/Oxygen 8v2.remotemap
+Maps/M-Audio/Ozone.remotemap
+Maps/M-Audio/Ozonic.remotemap
+Maps/M-Audio/ProjectMixIO.remotemap
+Maps/M-Audio/Radium 49 old.remotemap
+Maps/M-Audio/Radium 49.remotemap
+Maps/M-Audio/Radium 61 old.remotemap
+Maps/M-Audio/Radium 61.remotemap
+Maps/Mackie/C4.remotemap
+Maps/Mackie/Combo Extender Left.remotemap
+Maps/Mackie/Combo Extender Right.remotemap
+Maps/Mackie/Extender.remotemap
+Maps/Mackie/Universal Control.remotemap
+Maps/Native Instruments/Audio Kontrol 1.remotemap
+Maps/Novation/Launchkey 25 InControl.remotemap
+Maps/Novation/Launchkey 49 InControl.remotemap
+Maps/Novation/Launchkey 61 InControl.remotemap
+Maps/Novation/Launchkey Keyboard.remotemap
+Maps/Novation/Novation Automap Control.remotemap
+Maps/Novation/Novation Automap Keyboard.remotemap
+Maps/Novation/ReMOTE 25.remotemap
+Maps/Novation/ReMOTE LE.remotemap
+Maps/Novation/X-Station.remotemap
+Maps/Novation/XioSynth.remotemap
+Maps/Other/Basic MIDI Keyboard.remotemap
+Maps/Other/MIDI Controller Multi.remotemap
+Maps/Other/MIDI Controller.remotemap
+Maps/Other/MIDI Keyboard w Controls Multi.remotemap
+Maps/Other/MIDI Keyboard w Controls.remotemap
+Maps/Peavey/PC 1600x.remotemap
+Maps/Teenage Engineering/OP-1.remotemap
