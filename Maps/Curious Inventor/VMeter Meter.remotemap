@@ -11,5 +11,17 @@ Map Version	1.0.0
 
 Scope	Propellerheads	Reason Master Section
 //	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	Output		Audio Output Peak Meter
 
-Map	Output		Master Level
+Scope	Propellerheads	Record Master Section
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	Output		Audio Output Peak Meter
+
+Scope	Propellerheads	Reason Document
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	Output		Audio Output Peak Meter
+
+Scope	Propellerheads	Record Document
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	Output		Audio Output Peak Meter
+
