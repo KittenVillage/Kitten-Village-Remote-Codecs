@@ -6,19 +6,11 @@
 
 -- set some globals
 g_ledarray = {}
+newarray = {}
 for q=1,38 do
-	g_ledarray[q] =0
+	g_ledarray[q]=0
+	newarray[q]=0
 end
-g_current_state=-1
-g_last_state_delivered=-1
-g_led_state=table.concat(g_ledarray)
-g_delivered_led_state=table.concat(g_ledarray)
-g_thismodel = ""
-g_last_noteonoff = -1 --Note detection for turning off released notes
-g_current_noteonoff = -1
-g_last_cycle_time = 0 -- Game of Life timing
-
-
 --[[
 thisledarray = {1,0,1,0,1,0,1,0,1,0,
                  1,0,1,0,1,0,1,0,1,0,
@@ -27,20 +19,36 @@ thisledarray = {1,0,1,0,1,0,1,0,1,0,
 --]]
 
 --Game of Life starters
-    g_led_array = {1,1,1,1,1,1,1,0,0,0,
+--[[
+    g_ledarray = {1,1,1,1,1,1,1,0,0,0,
                  0,0,0,0,0,0,1,1,1,1,
                  0,1,1,0,0,1,1,1,0,0,
                  0,0,0,1,0,0,0,0}
---[[
-#    g_led_array = {1,0,1,1,1,1,1,0,0,0,
-#                 0,0,0,0,0,0,1,1,1,1,
-#                 0,1,1,0,0,1,1,1,0,0,
-#                 0,0,0,1,0,0,1,0}
-#    g_led_array = {1,0,0,0,0,0,0,0,0,0,
-#                 0,0,0,0,0,0,1,0,1,0,
-#                 0,1,0,0,0,1,0,0,0,0,
-#                 0,0,0,1,0,0,0,0}
 --]]
+--[[
+    g_ledarray = {1,0,1,1,1,1,1,0,0,0,
+                 0,0,0,0,0,0,1,1,1,1,
+                 0,1,1,0,0,1,1,1,0,0,
+                 0,0,0,1,0,0,1,0}
+--]]
+
+    g_ledarray = {1,0,0,0,0,0,0,0,0,0,
+                 0,0,0,0,0,0,1,0,1,0,
+                 0,1,0,0,0,1,0,0,0,0,
+                 0,0,0,1,0,0,0,0}
+				 
+				 
+
+
+g_current_state=-1
+g_last_state_delivered=-1
+--g_led_state=table.concat(g_ledarray)
+--g_delivered_led_state=table.concat(g_ledarray)
+g_thismodel = ""
+g_last_noteonoff = -1 --Note detection for turning off released notes
+g_current_noteonoff = -1
+g_last_cycle_time = 0 -- Game of Life timing
+
 
 
 
@@ -128,41 +136,6 @@ function modulo(a,b)
 end
 
 
---[[
-function SetLEDArrayAutoOut(val,thisbyte)
-    --# assuming 38 length array
-    --# need to split array into (6) 7bit chunks
-    --# Individual LED control is sent to the aftertouch MIDI command and channels 14, 15 and 16.
-    --# Each of the data bytes transmit 7 LED states.
---
---		{name="Button 6"          ,	pattern="xx yy zz", x="SetLEDArrayAutoOut(value,'x')", y="SetLEDArrayAutoOut(value,'y')", z="SetLEDArrayAutoOut(value,'z')"}, --dummy output!
-
-
-if thisbyte==3 then return 173 end
-if thisbyte=="x" then remote.trace(tostring(val)) end
-local ledarray = {1,1,1,0,1,0,1,
-                  0,1,1,1,0,1,1,
-				  1,0,1,1,1,0,1,
-				  0,1,1,1,1,1,0,
-				  1,0,1,0,0,1,1,
-				  1,1,0}
-   local bytes = {0,0,0,0,0,0}
-   --local bytes = {}
-
-    bytes[1] = ledarray[1] + bit.lshift(ledarray[2],1) + bit.lshift(ledarray[3],2) + bit.lshift(ledarray[4],3) + bit.lshift(ledarray[5],4) + bit.lshift(ledarray[6],5) + bit.lshift(ledarray[7],6)
-    bytes[2] = ledarray[8] + bit.lshift(ledarray[9],1) + bit.lshift(ledarray[10],2) + bit.lshift(ledarray[11],3) + bit.lshift(ledarray[12],4) + bit.lshift(ledarray[13],5) + bit.lshift(ledarray[14],6)
-    bytes[3] = ledarray[15] + bit.lshift(ledarray[16],1) + bit.lshift(ledarray[17],2) + bit.lshift(ledarray[18],3) + bit.lshift(ledarray[19],4) + bit.lshift(ledarray[20],5) + bit.lshift(ledarray[21],6)
-    bytes[4] = ledarray[22] + bit.lshift(ledarray[23],1) + bit.lshift(ledarray[24],2) + bit.lshift(ledarray[25],3) + bit.lshift(ledarray[26],4) + bit.lshift(ledarray[27],5) + bit.lshift(ledarray[28],6)
-    bytes[5] = ledarray[29] + bit.lshift(ledarray[30],1) + bit.lshift(ledarray[31],2) + bit.lshift(ledarray[32],3) + bit.lshift(ledarray[33],4) + bit.lshift(ledarray[34],5) + bit.lshift(ledarray[35],6)
-    bytes[6] = ledarray[36] + bit.lshift(ledarray[37],1) + bit.lshift(ledarray[38],2)
-
-	remote.trace(table.concat(ledarray))	-- this is fun
-	remote.trace(tostring(thisbyte).." "..tostring(bytes[thisbyte]))	-- this is fun
-return bytes[thisbyte]
-		--return 16383
-end
-
---]]
 
 function SetLEDArray(ledarray)
     --# assuming 38 length array
@@ -179,7 +152,7 @@ function SetLEDArray(ledarray)
     bytes[5] = ledarray[29] + bit.lshift(ledarray[30],1) + bit.lshift(ledarray[31],2) + bit.lshift(ledarray[32],3) + bit.lshift(ledarray[33],4) + bit.lshift(ledarray[34],5) + bit.lshift(ledarray[35],6)
     bytes[6] = ledarray[36] + bit.lshift(ledarray[37],1) + bit.lshift(ledarray[38],2)
 
---	remote.trace(table.concat(ledarray))	-- this is fun
+remote.trace(tostring(table.concat(g_ledarray))..'\n')	-- this is fun
 	return bytes[1],bytes[2],bytes[3],bytes[4],bytes[5],bytes[6]
 end
 
@@ -244,60 +217,63 @@ end
 
 function GameOfLife(pos)
 -- This is interpreted from the python demo. 
--- It uses two arrays to calculate, index_array is just a way to step through
+-- It uses two arrays to calculate
 
-    local i = 0
-	local new_array = {}
-	if pos > 0 then -- it's not a -1 time update
-
-		local index_pos = math.floor((pos / 127.0) * 38.0)
-
-		if led_array[index_pos] == 1 then
-			g_led_array[index_pos] = 0
-		else
-			g_led_array[index_pos] = 1
-		end
-	else	
-		if remote.get_time_ms() - g_last_cycle_time > 100 then
+	if ( pos == nil ) then -- it's a time update	
+		if ((remote.get_time_ms() - g_last_cycle_time) > 100) then
 			g_last_cycle_time = remote.get_time_ms()
--- Clear the index array
-		index_array = {}
-		for i=3, 36 do
-		  index_array[i] = 0
-		end
-				
-		new_array = g_led_array
---	# copy over 4 edge LEDs since they don't have 4 neighbors.
-		new_array[1] = g_led_array[1]
-		new_array[2] = g_led_array[2]
-		new_array[37] = g_led_array[37]
-		new_array[38] = g_led_array[38]
-			
---            for i in index_array do
-		for i,v in ipairs(index_array) do
 
-		   local sum =g_led_array[i-2]+g_led_array[i-1]+g_led_array[i+1]+g_led_array[i+2]
-			if g_led_array[i] == 1 then -- # live cell
-				if sum < 1 then
-					new_array[i] = 0 --# under population
-				elseif sum < 3 then
-					new_array[i] = 1 --# just right
-				else 
-					new_array[i] = 0 --# overcrowding
-				end
-			else --# dead cell
-				if sum == 2 or sum == 3 then
-					new_array[i] = 1
-				else
-					new_array[i] = 0
-				end
+-- This is in the python demo, not sure why. all leds set below			
+--			for i=1, 38 do
+--				newarray[i] = g_ledarray[i]
+--			end
+
+--	# copy over 4 edge LEDs since they don't have 4 neighbors.
+			newarray[1] = g_ledarray[1]
+			newarray[2] = g_ledarray[2]
+			newarray[37] = g_ledarray[37]
+			newarray[38] = g_ledarray[38]
+			
+			for i=3,36 do
+				sum = g_ledarray[i - 2] + g_ledarray[i - 1] + g_ledarray[i + 1] + g_ledarray[i + 2]
+--remote.trace('i '..tostring(i)..' sum '..tostring(sum)..'\n')
+				if g_ledarray[i] == 1 then -- # live cell
+					if sum < 1 then
+						newarray[i] = 0 --# under population
+					elseif sum < 3 then
+						newarray[i] = 1 --# just right
+					else 
+						newarray[i] = 0 --# overcrowding
+					end
+				else -- dead cell
+					if sum == 2 or sum == 3 then
+						newarray[i] = 1
+					else
+						newarray[i] = 0
+					end
+				end -- if
+			end -- for
+			for i=1,38 do
+				g_ledarray[i] = newarray[i]
 			end
-		end    
-	g_led_array = new_array            
-	return g_led_array
+		end -- time if
+
+	elseif (pos > 0) then -- it's not a time update
+		local index_pos = math.ceil((pos / 127) * 38)
+--remote.trace(' pos '..tostring(pos)..' inpos '..tostring(index_pos))	
+		if g_ledarray[index_pos] == 1 then
+			g_ledarray[index_pos] = 0
+		else
+			g_ledarray[index_pos] = 1
+		end
+	end -- pos check
+--remote.trace(tostring(table.concat(newarray))..'\n')
+--remote.trace(tostring(table.concat(g_ledarray))..'\n')
+            
+	return g_ledarray
 end 
 
---]] 
+
 
 
 function DrawNote(note)
@@ -363,6 +339,8 @@ end
 
 
 
+
+
 function remote_init(manufacturer, model)
 	g_thismodel = model -- This is the key to piling many maps into one lua file
 	local items={}
@@ -402,22 +380,6 @@ function remote_init(manufacturer, model)
 		remote.define_auto_outputs(outputs)
 		
 	elseif model == "VMeter Fader Single Cursor" then
-		items={
-			{name="Fader", input="value",	output="value",	min=0,	max=127},
-		}
-
-		remote.define_items(items)
-		inputs={
-			{pattern="b0 14 xx",     	name="Fader"},
-		}
-		remote.define_auto_inputs(inputs)
-
-		outputs={
-		{name="Fader"          ,	pattern="b0 16 xx"}, --dummy output!
-		}
-		remote.define_auto_outputs(outputs)
-		
-	elseif model == "VMeter Fader Gravity" then
 		items={
 			{name="Fader", input="value",	output="value",	min=0,	max=127},
 		}
@@ -565,138 +527,6 @@ function remote_init(manufacturer, model)
 		remote.define_auto_outputs(outputs)
 		
 
-	elseif model == "VMeter Crossfader" then
-		items=
-		{
-	--		{name="Keyboard",          	input="keyboard"},
-	--		{name="Pitch Bend Wheel",  	input="value",	               	min=0,	max=16383},
-	--		{name="Channel Aftertouch",	input="value",	               	min=0,	max=127},
-	--		{name="Modulation Wheel",  	input="value",	output="value",	min=0,	max=127},
-	--		{name="Sustain Pedal",     	input="value",	output="value",	min=0,	max=127},
-	--		{name="Expression Pedal",  	input="value",	output="value",	min=0,	max=127},
-	--		{name="Breath",            	input="value",	output="value",	min=0,	max=127},
-			{name="TouchPos",            	input="value",	output="value",	min=0,	max=127},
-		}
-
-		remote.define_items(items)
-		
-		inputs={
-
-		
-	--		{pattern="<100x>0 yy zz",	name="Keyboard"},
-	--		{pattern="90 xx 00",     	name="Keyboard",         value="0", note="x", velocity="64"},
-	--		{pattern="e0 xx yy",     	name="Pitch Bend Wheel", value="y * 128 + x"},
-	--		{pattern="b0 11 xx",        	name="Channel Aftertouch"},
-	--		{pattern="b0 01 xx",     	name="Modulation Wheel"},
-	--		{pattern="b0 02 xx",     	name="Breath"},
-	--		{pattern="b0 0B xx",     	name="Expression Pedal"},
-	--		{pattern="b0 40 xx",     	name="Sustain Pedal"},
-			{pattern="b0 14 xx",     	name="TouchPos"},
-
-		}
-		remote.define_auto_inputs(inputs)
-
-		outputs={
-	--		{name="CC 00"           ,	pattern="b0 00 xx"},
-	--		{name="Modulation Wheel",	pattern="b0 01 xx"},
-	--		{name="Breath"          ,	pattern="b0 02 xx"},
-	--		{name="Expression Pedal",	pattern="b0 0B xx"},
-	--		{name="Sustain Pedal"   ,	pattern="b0 40 xx"},
-	--		{name="CC 127"          ,	pattern="b0 7F xx"},
-			{name="TouchPos"          ,	pattern="b0 14 xx"},
-		}
-		remote.define_auto_outputs(outputs)
-		
-		
-
-	elseif model == "VMeter Button" then
-		items=
-		{
-	--		{name="Keyboard",          	input="keyboard"},
-	--		{name="Pitch Bend Wheel",  	input="value",	               	min=0,	max=16383},
-	--		{name="Channel Aftertouch",	input="value",	               	min=0,	max=127},
-	--		{name="Modulation Wheel",  	input="value",	output="value",	min=0,	max=127},
-	--		{name="Sustain Pedal",     	input="value",	output="value",	min=0,	max=127},
-	--		{name="Expression Pedal",  	input="value",	output="value",	min=0,	max=127},
-	--		{name="Breath",            	input="value",	output="value",	min=0,	max=127},
-			{name="TouchPos",            	input="value",	output="value",	min=0,	max=127},
-		}
-
-		remote.define_items(items)
-		
-		inputs={
-
-	--		{pattern="<100x>0 yy zz",	name="Keyboard"},
-	--		{pattern="90 xx 00",     	name="Keyboard",         value="0", note="x", velocity="64"},
-	--		{pattern="e0 xx yy",     	name="Pitch Bend Wheel", value="y * 128 + x"},
-	--		{pattern="b0 11 xx",        	name="Channel Aftertouch"},
-	--		{pattern="b0 01 xx",     	name="Modulation Wheel"},
-	--		{pattern="b0 02 xx",     	name="Breath"},
-	--		{pattern="b0 0B xx",     	name="Expression Pedal"},
-	--		{pattern="b0 40 xx",     	name="Sustain Pedal"},
-			{pattern="b0 14 xx",     	name="TouchPos"},
-
-		}
-		remote.define_auto_inputs(inputs)
-
-		outputs={
-	--		{name="CC 00"           ,	pattern="b0 00 xx"},
-	--		{name="Modulation Wheel",	pattern="b0 01 xx"},
-	--		{name="Breath"          ,	pattern="b0 02 xx"},
-	--		{name="Expression Pedal",	pattern="b0 0B xx"},
-	--		{name="Sustain Pedal"   ,	pattern="b0 40 xx"},
-	--		{name="CC 127"          ,	pattern="b0 7F xx"},
-			{name="TouchPos"          ,	pattern="b0 14 xx"},
-		}
-		remote.define_auto_outputs(outputs)
-		
-		
-		
-
-	elseif model == "VMeter Delta" then
-		items=
-		{
-	--		{name="Keyboard",          	input="keyboard"},
-	--		{name="Pitch Bend Wheel",  	input="value",	               	min=0,	max=16383},
-	--		{name="Channel Aftertouch",	input="value",	               	min=0,	max=127},
-	--		{name="Modulation Wheel",  	input="value",	output="value",	min=0,	max=127},
-	--		{name="Sustain Pedal",     	input="value",	output="value",	min=0,	max=127},
-	--		{name="Expression Pedal",  	input="value",	output="value",	min=0,	max=127},
-	--		{name="Breath",            	input="value",	output="value",	min=0,	max=127},
-			{name="TouchPos",            	input="value",	output="value",	min=0,	max=127},
-		}
-		
-
-		remote.define_items(items)
-		
-		inputs={
-
-		
-	--		{pattern="<100x>0 yy zz",	name="Keyboard"},
-	--		{pattern="90 xx 00",     	name="Keyboard",         value="0", note="x", velocity="64"},
-	--		{pattern="e0 xx yy",     	name="Pitch Bend Wheel", value="y * 128 + x"},
-	--		{pattern="b0 11 xx",        	name="Channel Aftertouch"},
-	--		{pattern="b0 01 xx",     	name="Modulation Wheel"},
-	--		{pattern="b0 02 xx",     	name="Breath"},
-	--		{pattern="b0 0B xx",     	name="Expression Pedal"},
-	--		{pattern="b0 40 xx",     	name="Sustain Pedal"},
-			{pattern="b0 14 xx",     	name="TouchPos"},
-
-		}
-		remote.define_auto_inputs(inputs)
-
-		outputs={
-	--		{name="CC 00"           ,	pattern="b0 00 xx"},
-	--		{name="Modulation Wheel",	pattern="b0 01 xx"},
-	--		{name="Breath"          ,	pattern="b0 02 xx"},
-	--		{name="Expression Pedal",	pattern="b0 0B xx"},
-	--		{name="Sustain Pedal"   ,	pattern="b0 40 xx"},
-	--		{name="CC 127"          ,	pattern="b0 7F xx"},
-			{name="TouchPos"          ,	pattern="b0 14 xx"},
-		}
-		remote.define_auto_outputs(outputs)
-		
-
 	elseif model == "VMeter Meter" then
 		items=
 		{
@@ -718,7 +548,90 @@ function remote_init(manufacturer, model)
 		{name="Output"          ,	pattern="b0 14 xx"}, 
 		}
 		remote.define_auto_outputs(outputs)
-	
+
+
+-- Models below TBD.	
+
+	elseif model == "VMeter Fader Gravity" then
+		items={
+			{name="Fader", input="value",	output="value",	min=0,	max=127},
+		}
+
+		remote.define_items(items)
+		inputs={
+			{pattern="b0 14 xx",     	name="Fader"},
+		}
+		remote.define_auto_inputs(inputs)
+
+		outputs={
+		{name="Fader"          ,	pattern="b0 16 xx"}, --dummy output!
+		}
+		remote.define_auto_outputs(outputs)
+		
+	elseif model == "VMeter Crossfader" then
+		items=
+		{
+			{name="TouchPos",            	input="value",	output="value",	min=0,	max=127},
+		}
+
+		remote.define_items(items)
+		
+		inputs={
+			{pattern="b0 14 xx",     	name="TouchPos"},
+
+		}
+		remote.define_auto_inputs(inputs)
+
+		outputs={
+			{name="TouchPos"          ,	pattern="b0 14 xx"},
+		}
+		remote.define_auto_outputs(outputs)
+		
+		
+
+	elseif model == "VMeter Button" then
+		items=
+		{
+			{name="TouchPos",            	input="value",	output="value",	min=0,	max=127},
+		}
+
+		remote.define_items(items)
+		
+		inputs={
+
+			{pattern="b0 14 xx",     	name="TouchPos"},
+
+		}
+		remote.define_auto_inputs(inputs)
+
+		outputs={
+			{name="TouchPos"          ,	pattern="b0 14 xx"},
+		}
+		remote.define_auto_outputs(outputs)
+		
+		
+		
+
+	elseif model == "VMeter Delta" then
+		items=
+		{
+			{name="TouchPos",            	input="value",	output="value",	min=0,	max=127},
+		}
+		
+
+		remote.define_items(items)
+		
+		inputs={
+			{pattern="b0 14 xx",     	name="TouchPos"},
+
+		}
+		remote.define_auto_inputs(inputs)
+
+		outputs={
+			{name="TouchPos"          ,	pattern="b0 14 xx"},
+		}
+		remote.define_auto_outputs(outputs)
+		
 		
 	end --if
 --	g_item_index=table.getn(items) --Leftover from incontrol deluxe example    
@@ -770,6 +683,7 @@ function remote_process_midi(event)
 			local new_notein=ret.y
 			local new_notevel = ret.z 
 --			remote.trace("new_notein "..tostring(new_notein))
+
 			if (new_notein > 9) and (new_notein < 122) and (g_thismodel == "VMeter Notes") then -- 3 leds per note \ 0-9 and 118-127 blank*
 				local new_state = math.ceil((new_notein - 9) / 9) -- returns 1 to 12 \ 1 and 38 blank
 				if new_state==13 then new_state=12 end--*having trouble hitting last note, expand box
@@ -784,6 +698,7 @@ function remote_process_midi(event)
 					g_current_noteonoff = new_noteonoff
 				end
 				return true -- changed
+				
 			elseif (new_notein > 7) and (new_notein < 120) and (g_thismodel == "VMeter Drums") then -- 4 leds per note \ 0-7 and 120-127 blank
 				local new_state = math.ceil((new_notein - 7) / 14) -- returns 1 to 8 
 				local new_noteout = new_state + 35  -- Middle octave
@@ -796,7 +711,8 @@ function remote_process_midi(event)
 					g_current_noteonoff = new_noteonoff
 				end
 				return true -- changed
--- 6 button tdb
+				
+-- 6 button 
 			elseif (new_notein > 0) and (new_notein < 127) and (g_thismodel == "VMeter Six Button") then -- 6 leds per note \ 0 and 127 blank
 				local new_state = math.ceil((new_notein) / 21) -- returns 1 to 6 
 -- Sets item on or off
@@ -809,7 +725,7 @@ function remote_process_midi(event)
 					--g_current_noteonoff = new_noteonoff -- let rmote_set_state handle... not while pressed.
 				end
 				return true -- changed
--- 6 button tdb
+-- 6 button end
 
 			else -- note out of range
 				return true -- out of range, should stop input 
@@ -849,30 +765,7 @@ function remote_set_state(changed_items)
 
 --		end
 	end
---[[
--- All this removed because we want immediate output
--- this is from incontrol deluxe example.
 
-	local now_ms = remote.get_time_ms()
-	if (now_ms-g_last_input_time) < 1000 then
-		if remote.is_item_enabled(g_last_input_item) then
-			local feedback_text=remote.get_item_name_and_value(g_last_input_item)
-			if string.len(feedback_text)>0 then
-				g_feedback_enabled=true
-				g_led_state=string.format("%-16.16s",feedback_text)
-			end
-		end
-
-	elseif g_feedback_enabled then
-		g_feedback_enabled=false
-		if g_is_led_enabled then
-			old_text=remote.get_item_text_value(g_item_index)
-		else
-			old_text=" "
-		end
-		g_led_state=string.format("%-16.16s",old_text)
-	end
---]]
 end
 
 
@@ -887,6 +780,7 @@ function remote_deliver_midi(max_bytes,port)
 	local ledoutput = {}
 	local faderout = -1
 	if (g_last_state_delivered~=new_state) or (g_last_noteonoff~=new_noteonoff) then
+--remote.trace(tostring(new_state ))		
 -- other led functions go here depending on model.  
 		if g_thismodel == "VMeter Fader Single Cursor" then
 			ledoutput ={SetLEDArray(DrawCursor(new_state))}
@@ -908,9 +802,10 @@ function remote_deliver_midi(max_bytes,port)
 		g_last_state_delivered = new_state
 		g_last_noteonoff = new_noteonoff
 		
-	elseif (g_thismodel == "VMeter Game of Life Demo") and ((remote.get_time_ms() - g_last_cycle_time) > 100) then
+	elseif ((g_thismodel == "VMeter Game of Life Demo") and ((remote.get_time_ms() - g_last_cycle_time) > 100)) then
 -- No new input, but change it after an interval.
-		ledoutput ={SetLEDArray(GameOfLife(-1))} -- Update it, don't send input
+
+		ledoutput ={SetLEDArray(GameOfLife())} -- Update it, don't send input
 	end -- state and note (elseif time) check
 	
 	if table.getn(ledoutput) == 6 then -- ledoutput is a six byte array
