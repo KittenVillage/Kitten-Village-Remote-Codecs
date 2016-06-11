@@ -1,7 +1,7 @@
 --++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- VMeter Remote Codec and Map for Reason
 -- by Catblack@gmail.com paypal me a few bucks if you find this useful.
--- VMeter made by Curious Inventor
+-- VMeter made by Curious Inventor http://www.vmeter.net/
 --++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 -- set some globals
@@ -202,6 +202,10 @@ function DrawBar(height,size)
     return led_array_deque
 end
 
+
+
+
+function GameOfLife(pos)
 --[[
 # A Game of Life simulation is usually performed on a 2D matrix, but here
 # we apply similar rules to the 1D VMeter array of LEDs.
@@ -213,9 +217,6 @@ end
 # Touching the VMeter will cause the LEDs touched to switch states, which can restart
 # a simulation that has died off.
 --]]
-
-
-function GameOfLife(pos)
 -- This is interpreted from the python demo. 
 -- It uses two arrays to calculate
 
@@ -637,25 +638,21 @@ function remote_init(manufacturer, model)
 --	g_item_index=table.getn(items) --Leftover from incontrol deluxe example    
 end
 
-
+--You should know what you've pluged into your computer.
 function remote_probe()
 	return {
 	}
 end
 
-g_last_input_time=-2000
 
+-- Unused, included just in case.
+g_last_input_time=-2000
 g_last_input_item=nil
 
-
 function remote_on_auto_input(item_index)
-
 	if item_index==1 then
-
 		g_last_input_time=remote.get_time_ms()
-
 		g_last_input_item=item_index
-
 	end
 
 end
@@ -739,9 +736,8 @@ end
 
 function remote_set_state(changed_items)
 	for i,item_index in ipairs(changed_items) do
---		if item_index==g_item_index then
 --remote.trace("setstate i :"..tostring(i).." : "..tostring(item_index).." val: "..tostring(remote.get_item_value(item_index)).."last del: ".. tostring(remote.get_item_value(g_last_state_delivered)))		
--- 6 button tdb
+-- 6 button 
 		if (g_thismodel == "VMeter Six Button") then -- 6 leds per note \ 0 and 127 blank
 			local new_state = item_index -- returns 1 to 6, maybe 7?
 			local new_noteonoff = remote.get_item_value(item_index)
@@ -757,15 +753,8 @@ function remote_set_state(changed_items)
 			if g_last_state_delivered~=new_state then
 				g_current_state=new_state
 			end
-
 		end
-
-
-
-
---		end
 	end
-
 end
 
 
