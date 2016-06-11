@@ -16,12 +16,34 @@ g_delivered_led_state=table.concat(g_ledarray)
 g_thismodel = ""
 g_last_noteonoff = -1 --Note detection for turning off released notes
 g_current_noteonoff = -1
+g_last_cycle_time = 0 -- Game of Life timing
+
+
 --[[
 thisledarray = {1,0,1,0,1,0,1,0,1,0,
                  1,0,1,0,1,0,1,0,1,0,
                  1,0,1,0,1,0,1,0,1,0,
                  1,0,1,0,1,0,1,0}
 --]]
+
+--Game of Life starters
+    g_led_array = {1,1,1,1,1,1,1,0,0,0,
+                 0,0,0,0,0,0,1,1,1,1,
+                 0,1,1,0,0,1,1,1,0,0,
+                 0,0,0,1,0,0,0,0}
+--[[
+#    g_led_array = {1,0,1,1,1,1,1,0,0,0,
+#                 0,0,0,0,0,0,1,1,1,1,
+#                 0,1,1,0,0,1,1,1,0,0,
+#                 0,0,0,1,0,0,1,0}
+#    g_led_array = {1,0,0,0,0,0,0,0,0,0,
+#                 0,0,0,0,0,0,1,0,1,0,
+#                 0,1,0,0,0,1,0,0,0,0,
+#                 0,0,0,1,0,0,0,0}
+--]]
+
+
+
 -- Velocity preset
 Vel = "7F"
 
@@ -217,73 +239,62 @@ end
 # evolve.
 # Touching the VMeter will cause the LEDs touched to switch states, which can restart
 # a simulation that has died off.
+--]]
+
+
 function GameOfLife(pos)
-    led_array = {1,1,1,1,1,1,1,0,0,0,
-                 0,0,0,0,0,0,1,1,1,1,
-                 0,1,1,0,0,1,1,1,0,0,
-                 0,0,0,1,0,0,0,0}
-#    led_array = {1,0,1,1,1,1,1,0,0,0,
-#                 0,0,0,0,0,0,1,1,1,1,
-#                 0,1,1,0,0,1,1,1,0,0,
-#                 0,0,0,1,0,0,1,0}
-#    led_array = {1,0,0,0,0,0,0,0,0,0,
-#                 0,0,0,0,0,0,1,0,1,0,
-#                 0,1,0,0,0,1,0,0,0,0,
-#                 0,0,0,1,0,0,0,0}
-    last_cycle_time = 0
+-- This is interpreted from the python demo. 
+-- It uses two arrays to calculate, index_array is just a way to step through
+
     local i = 0
- --   while True:
- --       while MidiIn.Poll(): # invert LEDs where touched
- --           MidiData = MidiIn.Read(1)
- --           if MidiData[0][0][0] == 0xB0:
- --               if MidiData[0][0][1] == 20:
- --                   pos = MidiData[0][0][2]
- --                   index_pos = int(float(pos) / 127.0 * 37.0)
- 
-    local index_pos = math.floor((pos / 127.0) * 38.0)
---#                    print "index pos: ", index_pos
-	if led_array[index_pos] == 1 then
-		led_array[index_pos] = 0
-	else
-		led_array[index_pos] = 1
-	end
-	if remote.get_time_ms() - last_cycle_time > 100 then
-		last_cycle_time = remote.get_time_ms()
- --           index_array = range(3,36)
-	index_array = {}
-	for i=3, 36 do
-	  index_array[i] = 0
-	end
-			
-	new_array = led_array
-	# copy over 4 edge LEDs since they don't have 4 neighbors.
-	new_array[1] = led_array[1]
-	new_array[2] = led_array[2]
-	new_array[37] = led_array[37]
-	new_array[38] = led_array[38]
+	local new_array = {}
+	if pos > 0 then -- it's not a -1 time update
+
+		local index_pos = math.floor((pos / 127.0) * 38.0)
+
+		if led_array[index_pos] == 1 then
+			g_led_array[index_pos] = 0
+		else
+			g_led_array[index_pos] = 1
+		end
+	else	
+		if remote.get_time_ms() - g_last_cycle_time > 100 then
+			g_last_cycle_time = remote.get_time_ms()
+-- Clear the index array
+		index_array = {}
+		for i=3, 36 do
+		  index_array[i] = 0
+		end
+				
+		new_array = g_led_array
+--	# copy over 4 edge LEDs since they don't have 4 neighbors.
+		new_array[1] = g_led_array[1]
+		new_array[2] = g_led_array[2]
+		new_array[37] = g_led_array[37]
+		new_array[38] = g_led_array[38]
 			
 --            for i in index_array do
-	for i,v in ipairs(index_array) do
- --todo:
-	   sum =led_array[i-2]+led_array[i-1]+led_array[i+1]+led_array[i+2]
-		if led_array[i] == 1 then -- # live cell
-			if sum < 1 then
-				new_array[i] = 0 --# under population
-			elseif sum < 3 then
-				new_array[i] = 1 --# just right
-			else 
-				new_array[i] = 0 --# overcrowding
+		for i,v in ipairs(index_array) do
+
+		   local sum =g_led_array[i-2]+g_led_array[i-1]+g_led_array[i+1]+g_led_array[i+2]
+			if g_led_array[i] == 1 then -- # live cell
+				if sum < 1 then
+					new_array[i] = 0 --# under population
+				elseif sum < 3 then
+					new_array[i] = 1 --# just right
+				else 
+					new_array[i] = 0 --# overcrowding
+				end
+			else --# dead cell
+				if sum == 2 or sum == 3 then
+					new_array[i] = 1
+				else
+					new_array[i] = 0
+				end
 			end
-		else --# dead cell
-			if sum == 2 or sum == 3 then
-				new_array[i] = 1
-			else
-				new_array[i] = 0
-			end
-		end
-	end    
-	led_array = new_array            
-	return led_array
+		end    
+	g_led_array = new_array            
+	return g_led_array
 end 
 
 --]] 
@@ -710,7 +721,7 @@ function remote_init(manufacturer, model)
 	
 		
 	end --if
---	g_item_index=table.getn(items) --remote_set_state needs this!
+--	g_item_index=table.getn(items) --Leftover from incontrol deluxe example    
 end
 
 
@@ -873,18 +884,9 @@ function remote_deliver_midi(max_bytes,port)
 	local new_state=g_current_state
 	local new_noteonoff=g_current_noteonoff
 --These are only set in an led array function
+	local ledoutput = {}
+	local faderout = -1
 	if (g_last_state_delivered~=new_state) or (g_last_noteonoff~=new_noteonoff) then
-		local ledoutput = {}
-		local faderout = -1
-		--g_ledarray=DrawCursor(new_state)
-		--g_ledarray=DrawCursor(new_state)
-		--ledoutput ={SetLEDArray(g_ledarray)}
---remote.trace(g_thismodel)
---remote.trace(tostring(g_last_noteonoff))		
---remote.trace(tostring(new_noteonoff))		
---remote.trace(tostring(g_last_state_delivered))		
---remote.trace(tostring(new_state))		
-
 -- other led functions go here depending on model.  
 		if g_thismodel == "VMeter Fader Single Cursor" then
 			ledoutput ={SetLEDArray(DrawCursor(new_state))}
@@ -898,23 +900,31 @@ function remote_deliver_midi(max_bytes,port)
 			ledoutput ={SetLEDArray(DrawDrums(new_state))}
 		elseif (g_thismodel == "VMeter Fader") or (g_thismodel == "VMeter Modulation Wheel") or (g_thismodel == "VMeter Meter") then
 			faderout = new_state
+		elseif (g_thismodel == "VMeter Game of Life Demo") then
+			ledoutput ={SetLEDArray(GameOfLife(new_state))}
 		end -- model setting
 --remote.trace(tostring(table.getn(ledoutput) ))		
 
-		if table.getn(ledoutput) == 6 then
-			ret_events={
-				remote.make_midi("ad xx yy",{ x = ledoutput[1], y = ledoutput[2], port=1 }),
-				remote.make_midi("ae xx yy",{ x = ledoutput[3], y = ledoutput[4], port=1 }),
-				remote.make_midi("af xx yy",{ x = ledoutput[5], y = ledoutput[6], port=1 }),
-			}
-		elseif faderout > 0 then  -- drawing the bar
-			ret_events={
-				remote.make_midi("b0 14 xx",{ x = faderout, port=1 }),
-			}
-		end
 		g_last_state_delivered = new_state
 		g_last_noteonoff = new_noteonoff
-	end -- state and note check
+		
+	elseif (g_thismodel == "VMeter Game of Life Demo") and ((remote.get_time_ms() - g_last_cycle_time) > 100) then
+-- No new input, but change it after an interval.
+		ledoutput ={SetLEDArray(GameOfLife(-1))} -- Update it, don't send input
+	end -- state and note (elseif time) check
+	
+	if table.getn(ledoutput) == 6 then -- ledoutput is a six byte array
+		ret_events={
+			remote.make_midi("ad xx yy",{ x = ledoutput[1], y = ledoutput[2], port=1 }),
+			remote.make_midi("ae xx yy",{ x = ledoutput[3], y = ledoutput[4], port=1 }),
+			remote.make_midi("af xx yy",{ x = ledoutput[5], y = ledoutput[6], port=1 }),
+		}
+	elseif faderout > 0 then  -- drawing the bar
+		ret_events={
+			remote.make_midi("b0 14 xx",{ x = faderout, port=1 }),
+		}
+	end
+	
 	return ret_events
 end
 
