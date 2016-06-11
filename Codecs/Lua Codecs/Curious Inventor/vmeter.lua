@@ -754,7 +754,7 @@ end
 
 function remote_process_midi(event)
 	-- local ret = nil
-	if ((g_thismodel == "VMeter Fader Fat Cursor") or (g_thismodel == "VMeter Fader Single Cursor")) then
+	if ((g_thismodel == "VMeter Fader Fat Cursor") or (g_thismodel == "VMeter Fader Single Cursor") or (g_thismodel == "VMeter Game of Life Demo")) then
 		ret=remote.match_midi("b0 "..MIDI_POS_OUT_CTRL.." xx",event)
 		if ret~=nil then
 			local new_state=ret.x
@@ -1003,6 +1003,7 @@ function remote_prepare_for_use()
 			remote.make_midi(PRES_OUT_DISABLE, { port=1 } ),
 			remote.make_midi(ON_OFF_OUT_DISABLE, { port=1 } ),
 			remote.make_midi(NOTE_OUT_DISABLE, { port=1 } ),
+			remote.make_midi(ClearLED, { port=1 } ),
 		}
 		return retEvents
 
