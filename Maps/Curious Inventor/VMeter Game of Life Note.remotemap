@@ -1,7 +1,7 @@
 Propellerhead Remote Mapping File
 File Format Version	1.0.0
 Control Surface Manufacturer	Curious Inventor
-Control Surface Model	Vmeter Game of Life Demo
+Control Surface Model	Vmeter Game of Life Note
 Map Version	1.0.0
 
 //
@@ -12,5 +12,4 @@ Map Version	1.0.0
 Scope	Propellerheads	Reason Document
 //	Control Surface Item	Key	Remotable Item	Scale	Mode
 Map	TempoBPM		Tempo BPM
-
 

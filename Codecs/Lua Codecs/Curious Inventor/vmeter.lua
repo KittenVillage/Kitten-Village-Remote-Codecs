@@ -1,6 +1,7 @@
 --++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- VMeter Remote Codec and Map for Reason
 -- by Catblack@gmail.com paypal me a few bucks if you find this useful.
+-- and if you want to sell your VMeter, sell it to me!
 -- VMeter made by Curious Inventor http://www.vmeter.net/
 --++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -11,6 +12,13 @@ for q=1,38 do
 	g_ledarray[q]=0
 	newarray[q]=0
 end
+-- a new array for game of life note output.
+notearray = {}
+for q=1,12 do
+	notearray[q]=0
+--	noteoffarray[q]=0
+end
+
 --[[
 thisledarray = {1,0,1,0,1,0,1,0,1,0,
                  1,0,1,0,1,0,1,0,1,0,
@@ -47,10 +55,15 @@ g_last_state_delivered=-1
 g_thismodel = ""
 g_last_noteonoff = -1 --Note detection for turning off released notes
 g_current_noteonoff = -1
+
+--These now follow BPM set in their functions. initial time below
 g_last_cycle_time = 0 -- Game of Life timing
-
-
-
+g_last_note_cycle_time = 0 -- Game of Life Note timing
+GoLtime = 100
+GoLnotetime = 100
+--GoLtime = math.floor((60000/BPM)/GoLratio)
+GoLratio=6
+GoLnoteratio=1
 
 -- Velocity preset
 Vel = "7F"
@@ -75,6 +88,8 @@ PITCH_WHEEL_RETURN_SPEED_CTRL = "6B"
 
 --Undocumented by vmeter instructions, low numbers best
 PITCH_WHEEL_RETURN_SPEED = "B0 " .. PITCH_WHEEL_RETURN_SPEED_CTRL .. " 01"
+
+ALLNOTESOFF="B0 78 00 B0 7B 00"
 
 --Chan 1 
 Ch1Main  = "B0 "..	MAIN_PARAM_CTRL	
@@ -219,15 +234,17 @@ function GameOfLife(pos)
 --]]
 -- This is interpreted from the python demo. 
 -- It uses two arrays to calculate
+BPM = tonumber(remote.get_item_text_value(g_item_index))
+GoLtime = math.floor((60000/BPM)/GoLratio)
 
 	if ( pos == nil ) then -- it's a time update	
-		if ((remote.get_time_ms() - g_last_cycle_time) > 100) then
+		if ((remote.get_time_ms() - g_last_cycle_time) > GoLtime) then
 			g_last_cycle_time = remote.get_time_ms()
 
 -- This is in the python demo, not sure why. all leds set below			
---			for i=1, 38 do
---				newarray[i] = g_ledarray[i]
---			end
+			for i=1, 38 do
+					newarray[i] = g_ledarray[i]
+			end
 
 --	# copy over 4 edge LEDs since they don't have 4 neighbors.
 			newarray[1] = g_ledarray[1]
@@ -269,10 +286,38 @@ function GameOfLife(pos)
 		end
 	end -- pos check
 --remote.trace(tostring(table.concat(newarray))..'\n')
---remote.trace(tostring(table.concat(g_ledarray))..'\n')
             
 	return g_ledarray
 end 
+
+function GameOfLifeNote()
+BPM = tonumber(remote.get_item_text_value(g_item_index))
+GoLnotetime = math.floor((60000/BPM)/GoLnoteratio)
+-- generate a note based on g_ledarray[3] to [36]
+-- if 3 leds in a row are on,  we send a note on in the array
+-- if 3 leds in a row are off, we send a note off in the array
+	local newnote = {}
+		if ((remote.get_time_ms() - g_last_note_cycle_time) > GoLnotetime) then
+			g_last_note_cycle_time = remote.get_time_ms()
+			for o=1, 12 do
+				if ((g_ledarray[(o*3)-2] == 1) and (g_ledarray[(o*3)-1] == 1) and (g_ledarray[(o*3)] == 1) and notearray[o] == 0) then -- turn on note
+					table.insert(newnote, "90 ".. string.format("%X", (o + 35)) .. " " .. Vel)
+					notearray[o] = 1
+--remote.trace("note:".."90 ".. string.format("%x", (o + 35)) .. " " .. Vel..'\n')
+				elseif ((g_ledarray[(o*3)-2] == 0) and (g_ledarray[(o*3)-1] == 0) and (g_ledarray[(o*3)] == 0) and notearray[o] == 1) then -- turn off note
+					table.insert(newnote, "80 ".. string.format("%X", (o + 35)) .. " 00")
+					notearray[o] = 0
+--remote.trace("note:".."80 ".. string.format("%x", (o + 35)) .. " 00")
+				end -- if
+			end -- for
+		end -- if
+--remote.trace("note:"..tostring(table.getn(newnote)))
+	return newnote -- array!
+end
+
+
+
+
 
 
 
@@ -399,6 +444,7 @@ function remote_init(manufacturer, model)
 	elseif model == "VMeter Game of Life Demo" then
 		items={
 			{name="Fader", input="value",	output="value",	min=0,	max=127},
+			{name="TempoBPM" ,	output="text"},
 		}
 
 		remote.define_items(items)
@@ -408,7 +454,24 @@ function remote_init(manufacturer, model)
 		remote.define_auto_inputs(inputs)
 
 		outputs={
-		{name="Fader"          ,	pattern="b0 16 xx"}, --dummy output!
+			{name="Fader"          ,	pattern="b0 16 xx"}, --dummy output!
+		}
+		remote.define_auto_outputs(outputs)
+		
+	elseif model == "VMeter Game of Life Note" then
+		items={
+			{name="Fader", input="value",	output="value",	min=0,	max=127},
+			{name="TempoBPM" ,	output="text"},
+		}
+
+		remote.define_items(items)
+		inputs={
+			{pattern="b0 14 xx",     	name="Fader"},
+		}
+		remote.define_auto_inputs(inputs)
+
+		outputs={
+			{name="Fader"          ,	pattern="b0 16 xx"}, --dummy output!
 		}
 		remote.define_auto_outputs(outputs)
 		
@@ -417,7 +480,7 @@ function remote_init(manufacturer, model)
 	elseif model == "VMeter Notes" then
 		items=
 		{
-		{name="Keyboard",          	input="keyboard"},
+			{name="Keyboard",          	input="keyboard"},
 	--	{name="Channel Aftertouch",	input="value",	               	min=0,	max=127},
 		}
 
@@ -461,9 +524,6 @@ function remote_init(manufacturer, model)
 			{name="Button 5"          ,	pattern="b0 16 xx"}, --dummy output!
 			{name="Button 6"          ,	pattern="b0 16 xx"}, --dummy output!
 			
--- saving some test code
---			{name="Button 6"          ,	pattern="xx yy zz", x="SetLEDArrayAutoOut(value,'x')", y="SetLEDArrayAutoOut(value,'y')", z="SetLEDArrayAutoOut(value,'z')"}, --dummy output!
-
 		}
 		remote.define_auto_outputs(outputs)
 		
@@ -471,18 +531,15 @@ function remote_init(manufacturer, model)
 	elseif model == "VMeter Drums" then
 		items=
 		{
-		{name="Keyboard",          	input="keyboard"},
+			{name="Keyboard",          	input="keyboard"},
 	--	{name="Channel Aftertouch",	input="value",	               	min=0,	max=127},
 		}
 
 		remote.define_items(items)
 		
 		inputs={
-
-		
 			{pattern="<100x>0 yy zz",	name="Keyboard"},
 	--		{pattern="b0 12 xx",        	name="Channel Aftertouch"},
-
 		}
 		remote.define_auto_inputs(inputs)
 
@@ -634,8 +691,8 @@ function remote_init(manufacturer, model)
 		remote.define_auto_outputs(outputs)
 		
 		
-	end --if
---	g_item_index=table.getn(items) --Leftover from incontrol deluxe example    
+	end --if model
+	g_item_index=table.getn(items) --last item in the items table, because that's where we will put something interesting, like BPM    
 end
 
 --You should know what you've pluged into your computer.
@@ -664,7 +721,7 @@ end
 
 function remote_process_midi(event)
 	-- local ret = nil
-	if ((g_thismodel == "VMeter Fader Fat Cursor") or (g_thismodel == "VMeter Fader Single Cursor") or (g_thismodel == "VMeter Game of Life Demo")) then
+	if ((g_thismodel == "VMeter Fader Fat Cursor") or (g_thismodel == "VMeter Fader Single Cursor") or (g_thismodel == "VMeter Game of Life Demo") or (g_thismodel == "VMeter Game of Life Note")) then
 		ret=remote.match_midi("b0 "..MIDI_POS_OUT_CTRL.." xx",event)
 		if ret~=nil then
 			local new_state=ret.x
@@ -735,6 +792,7 @@ end
 
 
 function remote_set_state(changed_items)
+
 	for i,item_index in ipairs(changed_items) do
 --remote.trace("setstate i :"..tostring(i).." : "..tostring(item_index).." val: "..tostring(remote.get_item_value(item_index)).."last del: ".. tostring(remote.get_item_value(g_last_state_delivered)))		
 -- 6 button 
@@ -753,7 +811,7 @@ function remote_set_state(changed_items)
 			if g_last_state_delivered~=new_state then
 				g_current_state=new_state
 			end
-		end
+		end -- if
 	end
 end
 
@@ -768,47 +826,64 @@ function remote_deliver_midi(max_bytes,port)
 --These are only set in an led array function
 	local ledoutput = {}
 	local faderout = -1
-	if (g_last_state_delivered~=new_state) or (g_last_noteonoff~=new_noteonoff) then
+
+	if(port==1) then -- You can not mix remote.make_midi events meant for different ports!
+
+		if (g_last_state_delivered~=new_state) or (g_last_noteonoff~=new_noteonoff) then
 --remote.trace(tostring(new_state ))		
 -- other led functions go here depending on model.  
-		if g_thismodel == "VMeter Fader Single Cursor" then
-			ledoutput ={SetLEDArray(DrawCursor(new_state))}
-		elseif g_thismodel == "VMeter Fader Fat Cursor" then
-			ledoutput ={SetLEDArray(DrawBar(new_state, 5))}
-		elseif g_thismodel == "VMeter Notes" then
-			ledoutput ={SetLEDArray(DrawNote(new_state))}
-		elseif (g_thismodel == "VMeter Six Button") and (new_state < 7) then -- don't know if this could be 7/keyboard, but... I need keyboard as an input...
-			ledoutput ={SetLEDArray(DrawButton(new_state))}
-		elseif g_thismodel == "VMeter Drums" then
-			ledoutput ={SetLEDArray(DrawDrums(new_state))}
-		elseif (g_thismodel == "VMeter Fader") or (g_thismodel == "VMeter Modulation Wheel") or (g_thismodel == "VMeter Meter") then
-			faderout = new_state
-		elseif (g_thismodel == "VMeter Game of Life Demo") then
-			ledoutput ={SetLEDArray(GameOfLife(new_state))}
-		end -- model setting
+			if g_thismodel == "VMeter Fader Single Cursor" then
+				ledoutput ={SetLEDArray(DrawCursor(new_state))}
+			elseif g_thismodel == "VMeter Fader Fat Cursor" then
+				ledoutput ={SetLEDArray(DrawBar(new_state, 5))}
+			elseif g_thismodel == "VMeter Notes" then
+				ledoutput ={SetLEDArray(DrawNote(new_state))}
+			elseif (g_thismodel == "VMeter Six Button") and (new_state < 7) then -- don't know if this could be 7/keyboard, but... I need keyboard as an input...
+				ledoutput ={SetLEDArray(DrawButton(new_state))}
+			elseif g_thismodel == "VMeter Drums" then
+				ledoutput ={SetLEDArray(DrawDrums(new_state))}
+			elseif (g_thismodel == "VMeter Fader") or (g_thismodel == "VMeter Modulation Wheel") or (g_thismodel == "VMeter Meter") then
+				faderout = new_state
+			elseif (g_thismodel == "VMeter Game of Life Demo") or (g_thismodel == "VMeter Game of Life Note") then
+				ledoutput ={SetLEDArray(GameOfLife(new_state))}
+			end -- model setting
 --remote.trace(tostring(table.getn(ledoutput) ))		
 
-		g_last_state_delivered = new_state
-		g_last_noteonoff = new_noteonoff
-		
-	elseif ((g_thismodel == "VMeter Game of Life Demo") and ((remote.get_time_ms() - g_last_cycle_time) > 100)) then
+			g_last_state_delivered = new_state
+			g_last_noteonoff = new_noteonoff
+			
+		elseif (((g_thismodel == "VMeter Game of Life Demo") or (g_thismodel == "VMeter Game of Life Note")) and ((remote.get_time_ms() - g_last_cycle_time) > GoLtime)) then
 -- No new input, but change it after an interval.
 
-		ledoutput ={SetLEDArray(GameOfLife())} -- Update it, don't send input
-	end -- state and note (elseif time) check
-	
-	if table.getn(ledoutput) == 6 then -- ledoutput is a six byte array
-		ret_events={
-			remote.make_midi("ad xx yy",{ x = ledoutput[1], y = ledoutput[2], port=1 }),
-			remote.make_midi("ae xx yy",{ x = ledoutput[3], y = ledoutput[4], port=1 }),
-			remote.make_midi("af xx yy",{ x = ledoutput[5], y = ledoutput[6], port=1 }),
-		}
-	elseif faderout > 0 then  -- drawing the bar
-		ret_events={
-			remote.make_midi("b0 14 xx",{ x = faderout, port=1 }),
-		}
-	end
-	
+			ledoutput ={SetLEDArray(GameOfLife())} -- Update it, don't send input
+		end -- state and note (elseif time) check
+		
+		if table.getn(ledoutput) == 6 then -- ledoutput is a six byte array
+			ret_events={
+				remote.make_midi("ad xx yy",{ x = ledoutput[1], y = ledoutput[2], port=1 }),
+				remote.make_midi("ae xx yy",{ x = ledoutput[3], y = ledoutput[4], port=1 }),
+				remote.make_midi("af xx yy",{ x = ledoutput[5], y = ledoutput[6], port=1 }),
+			}
+		elseif faderout > 0 then  -- drawing the bar
+			ret_events={
+				remote.make_midi("b0 14 xx",{ x = faderout, port=1 }),
+			}
+		end
+	end -- port
+	if(port==2) then
+
+-- Adding a bit here to deliver a note in a second GoL mode
+		if ((g_thismodel == "VMeter Game of Life Note") and ((remote.get_time_ms() - g_last_note_cycle_time) > GoLnotetime)) then
+			local notelist = GameOfLifeNote() 
+
+			for u,n in ipairs(notelist) do
+				local note_event=remote.make_midi(n)
+				table.insert(ret_events,note_event)
+	remote.trace("note:"..n)
+			end -- for
+		end -- if
+	end -- port
+
 	return ret_events
 end
 
@@ -875,7 +950,7 @@ function remote_prepare_for_use()
 		}
 		return retEvents
 
-	elseif g_thismodel == "VMeter Game of Life Demo" then
+	elseif (g_thismodel == "VMeter Game of Life Demo" or g_thismodel == "VMeter Game of Life Note") then
 		local retEvents={
 			remote.make_midi(ClearLED, { port=1 } ),
 			remote.make_midi(SetVel, { port=1 } ),
@@ -1029,6 +1104,8 @@ function remote_release_from_use()
 		remote.make_midi(PRES_OUT_DISABLE, { port=1 } ),
 		remote.make_midi(LEDS_DONT_IGNORE_TOUCH, { port=1 } ),
 		remote.make_midi(ClearLED, { port=1 } ),
+		remote.make_midi(ALLNOTESOFF, { port=1 } ),
+		remote.make_midi(ALLNOTESOFF, { port=2 } ),
 	}
 	return retEvents
 end
