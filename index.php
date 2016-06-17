@@ -139,7 +139,9 @@ $remotablekey =0;
     fclose($file_handle);
 //}
 */
-
+set_time_limit(3600);
+//ini_set('memory_limit', '1024M'); // or you could use 1G
+ini_set('memory_limit', '-1');
 
 
 $mapkey = 0;
@@ -149,43 +151,43 @@ $variationkey=0;
 $rmivkey=0;
 
 
-//foreach (glob("Remotables/*.remotemap") as $file) {
+foreach (glob("Remotables/*.remotemap") as $file) {
 $mapversion ="";
 $csmodel="";
 $csmanufacturer="";
 
-//    $file_handle = fopen($file, "r");
-    $file_handle = fopen("Remotables/Audio Kontrol 1.remotemap", "r");
+    $file_handle = fopen($file, "r");
+//    $file_handle = fopen("Remotables/AkaiLPD8.remotemap", "r");
     while (!feof($file_handle)) {
         $line = rtrim(fgets($file_handle));
-        $line_array = str_getcsv($line, "\t");
+        $line_array = str_getcsv($line, "\t","'");
         if (substr( $line_array[0], 0, 2 ) === "//" ) {
            // ignore line
 	
-        } elseif ((count($line_array) == 1) && ($line_array[0] == "Propellerhead Remote Mapping File")) {
+        } elseif (trim($line_array[0]) == "Propellerhead Remote Mapping File") {
         	// new map
-        	++$mapkey;
-        } elseif ((count($line_array) == 2) && ($line_array[0] == "File Format Version")) {
+        } elseif ((count($line_array) == 2) && (trim($line_array[0]) == "File Format Version")) {
            // ignore line
-        } elseif ((count($line_array) == 2) && ($line_array[0] == "Control Surface Manufacturer")) {
-            $csmanufacturer=$line_array[1];
-        } elseif ((count($line_array) == 2) && ($line_array[0] == "Control Surface Model")) {
-            $csmodel=$line_array[1];
-        } elseif ((count($line_array) == 2) && ($line_array[0] == "Map Version")) {
-            $mapversion=$line_array[1];
+        } elseif ((count($line_array) == 2) && (trim($line_array[0]) == "Control Surface Manufacturer")) {
+            $csmanufacturer=trim($line_array[1]);
+        } elseif ((count($line_array) == 2) && (trim($line_array[0]) == "Control Surface Model")) {
+            $csmodel=trim($line_array[1]);
+        } elseif ((count($line_array) == 2) && (trim($line_array[0]) == "Map Version")) {
+            $mapversion=trim($line_array[1]);
+        	++$mapkey;
             
                 d($csmanufacturer,$csmodel,$mapversion,$mapkey);
 
             
-/*            
+            
            $database->insert('Remote_Map', [
     'CS_Manufacturer' => $csmanufacturer,
     'CS_Model' => $csmodel,
     'Map_Version' => $mapversion,
     'Map_Key' => $mapkey
 ]);
-*/
-        } elseif ((count($line_array) == 3) && ($line_array[0] == "Scope")) {
+
+        } elseif ((count($line_array) == 3) && (trim($line_array[0]) == "Scope")) {
 // Get the current scope ID
            $scopekey = $database->select('Scope',
     'Scope_key',
@@ -193,116 +195,168 @@ $csmanufacturer="";
     'Scope' => trim($line_array[2]) 
     ]);
           
-        //d($line,$scopekey, $line_array[1], $line_array[2]);
-        
-        
-       } elseif ($line_array[0] == "Define Group") {
+        $currentscope=(int)$scopekey[0];
+       // d($line,$currentscope, $line_array[1], $line_array[2]);
+       
+       } elseif (trim($line_array[0]) == "Define Group") {
              ++$groupkey;
-/*   
+
            $database->insert('Remote_Map_Groups', [
             'Group_Name' => trim($line_array[1]),
             'Group_Key' => $groupkey,
-            'Scope_Key' => $scopekey[0],
+            'Scope_Key' => $currentscope,
             'Map_Key' => $mapkey
            ]);
 
+            //d(trim($line_array[1]),$groupkey,$currentscope,$mapkey);
+
         for ($i = 2; $i < count($line_array); $i++) {
-           ++$variationkey
+           ++$variationkey;
            $database->insert('Remote_Map_Variations', [
-             'Variation_Name' => trim($line_array[i]),
+             'Variation_Name' => trim($line_array[$i]),
              'Variation_Key' => $variationkey,
              'Group_Key' => $groupkey,
-            'Scope_Key' => $scopekey[0],
+            'Scope_Key' => $currentscope,
             'Map_Key' => $mapkey
            ]);
         }
-*/            
+        
              
-             
-        } elseif (($line_array[0] == "Map")) {
+        } elseif ((trim($line_array[0]) == "Map")) {
 // map an item
 //	Control Surface Item	Key	Remotable Item	Scale	Mode	Groups
          
 				++$csitemkey;
+		$csitem = trim($line_array[1])?:'';
+    $cskeynote = trim($line_array[2])?:'';
+			$remotableitem ='';
+    $remotableikey=null;
+
+    $switchgrpkey=0;
+    $switchgroupname='';
+    $switchvariationname='';
+    $switchvarkey=0;
+    $constantvalue='';
+		$remotableitem='';
+    $csscale = '';
+    $csmode = ''; 
+if (count($line_array)>=5)	{			
+    $csscale = trim($line_array[4]);
+} 
+if (count($line_array)>=6)	{			
+    $csmode = trim($line_array[5]); 
+}			
+	
+
+			
 // first check if this is a variation switch
 // = is never first char!
-		if (strpos($line_array[3],'=') > -1) {
-			$vari = explode("=",trim($line_array[3]));
+//		if (preg_match('/"/',$line_array[3])) {
+			if (strpos($line_array[3], '"') !== false) {
+//				$constantvalue = addslashes(trim($line_array[3]));
+				$constantvalue = trim($line_array[3]);
+			//	d($line_array[3]);
+				
+		} elseif (strpos($line_array[3],'=') > -1) {
+				$vari = explode("=",trim($line_array[3]));
 			$switchgroupname = trim($vari[0]);
 			$switchvariationname = trim($vari[1]);
-          $switchgroupkey = $database->select('Remote_Map_Groups',
-    'Group_Key',
-    [
-    'Group_Name' => $switchgroupname
-    ]);
+      $switchgroupkey = $database->select('Remote_Map_Groups',
+			    'Group_Key',
+			    [
+			    'Group_Name' => $switchgroupname
+			    ]);
 			$switchvariationkey = $database->select('Remote_Map_Variations',
-    'Variation_Key',
-    [
-    'Variation_Name' => $switchvariationname
-    ]);
-		} elseif (strpos($line_array[3],'"') > -1) {
-			
-			$constantvalue = trim($line_array[3]);
+			    'Variation_Key',
+			    [
+			    'Variation_Name' => $switchvariationname
+			    ]);
+			    
+			    $switchgrpkey=$switchgroupkey[0];
+			    $switchvarkey=$switchvariationkey[0];
+
 		} else {
+$remotableikey=0;
 			$remotableitem = trim($line_array[3]);
-		}
            $remotableitemkey = $database->select('Remotables','Remotable_key',[
            'AND' => [
     'Scope_Key' => $scopekey[0],
     'Remotable_Item' => $remotableitem
        ]
     ]);
-
+			if (empty($remotableitemkey[0])) {
         //d($line,$remotableitemkey[0], $line_array[1], $line_array[2], $line_array[3], $line_array[4],$scopekey[0]);
+$remotableikey=0;
+ 		} else {
+ 			
+$remotableikey=$remotableitemkey[0];
 
-/*   
+		}
+}
+
+
 
            $database->insert('Remote_Map_Items', [
-    'CS_Item' => trim($line_array[1]),
+    'CS_Item' => $csitem,
     'CS_Item_Key' => $csitemkey,
-    'CS_KeyNote' => trim($line_array[2]),
-    'CS_Scale' => trim($line_array[4]), 
-    'CS_Mode => trim($line_array[5]), 
+    'CS_KeyNote' => $cskeynote,
+    'CS_Scale' => $csscale, 
+    'CS_Mode' => $csmode, 
     'Remotable_Item' => $remotableitem,
-    'Remotable_Item_Key' => $remotableitemkey[0],
-    'Switch_Group_Key' => $switchgroupkey[0],
+    'Remotable_Item_Key' => $remotableikey,
+    'Switch_Group_Key' => $switchgrpkey,
     'Switch_Group_Name' => $switchgroupname,
     'Switch_Variation_Name' => $switchvariationname,
-    'Switch_Variation_Key' => $switchvariationkey[0],
+    'Switch_Variation_Key' => $switchvarkey,
     'Constant_Value' => $constantvalue,
     'Scope_Key' => $scopekey[0],
     'Map_Key' => $mapkey
 ]);
-*/
 
 
 
-/*   
+
+   if (isset($line_array[6])) {
         for ($i = 6; $i < count($line_array); $i++) {
-           ++$rmivkey
-           $varkey=$database->select('Remote_Map_Variations','Variation_Key',[
+        	$la=trim($line_array[$i]);
+        	if (!empty($la)) {
+           ++$rmivkey;
+           $varkey = $database->select('Remote_Map_Variations','Variation_Key',[
            'AND' => [
-           'Variation_Name' => trim($line_array[i]),
+           'Variation_Name' => $la,
            'Scope_Key' => $scopekey[0],
            'Map_Key' => $mapkey
            ]
                ]);
-       }
 
+			if (empty($varkey[0])) {
+d("Variation array in ",$csmodel,$mapkey,$scopekey[0],$la,$i,$varkey[0],$line);
+$vkey=0;
+ 		} else {
+ 			
+$vkey=$varkey[0];
            $database->insert('Remote_Map_Item_Variations', [
     'CS_Item_Key' => $csitemkey,
     'RMIV_Key' => $rmivkey,
-    'Variation_Key' => $varkey[0] 
+    'Variation_Key' => $vkey 
      ]);
- }
-*/
+
+		}
+}
 
 
 
        }
+   }
+}
+/*             
+
+
+*/
+    //   }
     } //while
     fclose($file_handle);
-//}
+} //foreach 
 d($database->error());
 ?>
 
