@@ -89,7 +89,7 @@ PITCH_WHEEL_RETURN_SPEED_CTRL = "6B"
 --Undocumented by vmeter instructions, low numbers best
 PITCH_WHEEL_RETURN_SPEED = "B0 " .. PITCH_WHEEL_RETURN_SPEED_CTRL .. " 01"
 
-ALLNOTESOFF="B0 78 00 B0 7B 00"
+ALLNOTESOFF="Bf 78 00 bf 72 40 bf 7b 00 bF 7A 40"
 
 --Chan 1 
 Ch1Main  = "B0 "..	MAIN_PARAM_CTRL	
@@ -217,7 +217,90 @@ function DrawBar(height,size)
     return led_array_deque
 end
 
+--[[
+--# this causes the LEDs to act like a scrolled page on a tablet.
+--# Simulated acceleration provides a smooth start and stop effect.
+def ChaseDemoWithSpeedInput(MidiOut, MidiIn):
+    x = 1
+    speed = 500
+    last_time = 0
+    last_speed_calc_time = 0
+    prev_pos = 0
+    pos = 0
+    prev_last_input_time = 0
+    last_input_time = 0
+    speed = 0.0
+    new_speed = 0.0
+    pos_array = {0, 0, 0, 0, 0}
+--    pos_array = deque(pos_array)
+    time_array = {0, 0, 0, 0, 0}
+    print_time = 0
+    led_shift_time = 0
+    touch_state = 0
+    brake_time = 0
+    
+    led_deque = {1,1,0,0,0,0,0,0,0,0,
+                       0,0,0,0,0,0,0,0,1,1,
+                       0,0,0,0,0,0,0,0,0,0,
+                       0,0,0,0,0,0,0,0}
+--    SendArray(led_deque, MidiOut)
+--    EnableOnOffOutput(MidiOut)
+    
+--    while True:
+--        while MidiIn.Poll(): # throw out all but the latest input
+--            MidiData = MidiIn.Read(1)            
+--            if MidiData[0][0][0] == 0xB0:
+--                if MidiData[0][0][1] == 20:
+--                    pos = MidiData[0][0][2]
+                    pos_array.appendleft(pos)
+--#                    pos_array.pop()
+--                   last_input_time = MidiData[0][1]
+                    time_array.appendleft(last_input_time)
+--#                    time_array.pop()
+--#                    print(last_input_time)
+--                elif MidiData[0][0][1] == 17: # on / off output. 127 is touch, 0 is release
+--                    if MidiData[0][0][2] == 127:
+--#                        print "touch"
+                        touch_state = 1
+                    else:
+--#                        print "release"
+                        touch_state = 0
+    
+        if last_input_time > last_speed_calc_time: # calc speed
+            last_speed_calc_time = pypm.Time()
+            pos_delta = pos_array[1] - pos_array[5]
+            time_delta = time_array[1] - time_array[5]
+            if time_delta > 0:
+                new_speed = float(pos_delta) / float(time_delta)
 
+            speed = adjust_speed(new_speed,speed)
+
+
+--        # handle case where VMeter is being touched, but position isn't moving
+        if touch_state == 1 and pypm.Time() - last_input_time > 100:
+--            # reduce speed to 0
+            if pypm.Time() - brake_time > 17:
+                brake_time = pypm.Time()
+--#                print "braking"
+                speed = adjust_speed(0.0,speed)
+
+        if pypm.Time() - print_time > 150:
+            print_time = pypm.Time()
+--#            if abs(speed) > .01:
+--#                print "speed: ", speed, ", per: ", 1.0 / speed
+            if pypm.Time() - last_input_time > 100:
+--               # friction braking
+                speed = adjust_speed(0.0,speed)
+
+                    
+        if abs(speed) > .001 and pypm.Time() - led_shift_time > int(2.5/abs(speed)):
+            led_shift_time = pypm.Time()
+            if speed > 0.0:
+                led_deque.rotate(1)
+            else:
+                led_deque.rotate(-1)
+            SendArray(led_deque, MidiOut)
+--]]
 
 
 function GameOfLife(pos)
@@ -233,9 +316,11 @@ function GameOfLife(pos)
 # a simulation that has died off.
 --]]
 -- This is interpreted from the python demo. 
--- It uses two arrays to calculate
-BPM = tonumber(remote.get_item_text_value(g_item_index))
-GoLtime = math.floor((60000/BPM)/GoLratio)
+-- It uses two (global) arrays to calculate
+-- Game of Life Note mode uses these arrays to generate a note.
+
+	BPM = tonumber(remote.get_item_text_value(g_item_index))
+	GoLtime = math.floor((60000/BPM)/GoLratio)
 
 	if ( pos == nil ) then -- it's a time update	
 		if ((remote.get_time_ms() - g_last_cycle_time) > GoLtime) then
@@ -291,8 +376,8 @@ GoLtime = math.floor((60000/BPM)/GoLratio)
 end 
 
 function GameOfLifeNote()
-BPM = tonumber(remote.get_item_text_value(g_item_index))
-GoLnotetime = math.floor((60000/BPM)/GoLnoteratio)
+	BPM = tonumber(remote.get_item_text_value(g_item_index))
+	GoLnotetime = math.floor((60000/BPM)/GoLnoteratio)
 -- generate a note based on g_ledarray[3] to [36]
 -- if 3 leds in a row are on,  we send a note on in the array
 -- if 3 leds in a row are off, we send a note off in the array
@@ -1096,6 +1181,7 @@ end
 --Return to basic fader mode.
 function remote_release_from_use()
 	local retEvents={
+		remote.make_midi(ALLNOTESOFF),
 		remote.make_midi(UPSIDE_DOWN_OFF, { port=1 } ),
 		remote.make_midi(TOUCH_POS_OUT_ENABLE, { port=1 } ), 
 		remote.make_midi(ON_OFF_OUT_DISABLE, { port=1 } ),

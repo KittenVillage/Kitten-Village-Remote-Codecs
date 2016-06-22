@@ -71,7 +71,7 @@ function remote_supported_control_surfaces()
 				in_ports={{description="In Port", optional=false}},
 				out_ports={{description="Out Port", optional=false}},
 				--has_keyboard=true,
-				setup_info_text=info,
+				setup_info_text=info.."Not implemented.",
 				setup_user_action_text=action,
 			},
 
