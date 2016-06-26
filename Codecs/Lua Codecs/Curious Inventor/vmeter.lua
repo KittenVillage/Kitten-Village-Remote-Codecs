@@ -217,10 +217,17 @@ function DrawBar(height,size)
     return led_array_deque
 end
 
---[[
+
+function adjust_speed(new_speed,speed)
+--# here average the new_speed with the old speed
+    speed = (new_speed * .2) + (speed * .8)
+    return speed
+end
+
+
 --# this causes the LEDs to act like a scrolled page on a tablet.
 --# Simulated acceleration provides a smooth start and stop effect.
-def ChaseDemoWithSpeedInput(MidiOut, MidiIn):
+function ChaseDemoWithSpeedInput(pos,noteonoff) 
     x = 1
     speed = 500
     last_time = 0
@@ -245,63 +252,81 @@ def ChaseDemoWithSpeedInput(MidiOut, MidiIn):
                        0,0,0,0,0,0,0,0}
 --    SendArray(led_deque, MidiOut)
 --    EnableOnOffOutput(MidiOut)
-    
+-- controller 17 note on off!
+
+
+-- how to do this in lua    
 --    while True:
 --        while MidiIn.Poll(): # throw out all but the latest input
 --            MidiData = MidiIn.Read(1)            
 --            if MidiData[0][0][0] == 0xB0:
 --                if MidiData[0][0][1] == 20:
 --                    pos = MidiData[0][0][2]
-                    pos_array.appendleft(pos)
+--                    pos_array.appendleft(pos)
+                    pos_array = table.insert(pos_array, 1, pos)
 --#                    pos_array.pop()
 --                   last_input_time = MidiData[0][1]
-                    time_array.appendleft(last_input_time)
+                   last_input_time = remote.get_time_ms()
+--                    time_array.appendleft(last_input_time)
+                    time_array = table.insert(time_array, 1, last_input_time)
 --#                    time_array.pop()
 --#                    print(last_input_time)
 --                elif MidiData[0][0][1] == 17: # on / off output. 127 is touch, 0 is release
+-- 17 means note mode
 --                    if MidiData[0][0][2] == 127:
+                   if (noteonoff == 127) {
 --#                        print "touch"
                         touch_state = 1
-                    else:
+                    elseif (noteonoff == 0) {
 --#                        print "release"
                         touch_state = 0
+					}
     
-        if last_input_time > last_speed_calc_time: # calc speed
-            last_speed_calc_time = pypm.Time()
+        if (last_input_time > last_speed_calc_time) {  --# calc speed
+            last_speed_calc_time = remote.get_time_ms()
             pos_delta = pos_array[1] - pos_array[5]
             time_delta = time_array[1] - time_array[5]
-            if time_delta > 0:
-                new_speed = float(pos_delta) / float(time_delta)
+            if (time_delta > 0) {
+                new_speed = pos_delta / time_delta
+			}
 
             speed = adjust_speed(new_speed,speed)
+		}
 
 
 --        # handle case where VMeter is being touched, but position isn't moving
-        if touch_state == 1 and pypm.Time() - last_input_time > 100:
+        if ((touch_state == 1) and ((remote.get_time_ms() - last_input_time) > 100)) {
 --            # reduce speed to 0
-            if pypm.Time() - brake_time > 17:
-                brake_time = pypm.Time()
+            if remote.get_time_ms() - brake_time > 17 {
+                brake_time = remote.get_time_ms()
 --#                print "braking"
                 speed = adjust_speed(0.0,speed)
+			}
+		}
 
-        if pypm.Time() - print_time > 150:
-            print_time = pypm.Time()
+        if remote.get_time_ms() - print_time > 150 {
+            print_time = remote.get_time_ms()
 --#            if abs(speed) > .01:
 --#                print "speed: ", speed, ", per: ", 1.0 / speed
-            if pypm.Time() - last_input_time > 100:
+        } elseif remote.get_time_ms() - last_input_time > 100 {
 --               # friction braking
-                speed = adjust_speed(0.0,speed)
+            speed = adjust_speed(0.0,speed)
+		}
 
                     
-        if abs(speed) > .001 and pypm.Time() - led_shift_time > int(2.5/abs(speed)):
-            led_shift_time = pypm.Time()
-            if speed > 0.0:
+        if ((math.abs(speed) > .001) and ((remote.get_time_ms() - led_shift_time) > math.floor(2.5/math.abs(speed)))) {
+            led_shift_time = remote.get_time_ms()
+            if speed > 0.0 {
                 led_deque.rotate(1)
-            else:
+            } else {
                 led_deque.rotate(-1)
-            SendArray(led_deque, MidiOut)
+			}
+		}
+			return led_deque
+--[[
+            -- SendArray(led_deque, MidiOut)
 --]]
-
+end
 
 function GameOfLife(pos)
 --[[
