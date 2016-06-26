@@ -137,6 +137,8 @@ sevseg['_']='27'
 sli_start=4
 sli_end=12
 --]]
+
+
 -- These are set in remote_on_auto_input() 
 g_last_input_time=0
 g_last_input_item = nil
@@ -246,7 +248,6 @@ function remote_init(manufacturer, model)
 			{name="_Scope", output="text"}, --device, e.g. "Thor"
 			{name="_Var", output="text"}, --variation, e.g. "Volume" or "Filters"
 --From bottom left to top right
---[[
 			{name="Slider 1", input="value", min=0, max=127, output="value"}, --4 (index# in the items table: used for offset for creating Slider names for LCD)
 			{name="Slider 2", input="value", min=0, max=127, output="value"}, --5
 			{name="Slider 3", input="value", min=0, max=127, output="value"}, --6
@@ -255,6 +256,7 @@ function remote_init(manufacturer, model)
 			{name="Slider 6", input="value", min=0, max=127, output="value"}, --9
 			{name="Slider 7", input="value", min=0, max=127, output="value"}, --10
 			{name="Slider 8", input="value", min=0, max=127, output="value"}, --11
+--[[
 
 			{name="Press 11", input="value", min=0, max=127, output="value"},
 			{name="Press 12", input="value", min=0, max=127, output="value"},
@@ -567,7 +569,7 @@ function remote_init(manufacturer, model)
 			{name="Press 83",  pattern="A? 53 xx"},
 			{name="Press 84",  pattern="A? 54 xx"},
 			{name="Press 85",  pattern="A? 55 xx"},
-			{name="Press 86",  pattern="A? 56 xx"},
+			{name="Press 86",  pattern="A? 56 xx"},   
 			{name="Press 87",  pattern="A? 57 xx"},
 			{name="Press 88",  pattern="A? 58 xx"},
 --]]

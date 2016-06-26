@@ -12,7 +12,7 @@ from pygame import pypm
 import array
 import time
 
-NUM_MSGS = 999 # number of MIDI messages for input before closing
+NUM_MSGS = 9999 # number of MIDI messages for input before closing
 
 INPUT=0
 OUTPUT=1
