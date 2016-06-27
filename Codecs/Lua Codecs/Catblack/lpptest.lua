@@ -21,7 +21,6 @@ function remote_init(manufacturer, model)
 			{name="_Scope", output="text"}, --device, e.g. "Thor"
 			{name="_Var", output="text"}, --variation, e.g. "Volume" or "Filters"
 --From bottom left to top right
---[[
 			{name="Slider 1", input="value", min=0, max=127, output="value"}, --4 (index# in the items table: used for offset for creating Slider names for LCD)
 			{name="Slider 2", input="value", min=0, max=127, output="value"}, --5
 			{name="Slider 3", input="value", min=0, max=127, output="value"}, --6
@@ -30,6 +29,7 @@ function remote_init(manufacturer, model)
 			{name="Slider 6", input="value", min=0, max=127, output="value"}, --9
 			{name="Slider 7", input="value", min=0, max=127, output="value"}, --10
 			{name="Slider 8", input="value", min=0, max=127, output="value"}, --11
+--[[
 
 			{name="Press 11", input="value", min=0, max=127, output="value"},
 			{name="Press 12", input="value", min=0, max=127, output="value"},
@@ -777,10 +777,6 @@ end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-function remote_probe()
-	return {
-	}
-end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -872,6 +868,17 @@ end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+--done ===============
+function remote_probe(manufacturer,model)
+	if model=="Launchpad Pro" then
+		return {
+			request="f0 7e 7f 06 01 f7",
+			response="f0 7e 00 06 02 00 20 29 51 00 00 00 ?? ?? ?? ?? f7"
+		}
+	end
+end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function remote_prepare_for_use()
 	g_delivered_lcd_state = string.format("%-16.16s","Launchpad Pro")
