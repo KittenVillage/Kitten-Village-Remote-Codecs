@@ -12,5 +12,6 @@ Map Version	1.0.0
 Scope	Propellerheads	Master Keyboard
 //	Control Surface Item	Key	Remotable Item	Scale	Mode
 Map	Keyboard		Keyboard
+Map	Channel Pressure		Channel Pressure
 
 

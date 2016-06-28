@@ -245,10 +245,11 @@ function remote_init(manufacturer, model)
 		local items={
 --items
 			{name="Keyboard",input="keyboard"},
-			{name="_Scope", output="text"}, --device, e.g. "Thor"
-			{name="_Var", output="text"}, --variation, e.g. "Volume" or "Filters"
---From bottom left to top right
-			{name="Slider 1", input="value", min=0, max=127, output="value"}, --4 (index# in the items table: used for offset for creating Slider names for LCD)
+			{name="Channel Pressure", input="value", min=0, max=127},
+--			{name="_Scope", output="text"}, --device, e.g. "Thor"
+--			{name="_Var", output="text"}, --variation, e.g. "Volume" or "Filters"
+--[[
+			{name="Slider 1", input="value", min=0, max=127, output="value"}, --4 
 			{name="Slider 2", input="value", min=0, max=127, output="value"}, --5
 			{name="Slider 3", input="value", min=0, max=127, output="value"}, --6
 			{name="Slider 4", input="value", min=0, max=127, output="value"}, --7
@@ -256,7 +257,8 @@ function remote_init(manufacturer, model)
 			{name="Slider 6", input="value", min=0, max=127, output="value"}, --9
 			{name="Slider 7", input="value", min=0, max=127, output="value"}, --10
 			{name="Slider 8", input="value", min=0, max=127, output="value"}, --11
---[[
+
+--From bottom left to top right
 
 			{name="Press 11", input="value", min=0, max=127, output="value"},
 			{name="Press 12", input="value", min=0, max=127, output="value"},
@@ -323,7 +325,7 @@ function remote_init(manufacturer, model)
 			{name="Press 87", input="value", min=0, max=127, output="value"},
 			{name="Press 88", input="value", min=0, max=127, output="value"},
 --]]
-
+--[[
 			{name="Pad 11", input="value", min=0, max=127, output="value"},
 			{name="Pad 12", input="value", min=0, max=127, output="value"},
 			{name="Pad 13", input="value", min=0, max=127, output="value"},
@@ -389,6 +391,7 @@ function remote_init(manufacturer, model)
 			{name="Pad 87", input="value", min=0, max=127, output="value"},
 			{name="Pad 88", input="value", min=0, max=127, output="value"},
 
+--]]
 --[[
 
 			{name="Pad 11 Playing", min=0, max=4, output="value"},
@@ -455,7 +458,6 @@ function remote_init(manufacturer, model)
 			{name="Pad 86 Playing", min=0, max=4, output="value"},
 			{name="Pad 87 Playing", min=0, max=4, output="value"},
 			{name="Pad 88 Playing", min=0, max=4, output="value"},
---]]
 --left to right
 			{name="Top Button 91", input="button", min=0, max=127, output="value"},
 			{name="Top Button 92", input="button", min=0, max=127, output="value"},
@@ -494,6 +496,7 @@ function remote_init(manufacturer, model)
 			{name="Right Button 89", input="button", min=0, max=127, output="value"},
 
 
+--]]
 
 
 
@@ -573,7 +576,7 @@ function remote_init(manufacturer, model)
 			{name="Press 87",  pattern="A? 57 xx"},
 			{name="Press 88",  pattern="A? 58 xx"},
 --]]
-
+--[[
 			{name="Pad 11",	 pattern="<100x>? 0B yy"},
 			{name="Pad 12",	 pattern="<100x>? 0C yy"},
 			{name="Pad 13",	 pattern="<100x>? 0D yy"},
@@ -638,8 +641,8 @@ function remote_init(manufacturer, model)
 			{name="Pad 86",	 pattern="<100x>? 56 yy"},
 			{name="Pad 87",	 pattern="<100x>? 57 yy"},
 			{name="Pad 88",	 pattern="<100x>? 58 yy"},
-
-
+--]]
+--[[
 --left to right
 			{name="Top Button 91",	pattern="B? 5B ?<???x>"},
 			{name="Top Button 92",	pattern="B? 5C ?<???x>"},
@@ -676,6 +679,9 @@ function remote_init(manufacturer, model)
 			{name="Right Button 69",  pattern="B? 45 ?<???x>"},
 			{name="Right Button 79",  pattern="B? 4F ?<???x>"},
 			{name="Right Button 89",  pattern="B? 59 ?<???x>"},
+--]]
+			{pattern="<100x>? yy zz", name="Keyboard", port=1},
+			{pattern="D? xx ??", name="Channel Pressure", port=1},
 
 		}
 		remote.define_auto_inputs(inputs)
@@ -752,8 +758,8 @@ function remote_init(manufacturer, model)
 			{name="Press 87",  pattern="A? 57 xx"},
 			{name="Press 88",  pattern="A? 58 xx"},
 --]]
-
--- Note on lights, note off turns off light. 
+--[[
+-- Note on lights, vel 0 turns off light. 
 -- might have to set this to <100x>?
 
 			{name="Pad 11",	 pattern="9? 0B xx"},
@@ -888,7 +894,6 @@ function remote_init(manufacturer, model)
 			{name="Pad 87 Playing",	 pattern="9? 57 xx",  x="map_redrum_led(value)"},
 			{name="Pad 88 Playing",	 pattern="9? 58 xx",  x="map_redrum_led(value)"},
 
---]]
 
 
 
@@ -928,6 +933,7 @@ function remote_init(manufacturer, model)
 			{name="Right Button 69",  pattern="B? 45 xx"},
 			{name="Right Button 79",  pattern="B? 4F xx"},
 			{name="Right Button 89",  pattern="B? 59 xx"},
+--]]
 
 
 		}
@@ -1070,7 +1076,7 @@ function remote_process_midi(event)
 		end  -- change scale and transposed note
 --]]
 -- added
-	return false
+		return false
 
 
 	end
@@ -1382,7 +1388,7 @@ function remote_deliver_midi(maxbytes,port)
 		end
 --]]
 
-		
+--[[		
 	if(g_scopetext=="Redrum") then
 --local padnotes = {60,61,62,63,64,65,66,67, 52,53,54,55,56,57,58,59, 44,45,46,47,48,49,50,51}
 	  local padnotes = {44,45,46,47,48,49,50,51}
@@ -1420,7 +1426,7 @@ function remote_deliver_midi(maxbytes,port)
 		g_last_accent = g_accent
 		end
 	end
-
+--]]
 --[[
 
 		--initialize colors:
@@ -1537,7 +1543,7 @@ function remote_set_state(changed_items)
 
 
 	--look for the _Scope constant. Kong reports "KONG". Could use for a variety of things
-
+--[[
 	if remote.is_item_enabled(g_scope_item_index) then
 		local scope_text = remote.get_item_text_value(g_scope_item_index)
 		g_scopetext = scope_text
@@ -1563,7 +1569,7 @@ function remote_set_state(changed_items)
 			end
 		end
 	end
-
+--]]
   -- FL: Collect all changed states for redrum "drum playing" - this part blinks the 3rd row drum selection pads
 	for k,item_index in ipairs(changed_items) do
 	if item_index == k_accent then

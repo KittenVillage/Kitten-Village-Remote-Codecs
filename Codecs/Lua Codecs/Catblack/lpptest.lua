@@ -14,10 +14,12 @@
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function remote_init(manufacturer, model)
 -- this version
-	if model=="Launchpad Pro" then
+	if model=="LP Pro" then
 		local items={
 --items
 			{name="Keyboard",input="keyboard"},
+			{name="Channel Pressure", input="value", min=0, max=127},
+--[[
 			{name="_Scope", output="text"}, --device, e.g. "Thor"
 			{name="_Var", output="text"}, --variation, e.g. "Volume" or "Filters"
 --From bottom left to top right
@@ -29,7 +31,6 @@ function remote_init(manufacturer, model)
 			{name="Slider 6", input="value", min=0, max=127, output="value"}, --9
 			{name="Slider 7", input="value", min=0, max=127, output="value"}, --10
 			{name="Slider 8", input="value", min=0, max=127, output="value"}, --11
---[[
 
 			{name="Press 11", input="value", min=0, max=127, output="value"},
 			{name="Press 12", input="value", min=0, max=127, output="value"},
@@ -96,6 +97,7 @@ function remote_init(manufacturer, model)
 			{name="Press 87", input="value", min=0, max=127, output="value"},
 			{name="Press 88", input="value", min=0, max=127, output="value"},
 --]]
+--[[
 
 			{name="Pad 11", input="value", min=0, max=127, output="value"},
 			{name="Pad 12", input="value", min=0, max=127, output="value"},
@@ -161,7 +163,7 @@ function remote_init(manufacturer, model)
 			{name="Pad 86", input="value", min=0, max=127, output="value"},
 			{name="Pad 87", input="value", min=0, max=127, output="value"},
 			{name="Pad 88", input="value", min=0, max=127, output="value"},
-
+--]]
 --[[
 
 			{name="Pad 11 Playing", min=0, max=4, output="value"},
@@ -228,7 +230,6 @@ function remote_init(manufacturer, model)
 			{name="Pad 86 Playing", min=0, max=4, output="value"},
 			{name="Pad 87 Playing", min=0, max=4, output="value"},
 			{name="Pad 88 Playing", min=0, max=4, output="value"},
---]]
 --left to right
 			{name="Top Button 91", input="button", min=0, max=127, output="value"},
 			{name="Top Button 92", input="button", min=0, max=127, output="value"},
@@ -265,6 +266,7 @@ function remote_init(manufacturer, model)
 			{name="Right Button 69", input="button", min=0, max=127, output="value"},
 			{name="Right Button 79", input="button", min=0, max=127, output="value"},
 			{name="Right Button 89", input="button", min=0, max=127, output="value"},
+--]]
 
 
 
@@ -346,6 +348,7 @@ function remote_init(manufacturer, model)
 			{name="Press 87",  pattern="A? 57 xx"},
 			{name="Press 88",  pattern="A? 58 xx"},
 --]]
+--[[
 
 			{name="Pad 11",	 pattern="<100x>? 0B yy"},
 			{name="Pad 12",	 pattern="<100x>? 0C yy"},
@@ -449,6 +452,9 @@ function remote_init(manufacturer, model)
 			{name="Right Button 69",  pattern="B? 45 ?<???x>"},
 			{name="Right Button 79",  pattern="B? 4F ?<???x>"},
 			{name="Right Button 89",  pattern="B? 59 ?<???x>"},
+--]]
+			{pattern="<100x>? yy zz", name="Keyboard", port=1},
+			{pattern="D? xx ??", name="Channel Pressure", port=1},
 
 		}
 		remote.define_auto_inputs(inputs)
@@ -525,8 +531,9 @@ function remote_init(manufacturer, model)
 			{name="Press 87",  pattern="A? 57 xx"},
 			{name="Press 88",  pattern="A? 58 xx"},
 --]]
+--[[
 
--- Note on lights, note off turns off light. 
+-- Note lights, note off turns off light. 
 -- might have to set this to <100x>?
 
 			{name="Pad 11",	 pattern="9? 0B xx"},
@@ -661,7 +668,6 @@ function remote_init(manufacturer, model)
 			{name="Pad 87 Playing",	 pattern="9? 57 xx",  x="map_redrum_led(value)"},
 			{name="Pad 88 Playing",	 pattern="9? 58 xx",  x="map_redrum_led(value)"},
 
---]]
 
 
 
@@ -702,6 +708,7 @@ function remote_init(manufacturer, model)
 			{name="Right Button 79",  pattern="B? 4F xx"},
 			{name="Right Button 89",  pattern="B? 59 xx"},
 
+--]]
 
 		}
 		remote.define_auto_outputs(outputs)
@@ -718,21 +725,22 @@ function remote_process_midi(event)
 	if(ret~=nil) then
 
 
-
+--[[
 
 				local msg={ time_stamp = event.time_stamp, item=k_accent, value = g_accent_count, note = "2B",velocity = accent_pad.z }
 				remote.handle_input(msg)
 				g_delivered_note = noteout
 				return true
 
+--]]
 
 	end
-
 	return false
 
 
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+--[[
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function remote_deliver_midi(maxbytes,port)
@@ -741,7 +749,6 @@ function remote_deliver_midi(maxbytes,port)
 
 	if(port==1) then
 		local lpp_events={}
---[[
 		if g_vartext_prev~=g_vartext then
 			--Let the LCD know what the variation is
 			local vartext = remote.get_item_text_value(g_var_item_index)
@@ -750,7 +757,6 @@ function remote_deliver_midi(maxbytes,port)
 			g_vartext_prev = g_vartext
 			isvarchange = true
 		end
---]]
 
 		return lpp_events --send out a bunch of MIDI to the Launchpad Pro
 	end --end port==1
@@ -764,8 +770,8 @@ function remote_deliver_midi(maxbytes,port)
 		lcd_events = {}
 		return le
 	end
---[[
 --]]
+--[[
 
 
 
@@ -776,6 +782,7 @@ function remote_deliver_midi(maxbytes,port)
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+--]]
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -869,26 +876,29 @@ end
 
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 --done ===============
 function remote_probe(manufacturer,model)
-	if model=="Launchpad Pro" then
+--[[
+	if model=="LP Pro" then
 		return {
 			request="f0 7e 7f 06 01 f7",
 			response="f0 7e 00 06 02 00 20 29 51 00 00 00 ?? ?? ?? ?? f7"
 		}
 	end
+--]]
 end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function remote_prepare_for_use()
 	g_delivered_lcd_state = string.format("%-16.16s","Launchpad Pro")
 	local retEvents={
 		--default settings for Launchpad Pro
-		remote.make_midi("F0 00 20 29 02 10 21 01 F7"), -- set standalone mode
-		remote.make_midi("F0 00 20 29 02 10 2C 03 F7"), -- Programmer mode
-		remote.make_midi("F0 00 20 29 02 10 0E 00 F7"), -- Blank all
-		remote.make_midi("F0 00 20 29 02 10 14 32 00 07 05 52 65 61 73 6F 6E F7"), -- scroll Reason
-		remote.make_midi("F0 00 20 29 02 10 0A 63 32 F7"), --Front light
+		remote.make_midi("F0 00 20 29 02 10 21 01 F7", { port=1 }), -- set standalone mode
+		remote.make_midi("F0 00 20 29 02 10 2C 03 F7", { port=1 }), -- Programmer mode
+		remote.make_midi("F0 00 20 29 02 10 0E 00 F7", { port=1 }), -- Blank all
+		remote.make_midi("F0 00 20 29 02 10 0A 63 32 F7", { port=1 }), --Front light
+--		remote.make_midi("F0 00 20 29 02 10 14 32 00 07 05 52 65 61 73 6F 6E F7", { port=1 }), -- scroll Reason
+		remote.make_midi("F0 00 20 29 02 10 0A 63 32 F7", { port=1 }), --Front light
 --		remote.make_midi("F0 00 20 29 02 10	 F7"),
 --		remote.make_midi("F0 00 20 29 02 10	 F7"),
 --send all local off on settings ch 16	191,122,64 
@@ -898,7 +908,6 @@ function remote_prepare_for_use()
 	return retEvents
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 
 
 

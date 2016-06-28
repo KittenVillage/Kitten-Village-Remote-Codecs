@@ -2,7 +2,7 @@ Propellerhead Remote Mapping File
 File Format Version	1.0.0
 Control Surface Manufacturer	Catblack
 Control Surface Model	LP Pro
-Map Version	1.0.0
+Map Version	1.0.1
 
 //
 // Launchpad Pro Remote Map
@@ -10,7 +10,9 @@ Map Version	1.0.0
 //
 
 Scope	Propellerheads	Master Keyboard
+//Define Group	Keyboard Shortcut Variations
 //	Control Surface Item	Key	Remotable Item	Scale	Mode
 Map	Keyboard		Keyboard
+Map	Channel Pressure		Channel Pressure
 
 
