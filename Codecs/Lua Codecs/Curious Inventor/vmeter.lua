@@ -167,7 +167,7 @@ function SetLEDArray(ledarray)
     bytes[5] = ledarray[29] + bit.lshift(ledarray[30],1) + bit.lshift(ledarray[31],2) + bit.lshift(ledarray[32],3) + bit.lshift(ledarray[33],4) + bit.lshift(ledarray[34],5) + bit.lshift(ledarray[35],6)
     bytes[6] = ledarray[36] + bit.lshift(ledarray[37],1) + bit.lshift(ledarray[38],2)
 
-remote.trace(tostring(table.concat(g_ledarray))..'\n')	-- this is fun
+--remote.trace(tostring(table.concat(g_ledarray))..'\n')	-- this is fun
 	return bytes[1],bytes[2],bytes[3],bytes[4],bytes[5],bytes[6]
 end
 
@@ -274,54 +274,54 @@ function ChaseDemoWithSpeedInput(pos,noteonoff)
 --                elif MidiData[0][0][1] == 17: # on / off output. 127 is touch, 0 is release
 -- 17 means note mode
 --                    if MidiData[0][0][2] == 127:
-                   if (noteonoff == 127) {
+                   if (noteonoff == 127) then
 --#                        print "touch"
                         touch_state = 1
-                    elseif (noteonoff == 0) {
+                    elseif (noteonoff == 0) then
 --#                        print "release"
                         touch_state = 0
-					}
+					end
     
-        if (last_input_time > last_speed_calc_time) {  --# calc speed
+        if (last_input_time > last_speed_calc_time) then  --# calc speed
             last_speed_calc_time = remote.get_time_ms()
             pos_delta = pos_array[1] - pos_array[5]
             time_delta = time_array[1] - time_array[5]
-            if (time_delta > 0) {
+            if (time_delta > 0) then
                 new_speed = pos_delta / time_delta
-			}
+			end
 
             speed = adjust_speed(new_speed,speed)
-		}
+		end
 
 
 --        # handle case where VMeter is being touched, but position isn't moving
-        if ((touch_state == 1) and ((remote.get_time_ms() - last_input_time) > 100)) {
+        if ((touch_state == 1) and ((remote.get_time_ms() - last_input_time) > 100)) then
 --            # reduce speed to 0
-            if remote.get_time_ms() - brake_time > 17 {
+            if remote.get_time_ms() - brake_time > 17 then
                 brake_time = remote.get_time_ms()
 --#                print "braking"
                 speed = adjust_speed(0.0,speed)
-			}
-		}
+			end
+		end
 
-        if remote.get_time_ms() - print_time > 150 {
+        if remote.get_time_ms() - print_time > 150 then
             print_time = remote.get_time_ms()
 --#            if abs(speed) > .01:
 --#                print "speed: ", speed, ", per: ", 1.0 / speed
-        } elseif remote.get_time_ms() - last_input_time > 100 {
+         elseif remote.get_time_ms() - last_input_time > 100 then
 --               # friction braking
             speed = adjust_speed(0.0,speed)
-		}
+		end
 
                     
-        if ((math.abs(speed) > .001) and ((remote.get_time_ms() - led_shift_time) > math.floor(2.5/math.abs(speed)))) {
+        if ((math.abs(speed) > .001) and ((remote.get_time_ms() - led_shift_time) > math.floor(2.5/math.abs(speed)))) then
             led_shift_time = remote.get_time_ms()
-            if speed > 0.0 {
+            if speed > 0.0 then
                 led_deque.rotate(1)
-            } else {
+             else 
                 led_deque.rotate(-1)
-			}
-		}
+			end
+		end
 			return led_deque
 --[[
             -- SendArray(led_deque, MidiOut)
@@ -989,7 +989,7 @@ function remote_deliver_midi(max_bytes,port)
 			for u,n in ipairs(notelist) do
 				local note_event=remote.make_midi(n)
 				table.insert(ret_events,note_event)
-	remote.trace("note:"..n)
+--	remote.trace("note:"..n)
 			end -- for
 		end -- if
 	end -- port
