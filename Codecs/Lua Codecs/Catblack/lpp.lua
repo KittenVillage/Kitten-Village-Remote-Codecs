@@ -137,8 +137,6 @@ sevseg['_']='27'
 sli_start=4
 sli_end=12
 --]]
-
-
 -- These are set in remote_on_auto_input() 
 g_last_input_time=0
 g_last_input_item = nil
@@ -245,21 +243,10 @@ function remote_init(manufacturer, model)
 		local items={
 --items
 			{name="Keyboard",input="keyboard"},
-			{name="Channel Pressure", input="value", min=0, max=127},
---			{name="_Scope", output="text"}, --device, e.g. "Thor"
---			{name="_Var", output="text"}, --variation, e.g. "Volume" or "Filters"
---[[
-			{name="Slider 1", input="value", min=0, max=127, output="value"}, --4 
-			{name="Slider 2", input="value", min=0, max=127, output="value"}, --5
-			{name="Slider 3", input="value", min=0, max=127, output="value"}, --6
-			{name="Slider 4", input="value", min=0, max=127, output="value"}, --7
-			{name="Slider 5", input="value", min=0, max=127, output="value"}, --8
-			{name="Slider 6", input="value", min=0, max=127, output="value"}, --9
-			{name="Slider 7", input="value", min=0, max=127, output="value"}, --10
-			{name="Slider 8", input="value", min=0, max=127, output="value"}, --11
-
+			{name="_Scope", output="text"}, --device, e.g. "Thor"
+			{name="_Var", output="text"}, --variation, e.g. "Volume" or "Filters"
 --From bottom left to top right
-
+--[[
 			{name="Press 11", input="value", min=0, max=127, output="value"},
 			{name="Press 12", input="value", min=0, max=127, output="value"},
 			{name="Press 13", input="value", min=0, max=127, output="value"},
@@ -325,7 +312,8 @@ function remote_init(manufacturer, model)
 			{name="Press 87", input="value", min=0, max=127, output="value"},
 			{name="Press 88", input="value", min=0, max=127, output="value"},
 --]]
---[[
+--From bottom left to top right
+
 			{name="Pad 11", input="value", min=0, max=127, output="value"},
 			{name="Pad 12", input="value", min=0, max=127, output="value"},
 			{name="Pad 13", input="value", min=0, max=127, output="value"},
@@ -391,8 +379,8 @@ function remote_init(manufacturer, model)
 			{name="Pad 87", input="value", min=0, max=127, output="value"},
 			{name="Pad 88", input="value", min=0, max=127, output="value"},
 
---]]
 --[[
+--From bottom left to top right
 
 			{name="Pad 11 Playing", min=0, max=4, output="value"},
 			{name="Pad 12 Playing", min=0, max=4, output="value"},
@@ -458,45 +446,45 @@ function remote_init(manufacturer, model)
 			{name="Pad 86 Playing", min=0, max=4, output="value"},
 			{name="Pad 87 Playing", min=0, max=4, output="value"},
 			{name="Pad 88 Playing", min=0, max=4, output="value"},
---left to right
-			{name="Top Button 91", input="button", min=0, max=127, output="value"},
-			{name="Top Button 92", input="button", min=0, max=127, output="value"},
-			{name="Top Button 93", input="button", min=0, max=127, output="value"},
-			{name="Top Button 94", input="button", min=0, max=127, output="value"},
-			{name="Top Button 95", input="button", min=0, max=127, output="value"},
-			{name="Top Button 96", input="button", min=0, max=127, output="value"},
-			{name="Top Button 97", input="button", min=0, max=127, output="value"},
-			{name="Top Button 98", input="button", min=0, max=127, output="value"},
-
-			{name="Bottom Button 1", input="button", min=0, max=127, output="value"},
-			{name="Bottom Button 2", input="button", min=0, max=127, output="value"},
-			{name="Bottom Button 3", input="button", min=0, max=127, output="value"},
-			{name="Bottom Button 4", input="button", min=0, max=127, output="value"},
-			{name="Bottom Button 5", input="button", min=0, max=127, output="value"},
-			{name="Bottom Button 6", input="button", min=0, max=127, output="value"},
-			{name="Bottom Button 7", input="button", min=0, max=127, output="value"},
-			{name="Bottom Button 8", input="button", min=0, max=127, output="value"},
---top to bottom 
-			{name="Left Button 10", input="button", min=0, max=127, output="value"},
-			{name="Left Button 20", input="button", min=0, max=127, output="value"},
-			{name="Left Button 30", input="button", min=0, max=127, output="value"},
-			{name="Left Button 40", input="button", min=0, max=127, output="value"},
-			{name="Left Button 50", input="button", min=0, max=127, output="value"},
-			{name="Left Button 60", input="button", min=0, max=127, output="value"},
-			{name="Left Button 70", input="button", min=0, max=127, output="value"},
-			{name="Left Button 80", input="button", min=0, max=127, output="value"},
-
-			{name="Right Button 19", input="button", min=0, max=127, output="value"},
-			{name="Right Button 29", input="button", min=0, max=127, output="value"},
-			{name="Right Button 39", input="button", min=0, max=127, output="value"},
-			{name="Right Button 49", input="button", min=0, max=127, output="value"},
-			{name="Right Button 59", input="button", min=0, max=127, output="value"},
-			{name="Right Button 69", input="button", min=0, max=127, output="value"},
-			{name="Right Button 79", input="button", min=0, max=127, output="value"},
-			{name="Right Button 89", input="button", min=0, max=127, output="value"},
-
-
 --]]
+--left to right Top
+			{name="Button 91", input="button", min=0, max=127, output="value"},
+			{name="Button 92", input="button", min=0, max=127, output="value"},
+			{name="Button 93", input="button", min=0, max=127, output="value"},
+			{name="Button 94", input="button", min=0, max=127, output="value"},
+			{name="Button 95", input="button", min=0, max=127, output="value"},
+			{name="Button 96", input="button", min=0, max=127, output="value"},
+			{name="Button 97", input="button", min=0, max=127, output="value"},
+			{name="Button 98", input="button", min=0, max=127, output="value"},
+--left to right Bottom
+			{name="Button 01", input="button", min=0, max=127, output="value"},
+			{name="Button 02", input="button", min=0, max=127, output="value"},
+			{name="Button 03", input="button", min=0, max=127, output="value"},
+			{name="Button 04", input="button", min=0, max=127, output="value"},
+			{name="Button 05", input="button", min=0, max=127, output="value"},
+			{name="Button 06", input="button", min=0, max=127, output="value"},
+			{name="Button 07", input="button", min=0, max=127, output="value"},
+			{name="Button 08", input="button", min=0, max=127, output="value"},
+--bottom to top Left
+			{name="Button 10", input="button", min=0, max=127, output="value"},
+			{name="Button 20", input="button", min=0, max=127, output="value"},
+			{name="Button 30", input="button", min=0, max=127, output="value"},
+			{name="Button 40", input="button", min=0, max=127, output="value"},
+			{name="Button 50", input="button", min=0, max=127, output="value"},
+			{name="Button 60", input="button", min=0, max=127, output="value"},
+			{name="Button 70", input="button", min=0, max=127, output="value"},
+			{name="Button 80", input="button", min=0, max=127, output="value"},
+--bottom to top Right
+			{name="Button 19", input="button", min=0, max=127, output="value"},
+			{name="Button 29", input="button", min=0, max=127, output="value"},
+			{name="Button 39", input="button", min=0, max=127, output="value"},
+			{name="Button 49", input="button", min=0, max=127, output="value"},
+			{name="Button 59", input="button", min=0, max=127, output="value"},
+			{name="Button 69", input="button", min=0, max=127, output="value"},
+			{name="Button 79", input="button", min=0, max=127, output="value"},
+			{name="Button 89", input="button", min=0, max=127, output="value"},
+
+
 
 
 
@@ -572,11 +560,11 @@ function remote_init(manufacturer, model)
 			{name="Press 83",  pattern="A? 53 xx"},
 			{name="Press 84",  pattern="A? 54 xx"},
 			{name="Press 85",  pattern="A? 55 xx"},
-			{name="Press 86",  pattern="A? 56 xx"},   
+			{name="Press 86",  pattern="A? 56 xx"},
 			{name="Press 87",  pattern="A? 57 xx"},
 			{name="Press 88",  pattern="A? 58 xx"},
 --]]
---[[
+
 			{name="Pad 11",	 pattern="<100x>? 0B yy"},
 			{name="Pad 12",	 pattern="<100x>? 0C yy"},
 			{name="Pad 13",	 pattern="<100x>? 0D yy"},
@@ -641,47 +629,44 @@ function remote_init(manufacturer, model)
 			{name="Pad 86",	 pattern="<100x>? 56 yy"},
 			{name="Pad 87",	 pattern="<100x>? 57 yy"},
 			{name="Pad 88",	 pattern="<100x>? 58 yy"},
---]]
---[[
---left to right
-			{name="Top Button 91",	pattern="B? 5B ?<???x>"},
-			{name="Top Button 92",	pattern="B? 5C ?<???x>"},
-			{name="Top Button 93",	pattern="B? 5D ?<???x>"},
-			{name="Top Button 94",	pattern="B? 5E ?<???x>"},
-			{name="Top Button 95",	pattern="B? 5F ?<???x>"},
-			{name="Top Button 96",	pattern="B? 60 ?<???x>"},
-			{name="Top Button 97",	pattern="B? 61 ?<???x>"},
-			{name="Top Button 98",	pattern="B? 62 ?<???x>"},
 
-			{name="Bottom Button 1",  pattern="B? 01 ?<???x>"},
-			{name="Bottom Button 2",  pattern="B? 02 ?<???x>"},
-			{name="Bottom Button 3",  pattern="B? 03 ?<???x>"},
-			{name="Bottom Button 4",  pattern="B? 04 ?<???x>"},
-			{name="Bottom Button 5",  pattern="B? 05 ?<???x>"},
-			{name="Bottom Button 6",  pattern="B? 06 ?<???x>"},
-			{name="Bottom Button 7",  pattern="B? 07 ?<???x>"},
-			{name="Bottom Button 8",  pattern="B? 08 ?<???x>"},
---top to bottom 
-			{name="Left Button 10",	 pattern="B? 0A ?<???x>"},
-			{name="Left Button 20",	 pattern="B? 14 ?<???x>"},
-			{name="Left Button 30",	 pattern="B? 1E ?<???x>"},
-			{name="Left Button 40",	 pattern="B? 28 ?<???x>"},
-			{name="Left Button 50",	 pattern="B? 32 ?<???x>"},
-			{name="Left Button 60",	 pattern="B? 3C ?<???x>"},
-			{name="Left Button 70",	 pattern="B? 46 ?<???x>"},
-			{name="Left Button 80",	 pattern="B? 50 ?<???x>"},
 
-			{name="Right Button 19",  pattern="B? 13 ?<???x>"},
-			{name="Right Button 29",  pattern="B? 1D ?<???x>"},
-			{name="Right Button 39",  pattern="B? 27 ?<???x>"},
-			{name="Right Button 49",  pattern="B? 31 ?<???x>"},
-			{name="Right Button 59",  pattern="B? 3B ?<???x>"},
-			{name="Right Button 69",  pattern="B? 45 ?<???x>"},
-			{name="Right Button 79",  pattern="B? 4F ?<???x>"},
-			{name="Right Button 89",  pattern="B? 59 ?<???x>"},
---]]
-			{pattern="<100x>? yy zz", name="Keyboard", port=1},
-			{pattern="D? xx ??", name="Channel Pressure", port=1},
+--left to right Top
+			{name="Button 91",	pattern="B? 5B ?<???x>"},
+			{name="Button 92",	pattern="B? 5C ?<???x>"},
+			{name="Button 93",	pattern="B? 5D ?<???x>"},
+			{name="Button 94",	pattern="B? 5E ?<???x>"},
+			{name="Button 95",	pattern="B? 5F ?<???x>"},
+			{name="Button 96",	pattern="B? 60 ?<???x>"},
+			{name="Button 97",	pattern="B? 61 ?<???x>"},
+			{name="Button 98",	pattern="B? 62 ?<???x>"},
+--left to right Bottom
+			{name="Button 01",  pattern="B? 01 ?<???x>"},
+			{name="Button 02",  pattern="B? 02 ?<???x>"},
+			{name="Button 03",  pattern="B? 03 ?<???x>"},
+			{name="Button 04",  pattern="B? 04 ?<???x>"},
+			{name="Button 05",  pattern="B? 05 ?<???x>"},
+			{name="Button 06",  pattern="B? 06 ?<???x>"},
+			{name="Button 07",  pattern="B? 07 ?<???x>"},
+			{name="Button 08",  pattern="B? 08 ?<???x>"},
+--bottom to top Left
+			{name="Button 10",	 pattern="B? 0A ?<???x>"},
+			{name="Button 20",	 pattern="B? 14 ?<???x>"},
+			{name="Button 30",	 pattern="B? 1E ?<???x>"},
+			{name="Button 40",	 pattern="B? 28 ?<???x>"},
+			{name="Button 50",	 pattern="B? 32 ?<???x>"},
+			{name="Button 60",	 pattern="B? 3C ?<???x>"},
+			{name="Button 70",	 pattern="B? 46 ?<???x>"},
+			{name="Button 80",	 pattern="B? 50 ?<???x>"},
+--bottom to top Right
+			{name="Button 19",  pattern="B? 13 ?<???x>"},
+			{name="Button 29",  pattern="B? 1D ?<???x>"},
+			{name="Button 39",  pattern="B? 27 ?<???x>"},
+			{name="Button 49",  pattern="B? 31 ?<???x>"},
+			{name="Button 59",  pattern="B? 3B ?<???x>"},
+			{name="Button 69",  pattern="B? 45 ?<???x>"},
+			{name="Button 79",  pattern="B? 4F ?<???x>"},
+			{name="Button 89",  pattern="B? 59 ?<???x>"},
 
 		}
 		remote.define_auto_inputs(inputs)
@@ -689,6 +674,8 @@ function remote_init(manufacturer, model)
 		local outputs={
 
 --ouputs
+
+-- NO AUTO OUTS FOR NOW
 
 --[[
 
@@ -759,7 +746,7 @@ function remote_init(manufacturer, model)
 			{name="Press 88",  pattern="A? 58 xx"},
 --]]
 --[[
--- Note on lights, vel 0 turns off light. 
+-- Note on lights, note off turns off light. 
 -- might have to set this to <100x>?
 
 			{name="Pad 11",	 pattern="9? 0B xx"},
@@ -894,47 +881,48 @@ function remote_init(manufacturer, model)
 			{name="Pad 87 Playing",	 pattern="9? 57 xx",  x="map_redrum_led(value)"},
 			{name="Pad 88 Playing",	 pattern="9? 58 xx",  x="map_redrum_led(value)"},
 
-
-
-
---left to right
-			{name="Top Button 91",	pattern="B? 5B xx"},
-			{name="Top Button 92",	pattern="B? 5C xx"},
-			{name="Top Button 93",	pattern="B? 5D xx"},
-			{name="Top Button 94",	pattern="B? 5E xx"},
-			{name="Top Button 95",	pattern="B? 5F xx"},
-			{name="Top Button 96",	pattern="B? 60 xx"},
-			{name="Top Button 97",	pattern="B? 61 xx"},
-			{name="Top Button 98",	pattern="B? 62 xx"},
-
-			{name="Bottom Button 1",  pattern="B? 01 xx"},
-			{name="Bottom Button 2",  pattern="B? 02 xx"},
-			{name="Bottom Button 3",  pattern="B? 03 xx"},
-			{name="Bottom Button 4",  pattern="B? 04 xx"},
-			{name="Bottom Button 5",  pattern="B? 05 xx"},
-			{name="Bottom Button 6",  pattern="B? 06 xx"},
-			{name="Bottom Button 7",  pattern="B? 07 xx"},
-			{name="Bottom Button 8",  pattern="B? 08 xx"},
---top to bottom 
-			{name="Left Button 10",	 pattern="B? 0A xx"},
-			{name="Left Button 20",	 pattern="B? 14 xx"},
-			{name="Left Button 30",	 pattern="B? 1E xx"},
-			{name="Left Button 40",	 pattern="B? 28 xx"},
-			{name="Left Button 50",	 pattern="B? 32 xx"},
-			{name="Left Button 60",	 pattern="B? 3C xx"},
-			{name="Left Button 70",	 pattern="B? 46 xx"},
-			{name="Left Button 80",	 pattern="B? 50 xx"},
-
-			{name="Right Button 19",  pattern="B? 13 xx"},
-			{name="Right Button 29",  pattern="B? 1D xx"},
-			{name="Right Button 39",  pattern="B? 27 xx"},
-			{name="Right Button 49",  pattern="B? 31 xx"},
-			{name="Right Button 59",  pattern="B? 3B xx"},
-			{name="Right Button 69",  pattern="B? 45 xx"},
-			{name="Right Button 79",  pattern="B? 4F xx"},
-			{name="Right Button 89",  pattern="B? 59 xx"},
 --]]
+--[[
 
+
+--left to right TOP
+			{name="Button 91",	pattern="B? 5B xx"},
+			{name="Button 92",	pattern="B? 5C xx"},
+			{name="Button 93",	pattern="B? 5D xx"},
+			{name="Button 94",	pattern="B? 5E xx"},
+			{name="Button 95",	pattern="B? 5F xx"},
+			{name="Button 96",	pattern="B? 60 xx"},
+			{name="Button 97",	pattern="B? 61 xx"},
+			{name="Button 98",	pattern="B? 62 xx"},
+--left to right Bottom
+			{name="Button 01",  pattern="B? 01 xx"},
+			{name="Button 02",  pattern="B? 02 xx"},
+			{name="Button 03",  pattern="B? 03 xx"},
+			{name="Button 04",  pattern="B? 04 xx"},
+			{name="Button 05",  pattern="B? 05 xx"},
+			{name="Button 06",  pattern="B? 06 xx"},
+			{name="Button 07",  pattern="B? 07 xx"},
+			{name="Button 08",  pattern="B? 08 xx"},
+--bottom to top Left
+			{name="Button 10",	 pattern="B? 0A xx"},
+			{name="Button 20",	 pattern="B? 14 xx"},
+			{name="Button 30",	 pattern="B? 1E xx"},
+			{name="Button 40",	 pattern="B? 28 xx"},
+			{name="Button 50",	 pattern="B? 32 xx"},
+			{name="Button 60",	 pattern="B? 3C xx"},
+			{name="Button 70",	 pattern="B? 46 xx"},
+			{name="Button 80",	 pattern="B? 50 xx"},
+--bottom to top Right
+			{name="Button 19",  pattern="B? 13 xx"},
+			{name="Button 29",  pattern="B? 1D xx"},
+			{name="Button 39",  pattern="B? 27 xx"},
+			{name="Button 49",  pattern="B? 31 xx"},
+			{name="Button 59",  pattern="B? 3B xx"},
+			{name="Button 69",  pattern="B? 45 xx"},
+			{name="Button 79",  pattern="B? 4F xx"},
+			{name="Button 89",  pattern="B? 59 xx"},
+
+--]]
 
 		}
 		remote.define_auto_outputs(outputs)
@@ -1076,7 +1064,7 @@ function remote_process_midi(event)
 		end  -- change scale and transposed note
 --]]
 -- added
-		return false
+	return false
 
 
 	end
@@ -1388,7 +1376,7 @@ function remote_deliver_midi(maxbytes,port)
 		end
 --]]
 
---[[		
+		
 	if(g_scopetext=="Redrum") then
 --local padnotes = {60,61,62,63,64,65,66,67, 52,53,54,55,56,57,58,59, 44,45,46,47,48,49,50,51}
 	  local padnotes = {44,45,46,47,48,49,50,51}
@@ -1426,7 +1414,7 @@ function remote_deliver_midi(maxbytes,port)
 		g_last_accent = g_accent
 		end
 	end
---]]
+
 --[[
 
 		--initialize colors:
@@ -1543,7 +1531,7 @@ function remote_set_state(changed_items)
 
 
 	--look for the _Scope constant. Kong reports "KONG". Could use for a variety of things
---[[
+
 	if remote.is_item_enabled(g_scope_item_index) then
 		local scope_text = remote.get_item_text_value(g_scope_item_index)
 		g_scopetext = scope_text
@@ -1569,7 +1557,7 @@ function remote_set_state(changed_items)
 			end
 		end
 	end
---]]
+
   -- FL: Collect all changed states for redrum "drum playing" - this part blinks the 3rd row drum selection pads
 	for k,item_index in ipairs(changed_items) do
 	if item_index == k_accent then
