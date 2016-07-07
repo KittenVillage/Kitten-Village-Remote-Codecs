@@ -243,6 +243,7 @@ function remote_init(manufacturer, model)
 		local items={
 --items
 			{name="Keyboard",input="keyboard"},
+			{name="Channel Pressure", input="value", min=0, max=127},
 			{name="_Scope", output="text"}, --device, e.g. "Thor"
 			{name="_Var", output="text"}, --variation, e.g. "Volume" or "Filters"
 --From bottom left to top right

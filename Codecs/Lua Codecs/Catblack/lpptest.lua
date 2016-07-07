@@ -1,6 +1,9 @@
-
-g_last_notevel_delivered={}
-g_last_note_delivered={}
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+lcd_events={}
+--g_last_notevel_delivered={}
+--g_last_note_delivered={}
+g_last_notevel_delivered=0
+g_last_note_delivered=0
 notemode={35,40,45,50,55,60,65,70} -- left column -1
 drummode={35,39,43,47,51,55,59,63} -- left column -1
 		pad={}
@@ -96,6 +99,7 @@ function remote_init(manufacturer, model)
 		local items={
 --items
 			{name="Keyboard",input="keyboard"},
+			{name="Channel Pressure", input="value", min=0, max=127},
 --			{name="_Scope", output="text"}, --device, e.g. "Thor"
 --			{name="_Var", output="text"}, --variation, e.g. "Volume" or "Filters"
 			{name="Fader 1", input="value", min=0, max=127, output="value"},
@@ -106,6 +110,7 @@ function remote_init(manufacturer, model)
 			{name="Fader 6", input="value", min=0, max=127, output="value"},
 			{name="Fader 7", input="value", min=0, max=127, output="value"},
 			{name="Fader 8", input="value", min=0, max=127, output="value"},
+--[[
 			{name="Pan 1", input="value", min=0, max=127, output="value"},
 			{name="Pan 2", input="value", min=0, max=127, output="value"},
 			{name="Pan 3", input="value", min=0, max=127, output="value"},
@@ -114,6 +119,7 @@ function remote_init(manufacturer, model)
 			{name="Pan 6", input="value", min=0, max=127, output="value"},
 			{name="Pan 7", input="value", min=0, max=127, output="value"},
 			{name="Pan 8", input="value", min=0, max=127, output="value"},
+--]]
 --From bottom left to top right
 --[[
 			{name="Press 11", input="value", min=0, max=127, output="value"},
@@ -372,6 +378,7 @@ function remote_init(manufacturer, model)
 			{pattern="b0 1a xx", name="Fader 6"},
 			{pattern="b0 1b xx", name="Fader 7"},
 			{pattern="b0 1c xx", name="Fader 8"},
+--[[
 			{pattern="b0 15 xx", name="Pan 1"},
 			{pattern="b0 16 xx", name="Pan 2"},
 			{pattern="b0 17 xx", name="Pan 3"},
@@ -380,6 +387,7 @@ function remote_init(manufacturer, model)
 			{pattern="b0 1a xx", name="Pan 6"},
 			{pattern="b0 1b xx", name="Pan 7"},
 			{pattern="b0 1c xx", name="Pan 8"},
+--]]
 
 --[[
 
@@ -820,14 +828,16 @@ function remote_process_midi(event)
 
 	ret = remote.match_midi("<100x>? yy zz",event) --find a note on or off
 	if(ret~=nil) then
---[[
 
 			local new_note = ret.y 
 			local new_notevel = ret.z 
 			if (g_last_notevel_delivered~=new_notevel) and (g_last_note_delivered~=new_note) then -- draw new notevel
 				g_current_note=new_note
 				g_current_notevel=new_notevel
+				
+			
 			end
+--[[
 
 
 				local msg={ time_stamp = event.time_stamp, item=k_accent, value = g_accent_count, note = "2B",velocity = accent_pad.z }
@@ -837,7 +847,9 @@ function remote_process_midi(event)
 
 --]]
 --	elseif ret
-
+remote.trace(new_note)
+			local var_event = make_lcd_midi_message("New Note "..new_note)
+			table.insert(lcd_events,var_event)
 
 	end
 
@@ -863,15 +875,20 @@ function remote_deliver_midi(maxbytes,port)
 			g_vartext_prev = g_vartext
 			isvarchange = true
 		end
+--]]
 		if (g_last_notevel_delivered~=g_current_notevel) or (g_last_note_delivered~=g_current_note) then
 			lpp_events={
 				remote.make_midi("b0 xx yy",{ x = g_current_note, y = set_vel_color(g_current_notevel), port=1 }),
 			}
 			g_current_notevel=g_last_notevel_delivered
 			g_current_note=g_last_note_delivered
-		end
+				local var_event = make_lcd_midi_message("New Note "..g_current_notevel)
+			table.insert(lcd_events,var_event)
+
+	end
+--remote.trace("remdevmidi 1\n")
 		
---]]
+
 		
 		return lpp_events --send out a bunch of MIDI to the Launchpad Pro
 	end --end port==1
@@ -883,6 +900,7 @@ function remote_deliver_midi(maxbytes,port)
 	if(port==2) then
 		local le = lcd_events
 		lcd_events = {}
+--remote.trace("remdevmidi 2 \n")
 		return le
 	end
 --[[
@@ -978,6 +996,8 @@ end
 --make a message to send to livid LCD----------------------------------------
 -- TODO still not sure where this would output
 function make_lcd_midi_message(text)
+
+remote.trace(text)
 	local event = remote.make_midi("F0 23 23 ") --header for SysexReader
 --	local event = remote.make_midi("F0 00 20 29 02 10 14") --header for Launchpad Pro, product ID 0
 --	local event = remote.make_midi("f0 00 01 61 00") --header for Livid LCD, product ID 0
