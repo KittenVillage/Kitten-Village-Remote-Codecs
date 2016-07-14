@@ -4,6 +4,7 @@ lcd_events={}
 --g_last_note_delivered={}
 g_last_notevel_delivered=0
 g_last_note_delivered=0
+g_current_notevel=0
 notemode={35,40,45,50,55,60,65,70} -- left column -1
 drummode={35,39,43,47,51,55,59,63} -- left column -1
 		pad={}
@@ -28,8 +29,9 @@ function modulo(a,b)
 end
 
 function set_vel_color(newvel)
-
-
+if newvel > 0 then
+	newvel=math.ceil(newvel/16)+87 --88 to 95
+end
 	return newvel
 end
 --[[
@@ -100,8 +102,8 @@ function remote_init(manufacturer, model)
 --items
 			{name="Keyboard",input="keyboard"},
 			{name="Channel Pressure", input="value", min=0, max=127},
---			{name="_Scope", output="text"}, --device, e.g. "Thor"
---			{name="_Var", output="text"}, --variation, e.g. "Volume" or "Filters"
+			{name="_Scope", output="text"}, --device, e.g. "Thor"
+			{name="_Var", output="text"}, --variation, e.g. "Volume" or "Filters"
 			{name="Fader 1", input="value", min=0, max=127, output="value"},
 			{name="Fader 2", input="value", min=0, max=127, output="value"},
 			{name="Fader 3", input="value", min=0, max=127, output="value"},
@@ -847,10 +849,27 @@ function remote_process_midi(event)
 
 --]]
 --	elseif ret
-remote.trace(new_note)
 			local var_event = make_lcd_midi_message("New Note "..new_note)
 			table.insert(lcd_events,var_event)
 
+	end
+	modeswitch = remote.match_midi("F0 00 20 29 02 10 2F xx F7",event) --find what mode we are in
+	if(modeswitch~=nil) then
+remote.trace(modeswitch.x)
+		g_mode=modeswitch.x
+		if modeswitch.x ~=3 then
+			g_set_mode=3
+		end
+	
+	end
+	livemodeswitch = remote.match_midi("F0 00 20 29 02 10 2E xx F7",event) --find if we are in live mode
+	if(livemodeswitch~=nil) then
+remote.trace(livemodeswitch.x)
+		g_livemode=livemodeswitch.x
+		if livemodeswitch.x ~=1 then
+			g_set_livemode=1
+		end
+	
 	end
 
 	return false
@@ -885,9 +904,19 @@ function remote_deliver_midi(maxbytes,port)
 				local var_event = make_lcd_midi_message("New Note "..g_current_notevel)
 			table.insert(lcd_events,var_event)
 
-	end
+		end
 --remote.trace("remdevmidi 1\n")
-		
+		if g_set_mode~=g_mode then
+			local mode_event = remote.make_midi("F0 00 20 29 02 10 2C xx F7",{ x = g_set_mode, port=1 })
+			table.insert(lpp_events,mode_event)
+			g_mode=g_set_mode
+		end
+
+		if g_set_livemode~=g_livemode then
+			local livemode_event = remote.make_midi("F0 00 20 29 02 10 21 xx F7",{ x = g_set_livemode, port=1 })
+			table.insert(lpp_events,livemode_event)
+			g_livemode=g_set_livemode
+		end
 
 		
 		return lpp_events --send out a bunch of MIDI to the Launchpad Pro
