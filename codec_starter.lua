@@ -69,6 +69,26 @@ local function make_lcd_midi_message(text)
 end
 --]]
 
+-- For showing tables!
+-- remote.trace contents of `tbl`, with indentation.
+-- `indent` sets the initial level of indentation.
+-- https://gist.github.com/ripter/4270799
+function tprint (tbl, indent)
+  if not indent then indent = 0 end
+  for k, v in pairs(tbl) do
+    formatting = string.rep("  ", indent) .. k .. ": "
+    if type(v) == "table" then
+      remote.trace(formatting)
+      tprint(v, indent+1)
+    elseif type(v) == 'boolean' then
+      remote.trace(formatting .. tostring(v))		
+    else
+      remote.trace(formatting .. tostring(v) ..'\n')
+    end
+  end
+end
+
+
 
 --[[
 function SetLEDArrayAutoOut(val,thisbyte)
@@ -506,20 +526,20 @@ function remote_process_midi(event)
 -- Here's an interesting design pattern	
 --[[
 	ret = remote.match_midi("<100x>? yy zz",event) --find a note on or off
--- we check the first remote.match_midi, and if there's no midi input, it's going to be nil.
+-- we check the first remote.match_midi with a loose match, and if there's no midi input, it's going to be nil.
 	if(ret~=nil) then 
 		tran_btn     = ret.z 
 		local notein = ret.y 
 		local valin  = ret.x	  -- note on = 1, note off = 0
 
-
-		local pad_1 = remote.match_midi("<100x>? 50 zz",event)	-- Local to this function, may be false!
+-- now we do tighter matches for specific buttons
+		local pad_1 = remote.match_midi("<100x>? 50 zz",event)	-- Local to this function, may be nil!
 		if(pad_1.z > 12) then 
 			-- stuff
 		end
-		shift_btn = remote.match_midi("B? 5B 7F",event)				-- Global for use later, may be false!
+		shift_btn = remote.match_midi("B? 5B 7F",event)				-- Global for use later, may be nil!
 
-		if(shift_btn) then 
+		if(shift_btn) then  -- it either is or is nil!
 			-- stuff
 		end
 
