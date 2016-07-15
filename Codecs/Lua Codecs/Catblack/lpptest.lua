@@ -21,6 +21,26 @@ drummode={35,39,43,47,51,55,59,63} -- left column -1
 		drumy={}
 		drumpad={}
 
+
+-- remote.trace contents of `tbl`, with indentation.
+-- `indent` sets the initial level of indentation.
+-- https://gist.github.com/ripter/4270799
+function tprint (tbl, indent)
+  if not indent then indent = 0 end
+  for k, v in pairs(tbl) do
+    formatting = string.rep("  ", indent) .. k .. ": "
+    if type(v) == "table" then
+      remote.trace(formatting)
+      tprint(v, indent+1)
+    elseif type(v) == 'boolean' then
+      remote.trace(formatting .. tostring(v))		
+    else
+      remote.trace(formatting .. tostring(v) ..'\n')
+    end
+  end
+end
+
+
 -- Thanks, Livid
 --for some Reason (pun intended) I need to define a modulo function. just using the % operator was throwing errors :(
 function modulo(a,b)
@@ -29,11 +49,13 @@ function modulo(a,b)
 end
 
 function set_vel_color(newvel)
-if newvel > 0 then
-	newvel=math.ceil(newvel/16)+87 --88 to 95
-end
+	if newvel > 0 then
+		newvel=math.ceil(newvel/16)+87 --88 to 95
+	end
 	return newvel
 end
+
+
 --[[
 for q=36,78 do
 --	g_last_notevel_delivered[q] =0
@@ -80,6 +102,7 @@ remote.trace(drum[thisdrum])
 remote.trace("\n")
 	end
 end
+tprint(padnote)
 
 --remote.trace(table.concat(note.pos, ", "))
 --remote.trace(table.concat(note, ", "))
@@ -827,10 +850,14 @@ end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 function remote_process_midi(event)
+remote.trace(event.size)
+remote.trace("evsize")
 
+--tprint(event)
+if event.size==3 then
 	ret = remote.match_midi("<100x>? yy zz",event) --find a note on or off
 	if(ret~=nil) then
-
+tprint(ret)
 			local new_note = ret.y 
 			local new_notevel = ret.z 
 			if (g_last_notevel_delivered~=new_notevel) and (g_last_note_delivered~=new_note) then -- draw new notevel
@@ -852,9 +879,15 @@ function remote_process_midi(event)
 			local var_event = make_lcd_midi_message("New Note "..new_note)
 			table.insert(lcd_events,var_event)
 
-	end
+	end -- ret not nil
+end -- eventsize=3
+	
+-- -----------------------------------------------------------------------------------------------
+-- Keep it in programmer mode	
+-- -----------------------------------------------------------------------------------------------
+if event.size==9 then
 	modeswitch = remote.match_midi("F0 00 20 29 02 10 2F xx F7",event) --find what mode we are in
-	if(modeswitch~=nil) then
+	if(modeswitch) then
 remote.trace(modeswitch.x)
 		g_mode=modeswitch.x
 		if modeswitch.x ~=3 then
@@ -863,7 +896,7 @@ remote.trace(modeswitch.x)
 	
 	end
 	livemodeswitch = remote.match_midi("F0 00 20 29 02 10 2E xx F7",event) --find if we are in live mode
-	if(livemodeswitch~=nil) then
+	if(livemodeswitch) then
 remote.trace(livemodeswitch.x)
 		g_livemode=livemodeswitch.x
 		if livemodeswitch.x ~=1 then
@@ -871,14 +904,19 @@ remote.trace(livemodeswitch.x)
 		end
 	
 	end
+end -- eventsize=9
+-- -----------------------------------------------------------------------------------------------
+
+
 
 	return false
 
 
 end
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 function remote_deliver_midi(maxbytes,port)
 
 
@@ -906,6 +944,11 @@ function remote_deliver_midi(maxbytes,port)
 
 		end
 --remote.trace("remdevmidi 1\n")
+
+
+-- -----------------------------------------------------------------------------------------------
+-- Keep it in programmer mode	
+-- -----------------------------------------------------------------------------------------------
 		if g_set_mode~=g_mode then
 			local mode_event = remote.make_midi("F0 00 20 29 02 10 2C xx F7",{ x = g_set_mode, port=1 })
 			table.insert(lpp_events,mode_event)
@@ -917,6 +960,7 @@ function remote_deliver_midi(maxbytes,port)
 			table.insert(lpp_events,livemode_event)
 			g_livemode=g_set_livemode
 		end
+-- -----------------------------------------------------------------------------------------------
 
 		
 		return lpp_events --send out a bunch of MIDI to the Launchpad Pro
