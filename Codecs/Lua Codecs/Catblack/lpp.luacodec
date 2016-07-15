@@ -8,7 +8,7 @@ function remote_supported_control_surfaces()
 				in_ports={ {description="In Port"} },
 				out_ports={ {description="Out Port"},{description="LCD Port",optional=true} },
 				has_keyboard=true,
-				--setup_warning_text="This is a test.  Do you want to continue?"
+				--setup_warning_text="Use the 2nd Launchpad Pro midi port, and do not set it into Live mode.  Do you want to continue?"
 			},
 
 			{ manufacturer="Catblack", model="LP Pro",
@@ -16,7 +16,7 @@ function remote_supported_control_surfaces()
 				in_ports={ {description="In Port"} },
 				out_ports={ {description="Out Port"},{description="LCD Port",optional=true} },
 				has_keyboard=true,
-				--setup_warning_text="This is a test.  Do you want to continue?"
+				--setup_warning_text="Use the 2nd Launchpad Pro midi port, and do not set it into Live mode.  Do you want to continue?"
 			},
 		}
 	return surfaces

@@ -5,6 +5,8 @@ lcd_events={}
 g_last_notevel_delivered=0
 g_last_note_delivered=0
 g_current_notevel=0
+--livemodeswitch=nil
+--modeswitch=nil
 notemode={35,40,45,50,55,60,65,70} -- left column -1
 drummode={35,39,43,47,51,55,59,63} -- left column -1
 		pad={}
@@ -853,8 +855,8 @@ function remote_process_midi(event)
 remote.trace(event.size)
 remote.trace("evsize")
 
---tprint(event)
-if event.size==3 then
+tprint(event)
+--if event.size==3 then 
 	ret = remote.match_midi("<100x>? yy zz",event) --find a note on or off
 	if(ret~=nil) then
 tprint(ret)
@@ -880,22 +882,26 @@ tprint(ret)
 			table.insert(lcd_events,var_event)
 
 	end -- ret not nil
-end -- eventsize=3
+--end -- eventsize=3
 	
 -- -----------------------------------------------------------------------------------------------
 -- Keep it in programmer mode	
 -- -----------------------------------------------------------------------------------------------
-if event.size==9 then
+--if event.size==9 then
 	modeswitch = remote.match_midi("F0 00 20 29 02 10 2F xx F7",event) --find what mode we are in
-	if(modeswitch) then
-remote.trace(modeswitch.x)
+	livemodeswitch = remote.match_midi("F0 00 20 29 02 10 2D xx F7",event) --find if we are in live mode
+	if (modeswitch) then
+--remote.trace(modeswitch.x)
 		g_mode=modeswitch.x
 		if modeswitch.x ~=3 then
 			g_set_mode=3
 		end
-	
+	elseif (livemodeswitch) then
+			g_set_mode=3
 	end
-	livemodeswitch = remote.match_midi("F0 00 20 29 02 10 2E xx F7",event) --find if we are in live mode
+-- This next will only be sent on the 1st LPP midi channel, so it's not relevant here.
+--[[
+	livemodeswitch = remote.match_midi("F0 00 20 29 02 10 2D xx F7",event) --find if we are in live mode
 	if(livemodeswitch) then
 remote.trace(livemodeswitch.x)
 		g_livemode=livemodeswitch.x
@@ -904,7 +910,8 @@ remote.trace(livemodeswitch.x)
 		end
 	
 	end
-end -- eventsize=9
+--]]
+--end -- eventsize=9
 -- -----------------------------------------------------------------------------------------------
 
 
@@ -954,12 +961,14 @@ function remote_deliver_midi(maxbytes,port)
 			table.insert(lpp_events,mode_event)
 			g_mode=g_set_mode
 		end
-
+-- This next will switch the unit to the 1st LPP midi channel, so it's not relevant here.
+--[[
 		if g_set_livemode~=g_livemode then
 			local livemode_event = remote.make_midi("F0 00 20 29 02 10 21 xx F7",{ x = g_set_livemode, port=1 })
 			table.insert(lpp_events,livemode_event)
 			g_livemode=g_set_livemode
 		end
+--]]
 -- -----------------------------------------------------------------------------------------------
 
 		
@@ -1092,8 +1101,8 @@ function remote_prepare_for_use()
 	local retEvents={
 		--default settings for Launchpad Pro
 
---[[
 		remote.make_midi("F0 00 20 29 02 10 21 01 F7"), -- set standalone mode
+--[[
 		remote.make_midi("F0 00 20 29 02 10 2C 03 F7"), -- Programmer mode
 		remote.make_midi("F0 00 20 29 02 10 0E 00 F7"), -- Blank all
 		remote.make_midi("F0 00 20 29 02 10 14 32 00 07 05 52 65 61 73 6F 6E F7"), -- scroll Reason
