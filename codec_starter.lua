@@ -525,6 +525,7 @@ function remote_process_midi(event)
 	-- local ret = nil
 -- Here's an interesting design pattern	
 --[[
+if event.size==3 then
 	ret = remote.match_midi("<100x>? yy zz",event) --find a note on or off
 -- we check the first remote.match_midi with a loose match, and if there's no midi input, it's going to be nil.
 	if(ret~=nil) then 
@@ -544,8 +545,7 @@ function remote_process_midi(event)
 		end
 
 	end
-
-
+end -- if event.size
 --]]	
 	
 	
