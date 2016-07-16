@@ -419,6 +419,7 @@ function remote_init(manufacturer, model)
 --[[
 
 -- Aftertouch
+			{pattern="d? xx", name="Channel Pressure"},
 			{name="Press 11",  pattern="A? 0B xx"},
 			{name="Press 12",  pattern="A? 0C xx"},
 			{name="Press 13",  pattern="A? 0D xx"},
@@ -485,70 +486,70 @@ function remote_init(manufacturer, model)
 			{name="Press 88",  pattern="A? 58 xx"},
 --]]
 
-			{name="Pad 11",	 pattern="<100x>? 0B yy"},
-			{name="Pad 12",	 pattern="<100x>? 0C yy"},
-			{name="Pad 13",	 pattern="<100x>? 0D yy"},
-			{name="Pad 14",	 pattern="<100x>? 0E yy"},
-			{name="Pad 15",	 pattern="<100x>? 0F yy"},
-			{name="Pad 16",	 pattern="<100x>? 10 yy"},
-			{name="Pad 17",	 pattern="<100x>? 11 yy"},
-			{name="Pad 18",	 pattern="<100x>? 12 yy"},
-			{name="Pad 21",	 pattern="<100x>? 15 yy"},
-			{name="Pad 22",	 pattern="<100x>? 16 yy"},
-			{name="Pad 23",	 pattern="<100x>? 17 yy"},
-			{name="Pad 24",	 pattern="<100x>? 18 yy"},
-			{name="Pad 25",	 pattern="<100x>? 19 yy"},
-			{name="Pad 26",	 pattern="<100x>? 1A yy"},
-			{name="Pad 27",	 pattern="<100x>? 1B yy"},
-			{name="Pad 28",	 pattern="<100x>? 1C yy"},
-			{name="Pad 31",	 pattern="<100x>? 1F yy"},
-			{name="Pad 32",	 pattern="<100x>? 20 yy"},
-			{name="Pad 33",	 pattern="<100x>? 21 yy"},
-			{name="Pad 34",	 pattern="<100x>? 22 yy"},
-			{name="Pad 35",	 pattern="<100x>? 23 yy"},
-			{name="Pad 36",	 pattern="<100x>? 24 yy"},
-			{name="Pad 37",	 pattern="<100x>? 25 yy"},
-			{name="Pad 38",	 pattern="<100x>? 26 yy"},
-			{name="Pad 41",	 pattern="<100x>? 29 yy"},
-			{name="Pad 42",	 pattern="<100x>? 2A yy"},
-			{name="Pad 43",	 pattern="<100x>? 2B yy"},
-			{name="Pad 44",	 pattern="<100x>? 2C yy"},
-			{name="Pad 45",	 pattern="<100x>? 2D yy"},
-			{name="Pad 46",	 pattern="<100x>? 2E yy"},
-			{name="Pad 47",	 pattern="<100x>? 2F yy"},
-			{name="Pad 48",	 pattern="<100x>? 30 yy"},
-			{name="Pad 51",	 pattern="<100x>? 33 yy"},
-			{name="Pad 52",	 pattern="<100x>? 34 yy"},
-			{name="Pad 53",	 pattern="<100x>? 35 yy"},
-			{name="Pad 54",	 pattern="<100x>? 36 yy"},
-			{name="Pad 55",	 pattern="<100x>? 37 yy"},
-			{name="Pad 56",	 pattern="<100x>? 38 yy"},
-			{name="Pad 57",	 pattern="<100x>? 39 yy"},
-			{name="Pad 58",	 pattern="<100x>? 3A yy"},
-			{name="Pad 61",	 pattern="<100x>? 3D yy"},
-			{name="Pad 62",	 pattern="<100x>? 3E yy"},
-			{name="Pad 63",	 pattern="<100x>? 3F yy"},
-			{name="Pad 64",	 pattern="<100x>? 40 yy"},
-			{name="Pad 65",	 pattern="<100x>? 41 yy"},
-			{name="Pad 66",	 pattern="<100x>? 42 yy"},
-			{name="Pad 67",	 pattern="<100x>? 43 yy"},
-			{name="Pad 68",	 pattern="<100x>? 44 yy"},
-			{name="Pad 71",	 pattern="<100x>? 47 yy"},
-			{name="Pad 72",	 pattern="<100x>? 48 yy"},
-			{name="Pad 73",	 pattern="<100x>? 49 yy"},
-			{name="Pad 74",	 pattern="<100x>? 4A yy"},
-			{name="Pad 75",	 pattern="<100x>? 4B yy"},
-			{name="Pad 76",	 pattern="<100x>? 4C yy"},
-			{name="Pad 77",	 pattern="<100x>? 4D yy"},
-			{name="Pad 78",	 pattern="<100x>? 4E yy"},
-			{name="Pad 81",	 pattern="<100x>? 51 yy"},
-			{name="Pad 82",	 pattern="<100x>? 52 yy"},
-			{name="Pad 83",	 pattern="<100x>? 53 yy"},
-			{name="Pad 84",	 pattern="<100x>? 54 yy"},
-			{name="Pad 85",	 pattern="<100x>? 55 yy"},
-			{name="Pad 86",	 pattern="<100x>? 56 yy"},
-			{name="Pad 87",	 pattern="<100x>? 57 yy"},
-			{name="Pad 88",	 pattern="<100x>? 58 yy"},
+			{name="Pad 11",	 pattern="9? 0B xx"},
+			{name="Pad 12",	 pattern="9? 0C xx"},
+			{name="Pad 13",	 pattern="9? 0D xx"},
+			{name="Pad 14",	 pattern="9? 0E xx"},
+			{name="Pad 15",	 pattern="9? 0F xx"},
+			{name="Pad 16",	 pattern="9? 10 xx"},
+			{name="Pad 17",	 pattern="9? 11 xx"},
+			{name="Pad 18",	 pattern="9? 12 xx"},
+			{name="Pad 21",	 pattern="9? 15 xx"},
+			{name="Pad 22",	 pattern="9? 16 xx"},
+			{name="Pad 23",	 pattern="9? 17 xx"},
+			{name="Pad 24",	 pattern="9? 18 xx"},
+			{name="Pad 25",	 pattern="9? 19 xx"},
+			{name="Pad 26",	 pattern="9? 1A xx"},
+			{name="Pad 27",	 pattern="9? 1B xx"},
+			{name="Pad 28",	 pattern="9? 1C xx"},
+			{name="Pad 31",	 pattern="9? 1F xx"},
+			{name="Pad 32",	 pattern="9? 20 xx"},
+			{name="Pad 33",	 pattern="9? 21 xx"},
+			{name="Pad 34",	 pattern="9? 22 xx"},
+			{name="Pad 35",	 pattern="9? 23 xx"},
+			{name="Pad 36",	 pattern="9? 24 xx"},
+			{name="Pad 37",	 pattern="9? 25 xx"},
+			{name="Pad 38",	 pattern="9? 26 xx"},
+			{name="Pad 41",	 pattern="9? 29 xx"},
+			{name="Pad 42",	 pattern="9? 2A xx"},
+			{name="Pad 43",	 pattern="9? 2B xx"},
+			{name="Pad 44",	 pattern="9? 2C xx"},
+			{name="Pad 45",	 pattern="9? 2D xx"},
+			{name="Pad 46",	 pattern="9? 2E xx"},
+			{name="Pad 47",	 pattern="9? 2F xx"},
+			{name="Pad 48",	 pattern="9? 30 xx"},
+			{name="Pad 51",	 pattern="9? 33 xx"},
+			{name="Pad 52",	 pattern="9? 34 xx"},
+			{name="Pad 53",	 pattern="9? 35 xx"},
+			{name="Pad 54",	 pattern="9? 36 xx"},
+			{name="Pad 55",	 pattern="9? 37 xx"},
+			{name="Pad 56",	 pattern="9? 38 xx"},
+			{name="Pad 57",	 pattern="9? 39 xx"},
+			{name="Pad 58",	 pattern="9? 3A xx"},
+			{name="Pad 61",	 pattern="9? 3D xx"},
+			{name="Pad 62",	 pattern="9? 3E xx"},
+			{name="Pad 63",	 pattern="9? 3F xx"},
+			{name="Pad 64",	 pattern="9? 40 xx"},
+			{name="Pad 65",	 pattern="9? 41 xx"},
+			{name="Pad 66",	 pattern="9? 42 xx"},
+			{name="Pad 67",	 pattern="9? 43 xx"},
+			{name="Pad 68",	 pattern="9? 44 xx"},
+			{name="Pad 71",	 pattern="9? 47 xx"},
+			{name="Pad 72",	 pattern="9? 48 xx"},
+			{name="Pad 73",	 pattern="9? 49 xx"},
+			{name="Pad 74",	 pattern="9? 4A xx"},
+			{name="Pad 75",	 pattern="9? 4B xx"},
+			{name="Pad 76",	 pattern="9? 4C xx"},
+			{name="Pad 77",	 pattern="9? 4D xx"},
+			{name="Pad 78",	 pattern="9? 4E xx"},
+			{name="Pad 81",	 pattern="9? 51 xx"},
+			{name="Pad 82",	 pattern="9? 52 xx"},
+			{name="Pad 83",	 pattern="9? 53 xx"},
+			{name="Pad 84",	 pattern="9? 54 xx"},
+			{name="Pad 85",	 pattern="9? 55 xx"},
+			{name="Pad 86",	 pattern="9? 56 xx"},
+			{name="Pad 87",	 pattern="9? 57 xx"},
+			{name="Pad 88",	 pattern="9? 58 xx"},
 
 
 --left to right Top
@@ -667,7 +668,6 @@ function remote_init(manufacturer, model)
 --]]
 --[[
 -- Note on lights, note off turns off light. 
--- might have to set this to <100x>?
 
 			{name="Pad 11",	 pattern="9? 0B xx"},
 			{name="Pad 12",	 pattern="9? 0C xx"},
@@ -852,12 +852,13 @@ end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 function remote_process_midi(event)
-remote.trace(event.size)
-remote.trace("evsize")
+--remote.trace(event.size)
+--remote.trace("evsize")
 
-tprint(event)
---if event.size==3 then 
-	ret = remote.match_midi("<100x>? yy zz",event) --find a note on or off
+--tprint(event,5)
+if event.size==3 then 
+	button = remote.match_midi("B? yy zz",event) --find a note on or off
+	ret = remote.match_midi("9? yy zz",event) --find a pad on or off
 	if(ret~=nil) then
 tprint(ret)
 			local new_note = ret.y 
@@ -876,27 +877,28 @@ tprint(ret)
 				g_delivered_note = noteout
 				return true
 
---]]
+
 --	elseif ret
 			local var_event = make_lcd_midi_message("New Note "..new_note)
 			table.insert(lcd_events,var_event)
-
+--]]
 	end -- ret not nil
---end -- eventsize=3
+	
+end -- eventsize=3
 	
 -- -----------------------------------------------------------------------------------------------
 -- Keep it in programmer mode	
 -- -----------------------------------------------------------------------------------------------
---if event.size==9 then
+if event.size==9 then
 	modeswitch = remote.match_midi("F0 00 20 29 02 10 2F xx F7",event) --find what mode we are in
-	livemodeswitch = remote.match_midi("F0 00 20 29 02 10 2D xx F7",event) --find if we are in live mode
+	livemodeswitch = remote.match_midi("F0 00 20 29 02 10 2D xx F7",event) --find if we are in live mode (At startup, we turn on standalone, which fires this.)
 	if (modeswitch) then
 --remote.trace(modeswitch.x)
 		g_mode=modeswitch.x
 		if modeswitch.x ~=3 then
 			g_set_mode=3
 		end
-	elseif (livemodeswitch) then
+	elseif (livemodeswitch) then 
 			g_set_mode=3
 	end
 -- This next will only be sent on the 1st LPP midi channel, so it's not relevant here.
@@ -911,7 +913,7 @@ remote.trace(livemodeswitch.x)
 	
 	end
 --]]
---end -- eventsize=9
+end -- eventsize=9
 -- -----------------------------------------------------------------------------------------------
 
 
