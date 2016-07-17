@@ -496,6 +496,25 @@ function remote_init(manufacturer, model)
 		local inputs={
 
 --inputs
+			{pattern="d? xx", name="Channel Pressure"},
+			{pattern="b0 15 xx", name="Fader 1"},
+			{pattern="b0 16 xx", name="Fader 2"},
+			{pattern="b0 17 xx", name="Fader 3"},
+			{pattern="b0 18 xx", name="Fader 4"},
+			{pattern="b0 19 xx", name="Fader 5"},
+			{pattern="b0 1a xx", name="Fader 6"},
+			{pattern="b0 1b xx", name="Fader 7"},
+			{pattern="b0 1c xx", name="Fader 8"},
+--[[
+			{pattern="b0 15 xx", name="Pan 1"},
+			{pattern="b0 16 xx", name="Pan 2"},
+			{pattern="b0 17 xx", name="Pan 3"},
+			{pattern="b0 18 xx", name="Pan 4"},
+			{pattern="b0 19 xx", name="Pan 5"},
+			{pattern="b0 1a xx", name="Pan 6"},
+			{pattern="b0 1b xx", name="Pan 7"},
+			{pattern="b0 1c xx", name="Pan 8"},
+--]]
 
 --[[
 
