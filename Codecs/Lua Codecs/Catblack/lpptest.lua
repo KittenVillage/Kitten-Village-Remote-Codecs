@@ -255,6 +255,27 @@ remote.trace(text)
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+function set_scale(index)	
+	scale_int = index
+	scalename = scalenames[1+scale_int]
+	scale = scales[scalename]
+end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+function exists(f, l) -- find element v of l satisfying f(v)
+  for _, v in ipairs(l) do
+    if v==f then
+      return true
+    end
+  end
+  return nil
+end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- remote.trace contents of `tbl`, with indentation.
 -- `indent` sets the initial level of indentation.
@@ -265,7 +286,7 @@ function tprint (tbl, indent)
 		 for k, v in pairs(tbl) do
 			formatting = string.rep("  ", indent) .. k .. ": "
 			if type(v) == "table" then
-			  remote.trace(formatting)
+			  remote.trace('\n'..formatting ..'\n')
 			  tprint(v, indent+1)
 			elseif type(v) == 'boolean' then
 			  remote.trace(formatting .. tostring(v))		
@@ -304,73 +325,40 @@ end
 
 notemode={35,40,45,50,55,60,65,70} -- left column -1
 drummode={35,39,43,47,51,55,59,63} -- left column -1
-		pad={}
-		padx={}
-		pady={}
-		padcolor={}
-		padnote={}
-		note={}
-		notex={}
-		notey={}
-		notepad={}
-		drum={}
-		drumx={}
-		drumy={}
-		drumpad={}
-
-
---[[
-for q=36,78 do
---	g_last_notevel_delivered[q] =0
-	pad[q]=q
-	pad[q].y=modulo((q-28),8)
-end
---]]
-
+pad={}
+padindex={}
+note={}
+drum={}
+index=1
 for ho=1,8 do
 	for ve=1,8 do
-	local thispad=(ho*10)+ve	
-	local thisnote=notemode[ho]+ve
-	local thisdrum=drummode[ho]+ve
+		local thispad=(ho*10)+ve	
+		local thisnote=notemode[ho]+ve
+		local thisdrum=drummode[ho]+ve
 		if ve>4 then
 			thisdrum=thisdrum+28
 		end
-	
-		pad[thispad]=thispad
-		padx[thispad]=ho
-		pady[thispad]=ve
-		padcolor[thispad]=0
-		padnote[thispad]=thisnote
-	
-		note[thisnote]=thisnote
-		notex[thisnote]=ho
-		notey[thisnote]=ve
-		notepad[thisnote]=thispad
-		
-		drum[thisdrum]=thisdrum
-		drumx[thisdrum]=ho
-		drumy[thisdrum]=ve
-		drumpad[thisdrum]=thispad
-			
-		
-		
---		pad[thispad]={x=ho,y=ve,color=0,note=thisnote}		
---		note[thisnote]={x=ho,y=ve,pad=thispad}
---[[
-pad[thispad]={}
-pad[thispad]["x"]=23
---]]
---remote.trace(padnote[thispad])
---remote.trace(notepad[thisnote])
---remote.trace(drum[thisdrum])
---remote.trace("\n")
+
+		if note[thisnote] == nil then
+			note[thisnote]={}
+		end
+		table.insert(note[thisnote],thispad)	
+		table.insert(pad,thispad,{note=thisnote,drum=thisdrum,x=ho,y=ve,color=0,newcolor=0})
+		table.insert(padindex,index,{pad=thispad,note=thisnote,drum=thisdrum,x=ho,y=ve,color=0,newcolor=0})
+		table.insert(drum,thisdrum,{pad=thispad,note=thisnote,drum=thisdrum,x=ho,y=ve,color=0,newcolor=0})
+		index=index+1
 	end
 end
---tprint(padnote)
-
+--[[
+remote.trace("start note\n")
+tprint(note)
+remote.trace("end note\n")
 --remote.trace(table.concat(note.pos, ", "))
 --remote.trace(table.concat(note, ", "))
 --remote.trace(table.concat(note.pos, ", "))
+--]]
+tprint(padindex)
+remote.trace(padindex[11].pad)
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -401,6 +389,7 @@ function remote_init(manufacturer, model)
 			{name="Keyboard",input="keyboard"},
 			{name="_Scope", output="text"}, --device, e.g. "Thor"
 			{name="_Var", output="text"}, --variation, e.g. "Volume" or "Filters"
+			{name="Channel Pressure", input="value", min=0, max=127},
 			{name="Fader 1", input="value", min=0, max=127, output="value"},
 			{name="Fader 2", input="value", min=0, max=127, output="value"},
 			{name="Fader 3", input="value", min=0, max=127, output="value"},
@@ -409,7 +398,6 @@ function remote_init(manufacturer, model)
 			{name="Fader 6", input="value", min=0, max=127, output="value"},
 			{name="Fader 7", input="value", min=0, max=127, output="value"},
 			{name="Fader 8", input="value", min=0, max=127, output="value"},
-			{name="Channel Pressure", input="value", min=0, max=127},
 --[[
 			{name="Pan 1", input="value", min=0, max=127, output="value"},
 			{name="Pan 2", input="value", min=0, max=127, output="value"},
@@ -1147,12 +1135,11 @@ function remote_process_midi(event)
 -- -----------------------------------------------------------------------------------------------
 
 if event.size==3 then -- Note, button, channel pressure
-
---	button = remote.match_midi("B? yy zz",event) --find a side button on or off
+-- 1001 is 09 (note on) 1011 is 0B (controller) 
 	ret =    remote.match_midi("<10x1>? yy zz",event) --find a pad on or off
+--[[
 	if(ret~=nil) then
 tprint(ret)
---[[
 		tran_btn = ret.z
 		local notein = ret.y
 		local valin = ret.x	  
@@ -1180,12 +1167,22 @@ tprint(ret)
 --	elseif ret
 			local var_event = make_lcd_midi_message("New Note "..new_note)
 			table.insert(lcd_events,var_event)
---]]
 	end -- ret, button not nil
+--]]
+	
+	
+	
+	
+	
+	
+	
+	
+	
 -----------------------------------
 --B2
 -----------------------------------
 	if(ret~=nil) then
+		button = ret.x -- 1 = side button
 		if ret.z == 0 then -- faking note on and off for the checks later. x is 'value', 0 or 1 for keyboard items.
 			ret.x =0
 		else
@@ -1197,10 +1194,10 @@ tprint(ret)
 		-- accent?
 		local accent_pad = remote.match_midi("B? 46 zz",event) -- 70 click
 		-- make checks for these
-		scale_up = remote.match_midi("B? 5B zz",event) -- 91 up
+		scale_up = remote.match_midi("B? 5B zz",event) --find 91 up
 		scale_dn = remote.match_midi("B? 5C zz",event) --find 92 dn
-		tran_up = remote.match_midi("B? 5D zz",event) --find 93 left
-		tran_dn = remote.match_midi("B? 5E zz",event) --find 94 right
+		tran_up =  remote.match_midi("B? 5D zz",event) --find 93 left
+		tran_dn =  remote.match_midi("B? 5E zz",event) --find 94 right
 		
 		if(accent_pad) then
 		  if(accent_pad.z>10) then		  
@@ -1247,7 +1244,7 @@ tprint(ret)
 			end
 		end
 		if(scale_dn) then
-			if scale_dn>0 then
+			if scale_dn.z>0 then
 				scale_int = modulo(scale_int-1,8) --only use the first 8 scales
 				scalename = scalenames[1+scale_int]
 				scale = scales[scalename]
@@ -1268,7 +1265,7 @@ tprint(ret)
 		
 		
 		
-		if (ret.y>11 and ret.y<88) and (noscaleneeded==false) then
+		if (ret.y>10 and ret.y<89) and (noscaleneeded==false) and (button==1) then
 			---if the pads have transposed, then we need to turn off the last note----------------------
 			if(transpose_changed == true) then
 				local prev_off={ time_stamp = event.time_stamp, item=1, value = ret.x, note = g_delivered_note,velocity = 0 }
@@ -1276,7 +1273,7 @@ tprint(ret)
 				transpose_changed = false
 			end 
 			
-			
+---------------------------------------------------			
 			local padid = ret.y-11
 			local scale_len = table.getn(scale)
 			local ind = 1+modulo(padid,scale_len)  --modulo using the operator % gave me trouble in reason, so I wrote a custom fcn
@@ -1289,6 +1286,9 @@ tprint(ret)
 				g_delivered_note = noteout
 				return true
 			end
+----------------------------------------------------			
+			
+
 -- TODO, modify this to work with side buttons!			
 --[[
 		elseif (ret.y<25 and shift==1) then --f7 buttons and top buttons
@@ -1493,23 +1493,23 @@ function remote_deliver_midi(maxbytes,port)
 			local color_len = table.getn(colors)
 			local color_ind=1 + (modulo( math.floor(math.abs(transpose)/12),color_len) ) --change color every octave
 			local color = colors[color_ind]
---[[
 			if transpose>0 then
-				upevent = remote.make_midi("90 17 "..color)
+				upevent = remote.make_midi("90 91 "..color)
 				table.insert(lpp_events,upevent)
-				dnevent = remote.make_midi("90 18 00")
+				dnevent = remote.make_midi("90 92 00")
 				table.insert(lpp_events,dnevent)
 			elseif transpose<0 then
-				upevent = remote.make_midi("90 17 00")
+				upevent = remote.make_midi("90 91 00")
 				table.insert(lpp_events,upevent)
-				dnevent = remote.make_midi("90 18 "..color)
+				dnevent = remote.make_midi("90 92 "..color)
 				table.insert(lpp_events,dnevent)
 			elseif transpose==0 then
-				upevent = remote.make_midi("90 17 00")
+				upevent = remote.make_midi("90 91 00")
 				table.insert(lpp_events,upevent)
-				dnevent = remote.make_midi("90 18 00")
+				dnevent = remote.make_midi("90 92 00")
 				table.insert(lpp_events,dnevent)
 			end	
+--[[
 --]]
 			g_delivered_transpose = transpose
 			do_update_pads = 1
@@ -1789,7 +1789,7 @@ function remote_deliver_midi(maxbytes,port)
 		if init==1 then
 		remote.trace("in init!")
 			local firstcolors={
-				remote.make_midi(sysex_header .."0E 10 F7"),
+				--remote.make_midi(sysex_header .."0E 10 F7"),
 				remote.make_midi("90 58 06"),
 				remote.make_midi("90 13 05"),
 --[[			
@@ -1831,20 +1831,22 @@ function remote_deliver_midi(maxbytes,port)
 		remote.trace(i)
 
 			end	
-tprint(firstcolors)
+--tprint(firstcolors)
 -- This needs to change for 64 pads  
 			if noscaleneeded==false then
 		--notes 36 to 67 for pads
 				local padevent = {}
 				for i=1,64,1 do
-					local padnum = string.format("%x",i+35)
+					--local padnum = string.format("%x",i+35)
+--remote.trace(string.format("%02x",padindex[i].pad))
+					local padnum = string.format("%02x",padindex[i].pad)
 					local modd = modulo(i-1,8)
 					local keycolor="02"
 					if(modd==0 or modd==7) then
 						keycolor="40"
 					end
---				padevent[i]=remote.make_midi("90 "..padnum.." "..keycolor)
---				table.insert(lpp_events,padevent[i])
+				padevent[i]=remote.make_midi("90 "..padnum.." "..keycolor)
+				table.insert(lpp_events,padevent[i])
 --[[
 					local transpose_event = make_lcd_midi_message("/INIT "..transpose)
 					table.insert(lcd_events,transpose_event)
