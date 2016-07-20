@@ -245,6 +245,13 @@ sevseg['_']='27'
 sli_start=4
 sli_end=12
 --]]
+
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+--WHAT TO KEEP??
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- These are set in remote_on_auto_input() 
 g_last_input_time=0
 g_last_input_item = nil
@@ -261,13 +268,6 @@ transpose = 0
 
 
 
-
-
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
---WHAT TO KEEP??
-
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 shift = 0
@@ -302,15 +302,6 @@ g_step_is_playing = { 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0 }
 -- FL: Add state for the latest LED/Pad MIDI messages sent
 g_last_led_output = { 100,100,100,100, 100,100,100,100, 100,100,100,100, 100,100,100,100, 100,100,100,100, 100,100,100,100 }
 
--- FL: Assign to these the index to the first the corresponding items according
--- to the definition list in remote_init. (Or assign them when defining the items, depending on how you do that.)
-k_first_step_item = 61
-k_first_step_playing_item = 94
-k_accent = 77
-g_accent = 0
-g_last_accent = 0
-g_accent_dn = false
-g_accent_count = 0
 
 
 colors = {"02","04","08","10","20","40","7F"}
@@ -342,10 +333,19 @@ sysex_header="F0 00 20 29 02 10 "
 
 
 
+-- FL: Assign to these the index to the first the corresponding items according
+-- to the definition list in remote_init. (Or assign them when defining the items, depending on how you do that.)
+k_first_step_item = 61
+k_first_step_playing_item = 94
+k_accent = 77
+g_accent = 0
+g_last_accent = 0
+g_accent_dn = false
+g_accent_count = 0
+g_btn_firstitem = 133 -- first -1 !
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- Set some variables for later!
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-g_btn_firstitem = 100 -- first -1 !
 notemode={35,40,45,50,55,60,65,70} -- left column -1
 drummode={35,39,43,47,51,55,59,63} -- left column -1
 pad={}
@@ -385,7 +385,7 @@ remote.trace("end note\n")
 --remote.trace(table.concat(note, ", "))
 --remote.trace(table.concat(note.pos, ", "))
 --]]
-tprint(buttonindex)
+--tprint(buttonindex)
 --remote.trace(padindex[11].pad)
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -438,8 +438,7 @@ function remote_init(manufacturer, model)
 			{name="Pan 8", input="value", min=0, max=127, output="value"},
 --]]
 --From bottom left to top right
---[[
-			{name="Press 11", input="value", min=0, max=127, output="value"},
+			{name="Press 11", input="value", min=0, max=127, output="value"}, --14
 			{name="Press 12", input="value", min=0, max=127, output="value"},
 			{name="Press 13", input="value", min=0, max=127, output="value"},
 			{name="Press 14", input="value", min=0, max=127, output="value"},
@@ -471,6 +470,7 @@ function remote_init(manufacturer, model)
 			{name="Press 46", input="value", min=0, max=127, output="value"},
 			{name="Press 47", input="value", min=0, max=127, output="value"},
 			{name="Press 48", input="value", min=0, max=127, output="value"},
+--[[
 			{name="Press 51", input="value", min=0, max=127, output="value"},
 			{name="Press 52", input="value", min=0, max=127, output="value"},
 			{name="Press 53", input="value", min=0, max=127, output="value"},
@@ -506,7 +506,7 @@ function remote_init(manufacturer, model)
 --]]
 --From bottom left to top right
 
-			{name="Pad 11", input="value", min=0, max=127, output="value"}, --14
+			{name="Pad 11", input="value", min=0, max=127, output="value"}, --46
 			{name="Pad 12", input="value", min=0, max=127, output="value"},
 			{name="Pad 13", input="value", min=0, max=127, output="value"},
 			{name="Pad 14", input="value", min=0, max=127, output="value"},
@@ -569,11 +569,11 @@ function remote_init(manufacturer, model)
 			{name="Pad 85", input="value", min=0, max=127, output="value"},
 			{name="Pad 86", input="value", min=0, max=127, output="value"},
 			{name="Pad 87", input="value", min=0, max=127, output="value"},
-			{name="Pad 88", input="value", min=0, max=127, output="value"},
+			{name="Pad 88", input="value", min=0, max=127, output="value"}, --109
 
 --From bottom left to top right
 
-			{name="Pad 11 Playing", min=0, max=4, output="value"}, --77
+			{name="Pad 11 Playing", min=0, max=4, output="value"}, --110
 			{name="Pad 12 Playing", min=0, max=4, output="value"},
 			{name="Pad 13 Playing", min=0, max=4, output="value"},
 			{name="Pad 14 Playing", min=0, max=4, output="value"},
@@ -596,7 +596,7 @@ function remote_init(manufacturer, model)
 			{name="Pad 35 Playing", min=0, max=4, output="value"},
 			{name="Pad 36 Playing", min=0, max=4, output="value"},
 			{name="Pad 37 Playing", min=0, max=4, output="value"},
-			{name="Pad 38 Playing", min=0, max=4, output="value"},
+			{name="Pad 38 Playing", min=0, max=4, output="value"}, --133
 --[[
 			{name="Pad 41 Playing", min=0, max=4, output="value"},
 			{name="Pad 42 Playing", min=0, max=4, output="value"},
@@ -640,7 +640,7 @@ function remote_init(manufacturer, model)
 			{name="Pad 88 Playing", min=0, max=4, output="value"},
 --]]
 --left to right Top
-			{name="Button 91", input="button", min=0, max=127, output="value"},--101
+			{name="Button 91", input="button", min=0, max=127, output="value"},--134
 			{name="Button 92", input="button", min=0, max=127, output="value"},
 			{name="Button 93", input="button", min=0, max=127, output="value"},
 			{name="Button 94", input="button", min=0, max=127, output="value"},
@@ -649,7 +649,7 @@ function remote_init(manufacturer, model)
 			{name="Button 97", input="button", min=0, max=127, output="value"},
 			{name="Button 98", input="button", min=0, max=127, output="value"},
 --left to right Bottom
-			{name="Button 01", input="button", min=0, max=127, output="value"}, --
+			{name="Button 01", input="button", min=0, max=127, output="value"}, --142
 			{name="Button 02", input="button", min=0, max=127, output="value"},
 			{name="Button 03", input="button", min=0, max=127, output="value"},
 			{name="Button 04", input="button", min=0, max=127, output="value"},
@@ -658,7 +658,7 @@ function remote_init(manufacturer, model)
 			{name="Button 07", input="button", min=0, max=127, output="value"},
 			{name="Button 08", input="button", min=0, max=127, output="value"},
 --bottom to top Left
-			{name="Button 10", input="button", min=0, max=127, output="value"},
+			{name="Button 10", input="button", min=0, max=127, output="value"}, --150
 			{name="Button 20", input="button", min=0, max=127, output="value"},
 			{name="Button 30", input="button", min=0, max=127, output="value"},
 			{name="Button 40", input="button", min=0, max=127, output="value"},
@@ -667,7 +667,7 @@ function remote_init(manufacturer, model)
 			{name="Button 70", input="button", min=0, max=127, output="value"},
 			{name="Button 80", input="button", min=0, max=127, output="value"},
 --bottom to top Right
-			{name="Button 19", input="button", min=0, max=127, output="value"},
+			{name="Button 19", input="button", min=0, max=127, output="value"}, --158
 			{name="Button 29", input="button", min=0, max=127, output="value"},
 			{name="Button 39", input="button", min=0, max=127, output="value"},
 			{name="Button 49", input="button", min=0, max=127, output="value"},
@@ -676,7 +676,7 @@ function remote_init(manufacturer, model)
 			{name="Button 79", input="button", min=0, max=127, output="value"},
 			{name="Button 89", input="button", min=0, max=127, output="value"},
 --left to right Top
-			{name="Shift Button 91", input="button", min=0, max=127, output="value"},
+			{name="Shift Button 91", input="button", min=0, max=127, output="value"}, --166
 			{name="Shift Button 92", input="button", min=0, max=127, output="value"},
 			{name="Shift Button 93", input="button", min=0, max=127, output="value"},
 			{name="Shift Button 94", input="button", min=0, max=127, output="value"},
@@ -685,22 +685,22 @@ function remote_init(manufacturer, model)
 			{name="Shift Button 97", input="button", min=0, max=127, output="value"},
 			{name="Shift Button 98", input="button", min=0, max=127, output="value"},
 --left to right Bottom
-			{name="Shift Button 01", input="button", min=0, max=127, output="value"}, --
+			{name="Shift Button 01", input="button", min=0, max=127, output="value"}, -- 174
 			{name="Shift Button 02", input="button", min=0, max=127, output="value"},
 			{name="Shift Button 03", input="button", min=0, max=127, output="value"},
 			{name="Shift Button 04", input="button", min=0, max=127, output="value"},
 			{name="Shift Button 05", input="button", min=0, max=127, output="value"},
 			{name="Shift Button 06", input="button", min=0, max=127, output="value"},
 			{name="Shift Button 07", input="button", min=0, max=127, output="value"},
-			{name="Shift Button 08", input="button", min=0, max=127, output="value"},
+			{name="Shift Button 08", input="button", min=0, max=127, output="value"}, --181
 
 
 
 
 
 			}
+ --tprint(items) --Useful for counting
 		remote.define_items(items)
-
 
 		local inputs={
 
@@ -725,7 +725,6 @@ function remote_init(manufacturer, model)
 			{pattern="b0 1c xx", name="Pan 8"},
 --]]
 
---[[
 
 -- Aftertouch
 			{name="Press 11",  pattern="A? 0B xx"},
@@ -760,6 +759,7 @@ function remote_init(manufacturer, model)
 			{name="Press 46",  pattern="A? 2E xx"},
 			{name="Press 47",  pattern="A? 2F xx"},
 			{name="Press 48",  pattern="A? 30 xx"},
+--[[
 			{name="Press 51",  pattern="A? 33 xx"},
 			{name="Press 52",  pattern="A? 34 xx"},
 			{name="Press 53",  pattern="A? 35 xx"},
@@ -905,250 +905,279 @@ function remote_init(manufacturer, model)
 --ouputs
 
 -- NO AUTO OUTS FOR NOW
+			{pattern="90 0A xx", name="Button 01", x="1+(126*value)"},--white/green
+			{pattern="90 0B xx", name="Button 02", x="1+(31*value)"}, --white/blue
+			{pattern="90 0C xx", name="Button 03", x="4+(28*value)"}, --cyan/blue
+			{pattern="90 0D xx", name="Button 04", x="8+(8*value)"},--,mag/red
+			{pattern="90 0E xx", name="Button 05", x="64*value"}, --yel
+			{pattern="90 0F xx", name="Button 06", x="64*value"}, --yel
+			{pattern="90 10 xx", name="Button 07", x="64*value"}, --yel
+			{pattern="90 11 xx", name="Button 08", x="64*value"}, --yel
+			
+			{pattern="90 6E xx", name="Shift Button 01", x="1+(126*value)"},--white/green
+			{pattern="90 6F xx", name="Shift Button 02", x="1+(31*value)"}, --white/blue
+			{pattern="90 70 xx", name="Shift Button 03", x="4+(28*value)"}, --cyan/blue
+			{pattern="90 71 xx", name="Shift Button 04", x="8+(8*value)"},--,mag/red
+			{pattern="90 72 xx", name="Shift Button 05", x="64*value"}, --yel
+			{pattern="90 73 xx", name="Shift Button 06", x="64*value"}, --yel
+			{pattern="90 74 xx", name="Shift Button 07", x="64*value"}, --yel
+			{pattern="90 75 xx", name="Shift Button 08", x="64*value"}, --yel
 
---[[
+			--touch Faders
+			{pattern="b0 15 xx", name="Fader 1"},
+			{pattern="b0 16 xx", name="Fader 2"},
+			{pattern="b0 17 xx", name="Fader 3"},
+			{pattern="b0 18 xx", name="Fader 4"},
+			{pattern="b0 19 xx", name="Fader 5"},
+			{pattern="b0 1a xx", name="Fader 6"},
+			{pattern="b0 1b xx", name="Fader 7"},
+			{pattern="b0 1c xx", name="Fader 8"},
+
 
 -- Aftertouch
-			{name="Press 11",  pattern="A? 0B xx"},
-			{name="Press 12",  pattern="A? 0C xx"},
-			{name="Press 13",  pattern="A? 0D xx"},
-			{name="Press 14",  pattern="A? 0E xx"},
-			{name="Press 15",  pattern="A? 0F xx"},
-			{name="Press 16",  pattern="A? 10 xx"},
-			{name="Press 17",  pattern="A? 11 xx"},
-			{name="Press 18",  pattern="A? 12 xx"},
-			{name="Press 21",  pattern="A? 15 xx"},
-			{name="Press 22",  pattern="A? 16 xx"},
-			{name="Press 23",  pattern="A? 17 xx"},
-			{name="Press 24",  pattern="A? 18 xx"},
-			{name="Press 25",  pattern="A? 19 xx"},
-			{name="Press 26",  pattern="A? 1A xx"},
-			{name="Press 27",  pattern="A? 1B xx"},
-			{name="Press 28",  pattern="A? 1C xx"},
-			{name="Press 31",  pattern="A? 1F xx"},
-			{name="Press 32",  pattern="A? 20 xx"},
-			{name="Press 33",  pattern="A? 21 xx"},
-			{name="Press 34",  pattern="A? 22 xx"},
-			{name="Press 35",  pattern="A? 23 xx"},
-			{name="Press 36",  pattern="A? 24 xx"},
-			{name="Press 37",  pattern="A? 25 xx"},
-			{name="Press 38",  pattern="A? 26 xx"},
-			{name="Press 41",  pattern="A? 29 xx"},
-			{name="Press 42",  pattern="A? 2A xx"},
-			{name="Press 43",  pattern="A? 2B xx"},
-			{name="Press 44",  pattern="A? 2C xx"},
-			{name="Press 45",  pattern="A? 2D xx"},
-			{name="Press 46",  pattern="A? 2E xx"},
-			{name="Press 47",  pattern="A? 2F xx"},
-			{name="Press 48",  pattern="A? 30 xx"},
-			{name="Press 51",  pattern="A? 33 xx"},
-			{name="Press 52",  pattern="A? 34 xx"},
-			{name="Press 53",  pattern="A? 35 xx"},
-			{name="Press 54",  pattern="A? 36 xx"},
-			{name="Press 55",  pattern="A? 37 xx"},
-			{name="Press 56",  pattern="A? 38 xx"},
-			{name="Press 57",  pattern="A? 39 xx"},
-			{name="Press 58",  pattern="A? 3A xx"},
-			{name="Press 61",  pattern="A? 3D xx"},
-			{name="Press 62",  pattern="A? 3E xx"},
-			{name="Press 63",  pattern="A? 3F xx"},
-			{name="Press 64",  pattern="A? 40 xx"},
-			{name="Press 65",  pattern="A? 41 xx"},
-			{name="Press 66",  pattern="A? 42 xx"},
-			{name="Press 67",  pattern="A? 43 xx"},
-			{name="Press 68",  pattern="A? 44 xx"},
-			{name="Press 71",  pattern="A? 47 xx"},
-			{name="Press 72",  pattern="A? 48 xx"},
-			{name="Press 73",  pattern="A? 49 xx"},
-			{name="Press 74",  pattern="A? 4A xx"},
-			{name="Press 75",  pattern="A? 4B xx"},
-			{name="Press 76",  pattern="A? 4C xx"},
-			{name="Press 77",  pattern="A? 4D xx"},
-			{name="Press 78",  pattern="A? 4E xx"},
-			{name="Press 81",  pattern="A? 51 xx"},
-			{name="Press 82",  pattern="A? 52 xx"},
-			{name="Press 83",  pattern="A? 53 xx"},
-			{name="Press 84",  pattern="A? 54 xx"},
-			{name="Press 85",  pattern="A? 55 xx"},
-			{name="Press 86",  pattern="A? 56 xx"},
-			{name="Press 87",  pattern="A? 57 xx"},
-			{name="Press 88",  pattern="A? 58 xx"},
+			{name="Press 11",  pattern="90 0B xx"},
+			{name="Press 12",  pattern="90 0C xx"},
+			{name="Press 13",  pattern="90 0D xx"},
+			{name="Press 14",  pattern="90 0E xx"},
+			{name="Press 15",  pattern="90 0F xx"},
+			{name="Press 16",  pattern="90 10 xx"},
+			{name="Press 17",  pattern="90 11 xx"},
+			{name="Press 18",  pattern="90 12 xx"},
+			{name="Press 21",  pattern="90 15 xx"},
+			{name="Press 22",  pattern="90 16 xx"},
+			{name="Press 23",  pattern="90 17 xx"},
+			{name="Press 24",  pattern="90 18 xx"},
+			{name="Press 25",  pattern="90 19 xx"},
+			{name="Press 26",  pattern="90 1A xx"},
+			{name="Press 27",  pattern="90 1B xx"},
+			{name="Press 28",  pattern="90 1C xx"},
+			{name="Press 31",  pattern="90 1F xx"},
+			{name="Press 32",  pattern="90 20 xx"},
+			{name="Press 33",  pattern="90 21 xx"},
+			{name="Press 34",  pattern="90 22 xx"},
+			{name="Press 35",  pattern="90 23 xx"},
+			{name="Press 36",  pattern="90 24 xx"},
+			{name="Press 37",  pattern="90 25 xx"},
+			{name="Press 38",  pattern="90 26 xx"},
+			{name="Press 41",  pattern="90 29 xx"},
+			{name="Press 42",  pattern="90 2A xx"},
+			{name="Press 43",  pattern="90 2B xx"},
+			{name="Press 44",  pattern="90 2C xx"},
+			{name="Press 45",  pattern="90 2D xx"},
+			{name="Press 46",  pattern="90 2E xx"},
+			{name="Press 47",  pattern="90 2F xx"},
+			{name="Press 48",  pattern="90 30 xx"},
+--[[
+			{name="Press 51",  pattern="90 33 xx"},
+			{name="Press 52",  pattern="90 34 xx"},
+			{name="Press 53",  pattern="90 35 xx"},
+			{name="Press 54",  pattern="90 36 xx"},
+			{name="Press 55",  pattern="90 37 xx"},
+			{name="Press 56",  pattern="90 38 xx"},
+			{name="Press 57",  pattern="90 39 xx"},
+			{name="Press 58",  pattern="90 3A xx"},
+			{name="Press 61",  pattern="90 3D xx"},
+			{name="Press 62",  pattern="90 3E xx"},
+			{name="Press 63",  pattern="90 3F xx"},
+			{name="Press 64",  pattern="90 40 xx"},
+			{name="Press 65",  pattern="90 41 xx"},
+			{name="Press 66",  pattern="90 42 xx"},
+			{name="Press 67",  pattern="90 43 xx"},
+			{name="Press 68",  pattern="90 44 xx"},
+			{name="Press 71",  pattern="90 47 xx"},
+			{name="Press 72",  pattern="90 48 xx"},
+			{name="Press 73",  pattern="90 49 xx"},
+			{name="Press 74",  pattern="90 4A xx"},
+			{name="Press 75",  pattern="90 4B xx"},
+			{name="Press 76",  pattern="90 4C xx"},
+			{name="Press 77",  pattern="90 4D xx"},
+			{name="Press 78",  pattern="90 4E xx"},
+			{name="Press 81",  pattern="90 51 xx"},
+			{name="Press 82",  pattern="90 52 xx"},
+			{name="Press 83",  pattern="90 53 xx"},
+			{name="Press 84",  pattern="90 54 xx"},
+			{name="Press 85",  pattern="90 55 xx"},
+			{name="Press 86",  pattern="90 56 xx"},
+			{name="Press 87",  pattern="90 57 xx"},
+			{name="Press 88",  pattern="90 58 xx"},
 --]]
 --[[
 -- Note on lights, note off turns off light. 
 
-			{name="Pad 11",	 pattern="9? 0B xx"},
-			{name="Pad 12",	 pattern="9? 0C xx"},
-			{name="Pad 13",	 pattern="9? 0D xx"},
-			{name="Pad 14",	 pattern="9? 0E xx"},
-			{name="Pad 15",	 pattern="9? 0F xx"},
-			{name="Pad 16",	 pattern="9? 10 xx"},
-			{name="Pad 17",	 pattern="9? 11 xx"},
-			{name="Pad 18",	 pattern="9? 12 xx"},
-			{name="Pad 21",	 pattern="9? 15 xx"},
-			{name="Pad 22",	 pattern="9? 16 xx"},
-			{name="Pad 23",	 pattern="9? 17 xx"},
-			{name="Pad 24",	 pattern="9? 18 xx"},
-			{name="Pad 25",	 pattern="9? 19 xx"},
-			{name="Pad 26",	 pattern="9? 1A xx"},
-			{name="Pad 27",	 pattern="9? 1B xx"},
-			{name="Pad 28",	 pattern="9? 1C xx"},
-			{name="Pad 31",	 pattern="9? 1F xx"},
-			{name="Pad 32",	 pattern="9? 20 xx"},
-			{name="Pad 33",	 pattern="9? 21 xx"},
-			{name="Pad 34",	 pattern="9? 22 xx"},
-			{name="Pad 35",	 pattern="9? 23 xx"},
-			{name="Pad 36",	 pattern="9? 24 xx"},
-			{name="Pad 37",	 pattern="9? 25 xx"},
-			{name="Pad 38",	 pattern="9? 26 xx"},
-			{name="Pad 41",	 pattern="9? 29 xx"},
-			{name="Pad 42",	 pattern="9? 2A xx"},
-			{name="Pad 43",	 pattern="9? 2B xx"},
-			{name="Pad 44",	 pattern="9? 2C xx"},
-			{name="Pad 45",	 pattern="9? 2D xx"},
-			{name="Pad 46",	 pattern="9? 2E xx"},
-			{name="Pad 47",	 pattern="9? 2F xx"},
-			{name="Pad 48",	 pattern="9? 30 xx"},
-			{name="Pad 51",	 pattern="9? 33 xx"},
-			{name="Pad 52",	 pattern="9? 34 xx"},
-			{name="Pad 53",	 pattern="9? 35 xx"},
-			{name="Pad 54",	 pattern="9? 36 xx"},
-			{name="Pad 55",	 pattern="9? 37 xx"},
-			{name="Pad 56",	 pattern="9? 38 xx"},
-			{name="Pad 57",	 pattern="9? 39 xx"},
-			{name="Pad 58",	 pattern="9? 3A xx"},
-			{name="Pad 61",	 pattern="9? 3D xx"},
-			{name="Pad 62",	 pattern="9? 3E xx"},
-			{name="Pad 63",	 pattern="9? 3F xx"},
-			{name="Pad 64",	 pattern="9? 40 xx"},
-			{name="Pad 65",	 pattern="9? 41 xx"},
-			{name="Pad 66",	 pattern="9? 42 xx"},
-			{name="Pad 67",	 pattern="9? 43 xx"},
-			{name="Pad 68",	 pattern="9? 44 xx"},
-			{name="Pad 71",	 pattern="9? 47 xx"},
-			{name="Pad 72",	 pattern="9? 48 xx"},
-			{name="Pad 73",	 pattern="9? 49 xx"},
-			{name="Pad 74",	 pattern="9? 4A xx"},
-			{name="Pad 75",	 pattern="9? 4B xx"},
-			{name="Pad 76",	 pattern="9? 4C xx"},
-			{name="Pad 77",	 pattern="9? 4D xx"},
-			{name="Pad 78",	 pattern="9? 4E xx"},
-			{name="Pad 81",	 pattern="9? 51 xx"},
-			{name="Pad 82",	 pattern="9? 52 xx"},
-			{name="Pad 83",	 pattern="9? 53 xx"},
-			{name="Pad 84",	 pattern="9? 54 xx"},
-			{name="Pad 85",	 pattern="9? 55 xx"},
-			{name="Pad 86",	 pattern="9? 56 xx"},
-			{name="Pad 87",	 pattern="9? 57 xx"},
-			{name="Pad 88",	 pattern="9? 58 xx"},
+			{name="Pad 11",	 pattern="90 0B xx"},
+			{name="Pad 12",	 pattern="90 0C xx"},
+			{name="Pad 13",	 pattern="90 0D xx"},
+			{name="Pad 14",	 pattern="90 0E xx"},
+			{name="Pad 15",	 pattern="90 0F xx"},
+			{name="Pad 16",	 pattern="90 10 xx"},
+			{name="Pad 17",	 pattern="90 11 xx"},
+			{name="Pad 18",	 pattern="90 12 xx"},
+			{name="Pad 21",	 pattern="90 15 xx"},
+			{name="Pad 22",	 pattern="90 16 xx"},
+			{name="Pad 23",	 pattern="90 17 xx"},
+			{name="Pad 24",	 pattern="90 18 xx"},
+			{name="Pad 25",	 pattern="90 19 xx"},
+			{name="Pad 26",	 pattern="90 1A xx"},
+			{name="Pad 27",	 pattern="90 1B xx"},
+			{name="Pad 28",	 pattern="90 1C xx"},
+			{name="Pad 31",	 pattern="90 1F xx"},
+			{name="Pad 32",	 pattern="90 20 xx"},
+			{name="Pad 33",	 pattern="90 21 xx"},
+			{name="Pad 34",	 pattern="90 22 xx"},
+			{name="Pad 35",	 pattern="90 23 xx"},
+			{name="Pad 36",	 pattern="90 24 xx"},
+			{name="Pad 37",	 pattern="90 25 xx"},
+			{name="Pad 38",	 pattern="90 26 xx"},
 --]]
+			{name="Pad 41",	 pattern="90 29 xx"},
+			{name="Pad 42",	 pattern="90 2A xx"},
+			{name="Pad 43",	 pattern="90 2B xx"},
+			{name="Pad 44",	 pattern="90 2C xx"},
+			{name="Pad 45",	 pattern="90 2D xx"},
+			{name="Pad 46",	 pattern="90 2E xx"},
+			{name="Pad 47",	 pattern="90 2F xx"},
+			{name="Pad 48",	 pattern="90 30 xx"},
 --[[
+			{name="Pad 51",	 pattern="90 33 xx"},
+			{name="Pad 52",	 pattern="90 34 xx"},
+			{name="Pad 53",	 pattern="90 35 xx"},
+			{name="Pad 54",	 pattern="90 36 xx"},
+			{name="Pad 55",	 pattern="90 37 xx"},
+			{name="Pad 56",	 pattern="90 38 xx"},
+			{name="Pad 57",	 pattern="90 39 xx"},
+			{name="Pad 58",	 pattern="90 3A xx"},
+			{name="Pad 61",	 pattern="90 3D xx"},
+			{name="Pad 62",	 pattern="90 3E xx"},
+			{name="Pad 63",	 pattern="90 3F xx"},
+			{name="Pad 64",	 pattern="90 40 xx"},
+			{name="Pad 65",	 pattern="90 41 xx"},
+			{name="Pad 66",	 pattern="90 42 xx"},
+			{name="Pad 67",	 pattern="90 43 xx"},
+			{name="Pad 68",	 pattern="90 44 xx"},
+			{name="Pad 71",	 pattern="90 47 xx"},
+			{name="Pad 72",	 pattern="90 48 xx"},
+			{name="Pad 73",	 pattern="90 49 xx"},
+			{name="Pad 74",	 pattern="90 4A xx"},
+			{name="Pad 75",	 pattern="90 4B xx"},
+			{name="Pad 76",	 pattern="90 4C xx"},
+			{name="Pad 77",	 pattern="90 4D xx"},
+			{name="Pad 78",	 pattern="90 4E xx"},
+			{name="Pad 81",	 pattern="90 51 xx"},
+			{name="Pad 82",	 pattern="90 52 xx"},
+			{name="Pad 83",	 pattern="90 53 xx"},
+			{name="Pad 84",	 pattern="90 54 xx"},
+			{name="Pad 85",	 pattern="90 55 xx"},
+			{name="Pad 86",	 pattern="90 56 xx"},
+			{name="Pad 87",	 pattern="90 57 xx"},
+			{name="Pad 88",	 pattern="90 58 xx"},
+--]]
 
-			{name="Pad 11 Playing",	 pattern="9? 0B xx",  x="map_redrum_led(value)"},
-			{name="Pad 12 Playing",	 pattern="9? 0C xx",  x="map_redrum_led(value)"},
-			{name="Pad 13 Playing",	 pattern="9? 0D xx",  x="map_redrum_led(value)"},
-			{name="Pad 14 Playing",	 pattern="9? 0E xx",  x="map_redrum_led(value)"},
-			{name="Pad 15 Playing",	 pattern="9? 0F xx",  x="map_redrum_led(value)"},
-			{name="Pad 16 Playing",	 pattern="9? 10 xx",  x="map_redrum_led(value)"},
-			{name="Pad 17 Playing",	 pattern="9? 11 xx",  x="map_redrum_led(value)"},
-			{name="Pad 18 Playing",	 pattern="9? 12 xx",  x="map_redrum_led(value)"},
-			{name="Pad 21 Playing",	 pattern="9? 15 xx",  x="map_redrum_led(value)"},
-			{name="Pad 22 Playing",	 pattern="9? 16 xx",  x="map_redrum_led(value)"},
-			{name="Pad 23 Playing",	 pattern="9? 17 xx",  x="map_redrum_led(value)"},
-			{name="Pad 24 Playing",	 pattern="9? 18 xx",  x="map_redrum_led(value)"},
-			{name="Pad 25 Playing",	 pattern="9? 19 xx",  x="map_redrum_led(value)"},
-			{name="Pad 26 Playing",	 pattern="9? 1A xx",  x="map_redrum_led(value)"},
-			{name="Pad 27 Playing",	 pattern="9? 1B xx",  x="map_redrum_led(value)"},
-			{name="Pad 28 Playing",	 pattern="9? 1C xx",  x="map_redrum_led(value)"},
-			{name="Pad 31 Playing",	 pattern="9? 1F xx",  x="map_redrum_led(value)"},
-			{name="Pad 32 Playing",	 pattern="9? 20 xx",  x="map_redrum_led(value)"},
-			{name="Pad 33 Playing",	 pattern="9? 21 xx",  x="map_redrum_led(value)"},
-			{name="Pad 34 Playing",	 pattern="9? 22 xx",  x="map_redrum_led(value)"},
-			{name="Pad 35 Playing",	 pattern="9? 23 xx",  x="map_redrum_led(value)"},
-			{name="Pad 36 Playing",	 pattern="9? 24 xx",  x="map_redrum_led(value)"},
-			{name="Pad 37 Playing",	 pattern="9? 25 xx",  x="map_redrum_led(value)"},
-			{name="Pad 38 Playing",	 pattern="9? 26 xx",  x="map_redrum_led(value)"},
-			{name="Pad 41 Playing",	 pattern="9? 29 xx",  x="map_redrum_led(value)"},
-			{name="Pad 42 Playing",	 pattern="9? 2A xx",  x="map_redrum_led(value)"},
-			{name="Pad 43 Playing",	 pattern="9? 2B xx",  x="map_redrum_led(value)"},
-			{name="Pad 44 Playing",	 pattern="9? 2C xx",  x="map_redrum_led(value)"},
-			{name="Pad 45 Playing",	 pattern="9? 2D xx",  x="map_redrum_led(value)"},
-			{name="Pad 46 Playing",	 pattern="9? 2E xx",  x="map_redrum_led(value)"},
-			{name="Pad 47 Playing",	 pattern="9? 2F xx",  x="map_redrum_led(value)"},
-			{name="Pad 48 Playing",	 pattern="9? 30 xx",  x="map_redrum_led(value)"},
-			{name="Pad 51 Playing",	 pattern="9? 33 xx",  x="map_redrum_led(value)"},
-			{name="Pad 52 Playing",	 pattern="9? 34 xx",  x="map_redrum_led(value)"},
-			{name="Pad 53 Playing",	 pattern="9? 35 xx",  x="map_redrum_led(value)"},
-			{name="Pad 54 Playing",	 pattern="9? 36 xx",  x="map_redrum_led(value)"},
-			{name="Pad 55 Playing",	 pattern="9? 37 xx",  x="map_redrum_led(value)"},
-			{name="Pad 56 Playing",	 pattern="9? 38 xx",  x="map_redrum_led(value)"},
-			{name="Pad 57 Playing",	 pattern="9? 39 xx",  x="map_redrum_led(value)"},
-			{name="Pad 58 Playing",	 pattern="9? 3A xx",  x="map_redrum_led(value)"},
-			{name="Pad 61 Playing",	 pattern="9? 3D xx",  x="map_redrum_led(value)"},
-			{name="Pad 62 Playing",	 pattern="9? 3E xx",  x="map_redrum_led(value)"},
-			{name="Pad 63 Playing",	 pattern="9? 3F xx",  x="map_redrum_led(value)"},
-			{name="Pad 64 Playing",	 pattern="9? 40 xx",  x="map_redrum_led(value)"},
-			{name="Pad 65 Playing",	 pattern="9? 41 xx",  x="map_redrum_led(value)"},
-			{name="Pad 66 Playing",	 pattern="9? 42 xx",  x="map_redrum_led(value)"},
-			{name="Pad 67 Playing",	 pattern="9? 43 xx",  x="map_redrum_led(value)"},
-			{name="Pad 68 Playing",	 pattern="9? 44 xx",  x="map_redrum_led(value)"},
-			{name="Pad 71 Playing",	 pattern="9? 47 xx",  x="map_redrum_led(value)"},
-			{name="Pad 72 Playing",	 pattern="9? 48 xx",  x="map_redrum_led(value)"},
-			{name="Pad 73 Playing",	 pattern="9? 49 xx",  x="map_redrum_led(value)"},
-			{name="Pad 74 Playing",	 pattern="9? 4A xx",  x="map_redrum_led(value)"},
-			{name="Pad 75 Playing",	 pattern="9? 4B xx",  x="map_redrum_led(value)"},
-			{name="Pad 76 Playing",	 pattern="9? 4C xx",  x="map_redrum_led(value)"},
-			{name="Pad 77 Playing",	 pattern="9? 4D xx",  x="map_redrum_led(value)"},
-			{name="Pad 78 Playing",	 pattern="9? 4E xx",  x="map_redrum_led(value)"},
-			{name="Pad 81 Playing",	 pattern="9? 51 xx",  x="map_redrum_led(value)"},
-			{name="Pad 82 Playing",	 pattern="9? 52 xx",  x="map_redrum_led(value)"},
-			{name="Pad 83 Playing",	 pattern="9? 53 xx",  x="map_redrum_led(value)"},
-			{name="Pad 84 Playing",	 pattern="9? 54 xx",  x="map_redrum_led(value)"},
-			{name="Pad 85 Playing",	 pattern="9? 55 xx",  x="map_redrum_led(value)"},
-			{name="Pad 86 Playing",	 pattern="9? 56 xx",  x="map_redrum_led(value)"},
-			{name="Pad 87 Playing",	 pattern="9? 57 xx",  x="map_redrum_led(value)"},
-			{name="Pad 88 Playing",	 pattern="9? 58 xx",  x="map_redrum_led(value)"},
+			{name="Pad 11 Playing",	 pattern="90 0B xx",  x="map_redrum_led(value)"},
+			{name="Pad 12 Playing",	 pattern="90 0C xx",  x="map_redrum_led(value)"},
+			{name="Pad 13 Playing",	 pattern="90 0D xx",  x="map_redrum_led(value)"},
+			{name="Pad 14 Playing",	 pattern="90 0E xx",  x="map_redrum_led(value)"},
+			{name="Pad 15 Playing",	 pattern="90 0F xx",  x="map_redrum_led(value)"},
+			{name="Pad 16 Playing",	 pattern="90 10 xx",  x="map_redrum_led(value)"},
+			{name="Pad 17 Playing",	 pattern="90 11 xx",  x="map_redrum_led(value)"},
+			{name="Pad 18 Playing",	 pattern="90 12 xx",  x="map_redrum_led(value)"},
+			{name="Pad 21 Playing",	 pattern="90 15 xx",  x="map_redrum_led(value)"},
+			{name="Pad 22 Playing",	 pattern="90 16 xx",  x="map_redrum_led(value)"},
+			{name="Pad 23 Playing",	 pattern="90 17 xx",  x="map_redrum_led(value)"},
+			{name="Pad 24 Playing",	 pattern="90 18 xx",  x="map_redrum_led(value)"},
+			{name="Pad 25 Playing",	 pattern="90 19 xx",  x="map_redrum_led(value)"},
+			{name="Pad 26 Playing",	 pattern="90 1A xx",  x="map_redrum_led(value)"},
+			{name="Pad 27 Playing",	 pattern="90 1B xx",  x="map_redrum_led(value)"},
+			{name="Pad 28 Playing",	 pattern="90 1C xx",  x="map_redrum_led(value)"},
+--[[
+			{name="Pad 31 Playing",	 pattern="90 1F xx",  x="map_redrum_led(value)"},
+			{name="Pad 32 Playing",	 pattern="90 20 xx",  x="map_redrum_led(value)"},
+			{name="Pad 33 Playing",	 pattern="90 21 xx",  x="map_redrum_led(value)"},
+			{name="Pad 34 Playing",	 pattern="90 22 xx",  x="map_redrum_led(value)"},
+			{name="Pad 35 Playing",	 pattern="90 23 xx",  x="map_redrum_led(value)"},
+			{name="Pad 36 Playing",	 pattern="90 24 xx",  x="map_redrum_led(value)"},
+			{name="Pad 37 Playing",	 pattern="90 25 xx",  x="map_redrum_led(value)"},
+			{name="Pad 38 Playing",	 pattern="90 26 xx",  x="map_redrum_led(value)"},
+			{name="Pad 41 Playing",	 pattern="90 29 xx",  x="map_redrum_led(value)"},
+			{name="Pad 42 Playing",	 pattern="90 2A xx",  x="map_redrum_led(value)"},
+			{name="Pad 43 Playing",	 pattern="90 2B xx",  x="map_redrum_led(value)"},
+			{name="Pad 44 Playing",	 pattern="90 2C xx",  x="map_redrum_led(value)"},
+			{name="Pad 45 Playing",	 pattern="90 2D xx",  x="map_redrum_led(value)"},
+			{name="Pad 46 Playing",	 pattern="90 2E xx",  x="map_redrum_led(value)"},
+			{name="Pad 47 Playing",	 pattern="90 2F xx",  x="map_redrum_led(value)"},
+			{name="Pad 48 Playing",	 pattern="90 30 xx",  x="map_redrum_led(value)"},
+			{name="Pad 51 Playing",	 pattern="90 33 xx",  x="map_redrum_led(value)"},
+			{name="Pad 52 Playing",	 pattern="90 34 xx",  x="map_redrum_led(value)"},
+			{name="Pad 53 Playing",	 pattern="90 35 xx",  x="map_redrum_led(value)"},
+			{name="Pad 54 Playing",	 pattern="90 36 xx",  x="map_redrum_led(value)"},
+			{name="Pad 55 Playing",	 pattern="90 37 xx",  x="map_redrum_led(value)"},
+			{name="Pad 56 Playing",	 pattern="90 38 xx",  x="map_redrum_led(value)"},
+			{name="Pad 57 Playing",	 pattern="90 39 xx",  x="map_redrum_led(value)"},
+			{name="Pad 58 Playing",	 pattern="90 3A xx",  x="map_redrum_led(value)"},
+			{name="Pad 61 Playing",	 pattern="90 3D xx",  x="map_redrum_led(value)"},
+			{name="Pad 62 Playing",	 pattern="90 3E xx",  x="map_redrum_led(value)"},
+			{name="Pad 63 Playing",	 pattern="90 3F xx",  x="map_redrum_led(value)"},
+			{name="Pad 64 Playing",	 pattern="90 40 xx",  x="map_redrum_led(value)"},
+			{name="Pad 65 Playing",	 pattern="90 41 xx",  x="map_redrum_led(value)"},
+			{name="Pad 66 Playing",	 pattern="90 42 xx",  x="map_redrum_led(value)"},
+			{name="Pad 67 Playing",	 pattern="90 43 xx",  x="map_redrum_led(value)"},
+			{name="Pad 68 Playing",	 pattern="90 44 xx",  x="map_redrum_led(value)"},
+			{name="Pad 71 Playing",	 pattern="90 47 xx",  x="map_redrum_led(value)"},
+			{name="Pad 72 Playing",	 pattern="90 48 xx",  x="map_redrum_led(value)"},
+			{name="Pad 73 Playing",	 pattern="90 49 xx",  x="map_redrum_led(value)"},
+			{name="Pad 74 Playing",	 pattern="90 4A xx",  x="map_redrum_led(value)"},
+			{name="Pad 75 Playing",	 pattern="90 4B xx",  x="map_redrum_led(value)"},
+			{name="Pad 76 Playing",	 pattern="90 4C xx",  x="map_redrum_led(value)"},
+			{name="Pad 77 Playing",	 pattern="90 4D xx",  x="map_redrum_led(value)"},
+			{name="Pad 78 Playing",	 pattern="90 4E xx",  x="map_redrum_led(value)"},
+			{name="Pad 81 Playing",	 pattern="90 51 xx",  x="map_redrum_led(value)"},
+			{name="Pad 82 Playing",	 pattern="90 52 xx",  x="map_redrum_led(value)"},
+			{name="Pad 83 Playing",	 pattern="90 53 xx",  x="map_redrum_led(value)"},
+			{name="Pad 84 Playing",	 pattern="90 54 xx",  x="map_redrum_led(value)"},
+			{name="Pad 85 Playing",	 pattern="90 55 xx",  x="map_redrum_led(value)"},
+			{name="Pad 86 Playing",	 pattern="90 56 xx",  x="map_redrum_led(value)"},
+			{name="Pad 87 Playing",	 pattern="90 57 xx",  x="map_redrum_led(value)"},
+			{name="Pad 88 Playing",	 pattern="90 58 xx",  x="map_redrum_led(value)"},
 
 --]]
 --[[
 
 
 --left to right TOP
-			{name="Button 91",	pattern="B? 5B xx"},
-			{name="Button 92",	pattern="B? 5C xx"},
-			{name="Button 93",	pattern="B? 5D xx"},
-			{name="Button 94",	pattern="B? 5E xx"},
-			{name="Button 95",	pattern="B? 5F xx"},
-			{name="Button 96",	pattern="B? 60 xx"},
-			{name="Button 97",	pattern="B? 61 xx"},
-			{name="Button 98",	pattern="B? 62 xx"},
+			{name="Button 91",	pattern="b0 5B xx"},
+			{name="Button 92",	pattern="b0 5C xx"},
+			{name="Button 93",	pattern="b0 5D xx"},
+			{name="Button 94",	pattern="b0 5E xx"},
+			{name="Button 95",	pattern="b0 5F xx"},
+			{name="Button 96",	pattern="b0 60 xx"},
+			{name="Button 97",	pattern="b0 61 xx"},
+			{name="Button 98",	pattern="b0 62 xx"},
 --left to right Bottom
-			{name="Button 01",  pattern="B? 01 xx"},
-			{name="Button 02",  pattern="B? 02 xx"},
-			{name="Button 03",  pattern="B? 03 xx"},
-			{name="Button 04",  pattern="B? 04 xx"},
-			{name="Button 05",  pattern="B? 05 xx"},
-			{name="Button 06",  pattern="B? 06 xx"},
-			{name="Button 07",  pattern="B? 07 xx"},
-			{name="Button 08",  pattern="B? 08 xx"},
+			{name="Button 01",  pattern="b0 01 xx"},
+			{name="Button 02",  pattern="b0 02 xx"},
+			{name="Button 03",  pattern="b0 03 xx"},
+			{name="Button 04",  pattern="b0 04 xx"},
+			{name="Button 05",  pattern="b0 05 xx"},
+			{name="Button 06",  pattern="b0 06 xx"},
+			{name="Button 07",  pattern="b0 07 xx"},
+			{name="Button 08",  pattern="b0 08 xx"},
 --bottom to top Left
-			{name="Button 10",	 pattern="B? 0A xx"},
-			{name="Button 20",	 pattern="B? 14 xx"},
-			{name="Button 30",	 pattern="B? 1E xx"},
-			{name="Button 40",	 pattern="B? 28 xx"},
-			{name="Button 50",	 pattern="B? 32 xx"},
-			{name="Button 60",	 pattern="B? 3C xx"},
-			{name="Button 70",	 pattern="B? 46 xx"},
-			{name="Button 80",	 pattern="B? 50 xx"},
+			{name="Button 10",	 pattern="b0 0A xx"},
+			{name="Button 20",	 pattern="b0 14 xx"},
+			{name="Button 30",	 pattern="b0 1E xx"},
+			{name="Button 40",	 pattern="b0 28 xx"},
+			{name="Button 50",	 pattern="b0 32 xx"},
+			{name="Button 60",	 pattern="b0 3C xx"},
+			{name="Button 70",	 pattern="b0 46 xx"},
+			{name="Button 80",	 pattern="b0 50 xx"},
 --bottom to top Right
-			{name="Button 19",  pattern="B? 13 xx"},
-			{name="Button 29",  pattern="B? 1D xx"},
-			{name="Button 39",  pattern="B? 27 xx"},
-			{name="Button 49",  pattern="B? 31 xx"},
-			{name="Button 59",  pattern="B? 3B xx"},
-			{name="Button 69",  pattern="B? 45 xx"},
-			{name="Button 79",  pattern="B? 4F xx"},
-			{name="Button 89",  pattern="B? 59 xx"},
+			{name="Button 19",  pattern="b0 13 xx"},
+			{name="Button 29",  pattern="b0 1D xx"},
+			{name="Button 39",  pattern="b0 27 xx"},
+			{name="Button 49",  pattern="b0 31 xx"},
+			{name="Button 59",  pattern="b0 3B xx"},
+			{name="Button 69",  pattern="b0 45 xx"},
+			{name="Button 79",  pattern="b0 4F xx"},
+			{name="Button 89",  pattern="b0 59 xx"},
 
 --]]
 
@@ -1341,7 +1370,7 @@ tprint(ret)
 --			local noteout = ret.y + 100 --offset note by 100
 			local noteout = ret.y --offset note by 100
 --			itemno = g_Bbtn_firstitem+(ret.y-10) --Tbtn starts at item 121 in the items index.
-			itemno = pad[ret.y].itemindex -- items index.
+			itemno = buttonindex[ret.y].itemindex -- items index.
 			if(ret.z>0) then
 				local msg={ time_stamp = event.time_stamp, item=itemno, value = ret.x, note = noteout,velocity = ret.z }
 				remote.handle_input(msg)
@@ -1963,7 +1992,7 @@ function remote_deliver_midi(maxbytes,port)
 
 
 
-tprint(lpp_events)
+--tprint(lpp_events)
 		
 		return lpp_events --send out a bunch of MIDI to the Launchpad Pro
 	end --end port==1
