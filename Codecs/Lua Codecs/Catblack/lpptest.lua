@@ -201,7 +201,8 @@ k_first_step_item = 61
 k_first_step_playing_item = 94
 k_accent = 77
 ----Tbtn starts at item 121 in the items index, 10 is the note number of Tbtn1. wonky way to get item #
-g_Tbtn_firstitem = 121
+g_btn_firstitem = 100 -- -1
+g_Bbtn_firstitem = 121
 g_accent = 0
 g_last_accent = 0
 g_accent_dn = false
@@ -297,8 +298,7 @@ function tprint (tbl, indent)
 	else
 		formatting = string.rep("  ", indent) .. type(tbl) .. ": "
 		remote.trace(formatting .. tostring(v) ..'\n')
-	end
-		
+	end	
 end
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -326,28 +326,33 @@ end
 notemode={35,40,45,50,55,60,65,70} -- left column -1
 drummode={35,39,43,47,51,55,59,63} -- left column -1
 pad={}
-padindex={}
+padindex={} 
 note={}
 drum={}
+buttonindex={}
 index=1
-for ho=1,8 do
-	for ve=1,8 do
-		local thispad=(ho*10)+ve	
+for ho=1,8 do --horizontal from bottom
+	for ve=1,8 do -- vertical from left
+		local thispad=(ho*10)+ve  --11-18 ... 81-88
 		local thisnote=notemode[ho]+ve
 		local thisdrum=drummode[ho]+ve
-		if ve>4 then
+		if ve>4 then -- drum mode is 4 4x4 grids
 			thisdrum=thisdrum+28
 		end
-
 		if note[thisnote] == nil then
 			note[thisnote]={}
 		end
-		table.insert(note[thisnote],thispad)	
-		table.insert(pad,thispad,{note=thisnote,drum=thisdrum,x=ho,y=ve,color=0,newcolor=0})
-		table.insert(padindex,index,{pad=thispad,note=thisnote,drum=thisdrum,x=ho,y=ve,color=0,newcolor=0})
-		table.insert(drum,thisdrum,{pad=thispad,note=thisnote,drum=thisdrum,x=ho,y=ve,color=0,newcolor=0})
-		index=index+1
+		table.insert(note[thisnote],thispad) --In note mode, a single note can be on one or two pads.	
+		table.insert(pad,thispad,{padhex=string.format("%02X",thispad),note=thisnote,drum=thisdrum,index=index,itemindex=index+12,x=ho,y=ve,color=0,newcolor=0})
+		table.insert(padindex,index,{pad=thispad,padhex=string.format("%02X",thispad),note=thisnote,drum=thisdrum,itemindex=index+12,x=ho,y=ve,color=0,newcolor=0})
+		table.insert(drum,thisdrum,{pad=thispad,note=thisnote,index=index,x=ho,y=ve,color=0,newcolor=0})
+		index=index+1 --index so I can cycle through the 64 pads quickly.
 	end
+	--items here.
+	buttonindex[90+ho]=g_btn_firstitem+ho
+	buttonindex[ho]=g_btn_firstitem+ho+8
+	buttonindex[10*ho]=g_btn_firstitem+ho+16
+	buttonindex[(10*ho)+9]=g_btn_firstitem+ho+24	
 end
 --[[
 remote.trace("start note\n")
@@ -357,8 +362,8 @@ remote.trace("end note\n")
 --remote.trace(table.concat(note, ", "))
 --remote.trace(table.concat(note.pos, ", "))
 --]]
-tprint(padindex)
-remote.trace(padindex[11].pad)
+tprint(buttonindex)
+--remote.trace(padindex[11].pad)
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -397,7 +402,8 @@ function remote_init(manufacturer, model)
 			{name="Fader 5", input="value", min=0, max=127, output="value"},
 			{name="Fader 6", input="value", min=0, max=127, output="value"},
 			{name="Fader 7", input="value", min=0, max=127, output="value"},
-			{name="Fader 8", input="value", min=0, max=127, output="value"},
+			{name="Fader 8", input="value", min=0, max=127, output="value"}, --12
+			{name="Fader 9", input="value", min=0, max=127, output="value"}, --13
 --[[
 			{name="Pan 1", input="value", min=0, max=127, output="value"},
 			{name="Pan 2", input="value", min=0, max=127, output="value"},
@@ -477,7 +483,7 @@ function remote_init(manufacturer, model)
 --]]
 --From bottom left to top right
 
-			{name="Pad 11", input="value", min=0, max=127, output="value"},
+			{name="Pad 11", input="value", min=0, max=127, output="value"}, --14
 			{name="Pad 12", input="value", min=0, max=127, output="value"},
 			{name="Pad 13", input="value", min=0, max=127, output="value"},
 			{name="Pad 14", input="value", min=0, max=127, output="value"},
@@ -542,10 +548,9 @@ function remote_init(manufacturer, model)
 			{name="Pad 87", input="value", min=0, max=127, output="value"},
 			{name="Pad 88", input="value", min=0, max=127, output="value"},
 
---[[
 --From bottom left to top right
 
-			{name="Pad 11 Playing", min=0, max=4, output="value"},
+			{name="Pad 11 Playing", min=0, max=4, output="value"}, --77
 			{name="Pad 12 Playing", min=0, max=4, output="value"},
 			{name="Pad 13 Playing", min=0, max=4, output="value"},
 			{name="Pad 14 Playing", min=0, max=4, output="value"},
@@ -569,6 +574,7 @@ function remote_init(manufacturer, model)
 			{name="Pad 36 Playing", min=0, max=4, output="value"},
 			{name="Pad 37 Playing", min=0, max=4, output="value"},
 			{name="Pad 38 Playing", min=0, max=4, output="value"},
+--[[
 			{name="Pad 41 Playing", min=0, max=4, output="value"},
 			{name="Pad 42 Playing", min=0, max=4, output="value"},
 			{name="Pad 43 Playing", min=0, max=4, output="value"},
@@ -611,7 +617,7 @@ function remote_init(manufacturer, model)
 			{name="Pad 88 Playing", min=0, max=4, output="value"},
 --]]
 --left to right Top
-			{name="Button 91", input="button", min=0, max=127, output="value"},
+			{name="Button 91", input="button", min=0, max=127, output="value"},--101
 			{name="Button 92", input="button", min=0, max=127, output="value"},
 			{name="Button 93", input="button", min=0, max=127, output="value"},
 			{name="Button 94", input="button", min=0, max=127, output="value"},
@@ -620,7 +626,7 @@ function remote_init(manufacturer, model)
 			{name="Button 97", input="button", min=0, max=127, output="value"},
 			{name="Button 98", input="button", min=0, max=127, output="value"},
 --left to right Bottom
-			{name="Button 01", input="button", min=0, max=127, output="value"},
+			{name="Button 01", input="button", min=0, max=127, output="value"}, --
 			{name="Button 02", input="button", min=0, max=127, output="value"},
 			{name="Button 03", input="button", min=0, max=127, output="value"},
 			{name="Button 04", input="button", min=0, max=127, output="value"},
@@ -646,6 +652,24 @@ function remote_init(manufacturer, model)
 			{name="Button 69", input="button", min=0, max=127, output="value"},
 			{name="Button 79", input="button", min=0, max=127, output="value"},
 			{name="Button 89", input="button", min=0, max=127, output="value"},
+--left to right Top
+			{name="Shift Button 91", input="button", min=0, max=127, output="value"},
+			{name="Shift Button 92", input="button", min=0, max=127, output="value"},
+			{name="Shift Button 93", input="button", min=0, max=127, output="value"},
+			{name="Shift Button 94", input="button", min=0, max=127, output="value"},
+			{name="Shift Button 95", input="button", min=0, max=127, output="value"},
+			{name="Shift Button 96", input="button", min=0, max=127, output="value"},
+			{name="Shift Button 97", input="button", min=0, max=127, output="value"},
+			{name="Shift Button 98", input="button", min=0, max=127, output="value"},
+--left to right Bottom
+			{name="Shift Button 01", input="button", min=0, max=127, output="value"}, --
+			{name="Shift Button 02", input="button", min=0, max=127, output="value"},
+			{name="Shift Button 03", input="button", min=0, max=127, output="value"},
+			{name="Shift Button 04", input="button", min=0, max=127, output="value"},
+			{name="Shift Button 05", input="button", min=0, max=127, output="value"},
+			{name="Shift Button 06", input="button", min=0, max=127, output="value"},
+			{name="Shift Button 07", input="button", min=0, max=127, output="value"},
+			{name="Shift Button 08", input="button", min=0, max=127, output="value"},
 
 
 
@@ -1128,7 +1152,6 @@ function remote_process_midi(event)
 --remote.trace(event.size)
 --remote.trace("evsize")
 
---tprint(event,5)
 
 -- -----------------------------------------------------------------------------------------------
 -- Match buttons and notes and transpose notes.
@@ -1265,7 +1288,7 @@ tprint(ret)
 		
 		
 		
-		if (ret.y>10 and ret.y<89) and (noscaleneeded==false) and (button==1) then
+		if (ret.y>10 and ret.y<89) and (noscaleneeded==false) and (button==0) then
 			---if the pads have transposed, then we need to turn off the last note----------------------
 			if(transpose_changed == true) then
 				local prev_off={ time_stamp = event.time_stamp, item=1, value = ret.x, note = g_delivered_note,velocity = 0 }
@@ -1289,16 +1312,19 @@ tprint(ret)
 ----------------------------------------------------			
 			
 
--- TODO, modify this to work with side buttons!			
---[[
-		elseif (ret.y<25 and shift==1) then --f7 buttons and top buttons
-			local noteout = ret.y + 100 --offset note by 100
-			itemno = g_Tbtn_firstitem+(ret.y-10) --Tbtn starts at item 121 in the items index.
+-- TODO, modify this to work with bottom buttons!			
+--		elseif (ret.y<9 and shift==1) then --f7 buttons and top buttons
+		elseif (buttonindex[ret.y]~=nil and shift==1) then --f7 buttons and top buttons
+--			local noteout = ret.y + 100 --offset note by 100
+			local noteout = ret.y --offset note by 100
+--			itemno = g_Bbtn_firstitem+(ret.y-10) --Tbtn starts at item 121 in the items index.
+			itemno = pad[ret.y].itemindex -- items index.
 			if(ret.z>0) then
 				local msg={ time_stamp = event.time_stamp, item=itemno, value = ret.x, note = noteout,velocity = ret.z }
 				remote.handle_input(msg)
 			end
 			return true
+--[[
 --]]
 		else
 			return false
@@ -1330,6 +1356,7 @@ if event.size==9 then
 	elseif (livemodeswitch) then 
 			g_set_mode=3
 	end
+	
 -- This next will only be sent on the 1st LPP midi channel, so it's not relevant here.
 --[[
 	livemodeswitch = remote.match_midi("F0 00 20 29 02 10 2D xx F7",event) --find if we are in live mode
@@ -1342,7 +1369,7 @@ remote.trace(livemodeswitch.x)
 	
 	end
 --]]
-	return false
+	return true
 end -- eventsize=9
 -- -----------------------------------------------------------------------------------------------
 
@@ -1360,8 +1387,6 @@ end
 
 function remote_deliver_midi(maxbytes,port)
 
-
-
 	if(port==1) then
 		local lpp_events={}
 		local upevent={}
@@ -1378,7 +1403,7 @@ function remote_deliver_midi(maxbytes,port)
 		local do_update_pads = 0
 
 -- -----------------------------------------------------------------------------------------------
--- Keep it in programmer mode	
+-- Keep it in programmer mode	FOR NOW
 -- -----------------------------------------------------------------------------------------------
 		if g_set_mode~=g_mode then
 			mode_event = remote.make_midi("F0 00 20 29 02 10 2C xx F7",{ x = g_set_mode, port=1 })
@@ -1828,7 +1853,7 @@ function remote_deliver_midi(maxbytes,port)
 			local first_len = table.getn(firstcolors)
 			for i=1,first_len,1 do
 				table.insert(lpp_events,firstcolors[i])
-		remote.trace(i)
+		--remote.trace(i)
 
 			end	
 --tprint(firstcolors)
@@ -1839,7 +1864,7 @@ function remote_deliver_midi(maxbytes,port)
 				for i=1,64,1 do
 					--local padnum = string.format("%x",i+35)
 --remote.trace(string.format("%02x",padindex[i].pad))
-					local padnum = string.format("%02x",padindex[i].pad)
+					local padnum = padindex[i].padhex
 					local modd = modulo(i-1,8)
 					local keycolor="02"
 					if(modd==0 or modd==7) then
@@ -1970,8 +1995,8 @@ end
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function remote_set_state(changed_items)
-
-
+--remote.trace("Setstate")
+--tprint(changed_items)
 
 --[[
 
@@ -2041,8 +2066,8 @@ function remote_prepare_for_use()
 --[[
 		remote.make_midi("F0 00 20 29 02 10 2C 03 F7"), -- Programmer mode
 		remote.make_midi("F0 00 20 29 02 10 0E 00 F7"), -- Blank all
-		remote.make_midi("F0 00 20 29 02 10 14 32 00 07 05 52 65 61 73 6F 6E F7"), -- scroll Reason
 		remote.make_midi("F0 00 20 29 02 10 0A 63 32 F7"), --Front light
+--		remote.make_midi("F0 00 20 29 02 10 14 32 00 07 05 52 65 61 73 6F 6E F7"), -- scroll Reason
 --		remote.make_midi("F0 00 20 29 02 10	 F7"),
 --		remote.make_midi("F0 00 20 29 02 10	 F7"),
 --send all local off on settings ch 16	191,122,64 
