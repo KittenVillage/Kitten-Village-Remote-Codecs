@@ -443,3 +443,6 @@ Maps/.DS_Store
 Remotables.sql
 remotables_test_blank data.sql
 Codecs/Lua Codecs/Catblack/lpptest - Copy (2).lua
+Maps/Catblack/LP Pro_bk.remotemap
+Maps/Catblack/lpp_remotemap.txt
+lpp_remotemap.xlsx

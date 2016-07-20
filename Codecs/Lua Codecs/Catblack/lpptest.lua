@@ -9,6 +9,113 @@
 
 
 
+
+
+
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- UTILITY FUNCTIONS UP HERE
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+--make a message to send ---------------------------------------
+-- TODO still not sure where this would output
+function make_lcd_midi_message(text)
+
+remote.trace(text)
+	local event = remote.make_midi("F0 23 23 ") --header for SysexReader
+--	local event = remote.make_midi("F0 00 20 29 02 10 14") --header for Launchpad Pro, product ID 0
+--	local event = remote.make_midi("f0 00 01 61 00") --header for Livid LCD, product ID 0
+	start=4
+	stop=4+string.len(text)-1
+	for i = start,stop do
+		sourcePos = i-start+1
+		event[i] = string.byte(text,sourcePos)
+	end
+	event[stop+1] = 247			-- hex f7
+	return event
+end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+function set_scale(index)	
+	scale_int = index
+	scalename = scalenames[1+scale_int]
+	scale = scales[scalename]
+end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+function exists(f, l) -- find element v of l satisfying f(v)
+  for _, v in ipairs(l) do
+    if v==f then
+      return true
+    end
+  end
+  return nil
+end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- remote.trace contents of `tbl`, with indentation.
+-- `indent` sets the initial level of indentation.
+-- https://gist.github.com/ripter/4270799
+function tprint (tbl, indent)
+	if not indent then indent = 0 end
+	if type(tbl) == "table" then
+		 for k, v in pairs(tbl) do
+			formatting = string.rep("  ", indent) .. k .. ": "
+			if type(v) == "table" then
+			  remote.trace('\n'..formatting ..'\n')
+			  tprint(v, indent+1)
+			elseif type(v) == 'boolean' then
+			  remote.trace(formatting .. tostring(v))		
+			else
+			  remote.trace(formatting .. tostring(v) ..'\n')
+			end
+		 end
+	else
+		formatting = string.rep("  ", indent) .. type(tbl) .. ": "
+		remote.trace(formatting .. tostring(v) ..'\n')
+	end	
+end
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- Thanks, Livid
+--for some Reason (pun intended) I need to define a modulo function. just using the % operator was throwing errors :(
+function modulo(a,b)
+	local mo = a-math.floor(a/b)*b
+	return mo
+end
+
+function set_vel_color(newvel)
+	if newvel > 0 then
+		newvel=math.ceil(newvel/16)+87 --88 to 95
+	end
+	return newvel
+end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- Variable defs
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -200,9 +307,6 @@ g_last_led_output = { 100,100,100,100, 100,100,100,100, 100,100,100,100, 100,100
 k_first_step_item = 61
 k_first_step_playing_item = 94
 k_accent = 77
-----Tbtn starts at item 121 in the items index, 10 is the note number of Tbtn1. wonky way to get item #
-g_btn_firstitem = 100 -- -1
-g_Bbtn_firstitem = 121
 g_accent = 0
 g_last_accent = 0
 g_accent_dn = false
@@ -234,87 +338,6 @@ sysex_header="F0 00 20 29 02 10 "
 
 
 
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
--- UTILITY FUNCTIONS UP HERE
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
---make a message to send ---------------------------------------
--- TODO still not sure where this would output
-function make_lcd_midi_message(text)
-
-remote.trace(text)
-	local event = remote.make_midi("F0 23 23 ") --header for SysexReader
---	local event = remote.make_midi("F0 00 20 29 02 10 14") --header for Launchpad Pro, product ID 0
---	local event = remote.make_midi("f0 00 01 61 00") --header for Livid LCD, product ID 0
-	start=4
-	stop=4+string.len(text)-1
-	for i = start,stop do
-		sourcePos = i-start+1
-		event[i] = string.byte(text,sourcePos)
-	end
-	event[stop+1] = 247			-- hex f7
-	return event
-end
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-function set_scale(index)	
-	scale_int = index
-	scalename = scalenames[1+scale_int]
-	scale = scales[scalename]
-end
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-function exists(f, l) -- find element v of l satisfying f(v)
-  for _, v in ipairs(l) do
-    if v==f then
-      return true
-    end
-  end
-  return nil
-end
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
---+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
--- remote.trace contents of `tbl`, with indentation.
--- `indent` sets the initial level of indentation.
--- https://gist.github.com/ripter/4270799
-function tprint (tbl, indent)
-	if not indent then indent = 0 end
-	if type(tbl) == "table" then
-		 for k, v in pairs(tbl) do
-			formatting = string.rep("  ", indent) .. k .. ": "
-			if type(v) == "table" then
-			  remote.trace('\n'..formatting ..'\n')
-			  tprint(v, indent+1)
-			elseif type(v) == 'boolean' then
-			  remote.trace(formatting .. tostring(v))		
-			else
-			  remote.trace(formatting .. tostring(v) ..'\n')
-			end
-		 end
-	else
-		formatting = string.rep("  ", indent) .. type(tbl) .. ": "
-		remote.trace(formatting .. tostring(v) ..'\n')
-	end	
-end
-
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
--- Thanks, Livid
---for some Reason (pun intended) I need to define a modulo function. just using the % operator was throwing errors :(
-function modulo(a,b)
-	local mo = a-math.floor(a/b)*b
-	return mo
-end
-
-function set_vel_color(newvel)
-	if newvel > 0 then
-		newvel=math.ceil(newvel/16)+87 --88 to 95
-	end
-	return newvel
-end
 
 
 
@@ -322,7 +345,7 @@ end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- Set some variables for later!
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+g_btn_firstitem = 100 -- first -1 !
 notemode={35,40,45,50,55,60,65,70} -- left column -1
 drummode={35,39,43,47,51,55,59,63} -- left column -1
 pad={}
