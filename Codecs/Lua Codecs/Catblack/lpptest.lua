@@ -345,7 +345,7 @@ transpose = 0
 
 
 shift = 0
-root = 36
+root = 12  -- not 36
 scalename = 'Major'
 scale = scales[scalename]
 scale_int = 0;
@@ -1850,7 +1850,8 @@ function remote_deliver_midi(maxbytes,port)
 					local addnote = scale[1+modulo(i-1,scale_len)]
 					local outnote = root+transpose+(12*oct)+addnote --note that gets played by synth
 					local outnorm = modulo(outnote,12) --normalized to 0-11 range
-					local padnum = string.format("%x",i+35) --note# that the controller led responds to
+--					local padnum = string.format("%x",i+35) --note# that the controller led responds to
+					local padnum = padindex[i].padhex --note# that the controller led responds to
 					local keycolors = {"02","40","20"} --white,yellow,blue
 					local whites = {2, 4, 5, 7, 9, 11}
 					--remote.trace("\n i: "..i.." padid: "..padid.." outnorm "..outnorm.." outnote "..outnote.." xpose "..transpose.." addnote "..addnote)
@@ -1868,8 +1869,9 @@ function remote_deliver_midi(maxbytes,port)
 				end
 			else
 				--do drumpad color scheme
-				for i=0,31,1 do
-					local padnum = string.format("%x",i+36) --note# that the controller led responds to
+				for i=1,32,1 do
+--					local padnum = string.format("%x",i+36) --note# that the controller led responds to
+					local padnum = padindex[i].padhex --note# that the controller led responds to
 					local right = modulo(math.floor(i/4),2)
 					--remote.trace("\nside "..right.." div "..math.floor(i/4).." i "..i)
 					if(right==1) then
@@ -1900,7 +1902,8 @@ function remote_deliver_midi(maxbytes,port)
 	  --if we've just landed on Redrum, we need to clear out the 3rd row of pads, otherwise they maintain LEDs from pvs scope
 	  if g_clearpads==1 then
 		for pad=1,8 do
-		  local padnum = string.format("%02x",padnotes[pad])
+--		  local padnum = string.format("%02x",padnotes[pad])
+		  local padnum = padindex[i].padhex
 		  local event = remote.make_midi("90 "..padnum.." 00")
 		  table.insert(lpp_events,event)
 		end	 
@@ -1913,7 +1916,8 @@ function remote_deliver_midi(maxbytes,port)
 		local last_value = g_last_led_output[pad]
 		if led_value ~= last_value then
 		  -- send note
-		  local padnum = string.format("%02x",padnotes[pad])
+--		  local padnum = string.format("%02x",padnotes[pad])
+		  local padnum = padindex[i].padhex
 		  local event = remote.make_midi("90 "..padnum.." xx", { x=led_value })
 		  table.insert(lpp_events,event)
 		  -- FL: Change "sent", set last value
@@ -1925,7 +1929,8 @@ function remote_deliver_midi(maxbytes,port)
 	  if g_last_accent ~= g_accent then
 		g_accent_dn = false
 		local acccolor = acc_colors[(g_accent+1)]
-		local accnote = string.format("%02x",43)
+--		local accnote = string.format("%02x",43)
+		local accnote = padindex[32].padhex -- "30"
 		local event = remote.make_midi("90 "..accnote.." xx", { x=acccolor })
 		table.insert(lpp_events,event)
 		g_last_accent = g_accent
