@@ -16,6 +16,20 @@
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- UTILITY FUNCTIONS UP HERE
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- FL: Helper function that combines the "Pad n" and "Pad n Playing" outputs
+function make_led_value(index,a,b)
+  local sw = (g_step_is_playing[index]>0) and 1 or 0 --range of value is 0-4, so we convert to 0-1
+	local combined_value = g_step_value[index]*a + sw*b
+	return combined_value
+end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 --make a message to send ---------------------------------------
 -- TODO still not sure where this would output
 function make_lcd_midi_message(text)
@@ -43,6 +57,63 @@ function set_scale(index)
 	scale = scales[scalename]
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+function map_redrum_led(v)
+  if(v<5) then
+   return pclr[v]
+  end
+end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+--UTILITY: this function is called when we need to update a slider LCD
+function update_slider(item)
+	local thetext = remote.get_item_name_and_value(item)
+	local textarray = {}
+	local p_path = ""
+	local v_path = ""
+	local p_text = ""
+	local v_text = ""
+	--local tlcd_event = make_lcd_midi_message("item "..item.." text "..thetext.." len "..#thetext )
+	--table.insert(lcd_events,tlcd_event)
+	if(string.len(thetext)>0) then
+		--strip any percent symbols
+		local pctsearch = string.find(thetext, '%%')
+		if(pctsearch~=nil) then
+			thetext = string.sub(thetext,1,pctsearch-1).." pct"
+		end
+		local wordcount = 1
+		--make a table of words so we can break the track name_and_value into "name" and "value"
+		for j in string.gmatch(thetext, "%S+") do
+			textarray[wordcount] = j
+			wordcount = wordcount+1
+		end
+		wordcount = wordcount-1 --because wordcount is really an index starting at 1, to get the true count, we subtract 1
+		p_path = "/Reason/0/LPP/0/Fader_"..(item-sli_start).."/lcd_name " -- "sli_start" (-4) because the sliders start at index 3 in table items, but we start our OSC Slider names at 0.
+		v_path = "/Reason/0/LPP/0/Fader_"..(item-sli_start).."/lcd_value "
+		if(wordcount>2) then
+			p_text = string.format( table.concat( table_slice(textarray,1,-3)," " ) ) --from first element to 3rd to last element (everything but last 2 elements)
+			v_text = string.format( table.concat( table_slice(textarray,-2)," " ) ) --last 2 elements
+		else
+			p_text = string.format(textarray[1]) --1st element, like "Mode"
+			v_text = string.format(textarray[2]) --2nd elemnt, like "10%" (with % stripped out)
+		end
+		local p_lcd_event = make_lcd_midi_message(p_path..p_text)
+		local v_lcd_event = make_lcd_midi_message(v_path..v_text)
+		table.insert(lcd_events,p_lcd_event) --put the lcd_text (e.g. "Drum 1" or "Filter Freq" into the table of midi events 
+		table.insert(lcd_events,v_lcd_event) --put the lcd_text (e.g. "Tone 16" or "220 hz" into the table of midi events 	
+	end
+end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
 
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -79,6 +150,7 @@ function tprint (tbl, indent)
 		remote.trace(formatting .. tostring(v) ..'\n')
 	end	
 end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- Thanks, Livid
@@ -87,7 +159,9 @@ function modulo(a,b)
 	local mo = a-math.floor(a/b)*b
 	return mo
 end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function set_vel_color(newvel)
 	if newvel > 0 then
 		newvel=math.ceil(newvel/16)+87 --88 to 95
@@ -335,9 +409,9 @@ sysex_header="F0 00 20 29 02 10 "
 
 -- FL: Assign to these the index to the first the corresponding items according
 -- to the definition list in remote_init. (Or assign them when defining the items, depending on how you do that.)
-k_first_step_item = 61
-k_first_step_playing_item = 94
-k_accent = 77
+k_first_step_item = 62
+k_first_step_playing_item = 126
+k_accent = 191
 g_accent = 0
 g_last_accent = 0
 g_accent_dn = false
@@ -522,7 +596,7 @@ function remote_init(manufacturer, model)
 			{name="Pad 26", input="value", min=0, max=127, output="value"},
 			{name="Pad 27", input="value", min=0, max=127, output="value"},
 			{name="Pad 28", input="value", min=0, max=127, output="value"},
-			{name="Pad 31", input="value", min=0, max=127, output="value"},
+			{name="Pad 31", input="value", min=0, max=127, output="value"}, --62
 			{name="Pad 32", input="value", min=0, max=127, output="value"},
 			{name="Pad 33", input="value", min=0, max=127, output="value"},
 			{name="Pad 34", input="value", min=0, max=127, output="value"},
@@ -589,7 +663,7 @@ function remote_init(manufacturer, model)
 			{name="Pad 26 Playing", min=0, max=4, output="value"},
 			{name="Pad 27 Playing", min=0, max=4, output="value"},
 			{name="Pad 28 Playing", min=0, max=4, output="value"},
-			{name="Pad 31 Playing", min=0, max=4, output="value"},
+			{name="Pad 31 Playing", min=0, max=4, output="value"}, --126
 			{name="Pad 32 Playing", min=0, max=4, output="value"},
 			{name="Pad 33 Playing", min=0, max=4, output="value"},
 			{name="Pad 34 Playing", min=0, max=4, output="value"},
@@ -597,7 +671,6 @@ function remote_init(manufacturer, model)
 			{name="Pad 36 Playing", min=0, max=4, output="value"},
 			{name="Pad 37 Playing", min=0, max=4, output="value"},
 			{name="Pad 38 Playing", min=0, max=4, output="value"}, --133
---[[
 			{name="Pad 41 Playing", min=0, max=4, output="value"},
 			{name="Pad 42 Playing", min=0, max=4, output="value"},
 			{name="Pad 43 Playing", min=0, max=4, output="value"},
@@ -605,7 +678,8 @@ function remote_init(manufacturer, model)
 			{name="Pad 45 Playing", min=0, max=4, output="value"},
 			{name="Pad 46 Playing", min=0, max=4, output="value"},
 			{name="Pad 47 Playing", min=0, max=4, output="value"},
-			{name="Pad 48 Playing", min=0, max=4, output="value"},
+			{name="Pad 48 Playing", min=0, max=4, output="value"}, --141
+--[[
 			{name="Pad 51 Playing", min=0, max=4, output="value"},
 			{name="Pad 52 Playing", min=0, max=4, output="value"},
 			{name="Pad 53 Playing", min=0, max=4, output="value"},
@@ -640,7 +714,7 @@ function remote_init(manufacturer, model)
 			{name="Pad 88 Playing", min=0, max=4, output="value"},
 --]]
 --left to right Top
-			{name="Button 91", input="button", min=0, max=127, output="value"},--134
+			{name="Button 91", input="button", min=0, max=127, output="value"},--142
 			{name="Button 92", input="button", min=0, max=127, output="value"},
 			{name="Button 93", input="button", min=0, max=127, output="value"},
 			{name="Button 94", input="button", min=0, max=127, output="value"},
@@ -649,7 +723,7 @@ function remote_init(manufacturer, model)
 			{name="Button 97", input="button", min=0, max=127, output="value"},
 			{name="Button 98", input="button", min=0, max=127, output="value"},
 --left to right Bottom
-			{name="Button 01", input="button", min=0, max=127, output="value"}, --142
+			{name="Button 01", input="button", min=0, max=127, output="value"}, --150
 			{name="Button 02", input="button", min=0, max=127, output="value"},
 			{name="Button 03", input="button", min=0, max=127, output="value"},
 			{name="Button 04", input="button", min=0, max=127, output="value"},
@@ -658,7 +732,7 @@ function remote_init(manufacturer, model)
 			{name="Button 07", input="button", min=0, max=127, output="value"},
 			{name="Button 08", input="button", min=0, max=127, output="value"},
 --bottom to top Left
-			{name="Button 10", input="button", min=0, max=127, output="value"}, --150
+			{name="Button 10", input="button", min=0, max=127, output="value"}, --158
 			{name="Button 20", input="button", min=0, max=127, output="value"},
 			{name="Button 30", input="button", min=0, max=127, output="value"},
 			{name="Button 40", input="button", min=0, max=127, output="value"},
@@ -667,7 +741,7 @@ function remote_init(manufacturer, model)
 			{name="Button 70", input="button", min=0, max=127, output="value"},
 			{name="Button 80", input="button", min=0, max=127, output="value"},
 --bottom to top Right
-			{name="Button 19", input="button", min=0, max=127, output="value"}, --158
+			{name="Button 19", input="button", min=0, max=127, output="value"}, --166
 			{name="Button 29", input="button", min=0, max=127, output="value"},
 			{name="Button 39", input="button", min=0, max=127, output="value"},
 			{name="Button 49", input="button", min=0, max=127, output="value"},
@@ -676,7 +750,7 @@ function remote_init(manufacturer, model)
 			{name="Button 79", input="button", min=0, max=127, output="value"},
 			{name="Button 89", input="button", min=0, max=127, output="value"},
 --left to right Top
-			{name="Shift Button 91", input="button", min=0, max=127, output="value"}, --166
+			{name="Shift Button 91", input="button", min=0, max=127, output="value"}, --174
 			{name="Shift Button 92", input="button", min=0, max=127, output="value"},
 			{name="Shift Button 93", input="button", min=0, max=127, output="value"},
 			{name="Shift Button 94", input="button", min=0, max=127, output="value"},
@@ -685,14 +759,15 @@ function remote_init(manufacturer, model)
 			{name="Shift Button 97", input="button", min=0, max=127, output="value"},
 			{name="Shift Button 98", input="button", min=0, max=127, output="value"},
 --left to right Bottom
-			{name="Shift Button 01", input="button", min=0, max=127, output="value"}, -- 174
+			{name="Shift Button 01", input="button", min=0, max=127, output="value"}, -- 182
 			{name="Shift Button 02", input="button", min=0, max=127, output="value"},
 			{name="Shift Button 03", input="button", min=0, max=127, output="value"},
 			{name="Shift Button 04", input="button", min=0, max=127, output="value"},
 			{name="Shift Button 05", input="button", min=0, max=127, output="value"},
 			{name="Shift Button 06", input="button", min=0, max=127, output="value"},
 			{name="Shift Button 07", input="button", min=0, max=127, output="value"},
-			{name="Shift Button 08", input="button", min=0, max=127, output="value"}, --181
+			{name="Shift Button 08", input="button", min=0, max=127, output="value"}, --190
+			{name="Pad 32 Alt", input="value", min=0, max=2, output="value"},--191
 
 
 
@@ -1627,17 +1702,18 @@ function remote_deliver_midi(maxbytes,port)
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
 --[[
+--]]	
 			--parse the text to see if there's any scale or transpose info----------------------------------------
 			if istracktext==true then			
 				--if scopetext from _Scope item has changed	
 				if g_scopetext_prev~=g_scopetext then
---]]	
 --[[
 					--Let the LCD know what the device is
 					local const_event = make_lcd_midi_message("/Reason/0/LPP/0/display/4/display "..g_scopetext)
 					table.insert(lcd_events,const_event)
 --]]
 --[[
+--]]	
 					--detect Redrum
 					if(g_scopetext=="Redrum") then
 						noscaleneeded = true	
@@ -1661,13 +1737,13 @@ function remote_deliver_midi(maxbytes,port)
 					end
 					g_scopetext_prev = g_scopetext
 				end
---]]	
 --[[			
 				--send LCD the Track name text----------------------------------------------------------------
 				local track_event = make_lcd_midi_message("/Reason/0/LPP/0/display/0/display "..new_text)
 				table.insert(lcd_events,track_event)
 --]]
 --[[
+--]]
 				--see if there's a scale in the track text
 				local result = ""
 				scsearch = string.find(new_text, 'scale')
@@ -1699,19 +1775,19 @@ function remote_deliver_midi(maxbytes,port)
 					scale_from_parse = false
 					use_global_scale = true
 				end
---]]
 --[[
 				--send scale name to LCD----------------------------------------
 				local scalename_event = make_lcd_midi_message("/Reason/0/LPP/0/display/2/display/ "..scalename)
 				table.insert(lcd_events,scalename_event)
 --]]
---[[		
 				---If it's not a Kong, and there's no scale in the Track name, set to global_scale
 				if use_global_scale and iskong==false then
 					set_scale(global_scale)
 					--local prev_event = make_lcd_midi_message("PREV SCALE "..global_scale.." "..g_delivered_scale)
 					--table.insert(lcd_events,prev_event)
 				end
+--[[		
+--]]
 
 				--see if there's a transpose in the track text----------------------------------------
 				local transp = ""
@@ -1730,17 +1806,16 @@ function remote_deliver_midi(maxbytes,port)
 						transpose_changed = true
 					end
 				end
+--[[
 				--send LCD transpose value
 				if(transpose_changed) then
---]]
---[[
 					local transpose_event = make_lcd_midi_message("/Reason/0/LPP/0/display/1/display/ "..transpose)
 					table.insert(lcd_events,transpose_event)
---]]
---[[
 				end
+--]]
 			end
 			--done looking at "Track" labels------------------------------------------------------
+--[[
 --]]
 		end
 -- -----------------------------------------------------------------------------------------------
@@ -1761,6 +1836,7 @@ function remote_deliver_midi(maxbytes,port)
 
 
 --[[
+--]]
 -- -----------------------------------------------------------------------------------------------
 		-- color the pads if scale or transpose changed----------------------------------------
 -- -----------------------------------------------------------------------------------------------		
@@ -1808,13 +1884,13 @@ function remote_deliver_midi(maxbytes,port)
 		end
 -- -----------------------------------------------------------------------------------------------
 
---]]
 
 
 
 
 
 --[[
+--]]
 -- -----------------------------------------------------------------------------------------------
 --Redrum
 -- -----------------------------------------------------------------------------------------------
@@ -1856,7 +1932,6 @@ function remote_deliver_midi(maxbytes,port)
 		end
 	end
 -- -----------------------------------------------------------------------------------------------
---]]
 
 
 
