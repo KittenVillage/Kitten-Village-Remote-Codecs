@@ -13,182 +13,6 @@
 
 
 
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
--- UTILITY FUNCTIONS UP HERE
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
--- FL: Helper function that combines the "Pad n" and "Pad n Playing" outputs
-function make_led_value(index,a,b)
-  local sw = (g_step_is_playing[index]>0) and 1 or 0 --range of value is 0-4, so we convert to 0-1
-	local combined_value = g_step_value[index]*a + sw*b
-	return combined_value
-end
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
---make a message to send ---------------------------------------
--- TODO still not sure where this would output
-function make_lcd_midi_message(text)
-
-remote.trace(text)
-	local event = remote.make_midi("F0 23 23 ") --header for SysexReader
---	local event = remote.make_midi("F0 00 20 29 02 10 14") --header for Launchpad Pro, product ID 0
---	local event = remote.make_midi("f0 00 01 61 00") --header for Livid LCD, product ID 0
-	start=4
-	stop=4+string.len(text)-1
-	for i = start,stop do
-		sourcePos = i-start+1
-		event[i] = string.byte(text,sourcePos)
-	end
-	event[stop+1] = 247			-- hex f7
-	return event
-end
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-function set_scale(index)	
-	scale_int = index
-	scalename = scalenames[1+scale_int]
-	scale = scales[scalename]
-end
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-
-
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-function map_redrum_led(v)
-  if(v<5) then
-   return pclr[v]
-  end
-end
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-
-
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
---UTILITY: this function is called when we need to update a slider LCD
-function update_slider(item)
-	local thetext = remote.get_item_name_and_value(item)
-	local textarray = {}
-	local p_path = ""
-	local v_path = ""
-	local p_text = ""
-	local v_text = ""
-	--local tlcd_event = make_lcd_midi_message("item "..item.." text "..thetext.." len "..#thetext )
-	--table.insert(lcd_events,tlcd_event)
-	if(string.len(thetext)>0) then
-		--strip any percent symbols
-		local pctsearch = string.find(thetext, '%%')
-		if(pctsearch~=nil) then
-			thetext = string.sub(thetext,1,pctsearch-1).." pct"
-		end
-		local wordcount = 1
-		--make a table of words so we can break the track name_and_value into "name" and "value"
-		for j in string.gmatch(thetext, "%S+") do
-			textarray[wordcount] = j
-			wordcount = wordcount+1
-		end
-		wordcount = wordcount-1 --because wordcount is really an index starting at 1, to get the true count, we subtract 1
-		p_path = "/Reason/0/LPP/0/Fader_"..(item-sli_start).."/lcd_name " -- "sli_start" (-4) because the sliders start at index 3 in table items, but we start our OSC Slider names at 0.
-		v_path = "/Reason/0/LPP/0/Fader_"..(item-sli_start).."/lcd_value "
-		if(wordcount>2) then
-			p_text = string.format( table.concat( table_slice(textarray,1,-3)," " ) ) --from first element to 3rd to last element (everything but last 2 elements)
-			v_text = string.format( table.concat( table_slice(textarray,-2)," " ) ) --last 2 elements
-		else
-			p_text = string.format(textarray[1]) --1st element, like "Mode"
-			v_text = string.format(textarray[2]) --2nd elemnt, like "10%" (with % stripped out)
-		end
-		local p_lcd_event = make_lcd_midi_message(p_path..p_text)
-		local v_lcd_event = make_lcd_midi_message(v_path..v_text)
-		table.insert(lcd_events,p_lcd_event) --put the lcd_text (e.g. "Drum 1" or "Filter Freq" into the table of midi events 
-		table.insert(lcd_events,v_lcd_event) --put the lcd_text (e.g. "Tone 16" or "220 hz" into the table of midi events 	
-	end
-end
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-
-
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-function exists(f, l) -- find element v of l satisfying f(v)
-  for _, v in ipairs(l) do
-    if v==f then
-      return true
-    end
-  end
-  return nil
-end
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
---+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
--- remote.trace contents of `tbl`, with indentation.
--- `indent` sets the initial level of indentation.
--- https://gist.github.com/ripter/4270799
-function tprint (tbl, indent)
-	if not indent then indent = 0 end
-	if type(tbl) == "table" then
-		 for k, v in pairs(tbl) do
-			formatting = string.rep("  ", indent) .. k .. ": "
-			if type(v) == "table" then
-			  remote.trace('\n'..formatting ..'\n')
-			  tprint(v, indent+1)
-			elseif type(v) == 'boolean' then
-			  remote.trace(formatting .. tostring(v))		
-			else
-			  remote.trace(formatting .. tostring(v) ..'\n')
-			end
-		 end
-	else
-		formatting = string.rep("  ", indent) .. type(tbl) .. ": "
-		remote.trace(formatting .. tostring(v) ..'\n')
-	end	
-end
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
--- Thanks, Livid
---for some Reason (pun intended) I need to define a modulo function. just using the % operator was throwing errors :(
-function modulo(a,b)
-	local mo = a-math.floor(a/b)*b
-	return mo
-end
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
---+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-function set_vel_color(newvel)
-	if newvel > 0 then
-		newvel=math.ceil(newvel/16)+87 --88 to 95
-	end
-	return newvel
-end
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- Variable defs
@@ -323,7 +147,7 @@ sli_end=12
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
---WHAT TO KEEP??
+-- Set some variables
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- These are set in remote_on_auto_input() 
@@ -412,11 +236,11 @@ sysex_header="F0 00 20 29 02 10 "
 k_first_step_item = 62
 k_first_step_playing_item = 126
 k_accent = 191
+g_btn_firstitem = 141 -- first -1 !
 g_accent = 0
 g_last_accent = 0
 g_accent_dn = false
 g_accent_count = 0
-g_btn_firstitem = 133 -- first -1 !
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- Set some variables for later!
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -427,45 +251,261 @@ padindex={}
 note={}
 drum={}
 buttonindex={}
-index=1
-for ho=1,8 do --horizontal from bottom
-	for ve=1,8 do -- vertical from left
-		local thispad=(ho*10)+ve  --11-18 ... 81-88
-		local thisnote=notemode[ho]+ve
-		local thisdrum=drummode[ho]+ve
-		if ve>4 then -- drum mode is 4 4x4 grids
-			thisdrum=thisdrum+28
+itemnum={}
+
+
+
+
+
+function def_vars()
+
+	local index=1
+	for ho=1,8 do --horizontal from bottom
+		for ve=1,8 do -- vertical from left
+			local thispad=(ho*10)+ve  --11-18 ... 81-88
+			local thisnote=notemode[ho]+ve
+			local thisdrum=drummode[ho]+ve
+			if ve>4 then -- drum mode is 4 4x4 grids
+				thisdrum=thisdrum+28
+			end
+			if note[thisnote] == nil then
+				note[thisnote]={}
+			end
+			table.insert(note[thisnote],thispad) --In note mode, a single note can be on one or two pads.	
+			table.insert(pad,thispad,{padhex=string.format("%02X",thispad),note=thisnote,drum=thisdrum,index=index,itemindex=(index-1)+itemnum.first_pad,x=ho,y=ve,color=0,newcolor=0})
+			table.insert(padindex,index,{pad=thispad,padhex=string.format("%02X",thispad),note=thisnote,drum=thisdrum,itemindex=(index-1)+itemnum.first_pad,x=ho,y=ve,color=0,newcolor=0})
+			table.insert(drum,thisdrum,{pad=thispad,note=thisnote,index=index,x=ho,y=ve,color=0,newcolor=0})
+			index=index+1 --index so I can cycle through the 64 pads quickly.
 		end
-		if note[thisnote] == nil then
-			note[thisnote]={}
-		end
-		table.insert(note[thisnote],thispad) --In note mode, a single note can be on one or two pads.	
-		table.insert(pad,thispad,{padhex=string.format("%02X",thispad),note=thisnote,drum=thisdrum,index=index,itemindex=index+12,x=ho,y=ve,color=0,newcolor=0})
-		table.insert(padindex,index,{pad=thispad,padhex=string.format("%02X",thispad),note=thisnote,drum=thisdrum,itemindex=index+12,x=ho,y=ve,color=0,newcolor=0})
-		table.insert(drum,thisdrum,{pad=thispad,note=thisnote,index=index,x=ho,y=ve,color=0,newcolor=0})
-		index=index+1 --index so I can cycle through the 64 pads quickly.
+		--items here.
+		buttonindex[90+ho]=g_btn_firstitem+ho
+		buttonindex[ho]=g_btn_firstitem+ho+8
+		buttonindex[10*ho]=g_btn_firstitem+ho+16
+		buttonindex[(10*ho)+9]=g_btn_firstitem+ho+24	
 	end
-	--items here.
-	buttonindex[90+ho]=g_btn_firstitem+ho
-	buttonindex[ho]=g_btn_firstitem+ho+8
-	buttonindex[10*ho]=g_btn_firstitem+ho+16
-	buttonindex[(10*ho)+9]=g_btn_firstitem+ho+24	
+	--[[
+	remote.trace("start note\n")
+	tprint(note)
+	remote.trace("end note\n")
+	--remote.trace(table.concat(note.pos, ", "))
+	--remote.trace(table.concat(note, ", "))
+	--remote.trace(table.concat(note.pos, ", "))
+	--]]
+	--tprint(buttonindex)
+	--remote.trace(padindex[11].pad)
 end
---[[
-remote.trace("start note\n")
-tprint(note)
-remote.trace("end note\n")
---remote.trace(table.concat(note.pos, ", "))
---remote.trace(table.concat(note, ", "))
---remote.trace(table.concat(note.pos, ", "))
---]]
---tprint(buttonindex)
---remote.trace(padindex[11].pad)
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- UTILITY FUNCTIONS UP HERE
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- FL: Helper function that combines the "Pad n" and "Pad n Playing" outputs
+function make_led_value(index,a,b)
+  local sw = (g_step_is_playing[index]>0) and 1 or 0 --range of value is 0-4, so we convert to 0-1
+	local combined_value = g_step_value[index]*a + sw*b
+	return combined_value
+end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+--make a message to send ---------------------------------------
+-- TODO still not sure where this would output
+function make_lcd_midi_message(text)
+
+remote.trace(text)
+	local event = remote.make_midi("F0 23 23 ") --header for SysexReader
+--	local event = remote.make_midi("F0 00 20 29 02 10 14") --header for Launchpad Pro, product ID 0
+--	local event = remote.make_midi("f0 00 01 61 00") --header for Livid LCD, product ID 0
+	start=4
+	stop=4+string.len(text)-1
+	for i = start,stop do
+		sourcePos = i-start+1
+		event[i] = string.byte(text,sourcePos)
+	end
+	event[stop+1] = 247			-- hex f7
+	return event
+end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+
+
+
+
+
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+--UTILITY: this function is called when we need to update a slider LCD
+function update_slider(item)
+--[[
+	local thetext = remote.get_item_name_and_value(item)
+	local textarray = {}
+	local p_path = ""
+	local v_path = ""
+	local p_text = ""
+	local v_text = ""
+	--local tlcd_event = make_lcd_midi_message("item "..item.." text "..thetext.." len "..#thetext )
+	--table.insert(lcd_events,tlcd_event)
+	if(string.len(thetext)>0) then
+		--strip any percent symbols
+		local pctsearch = string.find(thetext, '%%')
+		if(pctsearch~=nil) then
+			thetext = string.sub(thetext,1,pctsearch-1).." pct"
+		end
+		local wordcount = 1
+		--make a table of words so we can break the track name_and_value into "name" and "value"
+		for j in string.gmatch(thetext, "%S+") do
+			textarray[wordcount] = j
+			wordcount = wordcount+1
+		end
+		wordcount = wordcount-1 --because wordcount is really an index starting at 1, to get the true count, we subtract 1
+		p_path = "/Reason/0/LPP/0/Fader_"..(item-sli_start).."/lcd_name " -- "sli_start" (-4) because the sliders start at index 3 in table items, but we start our OSC Slider names at 0.
+		v_path = "/Reason/0/LPP/0/Fader_"..(item-sli_start).."/lcd_value "
+		if(wordcount>2) then
+			p_text = string.format( table.concat( table_slice(textarray,1,-3)," " ) ) --from first element to 3rd to last element (everything but last 2 elements)
+			v_text = string.format( table.concat( table_slice(textarray,-2)," " ) ) --last 2 elements
+		else
+			p_text = string.format(textarray[1]) --1st element, like "Mode"
+			v_text = string.format(textarray[2]) --2nd elemnt, like "10%" (with % stripped out)
+		end
+		local p_lcd_event = make_lcd_midi_message(p_path..p_text)
+		local v_lcd_event = make_lcd_midi_message(v_path..v_text)
+		table.insert(lcd_events,p_lcd_event) --put the lcd_text (e.g. "Drum 1" or "Filter Freq" into the table of midi events 
+		table.insert(lcd_events,v_lcd_event) --put the lcd_text (e.g. "Tone 16" or "220 hz" into the table of midi events 	
+	end
+--]]
+end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+function exists(f, l) -- find element v of l satisfying f(v)
+  for _, v in ipairs(l) do
+    if v==f then
+      return true
+    end
+  end
+  return nil
+end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+function vprint (strng,vari)
+	remote.trace(strng .. ": "..tostring(vari)..'\n')
+end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- remote.trace contents of `tbl`, with indentation.
+-- `indent` sets the initial level of indentation.
+-- https://gist.github.com/ripter/4270799
+function tprint (tbl, indent)
+	if not indent then indent = 0 end
+	if type(tbl) == "table" then
+		 for k, v in pairs(tbl) do
+			formatting = string.rep("  ", indent) .. k .. ": "
+			if type(v) == "table" then
+			  remote.trace('\n'..formatting ..'\n')
+			  tprint(v, indent+1)
+			elseif type(v) == 'boolean' then
+			  remote.trace(formatting .. tostring(v))		
+			else
+			  remote.trace(formatting .. tostring(v) ..'\n')
+			end
+		 end
+	else
+		formatting = string.rep("  ", indent) .. type(tbl) .. ": "
+		remote.trace(formatting .. tostring(v) ..'\n')
+	end	
+end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- Thanks, Livid
+--for some Reason (pun intended) I need to define a modulo function. just using the % operator was throwing errors :(
+function modulo(a,b)
+	local mo = a-math.floor(a/b)*b
+	return mo
+end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+function set_vel_color(newvel)
+	if newvel > 0 then
+		newvel=math.ceil(newvel/16)+87 --88 to 95
+	end
+	return newvel
+end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+function set_scale(index)	
+	scale_int = index
+	scalename = scalenames[1+scale_int]
+	scale = scales[scalename]
+end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+function map_redrum_led(v)
+  if(v<5) then
+   return pclr[v]
+  end
+end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
@@ -486,7 +526,8 @@ remote.trace("end note\n")
 function remote_init(manufacturer, model)
 -- this version
 	if model=="LP Pro" then
-		local items={
+		items={
+--		local items={
 --items
 			{name="Keyboard",input="keyboard"},
 			{name="_Scope", output="text"}, --device, e.g. "Thor"
@@ -580,7 +621,7 @@ function remote_init(manufacturer, model)
 --]]
 --From bottom left to top right
 
-			{name="Pad 11", input="value", min=0, max=127, output="value"}, --46
+			{name="Pad 11", input="value", min=0, max=127, output="value", itemnum="first_pad"}, --46
 			{name="Pad 12", input="value", min=0, max=127, output="value"},
 			{name="Pad 13", input="value", min=0, max=127, output="value"},
 			{name="Pad 14", input="value", min=0, max=127, output="value"},
@@ -596,7 +637,7 @@ function remote_init(manufacturer, model)
 			{name="Pad 26", input="value", min=0, max=127, output="value"},
 			{name="Pad 27", input="value", min=0, max=127, output="value"},
 			{name="Pad 28", input="value", min=0, max=127, output="value"},
-			{name="Pad 31", input="value", min=0, max=127, output="value"}, --62
+			{name="Pad 31", input="value", min=0, max=127, output="value", itemnum="first_step_item"}, --62
 			{name="Pad 32", input="value", min=0, max=127, output="value"},
 			{name="Pad 33", input="value", min=0, max=127, output="value"},
 			{name="Pad 34", input="value", min=0, max=127, output="value"},
@@ -643,7 +684,7 @@ function remote_init(manufacturer, model)
 			{name="Pad 85", input="value", min=0, max=127, output="value"},
 			{name="Pad 86", input="value", min=0, max=127, output="value"},
 			{name="Pad 87", input="value", min=0, max=127, output="value"},
-			{name="Pad 88", input="value", min=0, max=127, output="value"}, --109
+			{name="Pad 88", input="value", min=0, max=127, output="value"},
 
 --From bottom left to top right
 
@@ -663,7 +704,7 @@ function remote_init(manufacturer, model)
 			{name="Pad 26 Playing", min=0, max=4, output="value"},
 			{name="Pad 27 Playing", min=0, max=4, output="value"},
 			{name="Pad 28 Playing", min=0, max=4, output="value"},
-			{name="Pad 31 Playing", min=0, max=4, output="value"}, --126
+			{name="Pad 31 Playing", min=0, max=4, output="value", itemnum="first_step_playing_item"}, --126
 			{name="Pad 32 Playing", min=0, max=4, output="value"},
 			{name="Pad 33 Playing", min=0, max=4, output="value"},
 			{name="Pad 34 Playing", min=0, max=4, output="value"},
@@ -714,7 +755,7 @@ function remote_init(manufacturer, model)
 			{name="Pad 88 Playing", min=0, max=4, output="value"},
 --]]
 --left to right Top
-			{name="Button 91", input="button", min=0, max=127, output="value"},--142
+			{name="Button 91", input="button", min=0, max=127, output="value", itemnum="btn_firstitem"},--142
 			{name="Button 92", input="button", min=0, max=127, output="value"},
 			{name="Button 93", input="button", min=0, max=127, output="value"},
 			{name="Button 94", input="button", min=0, max=127, output="value"},
@@ -767,7 +808,7 @@ function remote_init(manufacturer, model)
 			{name="Shift Button 06", input="button", min=0, max=127, output="value"},
 			{name="Shift Button 07", input="button", min=0, max=127, output="value"},
 			{name="Shift Button 08", input="button", min=0, max=127, output="value"}, --190
-			{name="Pad 32 Alt", input="value", min=0, max=2, output="value"},--191
+			{name="Pad 32 Alt", input="value", min=0, max=2, output="value", itemnum="accent"},--191
 
 
 
@@ -775,6 +816,22 @@ function remote_init(manufacturer, model)
 
 			}
  --tprint(items) --Useful for counting
+for it=1,table.getn(items),1 do
+	if items[it].itemnum ~= nil then
+		itemnum[items[it].itemnum]=it
+	end
+end
+--vprint("fp",itemnum.first_pad)
+--vprint("acc",itemnum.accent)
+--[[
+first_pad
+first_step_item
+first_step_playing_item 
+accent
+btn_firstitem 
+--]] 
+--tprint(itemnum)
+		remote.trace("here!")
 		remote.define_items(items)
 
 		local inputs={
@@ -1258,6 +1315,9 @@ function remote_init(manufacturer, model)
 
 		}
 		remote.define_auto_outputs(outputs)
+		
+		
+		def_vars()
 	end
 end
 
@@ -1353,7 +1413,8 @@ tprint(ret)
 		  if(accent_pad.z>10) then		  
 			g_accent_dn = true
 			g_accent_count = modulo(g_accent_count+1,3)
-			local msg={ time_stamp = event.time_stamp, item=k_accent, value = g_accent_count, note = "2B",velocity = accent_pad.z }
+--			local msg={ time_stamp = event.time_stamp, item=k_accent, value = g_accent_count, note = "2B",velocity = accent_pad.z }
+			local msg={ time_stamp = event.time_stamp, item=itemnum.accent, value = g_accent_count, note = "2B",velocity = accent_pad.z }
 			remote.handle_input(msg)
 			g_delivered_note = noteout
 			return true
@@ -1390,7 +1451,7 @@ tprint(ret)
 				scale = scales[scalename]
 				global_scale = scale_int
 				scale_from_parse = false
-			--remote.trace("scale up "..scalename)
+			remote.trace("scale up "..scalename)
 			end
 		end
 		if(scale_dn) then
@@ -1400,7 +1461,7 @@ tprint(ret)
 				scale = scales[scalename]
 				global_scale = scale_int
 				scale_from_parse = false
-			--remote.trace("scale dn "..scalename)
+			remote.trace("scale dn "..scalename)
 			end
 		end
 		if(drum_tog) then
@@ -1443,7 +1504,7 @@ tprint(ret)
 --		elseif (ret.y<9 and shift==1) then --f7 buttons and top buttons
 		elseif (buttonindex[ret.y]~=nil and shift==1) then --f7 buttons and top buttons
 --			local noteout = ret.y + 100 --offset note by 100
-			local noteout = ret.y --offset note by 100
+			local noteout = ret.y --no offset
 --			itemno = g_Bbtn_firstitem+(ret.y-10) --Tbtn starts at item 121 in the items index.
 			itemno = buttonindex[ret.y].itemindex -- items index.
 			if(ret.z>0) then
@@ -1538,6 +1599,7 @@ function remote_deliver_midi(maxbytes,port)
 			frlight_event = remote.make_midi("F0 00 20 29 02 10 0A 63 32 F7",{ port=1 }) --Front light
 			table.insert(lpp_events,frlight_event)
 			g_mode=g_set_mode
+			return lpp_events
 		end
 -- This next will switch the unit to the 1st LPP midi channel in Live mode, so it's not relevant here.
 --[[
@@ -1629,6 +1691,7 @@ function remote_deliver_midi(maxbytes,port)
 				do_update_pads = 1
 			end
 			--remote.trace(scalename)
+vprint("scalename",scalename)
 		end
 --[[
 --]]
@@ -1665,6 +1728,7 @@ function remote_deliver_midi(maxbytes,port)
 --]]
 			g_delivered_transpose = transpose
 			do_update_pads = 1
+vprint("transpose",transpose)
 		end
 -- -----------------------------------------------------------------------------------------------
 		
@@ -1673,15 +1737,19 @@ function remote_deliver_midi(maxbytes,port)
 -- -----------------------------------------------------------------------------------------------
 		--if vartext from _Var item in remotemap has changed	-----------------
 		if g_vartext_prev~=g_vartext then
---[[
 			--Let the LCD know what the variation is
 			local vartext = remote.get_item_text_value(g_var_item_index)
+--[[
 			local var_event = make_lcd_midi_message("/Reason/0/LPP/0/display/1/display "..vartext)
 			table.insert(lcd_events,var_event)
 --]]
 			g_vartext_prev = g_vartext
 			isvarchange = true
 		end
+		
+		
+		
+--[[		
 		--lcd event and text parsing for scale detection from text in track name----------------------------------------
 		local new_text = g_lcd_state
 		if g_delivered_lcd_state~=new_text then
@@ -1689,31 +1757,31 @@ function remote_deliver_midi(maxbytes,port)
 			local use_global_scale = false
 			istracktext = string.find(new_text,"Track") == 1 --The word "track" is the first word
 			if (istracktext==false) then
+--]]
 --[[
 				if(g_lcd_index>=sli_start and g_lcd_index<=sli_end) then --if it's a Slider
 					--we'll make the parameter/value/unit list into two arrays for our LCD, then send a long string to LCD
 					update_slider(g_lcd_index)	
 				end
 --]]
+--[[
+
 			end
 -- -----------------------------------------------------------------------------------------------
-
+--]]
 
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
---[[
---]]	
 			--parse the text to see if there's any scale or transpose info----------------------------------------
 			if istracktext==true then			
 				--if scopetext from _Scope item has changed	
 				if g_scopetext_prev~=g_scopetext then
+	
 --[[
 					--Let the LCD know what the device is
 					local const_event = make_lcd_midi_message("/Reason/0/LPP/0/display/4/display "..g_scopetext)
 					table.insert(lcd_events,const_event)
 --]]
---[[
---]]	
 					--detect Redrum
 					if(g_scopetext=="Redrum") then
 						noscaleneeded = true	
@@ -1737,13 +1805,14 @@ function remote_deliver_midi(maxbytes,port)
 					end
 					g_scopetext_prev = g_scopetext
 				end
+--[[
+--]]	
 --[[			
 				--send LCD the Track name text----------------------------------------------------------------
 				local track_event = make_lcd_midi_message("/Reason/0/LPP/0/display/0/display "..new_text)
 				table.insert(lcd_events,track_event)
 --]]
 --[[
---]]
 				--see if there's a scale in the track text
 				local result = ""
 				scsearch = string.find(new_text, 'scale')
@@ -1775,19 +1844,19 @@ function remote_deliver_midi(maxbytes,port)
 					scale_from_parse = false
 					use_global_scale = true
 				end
+--]]
 --[[
 				--send scale name to LCD----------------------------------------
 				local scalename_event = make_lcd_midi_message("/Reason/0/LPP/0/display/2/display/ "..scalename)
 				table.insert(lcd_events,scalename_event)
 --]]
+--[[		
 				---If it's not a Kong, and there's no scale in the Track name, set to global_scale
 				if use_global_scale and iskong==false then
 					set_scale(global_scale)
 					--local prev_event = make_lcd_midi_message("PREV SCALE "..global_scale.." "..g_delivered_scale)
 					--table.insert(lcd_events,prev_event)
 				end
---[[		
---]]
 
 				--see if there's a transpose in the track text----------------------------------------
 				local transp = ""
@@ -1806,6 +1875,7 @@ function remote_deliver_midi(maxbytes,port)
 						transpose_changed = true
 					end
 				end
+--]]
 --[[
 				--send LCD transpose value
 				if(transpose_changed) then
@@ -1813,9 +1883,9 @@ function remote_deliver_midi(maxbytes,port)
 					table.insert(lcd_events,transpose_event)
 				end
 --]]
+--[[
 			end
 			--done looking at "Track" labels------------------------------------------------------
---[[
 --]]
 		end
 -- -----------------------------------------------------------------------------------------------
@@ -1841,19 +1911,30 @@ function remote_deliver_midi(maxbytes,port)
 		-- color the pads if scale or transpose changed----------------------------------------
 -- -----------------------------------------------------------------------------------------------		
 		if(do_update_pads==1) then
-	  table.insert(lcd_events,upd_event)
+--	  table.insert(lcd_events,upd_event)
 			if(scalename~='DrumPad') then
-				for i=1,32,1 do
+				for i=1,64,1 do
+--					local padid = i-1
 					local padid = i-1
 					local scale_len = table.getn(scale)
+--					local oct = math.floor(padid/scale_len)
 					local oct = math.floor(padid/scale_len)
+--					local addnote = scale[1+modulo(i-1,scale_len)]
 					local addnote = scale[1+modulo(i-1,scale_len)]
 					local outnote = root+transpose+(12*oct)+addnote --note that gets played by synth
 					local outnorm = modulo(outnote,12) --normalized to 0-11 range
 --					local padnum = string.format("%x",i+35) --note# that the controller led responds to
 					local padnum = padindex[i].padhex --note# that the controller led responds to
-					local keycolors = {"02","40","20"} --white,yellow,blue
+					local keycolors = {"03","0D","2D"} --white,yellow,blue
 					local whites = {2, 4, 5, 7, 9, 11}
+--[[
+vprint("padid",padid)
+vprint("oct",oct)
+vprint("addnote",addnote)
+vprint("outnote",outnote)
+vprint("outnorm",outnorm)
+--vprint("",)
+--]]
 					--remote.trace("\n i: "..i.." padid: "..padid.." outnorm "..outnorm.." outnote "..outnote.." xpose "..transpose.." addnote "..addnote)
 					--if outnorm is 0 , make it yellow. if it's a white key, make it white, else blue
 					if outnorm==0 then
@@ -1869,7 +1950,7 @@ function remote_deliver_midi(maxbytes,port)
 				end
 			else
 				--do drumpad color scheme
-				for i=1,32,1 do
+				for i=1,64,1 do
 --					local padnum = string.format("%x",i+36) --note# that the controller led responds to
 					local padnum = padindex[i].padhex --note# that the controller led responds to
 					local right = modulo(math.floor(i/4),2)
@@ -1895,47 +1976,54 @@ function remote_deliver_midi(maxbytes,port)
 --]]
 -- -----------------------------------------------------------------------------------------------
 --Redrum
+
+--TODO
 -- -----------------------------------------------------------------------------------------------
-	if(g_scopetext=="Redrum") then
+		if(g_scopetext=="Redrum") then
+
 --local padnotes = {60,61,62,63,64,65,66,67, 52,53,54,55,56,57,58,59, 44,45,46,47,48,49,50,51}
-	  local padnotes = {44,45,46,47,48,49,50,51}
-	  --if we've just landed on Redrum, we need to clear out the 3rd row of pads, otherwise they maintain LEDs from pvs scope
-	  if g_clearpads==1 then
-		for pad=1,8 do
---		  local padnum = string.format("%02x",padnotes[pad])
-		  local padnum = padindex[i].padhex
-		  local event = remote.make_midi("90 "..padnum.." 00")
-		  table.insert(lpp_events,event)
-		end	 
-		g_clearpads=0
-	  end
-	  --flash drums playing on selected pads
-	  for pad=1,8 do
-		local led_value = 0
-		led_value = make_led_value(pad,4,32) --cyan/blue for drum selects
-		local last_value = g_last_led_output[pad]
-		if led_value ~= last_value then
-		  -- send note
---		  local padnum = string.format("%02x",padnotes[pad])
-		  local padnum = padindex[i].padhex
-		  local event = remote.make_midi("90 "..padnum.." xx", { x=led_value })
-		  table.insert(lpp_events,event)
-		  -- FL: Change "sent", set last value
-		  g_last_led_output[pad] = led_value
+			local padnotes = {31,32,33,34,35,36,37,38}
+			--if we've just landed on Redrum, we need to clear out the 3rd row of pads, otherwise they maintain LEDs from pvs scope
+			if g_clearpads==1 then
+				for pad=1,8 do
+		--			local padnum = string.format("%02x",padnotes[pad])
+		--			local padnum = padindex[i].padhex
+		--			local padnum = padindex[padnotes[pad]].padhex
+					local padnum = pad[i+30].padhex
+					local event = remote.make_midi("90 "..padnum.." 00")
+					table.insert(lpp_events,event)
+				end	 
+				g_clearpads=0
+			end
+		--flash drums playing on selected pads
+			for pad=1,8 do
+				local led_value = 0
+				led_value = make_led_value(pad,4,32) --cyan/blue for drum selects
+				local last_value = g_last_led_output[pad]
+				if led_value ~= last_value then
+					-- send note
+		--			local padnum = string.format("%02x",padnotes[pad])
+		--			local padnum = padindex[i].padhex
+		--			local padnum = padindex[padnotes[pad]].padhex
+					local padnum = pad[i+30].padhex
+					local event = remote.make_midi("90 "..padnum.." xx", { x=led_value })
+					table.insert(lpp_events,event)
+					-- FL: Change "sent", set last value
+					g_last_led_output[pad] = led_value
+				end
+			end
+		--Pad 32 controls the Accent 3way.
+			local acc_colors = {3,13,5} --wh,yel,red
+			if g_last_accent ~= g_accent then
+				g_accent_dn = false
+				local acccolor = acc_colors[(g_accent+1)]
+		--		local accnote = string.format("%02x",43)
+				local accnote = padindex[32].padhex -- "30"
+				local event = remote.make_midi("90 "..accnote.." xx", { x=acccolor })
+				table.insert(lpp_events,event)
+				g_last_accent = g_accent
+			end
 		end
-	  end
-	  --Pad 32 controls the Accent 3way.
-	  local acc_colors = {1,64,16} --wh,yel,red
-	  if g_last_accent ~= g_accent then
-		g_accent_dn = false
-		local acccolor = acc_colors[(g_accent+1)]
---		local accnote = string.format("%02x",43)
-		local accnote = padindex[32].padhex -- "30"
-		local event = remote.make_midi("90 "..accnote.." xx", { x=acccolor })
-		table.insert(lpp_events,event)
-		g_last_accent = g_accent
-		end
-	end
 -- -----------------------------------------------------------------------------------------------
 
 
@@ -1992,22 +2080,29 @@ function remote_deliver_midi(maxbytes,port)
 -- This needs to change for 64 pads  
 			if noscaleneeded==false then
 		--notes 36 to 67 for pads
-				local padevent = {}
+--				local padevent = {}
 				for i=1,64,1 do
 					--local padnum = string.format("%x",i+35)
 --remote.trace(string.format("%02x",padindex[i].pad))
 					local padnum = padindex[i].padhex
+--vprint("padnum",padnum)
+
 					local modd = modulo(i-1,8)
 					local keycolor="02"
 					if(modd==0 or modd==7) then
 						keycolor="40"
 					end
-				padevent[i]=remote.make_midi("90 "..padnum.." "..keycolor)
-				table.insert(lpp_events,padevent[i])
+--				padevent[i]=remote.make_midi("90 "..padnum.." "..keycolor)
+--				table.insert(lpp_events,padevent[i])
+				local padev=remote.make_midi("90 "..padnum.." "..keycolor)
+				table.insert(lpp_events,padev)
 --[[
 					local transpose_event = make_lcd_midi_message("/INIT "..transpose)
 					table.insert(lcd_events,transpose_event)
 --]]
+--vprint("padnum",padnum)
+--vprint("",)
+--vprint("",)
 				end
 			end
 			init=0
@@ -2162,19 +2257,24 @@ function remote_set_state(changed_items)
 
   -- FL: Collect all changed states for redrum "drum playing" - this part blinks the 3rd row drum selection pads
 	for k,item_index in ipairs(changed_items) do
-	if item_index == k_accent then
+--	if item_index == k_accent then
+	if item_index == itemnum.accent then
 	  g_accent = remote.get_item_value(item_index)
 	end
 
 
-		if item_index >= k_first_step_item and item_index < k_first_step_item+8 then
-			local step_index = item_index - k_first_step_item + 1
+--		if item_index >= k_first_step_item and item_index < k_first_step_item+8 then
+		if item_index >= itemnum.first_step_item and item_index < itemnum.first_step_item+8 then
+--			local step_index = item_index - k_first_step_item + 1
+			local step_index = item_index - itemnum.first_step_item + 1
 			g_step_value[step_index] = remote.get_item_value(item_index)
 			-- FL: Add this if the item can be disabled
 			-- g_step_is_disabled[step_index] = remote.is_item_enabled(item_index)
 
-		elseif item_index >= k_first_step_playing_item and item_index < k_first_step_playing_item+8 then
-			local step_index = item_index - k_first_step_playing_item + 1
+--		elseif item_index >= k_first_step_playing_item and item_index < k_first_step_playing_item+8 then
+		elseif item_index >= itemnum.first_step_playing_item and item_index < itemnum.first_step_playing_item+8 then
+--			local step_index = item_index - k_first_step_playing_item + 1
+			local step_index = item_index - itemnum.first_step_playing_item + 1
 			g_step_is_playing[step_index] = remote.get_item_value(item_index)
 		end
 	end
@@ -2211,6 +2311,19 @@ function remote_prepare_for_use()
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+
+
+
+
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+function remote_release_from_use()
+	local retEvents={
+--		remote.make_midi("F0 00 20 29 02 10 2C 00 F7"), -- Note mode
+	}
+	return retEvents
+end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
