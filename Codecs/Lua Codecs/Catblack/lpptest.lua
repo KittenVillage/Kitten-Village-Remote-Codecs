@@ -49,7 +49,21 @@ padcolor.DARK_BLUE_HALF = 51
 padcolor.PURPLE = 53
 padcolor.PURPLE_HALF = 55
 padcolor.DARK_ORANGE = 84
+
+
+
+
+
+
+
+
+
+
+
 --]]
+
+
+
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- Black, white, puerto rican, everybody's just a freakin
@@ -144,6 +158,23 @@ sli_start=4
 sli_end=12
 --]]
 
+-- Thought I'd try the colors from virtuosoism.com
+chromaticscale={}
+chromaticscale[0]={interval=0, color=5, hcolor="05", notename="C",}
+chromaticscale[1]={interval=1, color=65, hcolor="41", notename="C#",}
+chromaticscale[2]={interval=2, color=96, hcolor="60", notename="D",}
+chromaticscale[3]={interval=3, color=49, hcolor="31", notename="D#",}
+chromaticscale[4]={interval=4, color=97, hcolor="61", notename="E",}
+chromaticscale[5]={interval=5, color=57, hcolor="39", notename="F",}
+chromaticscale[6]={interval=6, color=21, hcolor="15", notename="F#",}
+chromaticscale[7]={interval=7, color=60, hcolor="3C", notename="G",}
+chromaticscale[8]={interval=8, color=45, hcolor="2D", notename="G#",}
+chromaticscale[9]={interval=9, color=126, hcolor="7E", notename="A",}
+chromaticscale[10]={interval=10, color=55, hcolor="37", notename="A#",}
+chromaticscale[11]={interval=11, color=18, hcolor="12", notename="B",}
+
+
+
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -170,7 +201,8 @@ transpose = 0
 
 shift = 0
 root = 12  -- not 36
-scalename = 'Major'
+--scalename = 'Major'
+scalename = 'Chromatic'
 scale = scales[scalename]
 scale_int = 0;
 g_delivered_scale=0 --for change filter
@@ -201,9 +233,10 @@ g_step_is_playing = { 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0 }
 g_last_led_output = { 100,100,100,100, 100,100,100,100, 100,100,100,100, 100,100,100,100, 100,100,100,100, 100,100,100,100 }
 
 
-
-colors = {"02","04","08","10","20","40","7F"}
-
+-- used in scale modes
+--colors = {"02","04","08","10","20","40","7F"}
+colors = {"05","09","0D","15","2D","31","35"}
+--red,o,y,g,b,d b,v
 noscaleneeded = false
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 lcd_events={}
@@ -1485,13 +1518,20 @@ tprint(ret)
 			end 
 			
 ---------------------------------------------------			
+--			local padid = ret.y-11
 			local padid = ret.y-11
 			local scale_len = table.getn(scale)
 			local ind = 1+modulo(padid,scale_len)  --modulo using the operator % gave me trouble in reason, so I wrote a custom fcn
 			local oct = math.floor(padid/scale_len)
 			local addnote = scale[ind]
 			local noteout = root+transpose+(12*oct)+addnote
-			if (noteout<127 or noteout>0) then
+vprint("padid",padid)
+vprint("oct",oct)
+vprint("addnote",addnote)
+vprint("ind",ind)
+vprint("noteout",noteout)
+-- TODO add an else to keep noteout in this range
+			if (noteout<127 and noteout>0) then
 				local msg={ time_stamp = event.time_stamp, item=1, value = ret.x, note = noteout,velocity = ret.z }
 				remote.handle_input(msg)
 				g_delivered_note = noteout
@@ -1625,7 +1665,7 @@ function remote_deliver_midi(maxbytes,port)
 
 		--if we have pressed shift or there's a change in transpose, we need to show that in the seven seg display on Base:----------------------------------------
 		if (g_delivered_shift~=shift or g_delivered_transpose~=transpose)  then
-			local shcolors = {"21","05"}
+			local shcolors = {"21","05"} -- green, red
 			shevent = remote.make_midi("90 50 "..shcolors[shift+1])
 			if(tran_btn~=nil) then
 				if shift==1 or tran_btn>0 then
@@ -1749,7 +1789,7 @@ vprint("transpose",transpose)
 		
 		
 		
---[[		
+--[[
 		--lcd event and text parsing for scale detection from text in track name----------------------------------------
 		local new_text = g_lcd_state
 		if g_delivered_lcd_state~=new_text then
@@ -1850,13 +1890,15 @@ vprint("transpose",transpose)
 				local scalename_event = make_lcd_midi_message("/Reason/0/LPP/0/display/2/display/ "..scalename)
 				table.insert(lcd_events,scalename_event)
 --]]
---[[		
 				---If it's not a Kong, and there's no scale in the Track name, set to global_scale
 				if use_global_scale and iskong==false then
 					set_scale(global_scale)
+--[[
 					--local prev_event = make_lcd_midi_message("PREV SCALE "..global_scale.." "..g_delivered_scale)
 					--table.insert(lcd_events,prev_event)
+--]]
 				end
+--[[
 
 				--see if there's a transpose in the track text----------------------------------------
 				local transp = ""
@@ -1876,13 +1918,13 @@ vprint("transpose",transpose)
 					end
 				end
 --]]
---[[
 				--send LCD transpose value
 				if(transpose_changed) then
+--[[
 					local transpose_event = make_lcd_midi_message("/Reason/0/LPP/0/display/1/display/ "..transpose)
 					table.insert(lcd_events,transpose_event)
-				end
 --]]
+				end
 --[[
 			end
 			--done looking at "Track" labels------------------------------------------------------
@@ -1982,7 +2024,7 @@ vprint("outnorm",outnorm)
 		if(g_scopetext=="Redrum") then
 
 --local padnotes = {60,61,62,63,64,65,66,67, 52,53,54,55,56,57,58,59, 44,45,46,47,48,49,50,51}
-			local padnotes = {31,32,33,34,35,36,37,38}
+--			local padnotes = {31,32,33,34,35,36,37,38}
 			--if we've just landed on Redrum, we need to clear out the 3rd row of pads, otherwise they maintain LEDs from pvs scope
 			if g_clearpads==1 then
 				for pad=1,8 do
@@ -2222,10 +2264,11 @@ end
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function remote_set_state(changed_items)
---remote.trace("Setstate")
 --tprint(changed_items)
 
 --[[
+--]]
+
 
 	--look for the _Scope constant. Kong reports "KONG". Could use for a variety of things
 
@@ -2242,7 +2285,7 @@ function remote_set_state(changed_items)
 	else
 		g_vartext = ""
 	end
-	
+
 	if(g_last_input_item~=nil) then
 		if remote.is_item_enabled(g_last_input_item) then
 			local feedback_text = remote.get_item_name_and_value(g_last_input_item)
@@ -2278,8 +2321,6 @@ function remote_set_state(changed_items)
 			g_step_is_playing[step_index] = remote.get_item_value(item_index)
 		end
 	end
---]]
-
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
