@@ -86,7 +86,7 @@ pclr[4]=21
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 scales = {
 	Chromatic = {0,1,2,3,4,5,6,7,8,9,10,11},
-	DrumPad = {0,1,2,3, 16,17,18,19, 4,5,6,7, 20,21,22,23, 8,9,10,11, 24,25,26,27, 12,13,14,15, 28,29,30,31},
+--	DrumPad = {0,1,2,3, 16,17,18,19, 4,5,6,7, 20,21,22,23, 8,9,10,11, 24,25,26,27, 12,13,14,15, 28,29,30,31},
 	Major = {0,2,4,5,7,9,11,12},
 	Minor = {0,2,3,5,7,8,10,12},
 	Dorian = {0,2,3,5,7,9,10,12},
@@ -159,19 +159,19 @@ sli_end=12
 --]]
 
 -- Thought I'd try the colors from virtuosoism.com
-chromaticscale={}
-chromaticscale[0]={interval=0, color=5, hcolor="05", notename="C",}
-chromaticscale[1]={interval=1, color=65, hcolor="41", notename="C#",}
-chromaticscale[2]={interval=2, color=96, hcolor="60", notename="D",}
-chromaticscale[3]={interval=3, color=49, hcolor="31", notename="D#",}
-chromaticscale[4]={interval=4, color=97, hcolor="61", notename="E",}
-chromaticscale[5]={interval=5, color=57, hcolor="39", notename="F",}
-chromaticscale[6]={interval=6, color=21, hcolor="15", notename="F#",}
-chromaticscale[7]={interval=7, color=60, hcolor="3C", notename="G",}
-chromaticscale[8]={interval=8, color=45, hcolor="2D", notename="G#",}
-chromaticscale[9]={interval=9, color=126, hcolor="7E", notename="A",}
-chromaticscale[10]={interval=10, color=55, hcolor="37", notename="A#",}
-chromaticscale[11]={interval=11, color=18, hcolor="12", notename="B",}
+colorscale={}
+colorscale[0]={interval=0, color=7, hcolor="07", notename="C",} -- 5 too bright
+colorscale[1]={interval=1, color=65, hcolor="41", notename="C#",}
+colorscale[2]={interval=2, color=96, hcolor="60", notename="D",}
+colorscale[3]={interval=3, color=49, hcolor="31", notename="D#",}
+colorscale[4]={interval=4, color=97, hcolor="61", notename="E",}
+colorscale[5]={interval=5, color=57, hcolor="39", notename="F",}
+colorscale[6]={interval=6, color=21, hcolor="15", notename="F#",}
+colorscale[7]={interval=7, color=60, hcolor="3C", notename="G",}
+colorscale[8]={interval=8, color=45, hcolor="2D", notename="G#",}
+colorscale[9]={interval=9, color=126, hcolor="7E", notename="A",}
+colorscale[10]={interval=10, color=55, hcolor="37", notename="A#",}
+colorscale[11]={interval=11, color=18, hcolor="12", notename="B",}
 
 
 
@@ -290,6 +290,7 @@ itemnum={}
 
 
 
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function def_vars()
 
 	local index=1
@@ -305,9 +306,37 @@ function def_vars()
 				note[thisnote]={}
 			end
 			table.insert(note[thisnote],thispad) --In note mode, a single note can be on one or two pads.	
-			table.insert(pad,thispad,{padhex=string.format("%02X",thispad),note=thisnote,drum=thisdrum,index=index,itemindex=(index-1)+itemnum.first_pad,x=ho,y=ve,color=0,newcolor=0})
-			table.insert(padindex,index,{pad=thispad,padhex=string.format("%02X",thispad),note=thisnote,drum=thisdrum,itemindex=(index-1)+itemnum.first_pad,x=ho,y=ve,color=0,newcolor=0})
-			table.insert(drum,thisdrum,{pad=thispad,note=thisnote,index=index,x=ho,y=ve,color=0,newcolor=0})
+			table.insert(pad,thispad,{
+							padhex=string.format("%02X",thispad),
+							note=thisnote,
+							drum=thisdrum,
+							index=index,
+							itemindex=(index-1)+itemnum.first_pad,
+							x=ho,
+							y=ve,
+							color=0,
+							newcolor=0
+			})
+			table.insert(padindex,index,{
+							pad=thispad,
+							padhex=string.format("%02X",thispad),
+							note=thisnote,
+							drum=thisdrum,
+							itemindex=(index-1)+itemnum.first_pad,
+							x=ho,
+							y=ve,
+							color=0,
+							newcolor=0
+			})
+			table.insert(drum,thisdrum,{
+							pad=thispad,
+							note=thisnote,
+							index=index,
+							x=ho,
+							y=ve,
+							color=0,
+							newcolor=0
+			})
 			index=index+1 --index so I can cycle through the 64 pads quickly.
 		end
 		--items here.
@@ -1069,24 +1098,24 @@ btn_firstitem
 
 --ouputs
 
--- NO AUTO OUTS FOR NOW
-			{pattern="90 0A xx", name="Button 01", x="1+(126*value)"},--white/green
-			{pattern="90 0B xx", name="Button 02", x="1+(31*value)"}, --white/blue
-			{pattern="90 0C xx", name="Button 03", x="4+(28*value)"}, --cyan/blue
-			{pattern="90 0D xx", name="Button 04", x="8+(8*value)"},--,mag/red
-			{pattern="90 0E xx", name="Button 05", x="64*value"}, --yel
-			{pattern="90 0F xx", name="Button 06", x="64*value"}, --yel
-			{pattern="90 10 xx", name="Button 07", x="64*value"}, --yel
-			{pattern="90 11 xx", name="Button 08", x="64*value"}, --yel
+
+			{pattern="90 0A xx", name="Button 01", x="1+(126*value)"},
+			{pattern="90 0B xx", name="Button 02", x="1+(31*value)"}, 
+			{pattern="90 0C xx", name="Button 03", x="4+(28*value)"}, 
+			{pattern="90 0D xx", name="Button 04", x="8+(8*value)"},
+			{pattern="90 0E xx", name="Button 05", x="64*value"}, 
+			{pattern="90 0F xx", name="Button 06", x="64*value"}, 
+			{pattern="90 10 xx", name="Button 07", x="64*value"}, 
+			{pattern="90 11 xx", name="Button 08", x="64*value"}, 
 			
-			{pattern="90 6E xx", name="Shift Button 01", x="1+(126*value)"},--white/green
-			{pattern="90 6F xx", name="Shift Button 02", x="1+(31*value)"}, --white/blue
-			{pattern="90 70 xx", name="Shift Button 03", x="4+(28*value)"}, --cyan/blue
-			{pattern="90 71 xx", name="Shift Button 04", x="8+(8*value)"},--,mag/red
-			{pattern="90 72 xx", name="Shift Button 05", x="64*value"}, --yel
-			{pattern="90 73 xx", name="Shift Button 06", x="64*value"}, --yel
-			{pattern="90 74 xx", name="Shift Button 07", x="64*value"}, --yel
-			{pattern="90 75 xx", name="Shift Button 08", x="64*value"}, --yel
+			{pattern="90 6E xx", name="Shift Button 01", x="1+(126*value)"},
+			{pattern="90 6F xx", name="Shift Button 02", x="1+(31*value)"}, 
+			{pattern="90 70 xx", name="Shift Button 03", x="4+(28*value)"}, 
+			{pattern="90 71 xx", name="Shift Button 04", x="8+(8*value)"},
+			{pattern="90 72 xx", name="Shift Button 05", x="64*value"}, 
+			{pattern="90 73 xx", name="Shift Button 06", x="64*value"}, 
+			{pattern="90 74 xx", name="Shift Button 07", x="64*value"}, 
+			{pattern="90 75 xx", name="Shift Button 08", x="64*value"}, 
 
 			--touch Faders
 			{pattern="b0 15 xx", name="Fader 1"},
@@ -1378,7 +1407,7 @@ function remote_process_midi(event)
 -- -----------------------------------------------------------------------------------------------
 
 if event.size==3 then -- Note, button, channel pressure
--- 1001 is 09 (note on) 1011 is 0B (controller) 
+-- 1001 is 90 (note on) 1011 is B0 (controller) 
 	ret =    remote.match_midi("<10x1>? yy zz",event) --find a pad on or off
 --[[
 	if(ret~=nil) then
@@ -1479,7 +1508,9 @@ tprint(ret)
 		end
 		if(scale_up) then
 			if scale_up.z>0 then
-				scale_int = modulo(scale_int+1,8)
+--				scale_int = modulo(scale_int+1,8) --only use the first 8 scales
+--				scalename = scalenames[1+scale_int]
+				scale_int = modulo(scale_int+1,36) --only use the first 36 scales
 				scalename = scalenames[1+scale_int]
 				scale = scales[scalename]
 				global_scale = scale_int
@@ -1489,7 +1520,9 @@ tprint(ret)
 		end
 		if(scale_dn) then
 			if scale_dn.z>0 then
-				scale_int = modulo(scale_int-1,8) --only use the first 8 scales
+--				scale_int = modulo(scale_int-1,8) --only use the first 8 scales
+--				scalename = scalenames[1+scale_int]
+				scale_int = modulo(scale_int-1,36) --only use the first 36 scales
 				scalename = scalenames[1+scale_int]
 				scale = scales[scalename]
 				global_scale = scale_int
@@ -1509,7 +1542,7 @@ tprint(ret)
 		
 		
 		
-		if (ret.y>10 and ret.y<89) and (noscaleneeded==false) and (button==0) then
+		if (ret.y>10 and ret.y<89) and (noscaleneeded==false) and (button==0) then -- 11 to 88, but not button
 			---if the pads have transposed, then we need to turn off the last note----------------------
 			if(transpose_changed == true) then
 				local prev_off={ time_stamp = event.time_stamp, item=1, value = ret.x, note = g_delivered_note,velocity = 0 }
