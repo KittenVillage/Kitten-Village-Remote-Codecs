@@ -7,9 +7,11 @@
 --
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-
-
-
+--	The Launchpad has 64 pads, in chromatic mode I"m starting it at C2 (note 24) and going to E7 (note 88)
+--	leaving 2 octives down (24 down transpose) and 3 octives up (39 up transpose) G10 (127) is the highest, C0 (0) the lowest
+-- 
+-- Oct up/dn may be impl as shifted item of transpose button.
+-- Different scales may go higher, but starting on 24 is probably best. 
 
 
 
@@ -87,41 +89,41 @@ pclr[4]=21
 scales = {
 	Chromatic = {0,1,2,3,4,5,6,7,8,9,10,11},
 --	DrumPad = {0,1,2,3, 16,17,18,19, 4,5,6,7, 20,21,22,23, 8,9,10,11, 24,25,26,27, 12,13,14,15, 28,29,30,31},
-	Major = {0,2,4,5,7,9,11,12},
-	Minor = {0,2,3,5,7,8,10,12},
-	Dorian = {0,2,3,5,7,9,10,12},
-	Mixolydian = {0,2,4,5,7,9,10,12},
-	Lydian = {0,2,4,6,7,9,11,12},
-	Phrygian = {0,1,3,5,7,8,10,12},
-	Locrian = {0,1,3,4,7,8,10,12},
-	Diminished = {0,1,3,4,6,7,9,10,12},
-	Whole_half = {0,2,3,5,6,8,9,11,12},
-	WholeTone = {0,2,4,6,8,10,12},
-	MinorBlues = {0,3,5,6,7,10,12},
-	MinorPentatonic = {0,3,5,7,10,12},
-	MajorPentatonic = {0,2,4,7,9,12},
-	HarmonicMinor = {0,2,3,5,7,8,11,12},
-	MelodicMinor = {0,2,3,5,7,9,11,12},
-	DominantSus = {0,2,5,7,9,10,12},
-	SuperLocrian = {0,1,3,4,6,8,10,12},
-	NeopolitanMinor = {0,1,3,5,7,8,11,12},
-	NeopolitanMajor = {0,1,3,5,7,9,11,12},
-	EnigmaticMinor = {0,1,3,6,7,10,11,12},
-	Enigmatic = {0,1,4,6,8,10,11,12},
-	Composite = {0,1,4,6,7,8,11,12},
-	BebopLocrian = {0,2,3,5,6,8,10,11,12},
-	BebopDominant = {0,2,4,5,7,9,10,11,12},
-	BebopMajor = {0,2,4,5,7,8,9,11,12},
-	Bhairav = {0,1,4,5,7,8,11,12},
-	HungarianMinor = {0,2,3,6,7,8,11,12},
-	MinorGypsy = {0,1,4,5,7,8,10,12},
-	Persian = {0,1,4,5,6,8,11,12},
-	Hirojoshi = {0,2,3,7,8,12},
-	InSen = {0,1,5,7,10,12},
-	Iwato = {0,1,5,6,10,12},
-	Kumoi = {0,2,3,7,9,12},
-	Pelog = {0,1,3,4,7,8,12},
-	Spanish = {0,1,3,4,5,6,8,10,12}
+	Major = {0,2,4,5,7,9,11},
+	Minor = {0,2,3,5,7,8,10},
+	Dorian = {0,2,3,5,7,9,10},
+	Mixolydian = {0,2,4,5,7,9,10},
+	Lydian = {0,2,4,6,7,9,11},
+	Phrygian = {0,1,3,5,7,8,10},
+	Locrian = {0,1,3,4,7,8,10},
+	Diminished = {0,1,3,4,6,7,9,10},
+	Whole_half = {0,2,3,5,6,8,9,11},
+	WholeTone = {0,2,4,6,8,10},
+	MinorBlues = {0,3,5,6,7,10},
+	MinorPentatonic = {0,3,5,7,10},
+	MajorPentatonic = {0,2,4,7,9},
+	HarmonicMinor = {0,2,3,5,7,8,11},
+	MelodicMinor = {0,2,3,5,7,9,11},
+	DominantSus = {0,2,5,7,9,10},
+	SuperLocrian = {0,1,3,4,6,8,10},
+	NeopolitanMinor = {0,1,3,5,7,8,11},
+	NeopolitanMajor = {0,1,3,5,7,9,11},
+	EnigmaticMinor = {0,1,3,6,7,10,11},
+	Enigmatic = {0,1,4,6,8,10,11},
+	Composite = {0,1,4,6,7,8,11},
+	BebopLocrian = {0,2,3,5,6,8,10,11},
+	BebopDominant = {0,2,4,5,7,9,10,11},
+	BebopMajor = {0,2,4,5,7,8,9,11},
+	Bhairav = {0,1,4,5,7,8,11},
+	HungarianMinor = {0,2,3,6,7,8,11},
+	MinorGypsy = {0,1,4,5,7,8,10},
+	Persian = {0,1,4,5,6,8,11},
+	Hirojoshi = {0,2,3,7,8},
+	InSen = {0,1,5,7,10},
+	Iwato = {0,1,5,6,10},
+	Kumoi = {0,2,3,7,9},
+	Pelog = {0,1,3,4,7,8},
+	Spanish = {0,1,3,4,5,6,8,10}
 }
 scalenames = {
 			'Major','Minor','Dorian','Mixolydian', 
@@ -286,9 +288,38 @@ drum={}
 buttonindex={}
 itemnum={}
 
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+function set_colorscales()
+	for s,st in pairs(scales) do
+		if type(st) == 'table' then
+			--for u,r in ipairs(st) do
+			local scale_len = table.getn(st)
+			if scale_len == 7 then -- 7 and below
+				root = 12 
+			elseif scale_len == 6 then 
+				root = 0 
+			elseif scale_len == 5 then -- 2 root notes
+				table.insert(0,1,st)
+				scale_len = 6
+			else
+				root = 24 
+			end  
+			for pd=1,64,1 do
+				local oct = math.floor((pd-1)/scale_len)
+				local addnote = scale[1+modulo(i-1,scale_len)]
+				local outnote = root+transpose+(12*oct)+addnote --note that gets played by synth
+				local outnorm = modulo(outnote,12) --normalized to 0-11 range
+				local padnum = padindex[i].padhex --note# that the controller led responds to
+				
+				
+			end
+		end
+			
+		
+	end
 
-
-
+end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function def_vars()
@@ -1540,7 +1571,9 @@ tprint(ret)
 		-- change this!
 		
 		
-		
+--------------------------------------------------------------------------------------------------------------------------		
+-- here' where the incoming note gets transposed!
+--------------------------------------------------------------------------------------------------------------------------		
 		
 		if (ret.y>10 and ret.y<89) and (noscaleneeded==false) and (button==0) then -- 11 to 88, but not button
 			---if the pads have transposed, then we need to turn off the last note----------------------
@@ -1552,8 +1585,18 @@ tprint(ret)
 			
 ---------------------------------------------------			
 --			local padid = ret.y-11
-			local padid = ret.y-11
+			local padid = pad[ret.y].index-1
 			local scale_len = table.getn(scale)
+			if scale_len == 7 then -- 7 and below
+				root = 12 
+			elseif scale_len == 6 then 
+				root = 0 
+			elseif scale_len == 5 then -- 2 root notes
+				table.insert(scale,1,0)
+				scale_len = 6
+			else
+				root = 24 
+			end  
 			local ind = 1+modulo(padid,scale_len)  --modulo using the operator % gave me trouble in reason, so I wrote a custom fcn
 			local oct = math.floor(padid/scale_len)
 			local addnote = scale[ind]
@@ -1992,6 +2035,17 @@ vprint("transpose",transpose)
 --					local padid = i-1
 					local padid = i-1
 					local scale_len = table.getn(scale)
+			if scale_len == 7 then -- 7 and below
+				root = 12 
+			elseif scale_len == 6 then 
+				root = 0 
+			elseif scale_len == 5 then -- 2 root notes
+				table.insert(scale,1,0)
+				scale_len = 6
+			else
+				root = 24 
+			end  
+
 --					local oct = math.floor(padid/scale_len)
 					local oct = math.floor(padid/scale_len)
 --					local addnote = scale[1+modulo(i-1,scale_len)]
@@ -2000,8 +2054,8 @@ vprint("transpose",transpose)
 					local outnorm = modulo(outnote,12) --normalized to 0-11 range
 --					local padnum = string.format("%x",i+35) --note# that the controller led responds to
 					local padnum = padindex[i].padhex --note# that the controller led responds to
-					local keycolors = {"03","0D","2D"} --white,yellow,blue
-					local whites = {2, 4, 5, 7, 9, 11}
+--					local keycolors = {"03","0D","2D"} --white,yellow,blue
+--					local whites = {2, 4, 5, 7, 9, 11}
 --[[
 vprint("padid",padid)
 vprint("oct",oct)
@@ -2011,6 +2065,7 @@ vprint("outnorm",outnorm)
 --vprint("",)
 --]]
 					--remote.trace("\n i: "..i.." padid: "..padid.." outnorm "..outnorm.." outnote "..outnote.." xpose "..transpose.." addnote "..addnote)
+--[[
 					--if outnorm is 0 , make it yellow. if it's a white key, make it white, else blue
 					if outnorm==0 then
 						padevent[i]=remote.make_midi("90 "..padnum.." "..keycolors[2])
@@ -2022,6 +2077,11 @@ vprint("outnorm",outnorm)
 						padevent[i]=remote.make_midi("90 "..padnum.." "..keycolors[3])
 						table.insert(lpp_events,padevent[i])
 					end
+--]]
+					
+						padevent[i]=remote.make_midi("90 "..padnum.." "..colorscale[outnorm].hcolor)
+						table.insert(lpp_events,padevent[i])
+					
 				end
 			else
 				--do drumpad color scheme
