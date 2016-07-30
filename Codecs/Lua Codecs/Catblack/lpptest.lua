@@ -160,21 +160,23 @@ sli_start=4
 sli_end=12
 --]]
 
+
+
+
 -- Thought I'd try the colors from virtuosoism.com
 colorscale={}
-colorscale[0]={interval=0, color=7, hcolor="07", notename="C",} -- 5 too bright
-colorscale[1]={interval=1, color=65, hcolor="41", notename="C#",}
-colorscale[2]={interval=2, color=96, hcolor="60", notename="D",}
-colorscale[3]={interval=3, color=49, hcolor="31", notename="D#",}
-colorscale[4]={interval=4, color=97, hcolor="61", notename="E",}
-colorscale[5]={interval=5, color=57, hcolor="39", notename="F",}
-colorscale[6]={interval=6, color=21, hcolor="15", notename="F#",}
-colorscale[7]={interval=7, color=60, hcolor="3C", notename="G",}
-colorscale[8]={interval=8, color=45, hcolor="2D", notename="G#",}
-colorscale[9]={interval=9, color=126, hcolor="7E", notename="A",}
-colorscale[10]={interval=10, color=55, hcolor="37", notename="A#",}
-colorscale[11]={interval=11, color=18, hcolor="12", notename="B",}
-
+colorscale[0]= {interval=0,  color=7,   hcolor="07", col="R ", notename="C",} -- 5 too bright
+colorscale[1]= {interval=1,  color=65,  hcolor="41", col="BG", notename="C#",}
+colorscale[2]= {interval=2,  color=96,  hcolor="60", col="O ", notename="D",}
+colorscale[3]= {interval=3,  color=49,  hcolor="31", col="BV", notename="D#",}
+colorscale[4]= {interval=4,  color=97,  hcolor="61", col="Y ", notename="E",}
+colorscale[5]= {interval=5,  color=57,  hcolor="39", col="RV", notename="F",}
+colorscale[6]= {interval=6,  color=21,  hcolor="15", col="G ", notename="F#",}
+colorscale[7]= {interval=7,  color=60,  hcolor="3C", col="RO", notename="G",}
+colorscale[8]= {interval=8,  color=45,  hcolor="2D", col="B ", notename="G#",}
+colorscale[9]= {interval=9,  color=126, hcolor="7E", col="YO", notename="A",}
+colorscale[10]={interval=10, color=55,  hcolor="37", col="V ", notename="A#",}
+colorscale[11]={interval=11, color=18,  hcolor="12", col="YG", notename="B",}
 
 
 
@@ -1411,6 +1413,7 @@ btn_firstitem
 		
 		
 		def_vars()
+		set_palettes()
 	end
 end
 
@@ -2456,6 +2459,166 @@ function remote_release_from_use()
 --		remote.make_midi("F0 00 20 29 02 10 2C 00 F7"), -- Note mode
 	}
 	return retEvents
+end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+function set_palettes()
+palettes = {
+		catblack = {
+			[0]={R="19", G="00", B="00", },	--R 
+			[1]={R="00", G="57", B="35", },	--BG
+			[2]={R="FF", G="7F", B="00", },	--O 
+			[3]={R="54", G="00", B="FF", },	--BV
+			[4]={R="B9", G="B0", B="00", },	--Y 
+			[5]={R="FF", G="00", B="54", },	--RV
+			[6]={R="00", G="FF", B="00", },	--G 
+			[7]={R="FF", G="15", B="00", },	--RO
+			[8]={R="00", G="00", B="FF", },	--B 
+			[9]={R="B3", G="5F", B="00", },	--YO
+			[10]={R="19", G="00", B="19", },	--V 
+			[11]={R="1D", G="59", B="00", },	--YG
+		},
+		louisBertrandCastel = {
+			[0]={R="1C", G="0D", B="82", },	-- blue
+			[1]={R="1B", G="90", B="81", },	-- blue-green
+			[2]={R="14", G="90", B="33", },	-- green
+			[3]={R="70", G="92", B="26", },	-- olive green
+			[4]={R="F5", G="F4", B="3C", },	-- yellow
+			[5]={R="F5", G="D2", B="3B", },	-- yellow-orange
+			[6]={R="F8", G="80", B="10", },	-- orange
+			[7]={R="FA", G="0B", B="0C", },	-- red
+			[8]={R="A0", G="0C", B="09", },	-- crimson
+			[9]={R="D7", G="13", B="86", },	-- violet
+			[10]={R="4B", G="0E", B="7D", },	-- agate
+			[11]={R="7F", G="08", B="7C", },	-- indigo
+		},
+		dDJameson = {
+			[0]={R="FA", G="0B", B="0C", },	-- red
+			[1]={R="F4", G="47", B="12", },	-- red-orange
+			[2]={R="F8", G="80", B="10", },	-- orange
+			[3]={R="F5", G="D2", B="3B", },	-- orange-yellow
+			[4]={R="F5", G="F4", B="3C", },	-- yellow
+			[5]={R="14", G="90", B="33", },	-- green
+			[6]={R="1B", G="90", B="81", },	-- green-blue
+			[7]={R="1C", G="0D", B="82", },	-- blue
+			[8]={R="4B", G="0E", B="7D", },	-- blue-purple
+			[9]={R="7F", G="08", B="7C", },	-- purple
+			[10]={R="A6", G="15", B="86", },	-- purple-violet
+			[11]={R="D7", G="12", B="85", },	-- violet
+		},
+		theodorSeemann = {
+			[0]={R="6A", G="1C", B="1C", },	-- carmine
+			[1]={R="FA", G="0B", B="0C", },	-- scarlet
+			[2]={R="FF", G="7D", B="05", },	-- orange
+			[3]={R="FC", G="D5", B="33", },	-- yellow-orange
+			[4]={R="F5", G="F4", B="3C", },	-- yellow
+			[5]={R="16", G="90", B="34", },	-- green
+			[6]={R="1B", G="90", B="81", },	-- green blue
+			[7]={R="1C", G="0D", B="82", },	-- blue
+			[8]={R="7F", G="08", B="7C", },	-- indigo
+			[9]={R="D7", G="13", B="86", },	-- violet
+			[10]={R="6A", G="1C", B="1C", },	-- brown
+			[11]={R="07", G="07", B="07", },	-- black
+		},
+		aWallaceRimington = {
+			[0]={R="FA", G="0B", B="0C", },	-- deep red
+			[1]={R="A0", G="0C", B="09", },	-- crimson
+			[2]={R="F4", G="47", B="12", },	-- orange-crimson
+			[3]={R="F8", G="80", B="10", },	-- orange
+			[4]={R="F5", G="F4", B="3C", },	-- yellow
+			[5]={R="70", G="92", B="26", },	-- yellow-green
+			[6]={R="14", G="90", B="33", },	-- green
+			[7]={R="26", G="A6", B="80", },	-- blueish green
+			[8]={R="1B", G="90", B="81", },	-- blue-green
+			[9]={R="7F", G="08", B="7C", },	-- indigo
+			[10]={R="1C", G="0D", B="82", },	-- deep blue
+			[11]={R="D7", G="13", B="86", },	-- violet
+		},
+		hHelmholtz = {
+			[0]={R="F5", G="F4", B="3C", },	-- yellow
+			[1]={R="14", G="90", B="33", },	-- green
+			[2]={R="1B", G="90", B="81", },	-- greenish blue
+			[3]={R="1C", G="5B", B="A0", },	-- cayan-blue
+			[4]={R="7F", G="08", B="7C", },	-- indigo blue
+			[5]={R="D7", G="13", B="86", },	-- violet
+			[6]={R="9D", G="0E", B="55", },	-- end of red
+			[7]={R="FA", G="0B", B="0C", },	-- red
+			[8]={R="D3", G="2C", B="0A", },	-- red
+			[9]={R="D3", G="2C", B="0A", },	-- red
+			[10]={R="D9", G="19", B="51", },	-- red orange
+			[11]={R="F1", G="7A", B="0F", },	-- orange
+		},
+		aScriabin = {
+			[0]={R="FA", G="0B", B="0C", },	-- red
+			[1]={R="D7", G="13", B="86", },	-- violet
+			[2]={R="F5", G="F4", B="3C", },	-- yellow
+			[3]={R="5A", G="56", B="85", },	-- steely with the glint of metal
+			[4]={R="1C", G="5B", B="A0", },	-- pearly blue the shimmer of moonshine
+			[5]={R="A0", G="0C", B="09", },	-- dark red
+			[6]={R="1C", G="0D", B="82", },	-- bright blue
+			[7]={R="F8", G="80", B="10", },	-- rosy orange
+			[8]={R="7F", G="0A", B="7C", },	-- purple
+			[9]={R="14", G="90", B="33", },	-- green
+			[10]={R="5A", G="56", B="85", },	-- steely with a glint of metal
+			[11]={R="1C", G="5B", B="A0", },	-- pearly blue the shimmer of moonshine
+		},
+		aBernardKlein = {
+			[0]={R="C4", G="0A", B="09", },	-- dark red
+			[1]={R="FA", G="0B", B="0C", },	-- red
+			[2]={R="F4", G="47", B="12", },	-- red orange
+			[3]={R="F8", G="80", B="10", },	-- orange
+			[4]={R="F5", G="F4", B="3C", },	-- yellow
+			[5]={R="BC", G="E0", B="39", },	-- yellow green
+			[6]={R="14", G="90", B="33", },	-- green
+			[7]={R="1B", G="90", B="81", },	-- blue-green
+			[8]={R="1C", G="0D", B="82", },	-- blue
+			[9]={R="78", G="18", B="87", },	-- blue violet
+			[10]={R="D7", G="13", B="86", },	-- violet
+			[11]={R="9D", G="0E", B="55", },	-- dark violet
+		},
+		iJBelmont = {
+			[0]={R="FA", G="0B", B="0C", },	-- red
+			[1]={R="F4", G="47", B="12", },	-- red-orange
+			[2]={R="F8", G="80", B="10", },	-- orange
+			[3]={R="F6", G="D1", B="11", },	-- yellow-orange
+			[4]={R="F5", G="F4", B="3C", },	-- yellow
+			[5]={R="BC", G="E0", B="39", },	-- yellow-green
+			[6]={R="13", G="8F", B="32", },	-- green
+			[7]={R="1B", G="90", B="81", },	-- blue-green
+			[8]={R="1C", G="0D", B="82", },	-- blue
+			[9]={R="A5", G="15", B="85", },	-- blue-violet
+			[10]={R="D7", G="13", B="86", },	-- violet
+			[11]={R="AD", G="0E", B="48", },	-- red-violet
+		},
+		sZieverink = {
+			[0]={R="BC", G="E0", B="39", },	-- yellow/green
+			[1]={R="14", G="90", B="33", },	-- green
+			[2]={R="1B", G="90", B="81", },	-- blue/green
+			[3]={R="1C", G="0D", B="82", },	-- blue
+			[4]={R="7F", G="08", B="7C", },	-- indigo
+			[5]={R="D7", G="13", B="86", },	-- violet
+			[6]={R="6F", G="0D", B="45", },	-- ultra violet
+			[7]={R="A0", G="0C", B="09", },	-- infra red
+			[8]={R="FA", G="0B", B="0C", },	-- red
+			[9]={R="F8", G="80", B="10", },	-- orange
+			[10]={R="ED", G="F0", B="87", },	-- yellow/white
+			[11]={R="F5", G="F4", B="3C", },	-- yellow
+		}
+	}
+palettenames = {
+'catblack',
+'louisBertrandCastel',
+'dDJameson',
+'theodorSeemann',
+'aWallaceRimington',
+'hHelmholtz',
+'aScriabin',
+'aBernardKlein',
+'iJBelmont',
+'sZieverink',
+}
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
