@@ -2466,146 +2466,146 @@ end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function set_palettes()
 palettes = {
-		catblack = {
-			 [0]={R="0C", G="00", B="00", },	--R 
-			 [1]={R="00", G="2B", B="1A", },	--BG
-			 [2]={R="7F", G="3F", B="00", },	--O 
-			 [3]={R="2A", G="00", B="7F", },	--BV
-			 [4]={R="5C", G="58", B="00", },	--Y 
-			 [5]={R="7F", G="00", B="2A", },	--RV
-			 [6]={R="00", G="7F", B="00", },	--G 
-			 [7]={R="7F", G="0A", B="00", },	--RO
-			 [8]={R="00", G="00", B="7F", },	--B 
-			 [9]={R="59", G="2F", B="00", },	--YO
-			[10]={R="0C", G="00", B="0C", },	--V 
-			[11]={R="0E", G="2C", B="00", },	--YG
-		},
 		louisBertrandCastel = {
-			 [0]={R="0E", G="06", B="41", },	-- blue
-			 [1]={R="0D", G="48", B="40", },	-- blue-green
-			 [2]={R="0A", G="48", B="19", },	-- green
-			 [3]={R="38", G="49", B="13", },	-- olive green
-			 [4]={R="7A", G="7A", B="1E", },	-- yellow
-			 [5]={R="7A", G="69", B="1D", },	-- yellow-orange
-			 [6]={R="7C", G="40", B="08", },	-- orange
-			 [7]={R="7D", G="05", B="06", },	-- red
-			 [8]={R="50", G="06", B="04", },	-- crimson
-			 [9]={R="6B", G="09", B="43", },	-- violet
-			[10]={R="25", G="07", B="3E", },	-- agate
-			[11]={R="3F", G="04", B="3E", },	-- indigo
+						[0]={R="07", G="03", B="20", },		 -- blue
+						[1]={R="06", G="24", B="20", },		 -- blue-green
+						[2]={R="05", G="24", B="0C", },		 -- green
+						[3]={R="1C", G="24", B="09", },		 -- olive green
+						[4]={R="3D", G="3D", B="0F", },		 -- yellow
+						[5]={R="3D", G="34", B="0E", },		 -- yellow-orange
+						[6]={R="3E", G="20", B="04", },		 -- orange
+						[7]={R="3E", G="02", B="03", },		 -- red
+						[8]={R="28", G="03", B="02", },		 -- crimson
+						[9]={R="35", G="04", B="21", },		 -- violet
+						[10]={R="12", G="03", B="1F", },		 -- agate
+						[11]={R="1F", G="02", B="1F", },		 -- indigo
 		},
 		dDJameson = {
-			 [0]={R="7D", G="05", B="06", },	-- red
-			 [1]={R="7A", G="23", B="09", },	-- red-orange
-			 [2]={R="7C", G="40", B="08", },	-- orange
-			 [3]={R="7A", G="69", B="1D", },	-- orange-yellow
-			 [4]={R="7A", G="7A", B="1E", },	-- yellow
-			 [5]={R="0A", G="48", B="19", },	-- green
-			 [6]={R="0D", G="48", B="40", },	-- green-blue
-			 [7]={R="0E", G="06", B="41", },	-- blue
-			 [8]={R="25", G="07", B="3E", },	-- blue-purple
-			 [9]={R="3F", G="04", B="3E", },	-- purple
-			[10]={R="53", G="0A", B="43", },	-- purple-violet
-			[11]={R="6B", G="09", B="42", },	-- violet
+						[0]={R="3E", G="02", B="03", },		 -- red
+						[1]={R="3D", G="11", B="04", },		 -- red-orange
+						[2]={R="3E", G="20", B="04", },		 -- orange
+						[3]={R="3D", G="34", B="0E", },		 -- orange-yellow
+						[4]={R="3D", G="3D", B="0F", },		 -- yellow
+						[5]={R="05", G="24", B="0C", },		 -- green
+						[6]={R="06", G="24", B="20", },		 -- green-blue
+						[7]={R="07", G="03", B="20", },		 -- blue
+						[8]={R="12", G="03", B="1F", },		 -- blue-purple
+						[9]={R="1F", G="02", B="1F", },		 -- purple
+						[10]={R="29", G="05", B="21", },		 -- purple-violet
+						[11]={R="35", G="04", B="21", },		 -- violet
 		},
 		theodorSeemann = {
-			 [0]={R="35", G="0E", B="0E", },	-- carmine
-			 [1]={R="7D", G="05", B="06", },	-- scarlet
-			 [2]={R="7F", G="3E", B="02", },	-- orange
-			 [3]={R="7E", G="6A", B="19", },	-- yellow-orange
-			 [4]={R="7A", G="7A", B="1E", },	-- yellow
-			 [5]={R="0B", G="48", B="1A", },	-- green
-			 [6]={R="0D", G="48", B="40", },	-- green blue
-			 [7]={R="0E", G="06", B="41", },	-- blue
-			 [8]={R="3F", G="04", B="3E", },	-- indigo
-			 [9]={R="6B", G="09", B="43", },	-- violet
-			[10]={R="35", G="0E", B="0E", },	-- brown
-			[11]={R="03", G="03", B="03", },	-- black
+						[0]={R="1A", G="07", B="07", },		 -- carmine
+						[1]={R="3E", G="02", B="03", },		 -- scarlet
+						[2]={R="3F", G="1F", B="01", },		 -- orange
+						[3]={R="3F", G="35", B="0C", },		 -- yellow-orange
+						[4]={R="3D", G="3D", B="0F", },		 -- yellow
+						[5]={R="05", G="24", B="0D", },		 -- green
+						[6]={R="06", G="24", B="20", },		 -- green blue
+						[7]={R="07", G="03", B="20", },		 -- blue
+						[8]={R="1F", G="02", B="1F", },		 -- indigo
+						[9]={R="35", G="04", B="21", },		 -- violet
+						[10]={R="1A", G="07", B="07", },		 -- brown
+						[11]={R="01", G="01", B="01", },		 -- black
 		},
 		aWallaceRimington = {
-			 [0]={R="7D", G="05", B="06", },	-- deep red
-			 [1]={R="50", G="06", B="04", },	-- crimson
-			 [2]={R="7A", G="23", B="09", },	-- orange-crimson
-			 [3]={R="7C", G="40", B="08", },	-- orange
-			 [4]={R="7A", G="7A", B="1E", },	-- yellow
-			 [5]={R="38", G="49", B="13", },	-- yellow-green
-			 [6]={R="0A", G="48", B="19", },	-- green
-			 [7]={R="13", G="53", B="40", },	-- blueish green
-			 [8]={R="0D", G="48", B="40", },	-- blue-green
-			 [9]={R="3F", G="04", B="3E", },	-- indigo
-			[10]={R="0E", G="06", B="41", },	-- deep blue
-			[11]={R="6B", G="09", B="43", },	-- violet
+						[0]={R="3E", G="02", B="03", },		 -- deep red
+						[1]={R="28", G="03", B="02", },		 -- crimson
+						[2]={R="3D", G="11", B="04", },		 -- orange-crimson
+						[3]={R="3E", G="20", B="04", },		 -- orange
+						[4]={R="3D", G="3D", B="0F", },		 -- yellow
+						[5]={R="1C", G="24", B="09", },		 -- yellow-green
+						[6]={R="05", G="24", B="0C", },		 -- green
+						[7]={R="09", G="29", B="20", },		 -- blueish green
+						[8]={R="06", G="24", B="20", },		 -- blue-green
+						[9]={R="1F", G="02", B="1F", },		 -- indigo
+						[10]={R="07", G="03", B="20", },		 -- deep blue
+						[11]={R="35", G="04", B="21", },		 -- violet
 		},
 		hHelmholtz = {
-			 [0]={R="7A", G="7A", B="1E", },	-- yellow
-			 [1]={R="0A", G="48", B="19", },	-- green
-			 [2]={R="0D", G="48", B="40", },	-- greenish blue
-			 [3]={R="0E", G="2D", B="50", },	-- cayan-blue
-			 [4]={R="3F", G="04", B="3E", },	-- indigo blue
-			 [5]={R="6B", G="09", B="43", },	-- violet
-			 [6]={R="4E", G="07", B="2A", },	-- end of red
-			 [7]={R="7D", G="05", B="06", },	-- red
-			 [8]={R="69", G="16", B="05", },	-- red
-			 [9]={R="69", G="16", B="05", },	-- red
-			[10]={R="6C", G="0C", B="28", },	-- red orange
-			[11]={R="78", G="3D", B="07", },	-- orange
+						[0]={R="3D", G="3D", B="0F", },		 -- yellow
+						[1]={R="05", G="24", B="0C", },		 -- green
+						[2]={R="06", G="24", B="20", },		 -- greenish blue
+						[3]={R="07", G="16", B="28", },		 -- cayan-blue
+						[4]={R="1F", G="02", B="1F", },		 -- indigo blue
+						[5]={R="35", G="04", B="21", },		 -- violet
+						[6]={R="27", G="03", B="15", },		 -- end of red
+						[7]={R="3E", G="02", B="03", },		 -- red
+						[8]={R="34", G="0B", B="02", },		 -- red
+						[9]={R="34", G="0B", B="02", },		 -- red
+						[10]={R="36", G="06", B="14", },		 -- red orange
+						[11]={R="3C", G="1E", B="03", },		 -- orange
 		},
 		aScriabin = {
-			 [0]={R="7D", G="05", B="06", },	-- red
-			 [1]={R="6B", G="09", B="43", },	-- violet
-			 [2]={R="7A", G="7A", B="1E", },	-- yellow
-			 [3]={R="2D", G="2B", B="42", },	-- steely with the glint of metal
-			 [4]={R="0E", G="2D", B="50", },	-- pearly blue the shimmer of moonshine
-			 [5]={R="50", G="06", B="04", },	-- dark red
-			 [6]={R="0E", G="06", B="41", },	-- bright blue
-			 [7]={R="7C", G="40", B="08", },	-- rosy orange
-			 [8]={R="3F", G="05", B="3E", },	-- purple
-			 [9]={R="0A", G="48", B="19", },	-- green
-			[10]={R="2D", G="2B", B="42", },	-- steely with a glint of metal
-			[11]={R="0E", G="2D", B="50", },	-- pearly blue the shimmer of moonshine
+						[0]={R="3E", G="02", B="03", },		 -- red
+						[1]={R="35", G="04", B="21", },		 -- violet
+						[2]={R="3D", G="3D", B="0F", },		 -- yellow
+						[3]={R="16", G="15", B="21", },		 -- steely with the glint of metal
+						[4]={R="07", G="16", B="28", },		 -- pearly blue the shimmer of moonshine
+						[5]={R="28", G="03", B="02", },		 -- dark red
+						[6]={R="07", G="03", B="20", },		 -- bright blue
+						[7]={R="3E", G="20", B="04", },		 -- rosy orange
+						[8]={R="1F", G="02", B="1F", },		 -- purple
+						[9]={R="05", G="24", B="0C", },		 -- green
+						[10]={R="16", G="15", B="21", },		 -- steely with a glint of metal
+						[11]={R="07", G="16", B="28", },		 -- pearly blue the shimmer of moonshine
 		},
 		aBernardKlein = {
-			 [0]={R="C4", G="05", B="04", },	-- dark red
-			 [1]={R="FA", G="05", B="06", },	-- red
-			 [2]={R="F4", G="23", B="09", },	-- red orange
-			 [3]={R="F8", G="40", B="08", },	-- orange
-			 [4]={R="F5", G="7A", B="1E", },	-- yellow
-			 [5]={R="BC", G="70", B="1C", },	-- yellow green
-			 [6]={R="14", G="48", B="19", },	-- green
-			 [7]={R="1B", G="48", B="40", },	-- blue-green
-			 [8]={R="1C", G="06", B="41", },	-- blue
-			 [9]={R="78", G="0C", B="43", },	-- blue violet
-			[10]={R="D7", G="09", B="43", },	-- violet
-			[11]={R="9D", G="07", B="2A", },	-- dark violet
+						[0]={R="31", G="02", B="02", },		 -- dark red
+						[1]={R="3E", G="02", B="03", },		 -- red
+						[2]={R="3D", G="11", B="04", },		 -- red orange
+						[3]={R="3E", G="20", B="04", },		 -- orange
+						[4]={R="3D", G="3D", B="0F", },		 -- yellow
+						[5]={R="2F", G="38", B="0E", },		 -- yellow green
+						[6]={R="05", G="24", B="0C", },		 -- green
+						[7]={R="06", G="24", B="20", },		 -- blue-green
+						[8]={R="07", G="03", B="20", },		 -- blue
+						[9]={R="1E", G="06", B="21", },		 -- blue violet
+						[10]={R="35", G="04", B="21", },		 -- violet
+						[11]={R="27", G="03", B="15", },		 -- dark violet
 		},
 		iJBelmont = {
-			 [0]={R="7D", G="05", B="06", },	-- red
-			 [1]={R="7A", G="23", B="09", },	-- red-orange
-			 [2]={R="7C", G="40", B="08", },	-- orange
-			 [3]={R="7B", G="68", B="08", },	-- yellow-orange
-			 [4]={R="7A", G="7A", B="1E", },	-- yellow
-			 [5]={R="5E", G="70", B="1C", },	-- yellow-green
-			 [6]={R="09", G="47", B="19", },	-- green
-			 [7]={R="0D", G="48", B="40", },	-- blue-green
-			 [8]={R="0E", G="06", B="41", },	-- blue
-			 [9]={R="52", G="0A", B="42", },	-- blue-violet
-			[10]={R="6B", G="09", B="43", },	-- violet
-			[11]={R="56", G="07", B="24", },	-- red-violet
+						[0]={R="3E", G="02", B="03", },		 -- red
+						[1]={R="3D", G="11", B="04", },		 -- red-orange
+						[2]={R="3E", G="20", B="04", },		 -- orange
+						[3]={R="3D", G="34", B="04", },		 -- yellow-orange
+						[4]={R="3D", G="3D", B="0F", },		 -- yellow
+						[5]={R="2F", G="38", B="0E", },		 -- yellow-green
+						[6]={R="04", G="23", B="0C", },		 -- green
+						[7]={R="06", G="24", B="20", },		 -- blue-green
+						[8]={R="07", G="03", B="20", },		 -- blue
+						[9]={R="29", G="05", B="21", },		 -- blue-violet
+						[10]={R="35", G="04", B="21", },		 -- violet
+						[11]={R="2B", G="03", B="12", },		 -- red-violet
 		},
 		sZieverink = {
-			 [0]={R="5E", G="70", B="1C", },	-- yellow/green
-			 [1]={R="0A", G="48", B="19", },	-- green
-			 [2]={R="0D", G="48", B="40", },	-- blue/green
-			 [3]={R="0E", G="06", B="41", },	-- blue
-			 [4]={R="3F", G="04", B="3E", },	-- indigo
-			 [5]={R="6B", G="09", B="43", },	-- violet
-			 [6]={R="37", G="06", B="22", },	-- ultra violet
-			 [7]={R="50", G="06", B="04", },	-- infra red
-			 [8]={R="7D", G="05", B="06", },	-- red
-			 [9]={R="7C", G="40", B="08", },	-- orange
-			[10]={R="76", G="78", B="43", },	-- yellow/white
-			[11]={R="7A", G="7A", B="1E", },	-- yellow
-		}
+						[0]={R="2F", G="38", B="0E", },		 -- yellow/green
+						[1]={R="05", G="24", B="0C", },		 -- green
+						[2]={R="06", G="24", B="20", },		 -- blue/green
+						[3]={R="07", G="03", B="20", },		 -- blue
+						[4]={R="1F", G="02", B="1F", },		 -- indigo
+						[5]={R="35", G="04", B="21", },		 -- violet
+						[6]={R="1B", G="03", B="11", },		 -- ultra violet
+						[7]={R="28", G="03", B="02", },		 -- infra red
+						[8]={R="3E", G="02", B="03", },		 -- red
+						[9]={R="3E", G="20", B="04", },		 -- orange
+						[10]={R="3B", G="3C", B="21", },		 -- yellow/white
+						[11]={R="3D", G="3D", B="0F", },		 -- yellow
+		},
+		Catblack = {
+						[0]={R="06", G="00", B="00", },		--R 
+						[1]={R="00", G="15", B="0D", },		--BG
+						[2]={R="3F", G="1F", B="00", },		--O 
+						[3]={R="15", G="00", B="3F", },		--BV
+						[4]={R="2E", G="2C", B="00", },		--Y 
+						[5]={R="3F", G="00", B="15", },		--RV
+						[6]={R="00", G="3F", B="00", },		--G 
+						[7]={R="3F", G="05", B="00", },		--RO
+						[8]={R="00", G="00", B="3F", },		--B 
+						[9]={R="2C", G="17", B="00", },		--YO
+						[10]={R="06", G="00", B="06", },	--V 
+						[11]={R="07", G="16", B="00", },	--YG
+		},
 	}
 palettenames = {
 'catblack',
