@@ -55,13 +55,6 @@ padcolor.DARK_ORANGE = 84
 
 
 
-
-
-
-
-
-
-
 --]]
 
 
@@ -88,7 +81,7 @@ pclr[4]=21
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 scales = {
 	Chromatic = {0,1,2,3,4,5,6,7,8,9,10,11},
---	DrumPad = {0,1,2,3, 16,17,18,19, 4,5,6,7, 20,21,22,23, 8,9,10,11, 24,25,26,27, 12,13,14,15, 28,29,30,31},
+	DrumPad = {0,1,2,3, 16,17,18,19, 4,5,6,7, 20,21,22,23, 8,9,10,11, 24,25,26,27, 12,13,14,15, 28,29,30,31},
 	Major = {0,2,4,5,7,9,11},
 	Minor = {0,2,3,5,7,8,10},
 	Dorian = {0,2,3,5,7,9,10},
@@ -117,7 +110,7 @@ scales = {
 	Bhairav = {0,1,4,5,7,8,11},
 	HungarianMinor = {0,2,3,6,7,8,11},
 	MinorGypsy = {0,1,4,5,7,8,10},
-	Persian = {0,1,4,5,6,8,11},
+	Persian = {0,1,4,5,6,8,11},  
 	Hirojoshi = {0,2,3,7,8},
 	InSen = {0,1,5,7,10},
 	Iwato = {0,1,5,6,10},
@@ -177,6 +170,7 @@ colorscale[8]= {interval=8,  color=45,  hcolor="2D", col="B ", notename="G#",}
 colorscale[9]= {interval=9,  color=126, hcolor="7E", col="YO", notename="A",}
 colorscale[10]={interval=10, color=55,  hcolor="37", col="V ", notename="A#",}
 colorscale[11]={interval=11, color=18,  hcolor="12", col="YG", notename="B",}
+-- colors = {"07","3C","96","7E","61","12","15","41","2D","31","37","39"} -- BY HUE
 
 
 
@@ -204,19 +198,21 @@ transpose = 0
 
 
 shift = 0
+click = 0
 root = 12  -- not 36
 --scalename = 'Major'
 scalename = 'Chromatic'
 scale = scales[scalename]
-scale_int = 0;
-g_delivered_scale=0 --for change filter
+scale_int = 0 ;
+g_delivered_scale = 0 --for change filter
 drum_mode = 0;
 --drum_tog = true -- force drums
-g_delivered_shift=0 --for change filter
+g_delivered_shift = 0 --for change filter
+g_delivered_click = 0 --for change filter
 tranup_btn = 0 --transpose up button state up or down
 trandn_btn = 0 --transpose down button state up or down
 transpose_changed = false
-init=1
+init = 1
 global_scale = 0
 global_transp = 0
 scale_from_parse = false
@@ -239,20 +235,20 @@ g_last_led_output = { 100,100,100,100, 100,100,100,100, 100,100,100,100, 100,100
 
 -- used in scale modes
 --colors = {"02","04","08","10","20","40","7F"}
-colors = {"05","09","0D","15","2D","31","35"}
+colors = {"07","41","60","31","61","39","15","3C","2D","7E","37","12",}
 --red,o,y,g,b,d b,v
 noscaleneeded = false
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-lcd_events={}
+lcd_events = {}
 
 
 
 
 --g_last_notevel_delivered={}
 --g_last_note_delivered={}
-g_last_notevel_delivered=0
-g_last_note_delivered=0
-g_current_notevel=0
+g_last_notevel_delivered = 0
+g_last_note_delivered = 0
+g_current_notevel = 0
 --livemodeswitch=nil
 --modeswitch=nil
 
@@ -281,14 +277,14 @@ g_accent_count = 0
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- Set some variables for later!
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-notemode={35,40,45,50,55,60,65,70} -- left column -1
-drummode={35,39,43,47,51,55,59,63} -- left column -1
-pad={}
-padindex={} 
-note={}
-drum={}
-buttonindex={}
-itemnum={}
+notemode = {35,40,45,50,55,60,65,70} -- left column -1
+drummode = {35,39,43,47,51,55,59,63} -- left column -1
+pad = {}
+padindex = {} 
+note = {}
+drum = {}
+buttonindex = {}
+itemnum = {}
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function set_colorscales()
@@ -607,7 +603,8 @@ end
 
 
 
-
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- Remote Init here, set this up right
 -- Button names are from programmer mode! (pg 17 in the prog ref
@@ -619,6 +616,8 @@ end
 -- Press is aftertouch, Pad is note on, Playing is for displaying state
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function remote_init(manufacturer, model)
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- this version
 	if model=="LP Pro" then
 		items={
@@ -1132,33 +1131,33 @@ btn_firstitem
 --ouputs
 
 
-			{pattern="90 0A xx", name="Button 01", x="1+(126*value)"},
-			{pattern="90 0B xx", name="Button 02", x="1+(31*value)"}, 
-			{pattern="90 0C xx", name="Button 03", x="4+(28*value)"}, 
-			{pattern="90 0D xx", name="Button 04", x="8+(8*value)"},
-			{pattern="90 0E xx", name="Button 05", x="64*value"}, 
-			{pattern="90 0F xx", name="Button 06", x="64*value"}, 
-			{pattern="90 10 xx", name="Button 07", x="64*value"}, 
-			{pattern="90 11 xx", name="Button 08", x="64*value"}, 
+			{pattern="90 01 xx", name="Button 01", x="1+(126*value)"},
+			{pattern="90 02 xx", name="Button 02", x="1+(31*value)"}, 
+			{pattern="90 03 xx", name="Button 03", x="4+(28*value)"}, 
+			{pattern="90 04 xx", name="Button 04", x="8+(8*value)"},
+			{pattern="90 05 xx", name="Button 05", x="64*value"}, 
+			{pattern="90 06 xx", name="Button 06", x="64*value"}, 
+			{pattern="90 07 xx", name="Button 07", x="64*value"}, 
+			{pattern="90 08 xx", name="Button 08", x="64*value"}, 
 			
-			{pattern="90 6E xx", name="Shift Button 01", x="1+(126*value)"},
-			{pattern="90 6F xx", name="Shift Button 02", x="1+(31*value)"}, 
-			{pattern="90 70 xx", name="Shift Button 03", x="4+(28*value)"}, 
-			{pattern="90 71 xx", name="Shift Button 04", x="8+(8*value)"},
-			{pattern="90 72 xx", name="Shift Button 05", x="64*value"}, 
-			{pattern="90 73 xx", name="Shift Button 06", x="64*value"}, 
-			{pattern="90 74 xx", name="Shift Button 07", x="64*value"}, 
-			{pattern="90 75 xx", name="Shift Button 08", x="64*value"}, 
+			{pattern="90 01 xx", name="Shift Button 01", x="1+(126*value)"},
+			{pattern="90 02 xx", name="Shift Button 02", x="1+(31*value)"}, 
+			{pattern="90 03 xx", name="Shift Button 03", x="4+(28*value)"}, 
+			{pattern="90 04 xx", name="Shift Button 04", x="8+(8*value)"},
+			{pattern="90 05 xx", name="Shift Button 05", x="64*value"}, 
+			{pattern="90 06 xx", name="Shift Button 06", x="64*value"}, 
+			{pattern="90 07 xx", name="Shift Button 07", x="64*value"}, 
+			{pattern="90 08 xx", name="Shift Button 08", x="64*value"}, 
 
 			--touch Faders
-			{pattern="b0 15 xx", name="Fader 1"},
-			{pattern="b0 16 xx", name="Fader 2"},
-			{pattern="b0 17 xx", name="Fader 3"},
-			{pattern="b0 18 xx", name="Fader 4"},
-			{pattern="b0 19 xx", name="Fader 5"},
-			{pattern="b0 1a xx", name="Fader 6"},
-			{pattern="b0 1b xx", name="Fader 7"},
-			{pattern="b0 1c xx", name="Fader 8"},
+			{pattern="F0 00 20 29 02 10 2B 00 00 05 xx F7", name="Fader 1"},
+			{pattern="F0 00 20 29 02 10 2B 01 00 05 xx F7", name="Fader 2"},
+			{pattern="F0 00 20 29 02 10 2B 02 00 05 xx F7", name="Fader 3"},
+			{pattern="F0 00 20 29 02 10 2B 03 00 05 xx F7", name="Fader 4"},
+			{pattern="F0 00 20 29 02 10 2B 04 00 05 xx F7", name="Fader 5"},
+			{pattern="F0 00 20 29 02 10 2B 05 00 05 xx F7", name="Fader 6"},
+			{pattern="F0 00 20 29 02 10 2B 06 00 05 xx F7", name="Fader 7"},
+			{pattern="F0 00 20 29 02 10 2B 07 00 05 xx F7", name="Fader 8"},
 
 
 -- Aftertouch
@@ -1429,9 +1428,26 @@ end
 
 
 
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function remote_process_midi(event)
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 --remote.trace(event.size)
 --remote.trace("evsize")
 
@@ -1496,9 +1512,10 @@ tprint(ret)
 		end
 		tran_btn = ret.z
 		local shiftbtn = remote.match_midi("B? 50 zz",event) -- 80 Shift
+		local clickbtn = remote.match_midi("B? 46 zz",event) -- 70 Shift
 		
 		-- accent?
-		local accent_pad = remote.match_midi("B? 46 zz",event) -- 70 click
+		local accent_pad = remote.match_midi("B? 32 zz",event) -- 50 delete
 		-- make checks for these
 		scale_up = remote.match_midi("B? 5B zz",event) --find 91 up
 		scale_dn = remote.match_midi("B? 5C zz",event) --find 92 dn
@@ -1510,7 +1527,7 @@ tprint(ret)
 			g_accent_dn = true
 			g_accent_count = modulo(g_accent_count+1,3)
 --			local msg={ time_stamp = event.time_stamp, item=k_accent, value = g_accent_count, note = "2B",velocity = accent_pad.z }
-			local msg={ time_stamp = event.time_stamp, item=itemnum.accent, value = g_accent_count, note = "2B",velocity = accent_pad.z }
+			local msg={ time_stamp = event.time_stamp, item=itemnum.accent, value = g_accent_count, note = "32",velocity = accent_pad.z }
 			remote.handle_input(msg)
 			g_delivered_note = noteout
 			return true
@@ -1524,6 +1541,13 @@ tprint(ret)
 				shift = 1 --momentary like a computer's shift key
 			else
 				shift = 0
+			end
+		end
+		if (clickbtn) then
+			if clickbtn.z>0 then
+				click = 1 --momentary like a computer's shift key
+			else
+				click = 0
 			end
 		end
 		if(tran_up) then
@@ -1575,7 +1599,7 @@ tprint(ret)
 		
 		
 --------------------------------------------------------------------------------------------------------------------------		
--- here' where the incoming note gets transposed!
+-- here's where the incoming note gets transposed!
 --------------------------------------------------------------------------------------------------------------------------		
 		
 		if (ret.y>10 and ret.y<89) and (noscaleneeded==false) and (button==0) then -- 11 to 88, but not button
@@ -1686,13 +1710,18 @@ end -- eventsize=9
 
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function remote_deliver_midi(maxbytes,port)
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	if(port==1) then
 		local lpp_events={}
@@ -1702,6 +1731,7 @@ function remote_deliver_midi(maxbytes,port)
 		local ltevent={}
 		local rtevent={}
 		local shevent={}
+		local clevent={}
 		local mode_event={}
 		local frlight_event={}
 		local iskong = false
@@ -1742,16 +1772,40 @@ function remote_deliver_midi(maxbytes,port)
 -- Shift button
 -- -----------------------------------------------------------------------------------------------
 
-		--if we have pressed shift or there's a change in transpose, we need to show that in the seven seg display on Base:----------------------------------------
-		if (g_delivered_shift~=shift or g_delivered_transpose~=transpose)  then
+		--if we have pressed shift 
+		if g_delivered_shift~=shift  then
+			local shcolors = {"21","05"} -- green, red
+			shevent = remote.make_midi("90 50 "..shcolors[shift+1])		
+			table.insert(lpp_events,shevent)
+			g_delivered_shift = shift
+		end
+-- -----------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
+-- Click button
+-- -----------------------------------------------------------------------------------------------
+
+		--if we have pressed click----------------------------------------
+		if g_delivered_click~=click  then
+			local clcolors = {"21","05"} -- green, red
+			clevent = remote.make_midi("90 46 "..clcolors[click+1])	
+			table.insert(lpp_events,clevent)
+			g_delivered_click = click
+		end
+-- -----------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
+-- Transpose display
+-- -----------------------------------------------------------------------------------------------
+--[[
+
+		--if there's a change in transpose, we need to show that
+		if g_delivered_transpose~=transpose  then
 			local shcolors = {"21","05"} -- green, red
 			shevent = remote.make_midi("90 50 "..shcolors[shift+1])
 			if(tran_btn~=nil) then
 				if shift==1 or tran_btn>0 then
---[[
 
 --this needs to change to some color output
---nope
+-- maybe side buttons
 				--show transpose in 7seg
 					local xpose = string.format("%02i",math.abs(transpose) )
 					local c_one = string.format("%02x", string.sub(xpose,1,1) )
@@ -1762,10 +1816,8 @@ function remote_deliver_midi(maxbytes,port)
 					table.insert(lpp_events,rtevent)
 					local transpose_event = make_lcd_midi_message("/Reason/0/LPP/0/display/3/display/ "..transpose)
 					table.insert(lcd_events,transpose_event)
---]]
 				else
 					--return to scale
---[[
 					local scale_abrv = scaleabrvs[scalename]
 					local c_one = string.sub(scale_abrv,1,1)
 					local c_two = string.sub(scale_abrv,2,2)
@@ -1775,14 +1827,14 @@ function remote_deliver_midi(maxbytes,port)
 					table.insert(lpp_events,rtevent)
 					local scalename_event = make_lcd_midi_message("/Reason/0/LPP/0/display/2/display/ "..scalename)
 					table.insert(lcd_events,scalename_event)
---]]
 				end
 			end
 		
 			table.insert(lpp_events,shevent)
---]]
 			g_delivered_shift = shift
 		end
+---]]
+-- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
 
 
@@ -1825,22 +1877,23 @@ vprint("scalename",scalename)
 		if g_delivered_transpose~=transpose then
 
 			local color_len = table.getn(colors)
-			local color_ind=1 + (modulo( math.floor(math.abs(transpose)/12),color_len) ) --change color every octave
+--			local color_ind=1 + (modulo( math.floor(math.abs(transpose)/12),color_len) ) --change color every octave
+			local color_ind=1 + (modulo(transpose,color_len) ) --change color every Note, show root
 			local color = colors[color_ind]
 			if transpose>0 then
-				upevent = remote.make_midi("90 91 "..color)
+				upevent = remote.make_midi("90 5D "..color)
 				table.insert(lpp_events,upevent)
-				dnevent = remote.make_midi("90 92 00")
+				dnevent = remote.make_midi("90 5E 00")
 				table.insert(lpp_events,dnevent)
 			elseif transpose<0 then
-				upevent = remote.make_midi("90 91 00")
+				upevent = remote.make_midi("90 5D 00")
 				table.insert(lpp_events,upevent)
-				dnevent = remote.make_midi("90 92 "..color)
+				dnevent = remote.make_midi("90 5E "..color)
 				table.insert(lpp_events,dnevent)
 			elseif transpose==0 then
-				upevent = remote.make_midi("90 91 00")
+				upevent = remote.make_midi("90 5D 00")
 				table.insert(lpp_events,upevent)
-				dnevent = remote.make_midi("90 92 00")
+				dnevent = remote.make_midi("90 5E 00")
 				table.insert(lpp_events,dnevent)
 			end	
 --[[
@@ -2038,16 +2091,16 @@ vprint("transpose",transpose)
 --					local padid = i-1
 					local padid = i-1
 					local scale_len = table.getn(scale)
-			if scale_len == 7 then -- 7 and below
-				root = 12 
-			elseif scale_len == 6 then 
-				root = 0 
-			elseif scale_len == 5 then -- 2 root notes
-				table.insert(scale,1,0)
-				scale_len = 6
-			else
-				root = 24 
-			end  
+					if scale_len == 7 then -- 7 and below
+						root = 12 
+					elseif scale_len == 6 then 
+						root = 0 
+					elseif scale_len == 5 then -- 2 root notes
+						table.insert(scale,1,0)
+						scale_len = 6
+					else
+						root = 24 
+					end  
 
 --					local oct = math.floor(padid/scale_len)
 					local oct = math.floor(padid/scale_len)
@@ -2081,12 +2134,28 @@ vprint("outnorm",outnorm)
 						table.insert(lpp_events,padevent[i])
 					end
 --]]
-					
-						padevent[i]=remote.make_midi("90 "..padnum.." "..colorscale[outnorm].hcolor)
+-- NEW					
+						padevent[i]=remote.make_midi("90 "..padnum.." "..  colorscale[outnorm].hcolor)
 						table.insert(lpp_events,padevent[i])
+
+-- EVEN NEWER
+-- Something something sysex
+
+
+
+
 					
-				end
-			else
+				end --end for 1,64
+			elseif scalename=='DrumPad' then
+
+
+
+
+
+
+
+
+
 				--do drumpad color scheme
 				for i=1,64,1 do
 --					local padnum = string.format("%x",i+36) --note# that the controller led responds to
@@ -2101,8 +2170,13 @@ vprint("outnorm",outnorm)
 						table.insert(lpp_events,padevent[i])
 					end
 				end
-			end
-		end
+				
+				
+			end -- drumpad or not
+			
+			
+			
+		end --update_pads ==1
 -- -----------------------------------------------------------------------------------------------
 
 
@@ -2173,8 +2247,8 @@ vprint("outnorm",outnorm)
 		remote.trace("in init!")
 			local firstcolors={
 				--remote.make_midi(sysex_header .."0E 10 F7"),
-				remote.make_midi("90 58 06"),
-				remote.make_midi("90 13 05"),
+				remote.make_midi("90 50 21"),
+				remote.make_midi("90 46 21"),
 --[[			
 				--set 7 seg display for major scale MA:
 				remote.make_midi("b0 22 16"),
@@ -2215,9 +2289,9 @@ vprint("outnorm",outnorm)
 
 			end	
 --tprint(firstcolors)
--- This needs to change for 64 pads  
+-- -----------------------------------------------------------------------------------------------
+--[[
 			if noscaleneeded==false then
-		--notes 36 to 67 for pads
 --				local padevent = {}
 				for i=1,64,1 do
 					--local padnum = string.format("%x",i+35)
@@ -2234,15 +2308,20 @@ vprint("outnorm",outnorm)
 --				table.insert(lpp_events,padevent[i])
 				local padev=remote.make_midi("90 "..padnum.." "..keycolor)
 				table.insert(lpp_events,padev)
+--]]
 --[[
 					local transpose_event = make_lcd_midi_message("/INIT "..transpose)
 					table.insert(lcd_events,transpose_event)
 --]]
+--[[
 --vprint("padnum",padnum)
 --vprint("",)
 --vprint("",)
 				end
 			end
+--]]
+			 
+-- -----------------------------------------------------------------------------------------------
 			init=0
 		end
 -- -----------------------------------------------------------------------------------------------
