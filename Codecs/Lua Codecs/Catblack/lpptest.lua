@@ -1490,7 +1490,7 @@ function remote_process_midi(event)
 if event.size==3 then -- Note, button, channel pressure
 
 -- 1001 is 90 (note on) 1011 is B0 (controller) 
-	ret =    remote.match_midi("<10x1>? yy zz",event) --find a pad on or off
+	ret =    remote.match_midi("<10x1>? yy zz",event) --find a pad, button on or off
 --[[
 	if(ret~=nil) then
 tprint(ret)
@@ -1581,6 +1581,13 @@ tprint(ret)
 				g.button.click = 0
 			end
 		end
+
+		if (g.button.click == 1)  and (g.button.shift == 1) then
+			g.button.shiftclick = 1 --momentary like a computer's shift key
+		else
+			g.button.shiftclick = 0
+		end
+		
 		if(tran_up) then
 			if tran_up.z>0 then
 				g.transpose = g.transpose+(1-g.button.shift)+(g.button.shift*12)
@@ -1782,6 +1789,7 @@ function remote_deliver_midi(maxbytes,port)
 		local rtevent={}
 		local shevent={}
 		local clevent={}
+		local shclevent={}
 		local padupdate={}
 		local mode_event={}
 		local frlight_event={}
@@ -1841,6 +1849,20 @@ function remote_deliver_midi(maxbytes,port)
 			clevent = remote.make_midi("90 46 "..clcolors[g.button.click+1])	
 			table.insert(lpp_events,clevent)
 			g.button.click_delivered = g.button.click
+		end
+-- -----------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
+-- shiftclick button
+-- -----------------------------------------------------------------------------------------------
+
+		--if we have pressed click and shift----------------------------------------
+		if g.button.shiftclick_delivered~=g.button.shiftclick  then
+			local shclcolors = {"21","05","31"} -- green, red, purp
+			shclevent = remote.make_midi("90 50 "..shclcolors[g.button.shiftclick+g.button.shift+1])		
+			table.insert(lpp_events,shclevent)
+			shclevent = remote.make_midi("90 46 "..shclcolors[g.button.shiftclick+g.button.click+1])	
+			table.insert(lpp_events,shclevent)
+			g.button.shiftclick_delivered = g.button.shiftclick
 		end
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
