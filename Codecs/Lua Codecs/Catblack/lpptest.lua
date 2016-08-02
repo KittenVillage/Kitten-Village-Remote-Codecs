@@ -206,6 +206,20 @@ transpose_changed = false
 tranup_btn = 0 --transpose up button state up or down
 trandn_btn = 0 --transpose down button state up or down
 
+
+
+--scalename = 'Major'
+scalename = 'Chromatic'
+scale = scales[scalename]
+scale_int = 0 ;
+g.scale_delivered = 0 --for change filter
+
+
+
+
+palettename = 'Chromatic'
+palette = palettes[palettename]
+palette_int = 0 ;
 g.palette_delivered = 0 --for change filter
 g.palette = 0
 palette_changed = false
@@ -220,11 +234,6 @@ palette_changed = false
 
 
 root = 12  -- not 36
---scalename = 'Major'
-scalename = 'Chromatic'
-scale = scales[scalename]
-scale_int = 0 ;
-g.scale_delivered = 0 --for change filter
 
 
 drum_mode = 0;
@@ -1611,10 +1620,12 @@ tprint(ret)
 					global_transp = g.transpose
 					transpose_changed = true
 				elseif g.button.shiftclick_delivered == 1 then -- color palette
+--[[
 					g.palette = g.palette+1
 					global_palette = g.palette
 					palette_changed = true
 				end	
+--]]
 			end
 		end
 		if(tran_dn) then
@@ -1624,34 +1635,44 @@ tprint(ret)
 					global_transp = g.transpose
 					transpose_changed = true
 				elseif g.button.shiftclick_delivered == 1 then -- color palette
+--[[
 					g.palette = g.palette-1
 					global_palette = g.palette
 					palette_changed = true
+--]]
 				end	
 			end
 		end
 		if(scale_up) then
 			if scale_up.z>0 then
---				scale_int = modulo(scale_int+1,8) --only use the first 8 scales
---				scalename = scalenames[1+scale_int]
-				scale_int = modulo(scale_int+1,36) --only use the first 36 scales
-				scalename = scalenames[1+scale_int]
-				scale = scales[scalename]
-				global_scale = scale_int
-				scale_from_parse = false
-			remote.trace("scale up "..scalename)
+				if g.button.shiftclick_delivered == 0 then
+					scale_int = modulo(scale_int+1,36) --only use the first 36 scales
+					scalename = scalenames[1+scale_int]
+					scale = scales[scalename]
+					global_scale = scale_int
+					scale_from_parse = false
+remote.trace("scale up "..scalename)
+				elseif g.button.shiftclick_delivered == 1 then -- color palette
+					g.palette = g.palette+1
+					global_palette = g.palette
+					palette_changed = true
+				end	
 			end
 		end
 		if(scale_dn) then
 			if scale_dn.z>0 then
---				scale_int = modulo(scale_int-1,8) --only use the first 8 scales
---				scalename = scalenames[1+scale_int]
-				scale_int = modulo(scale_int-1,36) --only use the first 36 scales
-				scalename = scalenames[1+scale_int]
-				scale = scales[scalename]
-				global_scale = scale_int
-				scale_from_parse = false
-			remote.trace("scale dn "..scalename)
+				if g.button.shiftclick_delivered == 0 then
+					scale_int = modulo(scale_int-1,36) --only use the first 36 scales
+					scalename = scalenames[1+scale_int]
+					scale = scales[scalename]
+					global_scale = scale_int
+					scale_from_parse = false
+remote.trace("scale dn "..scalename)
+				elseif g.button.shiftclick_delivered == 1 then -- color palette
+					g.palette = g.palette-1
+					global_palette = g.palette
+					palette_changed = true
+				end	
 			end
 		end
 		if(drum_tog) then
@@ -2009,7 +2030,8 @@ vprint("g.transpose",g.transpose)
 -- -----------------------------------------------------------------------------------------------
 		
 -- -----------------------------------------------------------------------------------------------
-		--if palette changes, we transpose--------------------------------------------------------------------------------
+		--if palette changes, we transpose
+--------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
 		if g.palette_delivered~=g.palette then
 
@@ -2836,7 +2858,7 @@ palettes = {
 		},
 	}
 palettenames = {
-'catblack',
+'Catblack',
 'louisBertrandCastel',
 'dDJameson',
 'theodorSeemann',
