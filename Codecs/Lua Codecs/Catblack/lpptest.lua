@@ -201,7 +201,14 @@ g.last_input_item = nil
 
 g.transpose_delivered = 0 --for change filter
 g.transpose = 0
+transpose_changed = false
 -- tran_rst = true -- stops transpose
+tranup_btn = 0 --transpose up button state up or down
+trandn_btn = 0 --transpose down button state up or down
+
+g.palette_delivered = 0 --for change filter
+g.palette = 0
+palette_changed = false
 
 
 
@@ -226,9 +233,6 @@ drum_mode = 0;
 
 
 
-tranup_btn = 0 --transpose up button state up or down
-trandn_btn = 0 --transpose down button state up or down
-transpose_changed = false
 init = 1
 global_scale = 0
 global_transp = 0
@@ -1536,7 +1540,7 @@ tprint(ret)
 --B2
 -----------------------------------
 	if(ret~=nil) then
-		button = ret.x -- 1 = side button
+		button = ret.x --  check 1 = button
 		if ret.z == 0 then -- faking note on and off for the checks later. x is 'value', 0 or 1 for keyboard items.
 			ret.x =0
 		else
@@ -1567,6 +1571,9 @@ tprint(ret)
 		  end
 		end
 
+-- -----------------------------------------------------------------------------------------------
+-- Shift button
+-- -----------------------------------------------------------------------------------------------
 		if (shiftbtn) then
 			if shiftbtn.z>0 then
 				g.button.shift = 1 --momentary like a computer's shift key
@@ -1574,6 +1581,9 @@ tprint(ret)
 				g.button.shift = 0
 			end
 		end
+-- -----------------------------------------------------------------------------------------------
+-- Click button
+-- -----------------------------------------------------------------------------------------------
 		if (clickbtn) then
 			if clickbtn.z>0 then
 				g.button.click = 1 --momentary like a computer's shift key
@@ -1581,25 +1591,43 @@ tprint(ret)
 				g.button.click = 0
 			end
 		end
-
+-- -----------------------------------------------------------------------------------------------
+-- shiftclick button
+-- -----------------------------------------------------------------------------------------------
 		if (g.button.click == 1)  and (g.button.shift == 1) then
 			g.button.shiftclick = 1 --momentary like a computer's shift key
 		else
 			g.button.shiftclick = 0
 		end
+-- -----------------------------------------------------------------------------------------------
+-- check below per button, then we check each for shift and click with elseif
+-- 
+-- -----------------------------------------------------------------------------------------------
 		
 		if(tran_up) then
 			if tran_up.z>0 then
-				g.transpose = g.transpose+(1-g.button.shift)+(g.button.shift*12)
-				global_transp = g.transpose
-				transpose_changed = true
+				if g.button.shiftclick_delivered == 0 then
+					g.transpose = g.transpose+(1-g.button.shift)+(g.button.shift*12) -- if sh pressed, add 12, else just 1
+					global_transp = g.transpose
+					transpose_changed = true
+				elseif g.button.shiftclick_delivered == 1 then -- color palette
+					g.palette = g.palette+1
+					global_palette = g.palette
+					palette_changed = true
+				end	
 			end
 		end
 		if(tran_dn) then
 			if tran_dn.z>0 then
-				g.transpose = g.transpose-(1-g.button.shift)-(g.button.shift*12)
-				global_transp = g.transpose
-				transpose_changed = true
+				if g.button.shiftclick_delivered == 0 then
+					g.transpose = g.transpose-(1-g.button.shift)-(g.button.shift*12)
+					global_transp = g.transpose
+					transpose_changed = true
+				elseif g.button.shiftclick_delivered == 1 then -- color palette
+					g.palette = g.palette-1
+					global_palette = g.palette
+					palette_changed = true
+				end	
 			end
 		end
 		if(scale_up) then
@@ -1863,6 +1891,8 @@ function remote_deliver_midi(maxbytes,port)
 			shclevent = remote.make_midi("90 46 "..shclcolors[g.button.shiftclick+g.button.click+1])	
 			table.insert(lpp_events,shclevent)
 			g.button.shiftclick_delivered = g.button.shiftclick
+-- both buttons pressed reveal other options, display here
+
 		end
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
@@ -1975,6 +2005,39 @@ vprint("scalename",scalename)
 			g.transpose_delivered = g.transpose
 			do_update_pads = 1
 vprint("g.transpose",g.transpose)
+		end
+-- -----------------------------------------------------------------------------------------------
+		
+-- -----------------------------------------------------------------------------------------------
+		--if palette changes, we transpose--------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
+		if g.palette_delivered~=g.palette then
+
+			local color_len = table.getn(colors)
+--			local color_ind=1 + (modulo( math.floor(math.abs(g.transpose)/12),color_len) ) --change color every octave
+			local color_ind=1 + (modulo(g.palette,color_len) ) --change color every Note, show root
+			local color = colors[color_ind]
+			if g.palette>0 then
+				upevent = remote.make_midi("90 5D "..color)
+				table.insert(lpp_events,upevent)
+				dnevent = remote.make_midi("90 5E 00")
+				table.insert(lpp_events,dnevent)
+			elseif g.palette<0 then
+				upevent = remote.make_midi("90 5D 00")
+				table.insert(lpp_events,upevent)
+				dnevent = remote.make_midi("90 5E "..color)
+				table.insert(lpp_events,dnevent)
+			elseif g.palette==0 then
+				upevent = remote.make_midi("90 5D 00")
+				table.insert(lpp_events,upevent)
+				dnevent = remote.make_midi("90 5E 00")
+				table.insert(lpp_events,dnevent)
+			end	
+--[[
+--]]
+			g.palette_delivered = g.palette
+			do_update_pads = 1
+vprint("g.palette",g.palette)
 		end
 -- -----------------------------------------------------------------------------------------------
 		
