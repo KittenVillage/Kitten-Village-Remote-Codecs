@@ -158,18 +158,18 @@ sli_end=12
 
 -- Thought I'd try the colors from virtuosoism.com
 colorscale={}
-colorscale[0]= {interval=0,  color=7,   hcolor="07", col="R ", notename="C",} -- 5 too bright
-colorscale[1]= {interval=1,  color=65,  hcolor="41", col="BG", notename="C#",}
-colorscale[2]= {interval=2,  color=96,  hcolor="60", col="O ", notename="D",}
-colorscale[3]= {interval=3,  color=49,  hcolor="31", col="BV", notename="D#",}
-colorscale[4]= {interval=4,  color=97,  hcolor="61", col="Y ", notename="E",}
-colorscale[5]= {interval=5,  color=57,  hcolor="39", col="RV", notename="F",}
-colorscale[6]= {interval=6,  color=21,  hcolor="15", col="G ", notename="F#",}
-colorscale[7]= {interval=7,  color=60,  hcolor="3C", col="RO", notename="G",}
-colorscale[8]= {interval=8,  color=45,  hcolor="2D", col="B ", notename="G#",}
-colorscale[9]= {interval=9,  color=126, hcolor="7E", col="YO", notename="A",}
-colorscale[10]={interval=10, color=55,  hcolor="37", col="V ", notename="A#",}
-colorscale[11]={interval=11, color=18,  hcolor="12", col="YG", notename="B",}
+colorscale[0]= {interval=0,  color=7,   hcolor="07", R="06", G="00", B="00", col="R ", notename="C",} -- 5 too bright
+colorscale[1]= {interval=1,  color=65,  hcolor="41", R="00", G="15", B="0D", col="BG", notename="C#",}
+colorscale[2]= {interval=2,  color=96,  hcolor="60", R="3F", G="1F", B="00", col="O ", notename="D",}
+colorscale[3]= {interval=3,  color=49,  hcolor="31", R="15", G="00", B="3F", col="BV", notename="D#",}
+colorscale[4]= {interval=4,  color=97,  hcolor="61", R="2E", G="2C", B="00", col="Y ", notename="E",}
+colorscale[5]= {interval=5,  color=57,  hcolor="39", R="3F", G="00", B="15", col="RV", notename="F",}
+colorscale[6]= {interval=6,  color=21,  hcolor="15", R="00", G="3F", B="00", col="G ", notename="F#",}
+colorscale[7]= {interval=7,  color=60,  hcolor="3C", R="3F", G="05", B="00", col="RO", notename="G",}
+colorscale[8]= {interval=8,  color=45,  hcolor="2D", R="00", G="00", B="3F", col="B ", notename="G#",}
+colorscale[9]= {interval=9,  color=126, hcolor="7E", R="2C", G="17", B="00", col="YO", notename="A",}
+colorscale[10]={interval=10, color=55,  hcolor="37", R="06", G="00", B="06", col="V ", notename="A#",}
+colorscale[11]={interval=11, color=18,  hcolor="12", R="07", G="16", B="00", col="YG", notename="B",}
 -- colors = {"07","3C","96","7E","61","12","15","41","2D","31","37","39"} -- BY HUE
 
 
@@ -300,42 +300,7 @@ note = {}
 drum = {}
 buttonindex = {}
 g.itemnum = {}
-
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-function set_colorscales()
-	for s,st in pairs(scales) do
-		if type(st) == 'table' then
-			--for u,r in ipairs(st) do
-			local scale_len = table.getn(st)
-			if scale_len == 7 then -- 7 and below
-				root = 12 
-			elseif scale_len == 6 then 
-				root = 0 
-			elseif scale_len == 5 then -- 2 root notes
-				table.insert(0,1,st)
-				scale_len = 6
-			else
-				root = 24 
-			end  
-			for pd=1,64,1 do
-				local oct = math.floor((pd-1)/scale_len)
-				local addnote = scale[1+modulo(i-1,scale_len)]
-				local outnote = root+g.transpose+(12*oct)+addnote --note that gets played by synth
-				local outnorm = modulo(outnote,12) --normalized to 0-11 range
-				local padnum = padindex[i].padhex --note# that the controller led responds to
-				
-				
-			end
-		end
-			
-		
-	end
-
-end
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-
+padpress = {} -- to display pressed
 
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -345,6 +310,7 @@ function def_vars()
 	for ho=1,8 do --horizontal from bottom
 		for ve=1,8 do -- vertical from left
 			local thispad=(ho*10)+ve  --11-18 ... 81-88
+			local thispadhex=string.format("%02X",thispad)
 			local thisnote=notemode[ho]+ve
 			local thisdrum=drummode[ho]+ve
 			if ve>4 then -- drum mode is 4 4x4 grids
@@ -355,7 +321,7 @@ function def_vars()
 			end
 			table.insert(note[thisnote],thispad) --In note mode, a single note can be on one or two pads.	
 			table.insert(pad,thispad,{
-							padhex=string.format("%02X",thispad),
+							padhex=thispadhex,
 							note=thisnote,
 							drum=thisdrum,
 							index=index,
@@ -367,7 +333,7 @@ function def_vars()
 			})
 			table.insert(padindex,index,{
 							pad=thispad,
-							padhex=string.format("%02X",thispad),
+							padhex=thispadhex,
 							note=thisnote,
 							drum=thisdrum,
 							itemindex=(index-1)+g.itemnum.first_pad,
@@ -408,6 +374,39 @@ end
 
 
 
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+function set_colorscales()
+	for s,st in pairs(scales) do
+		if type(st) == 'table' then
+			--for u,r in ipairs(st) do
+			local scale_len = table.getn(st)
+			if scale_len == 7 then -- 7 and below
+				root = 12 
+			elseif scale_len == 6 then 
+				root = 0 
+			elseif scale_len == 5 then -- 2 root notes
+				table.insert(0,1,st)
+				scale_len = 6
+			else
+				root = 24 
+			end  
+			for pd=1,64,1 do
+				local oct = math.floor((pd-1)/scale_len)
+				local addnote = scale[1+modulo(i-1,scale_len)]
+				local outnote = root+g.transpose+(12*oct)+addnote --note that gets played by synth
+				local outnorm = modulo(outnote,12) --normalized to 0-11 range
+				local padnum = padindex[i].padhex --note# that the controller led responds to
+				
+				
+			end
+		end
+			
+		
+	end
+
+end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
@@ -1635,17 +1634,22 @@ tprint(ret)
 --------------------------------------------------------------------------------------------------------------------------		
 		
 		if (ret.y>10 and ret.y<89) and (noscaleneeded==false) and (button==0) then -- 11 to 88, but not button
+
+
 			---if the pads have transposed, then we need to turn off the last note----------------------
 			if(transpose_changed == true) then
-				local prev_off={ time_stamp = event.time_stamp, item=1, value = ret.x, note = g.note_delivered,velocity = 0 }
+				local prev_off={ time_stamp = event.time_stamp, item=1, value = ret.x, note = g.note_delivered, velocity = 0 }
 				remote.handle_input(prev_off)
 				transpose_changed = false
 			end 
 			
 ---------------------------------------------------			
---			local padid = ret.y-11
+-- Calculate the note delivered based on the current scale and pad pressed.
+-- TODO add an else to keep noteout in this range
+---------------------------------------------------			
 			local padid = pad[ret.y].index-1
 			local scale_len = table.getn(scale)
+----------------------------------------------------			
 			if scale_len == 7 then -- 7 and below
 				root = 12 
 			elseif scale_len == 6 then 
@@ -1656,31 +1660,45 @@ tprint(ret)
 			else
 				root = 24 
 			end  
+----------------------------------------------------			
 			local ind = 1+modulo(padid,scale_len)  --modulo using the operator % gave me trouble in reason, so I wrote a custom fcn
 			local oct = math.floor(padid/scale_len)
 			local addnote = scale[ind]
 			local noteout = root+g.transpose+(12*oct)+addnote
+----------------------------------------------------			
+--[[
 vprint("padid",padid)
 vprint("oct",oct)
 vprint("addnote",addnote)
 vprint("ind",ind)
 vprint("noteout",noteout)
--- TODO add an else to keep noteout in this range
+--]]
+----------------------------------------------------			
 			if (noteout<127 and noteout>0) then
 				local msg={ time_stamp = event.time_stamp, item=1, value = ret.x, note = noteout,velocity = ret.z }
 				remote.handle_input(msg)
 				g.note_delivered = noteout
 				return true
 			end
+----------------------------------------------------
+-- here we display the pressed note
+----------------------------------------------------
+			local new_note = ret.y 
+			local new_notevel = ret.z 
+			if (g.last_notevel_delivered~=new_notevel) and (g.last_note_delivered~=new_note) then -- draw new notevel
+				g.current_note=new_note
+				g.current_notevel=new_notevel	
+			end
 ----------------------------------------------------			
-			
 
--- TODO, modify this to work with bottom buttons!			
---		elseif (ret.y<9 and shift==1) then --f7 buttons and top buttons
-		elseif (buttonindex[ret.y]~=nil and g.button.shift==1) then --f7 buttons and top buttons
---			local noteout = ret.y + 100 --offset note by 100
+
+
+			
+----------------------------------------------------
+-- TODO, comment more
+-- detecting buttons here, but only if shift pressed?		
+		elseif (buttonindex[ret.y]~=nil and g.button.shift==1) then -- buttons
 			local noteout = ret.y --no offset
---			itemno = g.Bbtn_firstitem+(ret.y-10) --Tbtn starts at item 121 in the items index.
 			itemno = buttonindex[ret.y].itemindex -- items index.
 			if(ret.z>0) then
 				local msg={ time_stamp = event.time_stamp, item=itemno, value = ret.x, note = noteout,velocity = ret.z }
@@ -1764,6 +1782,7 @@ function remote_deliver_midi(maxbytes,port)
 		local rtevent={}
 		local shevent={}
 		local clevent={}
+		local padupdate={}
 		local mode_event={}
 		local frlight_event={}
 		local iskong = false
@@ -1874,7 +1893,8 @@ function remote_deliver_midi(maxbytes,port)
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
 --this needs to change to some color output
-		--if scale changes, we update the LCD--------------------------------------------------------------------------------
+		--if scale changes, we update the LCD
+--------------------------------------------------------------------------------
 		if ( (g.scale_delivered~=scale_int or g.transpose_delivered~=g.transpose) and g.button.shift~=1 and tran_btn==0) then
 --[[
 			local scale_abrv = scaleabrvs[scalename]
@@ -2012,6 +2032,8 @@ vprint("g.transpose",g.transpose)
 --[[
 --]]	
 --[[			
+-- -----------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
 				--send LCD the Track name text----------------------------------------------------------------
 				local track_event = make_lcd_midi_message("/Reason/0/LPP/0/display/0/display "..new_text)
 				table.insert(lcd_events,track_event)
@@ -2050,6 +2072,8 @@ vprint("g.transpose",g.transpose)
 				end
 --]]
 --[[
+-- -----------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
 				--send scale name to LCD----------------------------------------
 				local scalename_event = make_lcd_midi_message("/Reason/0/LPP/0/display/2/display/ "..scalename)
 				table.insert(lcd_events,scalename_event)
@@ -2063,6 +2087,8 @@ vprint("g.transpose",g.transpose)
 --]]
 				end
 --[[
+-- -----------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
 
 				--see if there's a transpose in the track text----------------------------------------
 				local transp = ""
@@ -2119,6 +2145,7 @@ vprint("g.transpose",g.transpose)
 		if(do_update_pads==1) then
 --	  table.insert(lcd_events,upd_event)
 			if(scalename~='DrumPad') then
+				local padsysex = ""
 				for i=1,64,1 do
 --					local padid = i-1
 					local padid = i-1
@@ -2134,9 +2161,7 @@ vprint("g.transpose",g.transpose)
 						root = 24 
 					end  
 
---					local oct = math.floor(padid/scale_len)
 					local oct = math.floor(padid/scale_len)
---					local addnote = scale[1+modulo(i-1,scale_len)]
 					local addnote = scale[1+modulo(i-1,scale_len)]
 					local outnote = root+g.transpose+(12*oct)+addnote --note that gets played by synth
 					local outnorm = modulo(outnote,12) --normalized to 0-11 range
@@ -2153,6 +2178,7 @@ vprint("outnorm",outnorm)
 --vprint("",)
 --]]
 					--remote.trace("\n i: "..i.." padid: "..padid.." outnorm "..outnorm.." outnote "..outnote.." xpose "..g.transpose.." addnote "..addnote)
+-- -----------------------------------------------------------------------------------------------
 --[[
 					--if outnorm is 0 , make it yellow. if it's a white key, make it white, else blue
 					if outnorm==0 then
@@ -2165,19 +2191,23 @@ vprint("outnorm",outnorm)
 						padevent[i]=remote.make_midi("90 "..padnum.." "..keycolors[3])
 						table.insert(lpp_events,padevent[i])
 					end
---]]
+-- -----------------------------------------------------------------------------------------------
 -- NEW					
 						padevent[i]=remote.make_midi("90 "..padnum.." "..  colorscale[outnorm].hcolor)
 						table.insert(lpp_events,padevent[i])
+--]]
 
 -- EVEN NEWER
 -- Something something sysex
+						padsysex=padsysex..padnum.." "..colorscale[outnorm].R .." ".. colorscale[outnorm].G .." "..colorscale[outnorm].B
+-- even even new, keep a list of all the pads, and which are pressed, and colors they return to.
 
 
-
-
-					
+						
 				end --end for 1,64
+				padupdate=remote.make_midi(sysex_header.."0B "..padsysex.." F7")
+				table.insert(lpp_events,padupdate)
+				--error(padsysex)
 			elseif scalename=='DrumPad' then
 
 
@@ -2399,6 +2429,10 @@ vprint("outnorm",outnorm)
 
 --Test velocity output
 --[[
+--]]
+------------------------------------------------------------------------------------------------------
+-- Change this
+-----------------------------------------------------------------------------------------------------
 		if (g.last_notevel_delivered~=g.current_notevel) or (g.last_note_delivered~=g.current_note) then
 			lpp_events={
 				remote.make_midi("b0 xx yy",{ x = g.current_note, y = set_vel_color(g.current_notevel), port=1 }),
@@ -2410,7 +2444,6 @@ vprint("outnorm",outnorm)
 
 		end
 --remote.trace("remdevmidi 1\n")
---]]
 
 
 
