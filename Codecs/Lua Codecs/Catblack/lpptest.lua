@@ -185,7 +185,7 @@ g.button = {}
 g.scope = {}
 
 g.button.shift = 0
-g.button.shift_delivered = 0
+g.button.shift_delivered = 0 --for change filter
 
 g.button.click = 0
 g.button.click_delivered = 0
@@ -212,12 +212,6 @@ g.transpose = 0
 
 
 
-
-shift = 0
-click = 0
-
-
-
 root = 12  -- not 36
 --scalename = 'Major'
 scalename = 'Chromatic'
@@ -230,8 +224,6 @@ drum_mode = 0;
 --drum_tog = true -- force drums
 
 
-g.shift_delivered = 0 --for change filter
-g.click_delivered = 0 --for change filter
 
 
 tranup_btn = 0 --transpose up button state up or down
@@ -341,6 +333,10 @@ function set_colorscales()
 
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function def_vars()
@@ -546,6 +542,7 @@ end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
+
 --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- remote.trace contents of `tbl`, with indentation.
 -- `indent` sets the initial level of indentation.
@@ -573,6 +570,8 @@ function tprint (tbl, indent)
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+
+
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- Thanks, Livid
 --for some Reason (pun intended) I need to define a modulo function. just using the % operator was throwing errors :(
@@ -581,6 +580,8 @@ function modulo(a,b)
 	return mo
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
 
 --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function set_vel_color(newvel)
@@ -645,12 +646,13 @@ function remote_init(manufacturer, model)
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- this version
 	if model=="LP Pro" then
-		items={
---		local items={
+		local items={
 --items
 			{name="Keyboard",input="keyboard"},
 			{name="_Scope", output="text", itemnum="scope"}, --device, e.g. "Thor"
 			{name="_Var", output="text", itemnum="var"}, --variation, e.g. "Volume" or "Filters"
+			{name="Pitch Bend", input="value", min=0, max=16383, itemnum="pitchbend"},
+			{name="Modulation", input="value", min=0, max=127, itemnum="modulation"},
 			{name="Channel Pressure", input="value", min=0, max=127},
 			{name="Fader 1", input="value", min=0, max=127, output="value", itemnum="first_fader"},
 			{name="Fader 2", input="value", min=0, max=127, output="value"},
