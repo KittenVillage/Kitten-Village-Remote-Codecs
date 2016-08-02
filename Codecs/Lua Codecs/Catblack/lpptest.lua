@@ -1946,8 +1946,8 @@ vprint("scalename",scalename)
 
 
 -- -----------------------------------------------------------------------------------------------
--- -----------------------------------------------------------------------------------------------
 		--if transpose changes, we transpose--------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
 		if g.transpose_delivered~=g.transpose then
 
 			local color_len = table.getn(colors)
@@ -1980,8 +1980,8 @@ vprint("g.transpose",g.transpose)
 		
 		
 -- -----------------------------------------------------------------------------------------------
--- -----------------------------------------------------------------------------------------------
 		--if vartext from _Var item in remotemap has changed	-----------------
+-- -----------------------------------------------------------------------------------------------
 		if g.vartext_prev~=g.vartext then
 			--Let the LCD know what the variation is
 			local vartext = remote.get_item_text_value(g.var_item_index)
@@ -1996,7 +1996,9 @@ vprint("g.transpose",g.transpose)
 		
 		
 --[[
+-- -----------------------------------------------------------------------------------------------
 		--lcd event and text parsing for scale detection from text in track name----------------------------------------
+-- -----------------------------------------------------------------------------------------------
 		local new_text = g.lcd_state
 		if g.lcd_state_delivered~=new_text then
 			g.lcd_state_delivered = new_text
@@ -2017,8 +2019,8 @@ vprint("g.transpose",g.transpose)
 --]]
 
 -- -----------------------------------------------------------------------------------------------
--- -----------------------------------------------------------------------------------------------
 			--parse the text to see if there's any scale or transpose info----------------------------------------
+-- -----------------------------------------------------------------------------------------------
 			if istracktext==true then			
 				--if scopetext from _Scope item has changed	
 				if g.scopetext_prev~=g.scopetext then
@@ -2055,8 +2057,8 @@ vprint("g.transpose",g.transpose)
 --]]	
 --[[			
 -- -----------------------------------------------------------------------------------------------
--- -----------------------------------------------------------------------------------------------
 				--send LCD the Track name text----------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
 				local track_event = make_lcd_midi_message("/Reason/0/LPP/0/display/0/display "..new_text)
 				table.insert(lcd_events,track_event)
 --]]
@@ -2095,8 +2097,8 @@ vprint("g.transpose",g.transpose)
 --]]
 --[[
 -- -----------------------------------------------------------------------------------------------
--- -----------------------------------------------------------------------------------------------
 				--send scale name to LCD----------------------------------------
+-- -----------------------------------------------------------------------------------------------
 				local scalename_event = make_lcd_midi_message("/Reason/0/LPP/0/display/2/display/ "..scalename)
 				table.insert(lcd_events,scalename_event)
 --]]
@@ -2110,9 +2112,9 @@ vprint("g.transpose",g.transpose)
 				end
 --[[
 -- -----------------------------------------------------------------------------------------------
+				--see if there's a transpose in the track text----------------------------------------
 -- -----------------------------------------------------------------------------------------------
 
-				--see if there's a transpose in the track text----------------------------------------
 				local transp = ""
 				tsearch = string.find(new_text, 'trans') or string.find(new_text, 'transpose')
 				eqtsearch = string.find(new_text, '=%d',tsearch) --look for a value
