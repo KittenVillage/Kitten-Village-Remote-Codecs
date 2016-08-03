@@ -211,20 +211,22 @@ trandn_btn = 0 --transpose down button state up or down
 --scalename = 'Major'
 scalename = 'Chromatic'
 scale = scales[scalename]
-scale_int = 0 ;
+scale_int = 0 
 g.scale_delivered = 0 --for change filter
 
 
+--palettes={}
+--palette={}
 
-
-palettename = 'Chromatic'
+--[[
+palettename = 'Catblack'
 palette = palettes[palettename]
-palette_int = 0 ;
+palette_int = 0 
 g.palette_delivered = 0 --for change filter
 g.palette = 0
 palette_changed = false
 
-
+--]]
 
 
 
@@ -994,6 +996,7 @@ first_button
 --]]
 
 
+--[[
 -- Aftertouch
 			{name="Press 11",  pattern="A? 0B xx"},
 			{name="Press 12",  pattern="A? 0C xx"},
@@ -1027,6 +1030,7 @@ first_button
 			{name="Press 46",  pattern="A? 2E xx"},
 			{name="Press 47",  pattern="A? 2F xx"},
 			{name="Press 48",  pattern="A? 30 xx"},
+--]]
 --[[
 			{name="Press 51",  pattern="A? 33 xx"},
 			{name="Press 52",  pattern="A? 34 xx"},
@@ -1624,8 +1628,8 @@ tprint(ret)
 					g.palette = g.palette+1
 					global_palette = g.palette
 					palette_changed = true
-				end	
 --]]
+				end	
 			end
 		end
 		if(tran_dn) then
@@ -2035,10 +2039,11 @@ vprint("g.transpose",g.transpose)
 -- -----------------------------------------------------------------------------------------------
 		if g.palette_delivered~=g.palette then
 
-			local color_len = table.getn(colors)
+			local palette_len = table.getn(palettenames)
 --			local color_ind=1 + (modulo( math.floor(math.abs(g.transpose)/12),color_len) ) --change color every octave
-			local color_ind=1 + (modulo(g.palette,color_len) ) --change color every Note, show root
-			local color = colors[color_ind]
+			local palette_ind=1 + (modulo(g.palette,palette_len) ) --change color every Note, show root
+			palette = palettes[palettenames[palette_ind]]
+--[[
 			if g.palette>0 then
 				upevent = remote.make_midi("90 5D "..color)
 				table.insert(lpp_events,upevent)
@@ -2055,11 +2060,14 @@ vprint("g.transpose",g.transpose)
 				dnevent = remote.make_midi("90 5E 00")
 				table.insert(lpp_events,dnevent)
 			end	
---[[
 --]]
 			g.palette_delivered = g.palette
 			do_update_pads = 1
+vprint("palette",palettenames[palette_ind])
+vprint("palette_ind",palette_ind)
 vprint("g.palette",g.palette)
+--vprint("pal",table.getn(palettes))
+tprint(palette[1])
 		end
 -- -----------------------------------------------------------------------------------------------
 		
@@ -2308,7 +2316,8 @@ vprint("outnorm",outnorm)
 
 -- EVEN NEWER
 -- Something something sysex
-						padsysex=padsysex..padnum.." "..colorscale[outnorm].R .." ".. colorscale[outnorm].G .." "..colorscale[outnorm].B
+--						padsysex=padsysex..padnum.." "..colorscale[outnorm].R .." ".. colorscale[outnorm].G .." "..colorscale[outnorm].B
+						padsysex=padsysex..padnum.." "..palette[outnorm].R .." ".. palette[outnorm].G .." "..palette[outnorm].B
 -- even even new, keep a list of all the pads, and which are pressed, and colors they return to.
 
 
@@ -2756,7 +2765,7 @@ palettes = {
 						[8]={R="1F", G="02", B="1F", },		 -- indigo
 						[9]={R="35", G="04", B="21", },		 -- violet
 						[10]={R="1A", G="07", B="07", },		 -- brown
-						[11]={R="01", G="01", B="01", },		 -- black
+						[11]={R="04", G="04", B="04", },		 -- black
 		},
 		aWallaceRimington = {
 						[0]={R="3E", G="02", B="03", },		 -- deep red
@@ -2869,6 +2878,15 @@ palettenames = {
 'iJBelmont',
 'sZieverink',
 }
+palettename = 'louisBertrandCastel'
+palette = palettes[palettenames[4]]
+palette_int = 0 
+g.palette_delivered = 0 --for change filter
+g.palette = 0
+palette_changed = false
+
+tprint(palette)
+
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
