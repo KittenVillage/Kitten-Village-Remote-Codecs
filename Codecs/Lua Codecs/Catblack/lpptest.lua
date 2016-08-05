@@ -216,14 +216,14 @@ g.scale_delivered = 0 --for change filter
 
 
 --palettes={}
---palette={}
+g.palette={}
 
 --[[
 palettename = 'Catblack'
 palette = palettes[palettename]
 palette_int = 0 
 g.palette_delivered = 0 --for change filter
-g.palette = 0
+g.palette_selected = 0
 palette_changed = false
 
 --]]
@@ -1550,7 +1550,7 @@ tprint(ret)
 	
 	
 -----------------------------------
---B2
+--
 -----------------------------------
 	if(ret~=nil) then
 		button = ret.x --  check 1 = button
@@ -1625,8 +1625,8 @@ tprint(ret)
 					transpose_changed = true
 				elseif g.button.shiftclick_delivered == 1 then -- color palette
 --[[
-					g.palette = g.palette+1
-					global_palette = g.palette
+					g.palette_selected = g.palette_selected+1
+					g.palette_global = 1 + (modulo(g.palette_selected,g.palette_length))
 					palette_changed = true
 --]]
 				end	
@@ -1640,8 +1640,8 @@ tprint(ret)
 					transpose_changed = true
 				elseif g.button.shiftclick_delivered == 1 then -- color palette
 --[[
-					g.palette = g.palette-1
-					global_palette = g.palette
+					g.palette_selected = g.palette_selected-1
+					g.palette_global = 1 + (modulo(g.palette_selected,g.palette_length))
 					palette_changed = true
 --]]
 				end	
@@ -1657,8 +1657,8 @@ tprint(ret)
 					scale_from_parse = false
 remote.trace("scale up "..scalename)
 				elseif g.button.shiftclick_delivered == 1 then -- color palette
-					g.palette = g.palette+1
-					global_palette = g.palette
+					g.palette_selected = g.palette_selected+1
+					g.palette_global = 1 + (modulo(g.palette_selected,g.palettes_length))
 					palette_changed = true
 				end	
 			end
@@ -1673,8 +1673,9 @@ remote.trace("scale up "..scalename)
 					scale_from_parse = false
 remote.trace("scale dn "..scalename)
 				elseif g.button.shiftclick_delivered == 1 then -- color palette
-					g.palette = g.palette-1
-					global_palette = g.palette
+					g.palette_selected = g.palette_selected-1
+--					g.palette_global = 1 + (modulo(math.abs(g.palette_selected),g.palettes_length)) -- +1 mod from 0
+					g.palette_global = 1 + (modulo(g.palette_selected,g.palettes_length)) -- +1 mod from 0
 					palette_changed = true
 				end	
 			end
@@ -2004,20 +2005,33 @@ vprint("scalename",scalename)
 		--if transpose changes, we transpose--------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
 		if g.transpose_delivered~=g.transpose then
+--vprint("g.transpose",g.transpose)
+--tprint(palette)
+--			local color_len = g.palettes_length
+--			local color_len = table.getn(colors)
+			local color_len = 12
+--			local color_ind=1 + (modulo( math.floor(math.abs(g.transpose)/12),color_len)) --change color every octave
+--			local color_ind=1 + (modulo(g.transpose,color_len)) --change color every Note, show root
+--			local color_ind = (modulo(math.abs(g.transpose),color_len)) --change color every Note, show root
+			local color_ind = (modulo(g.transpose,color_len)) --change color every Note, show root
+--vprint("color_ind",color_ind)
 
-			local color_len = table.getn(colors)
---			local color_ind=1 + (modulo( math.floor(math.abs(g.transpose)/12),color_len) ) --change color every octave
-			local color_ind=1 + (modulo(g.transpose,color_len) ) --change color every Note, show root
-			local color = colors[color_ind]
+--			local color = colors[color_ind]
+
+
+
+
 			if g.transpose>0 then
-				upevent = remote.make_midi("90 5D "..color)
+				--upevent = remote.make_midi("90 5D "..color)
+				upevent = remote.make_midi(sysex_header .. "0B 5D ".. g.palette[color_ind].R .. " " .. g.palette[color_ind].G .."  " .. g.palette[color_ind].B .. " F7")	
 				table.insert(lpp_events,upevent)
 				dnevent = remote.make_midi("90 5E 00")
 				table.insert(lpp_events,dnevent)
 			elseif g.transpose<0 then
 				upevent = remote.make_midi("90 5D 00")
 				table.insert(lpp_events,upevent)
-				dnevent = remote.make_midi("90 5E "..color)
+				--dnevent = remote.make_midi("90 5E "..color)
+				dnevent = remote.make_midi(sysex_header .. "0B 5E ".. g.palette[color_ind].R .. " " .. g.palette[color_ind].G .. " " .. g.palette[color_ind].B .. " F7")
 				table.insert(lpp_events,dnevent)
 			elseif g.transpose==0 then
 				upevent = remote.make_midi("90 5D 00")
@@ -2027,9 +2041,12 @@ vprint("scalename",scalename)
 			end	
 --[[
 --]]
+--[[
+--]]
 			g.transpose_delivered = g.transpose
 			do_update_pads = 1
-vprint("g.transpose",g.transpose)
+vprint("g.transpose 1",g.transpose)
+vprint("color_ind",color_ind)
 		end
 -- -----------------------------------------------------------------------------------------------
 		
@@ -2037,12 +2054,15 @@ vprint("g.transpose",g.transpose)
 		--if palette changes, we transpose
 --------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
-		if g.palette_delivered~=g.palette then
+		if g.palette_delivered~=g.palette_selected then
+-- or palette_changed = true ??????????????????
 
-			local palette_len = table.getn(palettenames)
---			local color_ind=1 + (modulo( math.floor(math.abs(g.transpose)/12),color_len) ) --change color every octave
-			local palette_ind=1 + (modulo(g.palette,palette_len) ) --change color every Note, show root
-			palette = palettes[palettenames[palette_ind]]
+			g.palette = palettes[palettenames[g.palette_global]] --glo changed at button
+
+--			local palette_len = table.getn(palettenames)
+--			local palette_len = g.palettes_length
+--			local palette_ind=1 + (modulo(math.abs(g.palette_selected),palette_len)) -- +1 because mod is from 0 ???g.palette_global
+--not displaying here
 --[[
 			if g.palette>0 then
 				upevent = remote.make_midi("90 5D "..color)
@@ -2061,13 +2081,15 @@ vprint("g.transpose",g.transpose)
 				table.insert(lpp_events,dnevent)
 			end	
 --]]
-			g.palette_delivered = g.palette
+			g.palette_delivered = g.palette_selected
 			do_update_pads = 1
-vprint("palette",palettenames[palette_ind])
-vprint("palette_ind",palette_ind)
-vprint("g.palette",g.palette)
+vprint("palette_glo",g.palette_global)
+vprint("palette_sel",g.palette_selected)
+vprint("palette",palettenames[g.palette_global])
+--vprint("palette_ind",palette_ind)
+--vprint("g.palette",g.palette)
 --vprint("pal",table.getn(palettes))
-tprint(palette[1])
+--tprint(palette[1])
 		end
 -- -----------------------------------------------------------------------------------------------
 		
@@ -2264,7 +2286,6 @@ tprint(palette[1])
 			if(scalename~='DrumPad') then
 				local padsysex = ""
 				for i=1,64,1 do
---					local padid = i-1
 					local padid = i-1
 					local scale_len = table.getn(scale)
 					if scale_len == 7 then -- 7 and below
@@ -2317,7 +2338,7 @@ vprint("outnorm",outnorm)
 -- EVEN NEWER
 -- Something something sysex
 --						padsysex=padsysex..padnum.." "..colorscale[outnorm].R .." ".. colorscale[outnorm].G .." "..colorscale[outnorm].B
-						padsysex=padsysex..padnum.." "..palette[outnorm].R .." ".. palette[outnorm].G .." "..palette[outnorm].B
+						padsysex=padsysex..padnum.." "..g.palette[outnorm].R .." ".. g.palette[outnorm].G .." "..g.palette[outnorm].B
 -- even even new, keep a list of all the pads, and which are pressed, and colors they return to.
 
 
@@ -2326,15 +2347,15 @@ vprint("outnorm",outnorm)
 				padupdate=remote.make_midi(sysex_header.."0B "..padsysex.." F7")
 				table.insert(lpp_events,padupdate)
 				--error(padsysex)
+
+
+
+
+
+
+
+
 			elseif scalename=='DrumPad' then
-
-
-
-
-
-
-
-
 
 				--do drumpad color scheme
 				for i=1,64,1 do
@@ -2420,55 +2441,70 @@ vprint("outnorm",outnorm)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 -- -----------------------------------------------------------------------------------------------
 		--initialize colors:
 -- -----------------------------------------------------------------------------------------------
 		if init==1 then
 		remote.trace("in init!")
+			local padsysex = ""
 			local firstcolors={
 				--remote.make_midi(sysex_header .."0E 10 F7"),
 				remote.make_midi("90 50 21"),
 				remote.make_midi("90 46 21"),
---[[			
-				--set 7 seg display for major scale MA:
-				remote.make_midi("b0 22 16"),
-				remote.make_midi("b0 23 16"),
-
-
-
-				--function btns w,w,off,c,c,b,b,y
-				remote.make_midi("B0 5B 30"),
-				remote.make_midi("B0 5C 30"),
-				remote.make_midi("B0 5D 30"),
-				remote.make_midi("B0 5E 30"),
-				remote.make_midi("B0 5F 30"),
-				remote.make_midi("B0 60 30"),
-				remote.make_midi("B0 61 30"),
-				remote.make_midi("B0 62 30"),
-			
-				remote.make_midi("90 12 02"),
-				remote.make_midi("90 13 02"),
-				remote.make_midi("90 14 00"),
-				remote.make_midi("90 15 04"),
-				remote.make_midi("90 16 04"),
-				remote.make_midi("90 17 20"),
-				remote.make_midi("90 18 20"),
-				remote.make_midi("90 19 40"),
-				--top rt runner leds for variations w,w,w
-				remote.make_midi("90 48 02"),
-				remote.make_midi("90 49 02"),
-				remote.make_midi("90 4A 02"),
-				remote.make_midi("90 4B 02"),
---]]
-				--initialize pads
 			}
+--[[
+			padsysex=padsysex.."50 3D 3D "0F "
+			padsysex=padsysex.."46 3D 3D "0F "
+--]]
 			local first_len = table.getn(firstcolors)
 			for i=1,first_len,1 do
 				table.insert(lpp_events,firstcolors[i])
-		--remote.trace(i)
-
 			end	
 --tprint(firstcolors)
+-- -----------------------------------------------------------------------------------------------
+				--initialize pads
+g.palettes_length = table.getn(palettenames)
+palettename = 'Catblack'
+g.palette = palettes[palettenames[10]]
+palette_int = 0 
+g.palette_delivered = 9 --for change filter
+g.palette_selected = 9 -- record of presses, goes up and dn
+g.palette_global = 9 -- current pal
+				for i=1,64,1 do
+					local padid = i-1
+					local scale_len = table.getn(scale)
+					if scale_len == 7 then -- 7 and below
+						root = 12 
+					elseif scale_len == 6 then 
+						root = 0 
+					elseif scale_len == 5 then -- 2 root notes
+						table.insert(scale,1,0)
+						scale_len = 6
+					else
+						root = 24 
+					end  
+
+					local oct = math.floor(padid/scale_len)
+					local addnote = scale[1+modulo(i-1,scale_len)]
+					local outnote = root+g.transpose+(12*oct)+addnote --note that gets played by synth
+					local outnorm = modulo(outnote,12) --normalized to 0-11 range
+					local padnum = padindex[i].padhex --note# that the controller led responds to
+						padsysex=padsysex..padnum.." "..g.palette[outnorm].R .." ".. g.palette[outnorm].G .." "..g.palette[outnorm].B.." "
+				end --end for 1,64
+				padupdate=remote.make_midi(sysex_header.."0B "..padsysex.." F7")
+				table.insert(lpp_events,padupdate)
 -- -----------------------------------------------------------------------------------------------
 --[[
 			if noscaleneeded==false then
@@ -2867,7 +2903,6 @@ palettes = {
 		},
 	}
 palettenames = {
-'Catblack',
 'louisBertrandCastel',
 'dDJameson',
 'theodorSeemann',
@@ -2877,15 +2912,18 @@ palettenames = {
 'aBernardKlein',
 'iJBelmont',
 'sZieverink',
+'Catblack',
 }
-palettename = 'louisBertrandCastel'
-palette = palettes[palettenames[4]]
+g.palettes_length = table.getn(palettenames)
+palettename = 'Catblack'
+g.palette = palettes[palettenames[10]]
 palette_int = 0 
-g.palette_delivered = 0 --for change filter
-g.palette = 0
+g.palette_delivered = 9 --for change filter
+g.palette_selected = 9 -- record of presses, goes up and dn
+g.palette_global = 9 -- current pal
 palette_changed = false
 
-tprint(palette)
+--tprint(g.palette)
 
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
