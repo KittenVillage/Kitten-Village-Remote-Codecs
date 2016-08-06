@@ -265,11 +265,11 @@ lcd_events = {}
 
 
 
---g.last_notevel_delivered={}
+--g.last_notevelocity_delivered={}
 --g.last_note_delivered={}
-g.last_notevel_delivered = 0
 g.last_note_delivered = 0
-g.current_notevel = 0
+g.last_notevelocity_delivered = 0
+g.current_notevelocity = 0
 --livemodeswitch=nil
 --modeswitch=nil
 
@@ -1507,17 +1507,17 @@ if event.size==3 then -- Note, button, channel pressure
 	ret =    remote.match_midi("<10x1>? yy zz",event) --find a pad, button on or off
 	if(ret~=nil) then
 tprint(ret)
-		tran_btn = ret.z
+		tran_pad = ret.z
 		local notein = ret.y
-		local valin = ret.x	  
+		local valuein = ret.x	  
 
 
 
 			local new_note = ret.y 
-			local new_notevel = ret.z 
-			if (g.last_notevel_delivered~=new_notevel) and (g.last_note_delivered~=new_note) then -- draw new notevel
+			local new_notevelocity = ret.z 
+			if (g.last_notevelocity_delivered~=new_notevelocity) and (g.last_note_delivered~=new_note) then -- draw new notevelocity
 				g.current_note=new_note
-				g.current_notevel=new_notevel
+				g.current_notevelocity=new_notevelocity
 				
 			
 			end
@@ -1559,7 +1559,7 @@ if event.size==3 then -- Note, button, channel pressure
 		else
 			ret.x =1
 		end
-		tran_btn = ret.z
+		tran_pad = ret.z
 		local shiftbtn = remote.match_midi("B? 50 zz",event) -- 80 Shift
 		local clickbtn = remote.match_midi("B? 46 zz",event) -- 70 Shift
 		
@@ -1745,12 +1745,15 @@ vprint("noteout",noteout)
 -- here we display the pressed note
 ----------------------------------------------------
 			local new_note = ret.y 
-			local new_notevel = ret.z 
-			if (g.last_notevel_delivered~=new_notevel) and (g.last_note_delivered~=new_note) then -- draw new notevel
+			local new_notevelocity = ret.z 
+			if (g.last_notevelocity_delivered~=new_notevelocity) and (g.last_note_delivered~=new_note) then -- draw new notevelocity
 				g.current_note=new_note
-				g.current_notevel=new_notevel	
+				g.current_notevelocity=new_notevelocity	
 			end
 ----------------------------------------------------			
+
+
+
 
 
 
@@ -1792,7 +1795,7 @@ if event.size==8 then
 		g.set_mode=1 -- should flash it back to frlight on
 	end
 	return true
-end
+end -- eventsize=8
 
 	
 -- -----------------------------------------------------------------------------------------------
@@ -1944,8 +1947,8 @@ function remote_deliver_midi(maxbytes,port)
 		if g.transpose_delivered~=g.transpose  then
 			local shcolors = {"21","05"} -- green, red
 			shevent = remote.make_midi("90 50 "..shcolors[g.button.shift+1])
-			if(tran_btn~=nil) then
-				if g.button.shift==1 or tran_btn>0 then
+			if(tran_pad~=nil) then
+				if g.button.shift==1 or tran_pad>0 then
 
 --this needs to change to some color output
 -- maybe side buttons
@@ -1987,7 +1990,7 @@ function remote_deliver_midi(maxbytes,port)
 --this needs to change to some color output
 		--if scale changes, we update the LCD
 --------------------------------------------------------------------------------
-		if ( (g.scale_delivered~=scale_int or g.transpose_delivered~=g.transpose) and g.button.shift~=1 and tran_btn==0) then
+		if ( (g.scale_delivered~=scale_int or g.transpose_delivered~=g.transpose) and g.button.shift~=1 and tran_pad==0) then
 --[[
 			local scale_abrv = scaleabrvs[scalename]
 			local c_one = string.sub(scale_abrv,1,1)
@@ -2473,9 +2476,10 @@ vprint("outnorm",outnorm)
 		if init==1 then
 		remote.trace("in init!")
 			local padsysex = ""
+--[[
 			padsysex=padsysex.."50 3D 3D 0F "
 			padsysex=padsysex.."46 3D 3D 0F "
---[[
+--]]
 			local firstcolors={
 				--remote.make_midi(sysex_header .."0E 10 F7"),
 				remote.make_midi("90 50 21"),
@@ -2485,7 +2489,6 @@ vprint("outnorm",outnorm)
 			for i=1,first_len,1 do
 				table.insert(lpp_events,firstcolors[i])
 			end	
---]]
 --tprint(firstcolors)
 -- -----------------------------------------------------------------------------------------------
 				--initialize pads
@@ -2603,14 +2606,15 @@ tprint(lpp_events)
 ------------------------------------------------------------------------------------------------------
 -- Change this
 -----------------------------------------------------------------------------------------------------
---[[		if (g.last_notevel_delivered~=g.current_notevel) or (g.last_note_delivered~=g.current_note) then
-			lpp_events={
-				remote.make_midi("b0 xx yy",{ x = g.current_note, y = set_vel_color(g.current_notevel), port=1 }),
+--[[
+		if (g.last_notevelocity_delivered~=g.current_notevelocity) or (g.last_note_delivered~=g.current_note) then
+			lpp_event={
+				remote.make_midi("b0 xx yy",{ x = g.current_note, y = set_vel_color(g.current_notevelocity), port=1 }),
 			}
-			g.current_notevel=g.last_notevel_delivered
+			g.current_notevelocity=g.last_notevelocity_delivered
 			g.current_note=g.last_note_delivered
-				local var_event = make_lcd_midi_message("New Note "..g.current_notevel)
-			table.insert(lpp_events,var_event)
+			--local var_event = make_lcd_midi_message("New Note "..g.current_notevelocity)
+			--table.insert(lpp_events,var_event)
 
 		end
 --]]
