@@ -663,7 +663,7 @@ function remote_init(manufacturer, model)
 			{name="_Var", output="text", itemnum="var"}, --variation, e.g. "Volume" or "Filters"
 			{name="Pitch Bend", input="value", min=0, max=16383, itemnum="pitchbend"},
 			{name="Modulation", input="value", min=0, max=127, itemnum="modulation"},
-			{name="Channel Pressure", input="value", min=0, max=127},
+			{name="Channel Pressure", input="value", min=0, max=127, itemnum="channelpressure"},
 			{name="Fader 1", input="value", min=0, max=127, output="value", itemnum="first_fader"},
 			{name="Fader 2", input="value", min=0, max=127, output="value"},
 			{name="Fader 3", input="value", min=0, max=127, output="value"},
@@ -1550,145 +1550,207 @@ tprint(ret)
 -----------------------------------
 if event.size==3 then -- Note, button, channel pressure
 
--- 1001 is 90 (note on) 1011 is B0 (controller) 
-	ret =    remote.match_midi("<10x1>? yy zz",event) --find a pad, button on or off
+-- 1001 is 90 (note on) 1011 is B0 (controller)	
+
+	ret =    remote.match_midi("<10x1>? yy zz",event) --find a pad, button on or off, Not aftouch
 	if(ret~=nil) then
 		button = ret.x --  check 1 = button
+		
 		if ret.z == 0 then -- faking note on and off for the checks later. x is 'value', 0 or 1 for keyboard items.
 			ret.x =0
 		else
 			ret.x =1
 		end
 		tran_pad = ret.z
-		local shiftbtn = remote.match_midi("B? 50 zz",event) -- 80 Shift
-		local clickbtn = remote.match_midi("B? 46 zz",event) -- 70 Shift
 		
-		-- accent?
-		local accent_pad = remote.match_midi("B? 32 zz",event) -- 50 delete
-		-- make checks for these
-		scale_up = remote.match_midi("B? 5B zz",event) --find 91 up
-		scale_dn = remote.match_midi("B? 5C zz",event) --find 92 dn
-		tran_up =  remote.match_midi("B? 5D zz",event) --find 93 left
-		tran_dn =  remote.match_midi("B? 5E zz",event) --find 94 right
-		
-		if(accent_pad) then
-		  if(accent_pad.z>10) then		  
-			g.accent_dn = true
-			g.accent_count = modulo(g.accent_count+1,3)
-			local msg={ time_stamp = event.time_stamp, item=g.itemnum.accent, value = g.accent_count, note = "32",velocity = accent_pad.z }
-			remote.handle_input(msg)
-			g.note_delivered = noteout
-			return true
-		  else
-			return false
-		  end
-		end
+-----------------------------------
+-- handle buttons
+-----------------------------------
+		if button==1 then
 
+			local shiftbtn = remote.match_midi("B? 50 zz",event) -- 80 Shift
+			local clickbtn = remote.match_midi("B? 46 zz",event) -- 70 Shift
+			local undobtn  = remote.match_midi("B? 3C zz",event) -- 70 Shift
+			-- accent?
+			local accent_pad = remote.match_midi("B? 32 zz",event) -- 50 delete
+			-- make checks for these
+			local scale_up = remote.match_midi("B? 5B zz",event) --find 91 up
+			local scale_dn = remote.match_midi("B? 5C zz",event) --find 92 dn
+			local tran_up =  remote.match_midi("B? 5D zz",event) --find 93 left
+			local tran_dn =  remote.match_midi("B? 5E zz",event) --find 94 right
+
+
+-- -----------------------------------------------------------------------------------------------
+-- Accent button
+-- TODO: changing this to a pad, not button
+-- 
+-- -----------------------------------------------------------------------------------------------
+
+			if(accent_pad) then
+			  if(accent_pad.z>0) then		  
+				g.accent_dn = true
+				g.accent_count = modulo(g.accent_count+1,3)
+				local msg={ time_stamp = event.time_stamp, item=g.itemnum.accent, value = g.accent_count, note = "32",velocity = accent_pad.z }
+				remote.handle_input(msg)
+				--g.note_delivered = noteout
+				return true
+			  else
+				return false
+			  end
+			end
 -- -----------------------------------------------------------------------------------------------
 -- Shift button
 -- -----------------------------------------------------------------------------------------------
-		if (shiftbtn) then
-			if shiftbtn.z>0 then
-				g.button.shift = 1 --momentary like a computer's shift key
-			else
-				g.button.shift = 0
+			if (shiftbtn) then
+				if shiftbtn.z>0 then
+					g.button.shift = 1 --momentary like a computer's shift key
+				else
+					g.button.shift = 0
+				end
 			end
-		end
 -- -----------------------------------------------------------------------------------------------
 -- Click button
 -- -----------------------------------------------------------------------------------------------
-		if (clickbtn) then
-			if clickbtn.z>0 then
-				g.button.click = 1 --momentary like a computer's shift key
-			else
-				g.button.click = 0
+			if (clickbtn) then
+				if clickbtn.z>0 then
+					g.button.click = 1 --momentary like a computer's shift key
+				else
+					g.button.click = 0
+				end
 			end
-		end
 -- -----------------------------------------------------------------------------------------------
 -- shiftclick button
 -- -----------------------------------------------------------------------------------------------
-		if (g.button.click == 1)  and (g.button.shift == 1) then
-			g.button.shiftclick = 1 --momentary like a computer's shift key
-		else
-			g.button.shiftclick = 0
-		end
--- -----------------------------------------------------------------------------------------------
+			if (g.button.click == 1)  and (g.button.shift == 1) then
+				g.button.shiftclick = 1 --momentary like a computer's shift key
+			else
+				g.button.shiftclick = 0
+			end
+	-- -----------------------------------------------------------------------------------------------
 -- check below per button, then we check each for shift and click with elseif
 -- 
 -- -----------------------------------------------------------------------------------------------
 		
-		if(tran_up) then
-			if tran_up.z>0 then
-				if g.button.shiftclick_delivered == 0 then
-					g.transpose = g.transpose+(1-g.button.shift)+(g.button.shift*12) -- if sh pressed, add 12, else just 1
-					global_transp = g.transpose
-					transpose_changed = true
-				elseif g.button.shiftclick_delivered == 1 then -- color palette
+			if(tran_up) then
+				if tran_up.z>0 then
+					if g.button.shiftclick_delivered == 0 then
+						g.transpose = g.transpose+(1-g.button.shift)+(g.button.shift*12) -- if sh pressed, add 12, else just 1
+						global_transp = g.transpose
+						transpose_changed = true
+					elseif g.button.shiftclick_delivered == 1 then -- color palette
 --[[
-					g.palette_selected = g.palette_selected+1
-					g.palette_global = 1 + (modulo(g.palette_selected,g.palette_length))
-					palette_changed = true
+-- something else
 --]]
-				end	
+					end	
+				end
 			end
-		end
-		if(tran_dn) then
-			if tran_dn.z>0 then
-				if g.button.shiftclick_delivered == 0 then
-					g.transpose = g.transpose-(1-g.button.shift)-(g.button.shift*12)
-					global_transp = g.transpose
-					transpose_changed = true
-				elseif g.button.shiftclick_delivered == 1 then -- color palette
+			if(tran_dn) then
+				if tran_dn.z>0 then
+					if g.button.shiftclick_delivered == 0 then
+						g.transpose = g.transpose-(1-g.button.shift)-(g.button.shift*12)
+						global_transp = g.transpose
+						transpose_changed = true
+					elseif g.button.shiftclick_delivered == 1 then -- color palette
 --[[
-					g.palette_selected = g.palette_selected-1
-					g.palette_global = 1 + (modulo(g.palette_selected,g.palette_length))
-					palette_changed = true
+-- something else
 --]]
-				end	
+					end	
+				end
 			end
-		end
-		if(scale_up) then
-			if scale_up.z>0 then
-				if g.button.shiftclick_delivered == 0 then
-					scale_int = modulo(scale_int+1,36) --only use the first 36 scales
-					scalename = scalenames[1+scale_int]
-					scale = scales[scalename]
-					global_scale = scale_int
-					scale_from_parse = false
+			if(scale_up) then
+				if scale_up.z>0 then
+					if g.button.shiftclick_delivered == 0 then
+						scale_int = modulo(scale_int+1,36) --only use the first 36 scales
+						scalename = scalenames[1+scale_int]
+						scale = scales[scalename]
+						global_scale = scale_int
+						scale_from_parse = false
 remote.trace("scale up "..scalename)
-				elseif g.button.shiftclick_delivered == 1 then -- color palette
-					g.palette_selected = g.palette_selected+1
-					g.palette_global = 1 + (modulo(g.palette_selected,g.palettes_length))
-					palette_changed = true
-				end	
+					elseif g.button.shiftclick_delivered == 1 then -- color palette
+						g.palette_selected = g.palette_selected+1
+						g.palette_global = 1 + (modulo(g.palette_selected,g.palettes_length))
+						palette_changed = true
+					end	
+				end
 			end
-		end
-		if(scale_dn) then
-			if scale_dn.z>0 then
-				if g.button.shiftclick_delivered == 0 then
-					scale_int = modulo(scale_int-1,36) --only use the first 36 scales
-					scalename = scalenames[1+scale_int]
-					scale = scales[scalename]
-					global_scale = scale_int
-					scale_from_parse = false
+			if(scale_dn) then
+				if scale_dn.z>0 then
+					if g.button.shiftclick_delivered == 0 then
+						scale_int = modulo(scale_int-1,36) --only use the first 36 scales
+						scalename = scalenames[1+scale_int]
+						scale = scales[scalename]
+						global_scale = scale_int
+						scale_from_parse = false
 remote.trace("scale dn "..scalename)
-				elseif g.button.shiftclick_delivered == 1 then -- color palette
-					g.palette_selected = g.palette_selected-1
---					g.palette_global = 1 + (modulo(math.abs(g.palette_selected),g.palettes_length)) -- +1 mod from 0
-					g.palette_global = 1 + (modulo(g.palette_selected,g.palettes_length)) -- +1 mod from 0
-					palette_changed = true
-				end	
+					elseif g.button.shiftclick_delivered == 1 then -- color palette
+						g.palette_selected = g.palette_selected-1
+	--					g.palette_global = 1 + (modulo(math.abs(g.palette_selected),g.palettes_length)) -- +1 mod from 0
+						g.palette_global = 1 + (modulo(g.palette_selected,g.palettes_length)) -- +1 mod from 0
+						palette_changed = true
+					end	
+				end
 			end
+-- -----------------------------------------------------------------------------------------------
+-- more buttons go here
+-- TODO modulation bottom row
+-- TODO pitch
+
+
+
+
+
+
+----------------------------------------------------
+-- TODO, comment more
+-- detecting buttons here, but only if shift pressed?
+
+		
+		if (buttonindex[ret.y]~=nil and g.button.shift==1) then -- buttons
+			local noteout = ret.y --no offset
+			local itemno = buttonindex[ret.y].itemindex -- items index.
+			if(ret.z>0) then
+				local msg={ time_stamp = event.time_stamp, item=itemno, value = ret.x, note = noteout,velocity = ret.z }
+				remote.handle_input(msg)
+			end
+			return true
 		end
-		if(drum_tog) then
-			drum_mode = 1-drum_mode
-		end
-		--if(tran_rst) then
-		--	g.transpose=0
-		--end
-		--now handle the pads)
+
+
+
+
+
+
+
+--[[
+
+			if(drum_tog) then
+				drum_mode = 1-drum_mode
+			end
+--]]
+--[[
+			if(tran_rst) then
+				g.transpose=0
+			end
+--]]
 		-- change this!
 		
+		
+
+		end -- button
+--------------------------------------------------------------------------------------------------------------------------		
+--------------------------------------------------------------------------------------------------------------------------		
+
+
+
+
+
+
+
+
+
+
+
+
 		
 --------------------------------------------------------------------------------------------------------------------------		
 -- here's where the incoming note gets transposed!
@@ -1758,23 +1820,22 @@ vprint("noteout",noteout)
 
 
 			
-----------------------------------------------------
--- TODO, comment more
--- detecting buttons here, but only if shift pressed?		
-		elseif (buttonindex[ret.y]~=nil and g.button.shift==1) then -- buttons
-			local noteout = ret.y --no offset
-			itemno = buttonindex[ret.y].itemindex -- items index.
-			if(ret.z>0) then
-				local msg={ time_stamp = event.time_stamp, item=itemno, value = ret.x, note = noteout,velocity = ret.z }
-				remote.handle_input(msg)
-			end
-			return true
+
 --[[
 --]]
 		else
 			return false
 		end
-	end -- ret, button not nil
+	end -- ret not nil
+	
+
+-----------------------------------
+-- 1010 is poly aftertouch
+-- 1101 is channel aftertouch
+-- TODO: map poly to chan, maybe display output
+-- poly not supported in reason...	
+-----------------------------------
+
 	return false
 	
 
