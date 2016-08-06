@@ -119,8 +119,8 @@ scales = {
 	Spanish = {0,1,3,4,5,6,8,10}
 }
 scalenames = {
-			'Major','Minor','Dorian','Mixolydian', 
-			'Lydian','Phrygian','Chromatic','DrumPad', 
+			'Chromatic','DrumPad','Major','Minor','Dorian','Mixolydian', 
+			'Lydian','Phrygian', 
 			'Locrian','Diminished','Whole_half','WholeTone','MinorBlues','MinorPentatonic','MajorPentatonic','HarmonicMinor','MelodicMinor','DominantSus','SuperLocrian','NeopolitanMinor','NeopolitanMajor','EnigmaticMinor','Enigmatic','Composite','BebopLocrian','BebopDominant','BebopMajor','Bhairav','HungarianMinor','MinorGypsy','Persian','Hirojoshi','InSen','Iwato','Kumoi','Pelog','Spanish'
 			}
 scaleabrvs = {
@@ -192,6 +192,7 @@ g.button.click_delivered = 0
 
 g.button.tranup = 0
 g.button.trandn = 0
+g.palette={}
 
 
 
@@ -214,19 +215,6 @@ scale = scales[scalename]
 scale_int = 0 
 g.scale_delivered = 0 --for change filter
 
-
---palettes={}
-g.palette={}
-
---[[
-palettename = 'Catblack'
-palette = palettes[palettename]
-palette_int = 0 
-g.palette_delivered = 0 --for change filter
-g.palette_selected = 0
-palette_changed = false
-
---]]
 
 
 
@@ -317,6 +305,7 @@ buttonindex = {}
 g.itemnum = {}
 padpress = {} -- to display pressed
 
+			do_update_pads = 1
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function def_vars()
@@ -1504,11 +1493,11 @@ function remote_process_midi(event)
 -- Match buttons and notes and transpose notes.
 -- -----------------------------------------------------------------------------------------------
 
+--[[
 if event.size==3 then -- Note, button, channel pressure
 
 -- 1001 is 90 (note on) 1011 is B0 (controller) 
 	ret =    remote.match_midi("<10x1>? yy zz",event) --find a pad, button on or off
---[[
 	if(ret~=nil) then
 tprint(ret)
 		tran_btn = ret.z
@@ -1552,6 +1541,10 @@ tprint(ret)
 -----------------------------------
 --
 -----------------------------------
+if event.size==3 then -- Note, button, channel pressure
+
+-- 1001 is 90 (note on) 1011 is B0 (controller) 
+	ret =    remote.match_midi("<10x1>? yy zz",event) --find a pad, button on or off
 	if(ret~=nil) then
 		button = ret.x --  check 1 = button
 		if ret.z == 0 then -- faking note on and off for the checks later. x is 'value', 0 or 1 for keyboard items.
@@ -2459,19 +2452,19 @@ vprint("outnorm",outnorm)
 		if init==1 then
 		remote.trace("in init!")
 			local padsysex = ""
+			padsysex=padsysex.."50 3D 3D 0F "
+			padsysex=padsysex.."46 3D 3D 0F "
+--[[
 			local firstcolors={
 				--remote.make_midi(sysex_header .."0E 10 F7"),
 				remote.make_midi("90 50 21"),
 				remote.make_midi("90 46 21"),
 			}
---[[
-			padsysex=padsysex.."50 3D 3D "0F "
-			padsysex=padsysex.."46 3D 3D "0F "
---]]
 			local first_len = table.getn(firstcolors)
 			for i=1,first_len,1 do
 				table.insert(lpp_events,firstcolors[i])
 			end	
+--]]
 --tprint(firstcolors)
 -- -----------------------------------------------------------------------------------------------
 				--initialize pads
@@ -2482,8 +2475,6 @@ palette_int = 0
 g.palette_delivered = 9 --for change filter
 g.palette_selected = 9 -- record of presses, goes up and dn
 g.palette_global = 9 -- current pal
-				for i=1,64,1 do
-					local padid = i-1
 					local scale_len = table.getn(scale)
 					if scale_len == 7 then -- 7 and below
 						root = 12 
@@ -2495,6 +2486,8 @@ g.palette_global = 9 -- current pal
 					else
 						root = 24 
 					end  
+				for i=1,64,1 do
+					local padid = i-1
 
 					local oct = math.floor(padid/scale_len)
 					local addnote = scale[1+modulo(i-1,scale_len)]
@@ -2538,7 +2531,9 @@ g.palette_global = 9 -- current pal
 --]]
 			 
 -- -----------------------------------------------------------------------------------------------
+tprint(lpp_events)
 			init=0
+			do_update_pads = 1
 		end
 -- -----------------------------------------------------------------------------------------------
 
@@ -2587,16 +2582,17 @@ g.palette_global = 9 -- current pal
 ------------------------------------------------------------------------------------------------------
 -- Change this
 -----------------------------------------------------------------------------------------------------
-		if (g.last_notevel_delivered~=g.current_notevel) or (g.last_note_delivered~=g.current_note) then
+--[[		if (g.last_notevel_delivered~=g.current_notevel) or (g.last_note_delivered~=g.current_note) then
 			lpp_events={
 				remote.make_midi("b0 xx yy",{ x = g.current_note, y = set_vel_color(g.current_notevel), port=1 }),
 			}
 			g.current_notevel=g.last_notevel_delivered
 			g.current_note=g.last_note_delivered
 				local var_event = make_lcd_midi_message("New Note "..g.current_notevel)
-			table.insert(lcd_events,var_event)
+			table.insert(lpp_events,var_event)
 
 		end
+--]]
 --remote.trace("remdevmidi 1\n")
 
 
@@ -2887,7 +2883,7 @@ palettes = {
 						[10]={R="3B", G="3C", B="21", },		 -- yellow/white
 						[11]={R="3D", G="3D", B="0F", },		 -- yellow
 		},
-		Catblack = {
+		FifthsCircleOne = {
 						[0]={R="06", G="00", B="00", },		--R 
 						[1]={R="00", G="15", B="0D", },		--BG
 						[2]={R="3F", G="1F", B="00", },		--O 
@@ -2912,10 +2908,10 @@ palettenames = {
 'aBernardKlein',
 'iJBelmont',
 'sZieverink',
-'Catblack',
+'FifthsCircleOne',
 }
 g.palettes_length = table.getn(palettenames)
-palettename = 'Catblack'
+palettename = 'FifthsCircleOne'
 g.palette = palettes[palettenames[10]]
 palette_int = 0 
 g.palette_delivered = 9 --for change filter
