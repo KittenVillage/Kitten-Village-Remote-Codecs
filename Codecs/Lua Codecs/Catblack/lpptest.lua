@@ -274,9 +274,16 @@ g.current_notevel = 0
 --modeswitch=nil
 
 
+-- all sysex msg vars shall have spaces trailing them
+sysex_header = "F0 00 20 29 02 10 "
+sysex_setrgb = sysex_header.."0B " -- pad r g b
+sysex_setled = sysex_header.."0A " -- pad color0-127
+sysex_setrgbgrid = sysex_header.."15 " -- 0=10x10;1=8x8 color0-127
+sysex_scrolltext = sysex_header.."14 " -- color0-127 loop1or0 asciitext
+sysex_flashled = sysex_header.."23 " -- pad color0-127
+sysex_pulseled = sysex_header.."28 " -- pad color0-127
 
-sysex_header="F0 00 20 29 02 10 "
-
+sysend ="F7"
 
 
 
@@ -1774,14 +1781,28 @@ vprint("noteout",noteout)
 end -- eventsize=3
 
 
+	
+-- -----------------------------------------------------------------------------------------------
+-- Return from scrolling text	
+-- -----------------------------------------------------------------------------------------------
+if event.size==8 then
+	local textreturnswitch = remote.match_midi("F0 00 20 29 02 10 15 F7",event) --find if we are retuning from scrolling text
+	if (textreturnswitch) then
+		-- probably do nothing
+		g.set_mode=1 -- should flash it back to frlight on
+	end
+	return true
+end
 
 	
 -- -----------------------------------------------------------------------------------------------
 -- Keep it in programmer mode	
 -- -----------------------------------------------------------------------------------------------
+-- in the furture we will allow other modes... fader, etc.
+
 if event.size==9 then
-	modeswitch = remote.match_midi("F0 00 20 29 02 10 2F xx F7",event) --find what mode we are in
-	livemodeswitch = remote.match_midi("F0 00 20 29 02 10 2D xx F7",event) --find if we are in live mode (At startup, we turn on standalone, which fires this.)
+	local modeswitch = remote.match_midi("F0 00 20 29 02 10 2F xx F7",event) --find what mode we are in
+	local livemodeswitch = remote.match_midi("F0 00 20 29 02 10 2D xx F7",event) --find if we are in live mode (At startup, we turn on standalone, which fires this.)
 	if (modeswitch) then
 --remote.trace(modeswitch.x)
 		g.mode=modeswitch.x
@@ -1851,7 +1872,7 @@ function remote_deliver_midi(maxbytes,port)
 		if g.set_mode~=g.mode then
 			mode_event = remote.make_midi("F0 00 20 29 02 10 2C xx F7",{ x = g.set_mode, port=1 })
 			table.insert(lpp_events,mode_event)
-			frlight_event = remote.make_midi("F0 00 20 29 02 10 0A 63 32 F7",{ port=1 }) --Front light
+			frlight_event = remote.make_midi("F0 00 20 29 02 10 0A 63 32 F7",{ port=1 }) --Front light purp
 			table.insert(lpp_events,frlight_event)
 			g.mode=g.set_mode
 			return lpp_events
@@ -2016,7 +2037,7 @@ vprint("scalename",scalename)
 
 			if g.transpose>0 then
 				--upevent = remote.make_midi("90 5D "..color)
-				upevent = remote.make_midi(sysex_header .. "0B 5D ".. g.palette[color_ind].R .. " " .. g.palette[color_ind].G .."  " .. g.palette[color_ind].B .. " F7")	
+				upevent = remote.make_midi(sysex_setrgb .. "5D ".. g.palette[color_ind].R .. " " .. g.palette[color_ind].G .."  " .. g.palette[color_ind].B .. " "..sysend)	
 				table.insert(lpp_events,upevent)
 				dnevent = remote.make_midi("90 5E 00")
 				table.insert(lpp_events,dnevent)
@@ -2024,12 +2045,12 @@ vprint("scalename",scalename)
 				upevent = remote.make_midi("90 5D 00")
 				table.insert(lpp_events,upevent)
 				--dnevent = remote.make_midi("90 5E "..color)
-				dnevent = remote.make_midi(sysex_header .. "0B 5E ".. g.palette[color_ind].R .. " " .. g.palette[color_ind].G .. " " .. g.palette[color_ind].B .. " F7")
+				dnevent = remote.make_midi(sysex_setrgb .. "5E ".. g.palette[color_ind].R .. " " .. g.palette[color_ind].G .. " " .. g.palette[color_ind].B .. " "..sysend)
 				table.insert(lpp_events,dnevent)
 			elseif g.transpose==0 then
-				upevent = remote.make_midi("90 5D 00")
+				upevent = remote.make_midi(sysex_setrgb .. "5D ".. g.palette[color_ind].R .. " " .. g.palette[color_ind].G .."  " .. g.palette[color_ind].B .. " "..sysend)	
 				table.insert(lpp_events,upevent)
-				dnevent = remote.make_midi("90 5E 00")
+				dnevent = remote.make_midi(sysex_setrgb .. "5E ".. g.palette[color_ind].R .. " " .. g.palette[color_ind].G .. " " .. g.palette[color_ind].B .. " "..sysend)
 				table.insert(lpp_events,dnevent)
 			end	
 --[[
