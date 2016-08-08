@@ -281,14 +281,14 @@ g.current_notevelocity = 0
 --modeswitch=nil
 
 
--- all sysex msg vars shall have spaces trailing them
-sysex_header = "F0 00 20 29 02 10 "
-sysex_setrgb = sysex_header.."0B " -- pad r g b
-sysex_setled = sysex_header.."0A " -- pad color0-127
-sysex_setrgbgrid = sysex_header.."15 " -- 0=10x10;1=8x8 color0-127
-sysex_scrolltext = sysex_header.."14 " -- color0-127 loop1or0 asciitext
-sysex_flashled = sysex_header.."23 " -- pad color0-127
-sysex_pulseled = sysex_header.."28 " -- pad color0-127
+-- all sysex msg vars use table.concat
+sysex_header = "F0 00 20 29 02 10"
+sysex_setrgb = sysex_header.."0B" -- pad r g b
+sysex_setled = sysex_header.."0A" -- pad color0-127
+sysex_setrgbgrid = sysex_header.."15" -- 0=10x10;1=8x8 color0-127
+sysex_scrolltext = sysex_header.."14" -- color0-127 loop1or0 asciitext
+sysex_flashled = sysex_header.."23" -- pad color0-127
+sysex_pulseled = sysex_header.."28" -- pad color0-127
 
 sysend ="F7"
 
@@ -1650,7 +1650,6 @@ if event.size==3 then -- Note, button, channel pressure
 						local cof ={0,7,2,9,4,11,6,1,8,3,10,5}
 						local tr_note = 1+modulo(math.abs(global_transp),12)
 						local tr_oct = math.abs(math.floor(global_transp/12))
---						local cof_tr = global_transp == math.abs(global_transp) and (tr_note > 5 and  -7 or 5) or (tr_note > 5 and  7 or -5)
 						local cof_tr = tr_oct < 3 and 5 or -7
 vprint("global_transp",global_transp)
 vprint("tr_note",tr_note)
@@ -1676,7 +1675,6 @@ vprint("g-cof",g.transpose-cof_tr)
 						local cof ={0,7,2,9,4,11,6,1,8,3,10,5}
 						local tr_note =1+modulo(math.abs(global_transp),12)
 						local tr_oct = math.floor(global_transp/12)
---						local cof_tr = global_transp == math.abs(global_transp) and (tr_note > 5 and  -7 or 5) or (tr_note > 5 and  7 or -5)
 						local cof_tr = tr_oct < 3 and -5 or 7
 vprint("global_transp",global_transp)
 vprint("tr_note",tr_note)
@@ -2135,21 +2133,19 @@ vprint("scalename",scalename)
 
 			if g.transpose>0 then
 				--upevent = remote.make_midi("90 5D "..color)
-				upevent = remote.make_midi(sysex_setrgb .. "5D ".. g.palette[color_ind].R .. " " .. g.palette[color_ind].G .."  " .. g.palette[color_ind].B .. " "..sysend)	
-				table.insert(lpp_events,upevent)
+				dnevent = remote.make_midi(table.concat({sysex_setrgb,"5D",g.palette[color_ind].R, g.palette[color_ind].G, g.palette[color_ind].B,sysend}," "))
+				table.insert(lpp_events,dnevent)
 				dnevent = remote.make_midi("90 5E 00")
 				table.insert(lpp_events,dnevent)
 			elseif g.transpose<0 then
 				upevent = remote.make_midi("90 5D 00")
 				table.insert(lpp_events,upevent)
 				--dnevent = remote.make_midi("90 5E "..color)
-				dnevent = remote.make_midi(sysex_setrgb .. "5E ".. g.palette[color_ind].R .. " " .. g.palette[color_ind].G .. " " .. g.palette[color_ind].B .. " "..sysend)
+				dnevent = remote.make_midi(table.concat({sysex_setrgb,"5E",g.palette[color_ind].R, g.palette[color_ind].G, g.palette[color_ind].B,sysend}," "))
 				table.insert(lpp_events,dnevent)
 			elseif g.transpose==0 then
-				upevent = remote.make_midi(sysex_setrgb .. "5D ".. g.palette[color_ind].R .. " " .. g.palette[color_ind].G .."  " .. g.palette[color_ind].B .. " "..sysend)	
+				upevent = remote.make_midi(table.concat({sysex_setrgb,"5D",g.palette[color_ind].R ,g.palette[color_ind].G, g.palette[color_ind].B,"5E",g.palette[color_ind].R, g.palette[color_ind].G, g.palette[color_ind].B,sysend}," "))
 				table.insert(lpp_events,upevent)
-				dnevent = remote.make_midi(sysex_setrgb .. "5E ".. g.palette[color_ind].R .. " " .. g.palette[color_ind].G .. " " .. g.palette[color_ind].B .. " "..sysend)
-				table.insert(lpp_events,dnevent)
 			end	
 --[[
 --]]
@@ -2450,13 +2446,14 @@ vprint("outnorm",outnorm)
 -- EVEN NEWER
 -- Something something sysex
 --						padsysex=padsysex..padnum.." "..colorscale[outnorm].R .." ".. colorscale[outnorm].G .." "..colorscale[outnorm].B
-						padsysex=padsysex..padnum.." "..g.palette[outnorm].R .." ".. g.palette[outnorm].G .." "..g.palette[outnorm].B
+--						padsysex=padsysex..padnum.." "..g.palette[outnorm].R .." ".. g.palette[outnorm].G .." "..g.palette[outnorm].B
+						padsysex=table.concat({padsysex,padnum,g.palette[outnorm].R,g.palette[outnorm].G,g.palette[outnorm].B}," ")
 -- even even new, keep a list of all the pads, and which are pressed, and colors they return to.
 
 
 						
 				end --end for 1,64
-				padupdate=remote.make_midi(sysex_header.."0B "..padsysex.." F7")
+				padupdate=remote.make_midi(table.concat({sysex_header,"0B",padsysex,sysend}," "))
 				table.insert(lpp_events,padupdate)
 				--error(padsysex)
 
