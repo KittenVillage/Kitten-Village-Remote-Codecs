@@ -14,6 +14,13 @@
 -- Different scales may go higher, but starting on 24 is probably best. 
 
 
+-- TODO make all sysex table.concat
+-- TODO place util trasport remotables (undo, redo, track sel) as non-auto in out items, add them to itemnum index
+-- TODO CLASSes
+-- TODO val = condition and a or b
+-- http://www.computercraft.info/forums2/index.php?/topic/3592-advanced-tipthe-lua-equivalent-of-javas-ternary-operator/
+-- http://hisham.hm/2011/05/04/luas-and-or-as-a-ternary-operator/
+-- TODO shcl transpose goes up/dn by fifths!
 
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1637,10 +1644,23 @@ if event.size==3 then -- Note, button, channel pressure
 						g.transpose = g.transpose+(1-g.button.shift)+(g.button.shift*12) -- if sh pressed, add 12, else just 1
 						global_transp = g.transpose
 						transpose_changed = true
-					elseif g.button.shiftclick_delivered == 1 then -- color palette
---[[
--- something else
---]]
+					elseif g.button.shiftclick_delivered == 1 then -- 
+
+-- transpose by circle of fifths!
+						local cof ={0,7,2,9,4,11,6,1,8,3,10,5}
+						local tr_note = 1+modulo(math.abs(global_transp),12)
+						local tr_oct = math.abs(math.floor(global_transp/12))
+--						local cof_tr = global_transp == math.abs(global_transp) and (tr_note > 5 and  -7 or 5) or (tr_note > 5 and  7 or -5)
+						local cof_tr = tr_oct < 3 and 5 or -7
+vprint("global_transp",global_transp)
+vprint("tr_note",tr_note)
+vprint("tr_oct",tr_oct)
+vprint("cof_tr",cof_tr)
+vprint("g-cof",g.transpose-cof_tr)
+
+						g.transpose = g.transpose+cof_tr
+--						g.transpose = cof_tr
+						global_transp = g.transpose
 					end	
 				end
 			end
@@ -1650,10 +1670,24 @@ if event.size==3 then -- Note, button, channel pressure
 						g.transpose = g.transpose-(1-g.button.shift)-(g.button.shift*12)
 						global_transp = g.transpose
 						transpose_changed = true
-					elseif g.button.shiftclick_delivered == 1 then -- color palette
---[[
--- something else
---]]
+					elseif g.button.shiftclick_delivered == 1 then -- 
+-- transpose by circle of fifths!
+-- we cirlce around the root note here, so if root = F#, we cycle back to a lower/higher octave, rather than run out of notes. 
+						local cof ={0,7,2,9,4,11,6,1,8,3,10,5}
+						local tr_note =1+modulo(math.abs(global_transp),12)
+						local tr_oct = math.floor(global_transp/12)
+--						local cof_tr = global_transp == math.abs(global_transp) and (tr_note > 5 and  -7 or 5) or (tr_note > 5 and  7 or -5)
+						local cof_tr = tr_oct < 3 and -5 or 7
+vprint("global_transp",global_transp)
+vprint("tr_note",tr_note)
+vprint("tr_oct",tr_oct)
+vprint("cof_tr",cof_tr)
+vprint("g-cof",g.transpose-cof_tr)
+--						g.transpose = g.transpose-cof_tr
+						g.transpose = g.transpose-cof_tr
+						global_transp = g.transpose
+						transpose_changed = true
+
 					end	
 				end
 			end
