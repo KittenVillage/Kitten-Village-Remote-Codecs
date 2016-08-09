@@ -14,7 +14,10 @@
 -- Different scales may go higher, but starting on 24 is probably best. 
 
 
-
+-- TODO place util trasport remotables (undo, redo, track sel) as non-auto in out items, add them to itemnum index
+-- TODO CLASSes
+-- TODO velocity feedback
+-- TODO midi note playing feedback.
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- Variable defs
@@ -274,23 +277,25 @@ g.current_notevelocity = 0
 --modeswitch=nil
 
 
--- all sysex msg vars shall have spaces trailing them
-sysex_header = "F0 00 20 29 02 10 "
-sysex_setrgb = sysex_header.."0B " -- pad r g b
-sysex_setled = sysex_header.."0A " -- pad color0-127
-sysex_setrgbgrid = sysex_header.."15 " -- 0=10x10;1=8x8 color0-127
-sysex_scrolltext = sysex_header.."14 " -- color0-127 loop1or0 asciitext
-sysex_flashled = sysex_header.."23 " -- pad color0-127
-sysex_pulseled = sysex_header.."28 " -- pad color0-127
+-- all sysex msg vars use table.concat
+sysex_header = "F0 00 20 29 02 10"
+sysex_setrgb = sysex_header.."0B" -- pad r g b
+sysex_setled = sysex_header.."0A" -- pad color0-127
+sysex_setrgbgrid = sysex_header.."15" -- 0=10x10;1=8x8 color0-127
+sysex_scrolltext = sysex_header.."14" -- color0-127 loop1or0 asciitext
+sysex_flashled = sysex_header.."23" -- pad color0-127
+sysex_pulseled = sysex_header.."28" -- pad color0-127
 
 sysend ="F7"
 
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
 
 
 
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 -- FL: Assign to these the index to the first the corresponding items according
 -- to the definition list in remote_init. (Or assign them when defining the items, depending on how you do that.)
@@ -636,7 +641,7 @@ end
 
 
 
-
+ 
 
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -664,14 +669,14 @@ function remote_init(manufacturer, model)
 			{name="Pitch Bend", input="value", min=0, max=16383, itemnum="pitchbend"},
 			{name="Modulation", input="value", min=0, max=127, itemnum="modulation"},
 			{name="Channel Pressure", input="value", min=0, max=127, itemnum="channelpressure"},
-			{name="Fader 1", input="value", min=0, max=127, output="value", itemnum="first_fader"},
-			{name="Fader 2", input="value", min=0, max=127, output="value"},
-			{name="Fader 3", input="value", min=0, max=127, output="value"},
-			{name="Fader 4", input="value", min=0, max=127, output="value"},
-			{name="Fader 5", input="value", min=0, max=127, output="value"},
-			{name="Fader 6", input="value", min=0, max=127, output="value"},
-			{name="Fader 7", input="value", min=0, max=127, output="value"},
-			{name="Fader 8", input="value", min=0, max=127, output="value"},
+			{name="Fader 1", input="value", min=0, max=127, output="value", modes={"Program","Fader"}, itemnum="first_fader"},
+			{name="Fader 2", input="value", min=0, max=127, output="value", modes={"Program","Fader"}},
+			{name="Fader 3", input="value", min=0, max=127, output="value", modes={"Program","Fader"}},
+			{name="Fader 4", input="value", min=0, max=127, output="value", modes={"Program","Fader"}},
+			{name="Fader 5", input="value", min=0, max=127, output="value", modes={"Program","Fader"}},
+			{name="Fader 6", input="value", min=0, max=127, output="value", modes={"Program","Fader"}},
+			{name="Fader 7", input="value", min=0, max=127, output="value", modes={"Program","Fader"}},
+			{name="Fader 8", input="value", min=0, max=127, output="value", modes={"Program","Fader"}},
 --			{name="Fader 9", input="value", min=0, max=127, output="value"},
 --[[
 			{name="Pan 1", input="value", min=0, max=127, output="value"},
@@ -1637,10 +1642,22 @@ if event.size==3 then -- Note, button, channel pressure
 						g.transpose = g.transpose+(1-g.button.shift)+(g.button.shift*12) -- if sh pressed, add 12, else just 1
 						global_transp = g.transpose
 						transpose_changed = true
-					elseif g.button.shiftclick_delivered == 1 then -- color palette
---[[
--- something else
---]]
+					elseif g.button.shiftclick_delivered == 1 then -- 
+
+-- transpose by circle of fifths!
+						local cof ={0,7,2,9,4,11,6,1,8,3,10,5}
+						local tr_note = 1+modulo(math.abs(global_transp),12)
+						local tr_oct = math.abs(math.floor(global_transp/12))
+						local cof_tr = tr_oct < 3 and 5 or -7
+vprint("global_transp",global_transp)
+vprint("tr_note",tr_note)
+vprint("tr_oct",tr_oct)
+vprint("cof_tr",cof_tr)
+vprint("g-cof",g.transpose-cof_tr)
+
+						g.transpose = g.transpose+cof_tr
+--						g.transpose = cof_tr
+						global_transp = g.transpose
 					end	
 				end
 			end
@@ -1650,10 +1667,23 @@ if event.size==3 then -- Note, button, channel pressure
 						g.transpose = g.transpose-(1-g.button.shift)-(g.button.shift*12)
 						global_transp = g.transpose
 						transpose_changed = true
-					elseif g.button.shiftclick_delivered == 1 then -- color palette
---[[
--- something else
---]]
+					elseif g.button.shiftclick_delivered == 1 then -- 
+-- transpose by circle of fifths!
+-- we cirlce around the root note here, so if root = F#, we cycle back to a lower/higher octave, rather than run out of notes. 
+						local cof ={0,7,2,9,4,11,6,1,8,3,10,5}
+						local tr_note =1+modulo(math.abs(global_transp),12)
+						local tr_oct = math.floor(global_transp/12)
+						local cof_tr = tr_oct < 3 and -5 or 7
+vprint("global_transp",global_transp)
+vprint("tr_note",tr_note)
+vprint("tr_oct",tr_oct)
+vprint("cof_tr",cof_tr)
+vprint("g-cof",g.transpose-cof_tr)
+--						g.transpose = g.transpose-cof_tr
+						g.transpose = g.transpose-cof_tr
+						global_transp = g.transpose
+						transpose_changed = true
+
 					end	
 				end
 			end
@@ -2101,21 +2131,19 @@ vprint("scalename",scalename)
 
 			if g.transpose>0 then
 				--upevent = remote.make_midi("90 5D "..color)
-				upevent = remote.make_midi(sysex_setrgb .. "5D ".. g.palette[color_ind].R .. " " .. g.palette[color_ind].G .."  " .. g.palette[color_ind].B .. " "..sysend)	
-				table.insert(lpp_events,upevent)
+				dnevent = remote.make_midi(table.concat({sysex_setrgb,"5D",g.palette[color_ind].R, g.palette[color_ind].G, g.palette[color_ind].B,sysend}," "))
+				table.insert(lpp_events,dnevent)
 				dnevent = remote.make_midi("90 5E 00")
 				table.insert(lpp_events,dnevent)
 			elseif g.transpose<0 then
 				upevent = remote.make_midi("90 5D 00")
 				table.insert(lpp_events,upevent)
 				--dnevent = remote.make_midi("90 5E "..color)
-				dnevent = remote.make_midi(sysex_setrgb .. "5E ".. g.palette[color_ind].R .. " " .. g.palette[color_ind].G .. " " .. g.palette[color_ind].B .. " "..sysend)
+				dnevent = remote.make_midi(table.concat({sysex_setrgb,"5E",g.palette[color_ind].R, g.palette[color_ind].G, g.palette[color_ind].B,sysend}," "))
 				table.insert(lpp_events,dnevent)
 			elseif g.transpose==0 then
-				upevent = remote.make_midi(sysex_setrgb .. "5D ".. g.palette[color_ind].R .. " " .. g.palette[color_ind].G .."  " .. g.palette[color_ind].B .. " "..sysend)	
+				upevent = remote.make_midi(table.concat({sysex_setrgb,"5D",g.palette[color_ind].R ,g.palette[color_ind].G, g.palette[color_ind].B,"5E",g.palette[color_ind].R, g.palette[color_ind].G, g.palette[color_ind].B,sysend}," "))
 				table.insert(lpp_events,upevent)
-				dnevent = remote.make_midi(sysex_setrgb .. "5E ".. g.palette[color_ind].R .. " " .. g.palette[color_ind].G .. " " .. g.palette[color_ind].B .. " "..sysend)
-				table.insert(lpp_events,dnevent)
 			end	
 --[[
 --]]
@@ -2416,13 +2444,14 @@ vprint("outnorm",outnorm)
 -- EVEN NEWER
 -- Something something sysex
 --						padsysex=padsysex..padnum.." "..colorscale[outnorm].R .." ".. colorscale[outnorm].G .." "..colorscale[outnorm].B
-						padsysex=padsysex..padnum.." "..g.palette[outnorm].R .." ".. g.palette[outnorm].G .." "..g.palette[outnorm].B
+--						padsysex=padsysex..padnum.." "..g.palette[outnorm].R .." ".. g.palette[outnorm].G .." "..g.palette[outnorm].B
+						padsysex=table.concat({padsysex,padnum,g.palette[outnorm].R,g.palette[outnorm].G,g.palette[outnorm].B}," ")
 -- even even new, keep a list of all the pads, and which are pressed, and colors they return to.
 
 
 						
 				end --end for 1,64
-				padupdate=remote.make_midi(sysex_header.."0B "..padsysex.." F7")
+				padupdate=remote.make_midi(table.concat({sysex_header,"0B",padsysex,sysend}," "))
 				table.insert(lpp_events,padupdate)
 				--error(padsysex)
 
@@ -2969,7 +2998,22 @@ palettes = {
 						[10]={R="3B", G="3C", B="21", },		 -- yellow/white
 						[11]={R="3D", G="3D", B="0F", },		 -- yellow
 		},
-		FifthsCircleOne = {
+		FifthsCircle = {
+						[0]= {R="3F", G="00", B="00", },	--R  
+						[1]= {R="00", G="32", B="15", },	--BG 
+						[2]= {R="3F", G="09", B="00", },	--O  
+						[3]= {R="09", G="00", B="36", },	--BV 
+						[4]= {R="3F", G="3F", B="00", },	--Y  
+						[5]= {R="29", G="00", B="20", },	--RV 
+						[6]= {R="00", G="3F", B="00", },	--G  
+						[7]= {R="1F", G="02", B="01", },	--RO 
+						[8]= {R="00", G="00", B="3F", },	--B  
+						[9]= {R="19", G="09", B="00", },	--YO 
+						[10]={R="12", G="00", B="2D", },	--V  
+						[11]={R="21", G="3F", B="00", },	--YG 
+		},
+--[[
+		FifthsCircleOld = {
 						[0]={R="06", G="00", B="00", },		--R 
 						[1]={R="00", G="15", B="0D", },		--BG
 						[2]={R="3F", G="1F", B="00", },		--O 
@@ -2983,6 +3027,7 @@ palettes = {
 						[10]={R="06", G="00", B="06", },	--V 
 						[11]={R="07", G="16", B="00", },	--YG
 		},
+--]]		
 	}
 palettenames = {
 'louisBertrandCastel',
@@ -2994,10 +3039,10 @@ palettenames = {
 'aBernardKlein',
 'iJBelmont',
 'sZieverink',
-'FifthsCircleOne',
+'FifthsCircle',
 }
 g.palettes_length = table.getn(palettenames)
-palettename = 'FifthsCircleOne'
+palettename = 'FifthsCircle'
 g.palette = palettes[palettenames[10]]
 palette_int = 0 
 g.palette_delivered = 9 --for change filter

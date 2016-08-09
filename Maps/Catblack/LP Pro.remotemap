@@ -254,7 +254,7 @@ Map	Shift Button 91		Select Previous Patch
 Map	Shift Button 92		Select Next Patch
 
 Map	_Scope		KONG
-Map	Fader 9		Mod Wheel
+//Map	Fader 9		Mod Wheel
 
 Map	Fader 1		Drum 1 Tone		Fader	D1&2
 Map	Fader 2		Drum 1 Decay Offset		Fader	D1&2
@@ -412,7 +412,7 @@ Map	Button 07		Keyboard Shortcut Variations=Osc
 Map	Shift Button 91		Select Previous Patch
 Map	Shift Button 92		Select Next Patch
 
-Map	Fader 9		Mod Wheel
+//Map	Fader 9		Mod Wheel
 
 Map	Fader 1		Filter Freq		Fader	FilterMod
 Map	Fader 2		Filter Res		Fader	FilterMod
@@ -457,7 +457,7 @@ Map	Button 08		Keyboard Shortcut Variations=Osc B
 Map	Shift Button 91		Select Previous Patch
 Map	Shift Button 92		Select Next Patch
 
-Map	Fader 9		Mod Wheel
+//Map	Fader 9		Mod Wheel
 
 Map	Fader 1		Filter A Freq		Fader	FilterMod
 Map	Fader 2		Filter A Resonance		Fader	FilterMod
@@ -512,7 +512,7 @@ Map	Button 07		Keyboard Shortcut Variations=Osc
 Map	Shift Button 91		Select Previous Patch
 Map	Shift Button 92		Select Next Patch
 
-Map	Fader 9		Mod Wheel
+//Map	Fader 9		Mod Wheel
 
 Map	Fader 1		Filter Freq		Fader	FilterMod
 Map	Fader 2		Filter Res		Fader	FilterMod
@@ -575,7 +575,7 @@ Map	Button 07		Keyboard Shortcut Variations=Osc
 Map	Shift Button 91		Select Previous Patch
 Map	Shift Button 92		Select Next Patch
 
-Map	Fader 9		Mod Wheel
+//Map	Fader 9		Mod Wheel
 
 Map	Fader 1		Filter Freq		Fader	FilterMod
 Map	Fader 2		Filter Res		Fader	FilterMod
@@ -619,7 +619,7 @@ Map	Button 08		Keyboard Shortcut Variations=Length
 Map	Shift Button 91		Select Previous Patch
 Map	Shift Button 92		Select Next Patch
 
-Map	Fader 9		Master Level
+//Map	Fader 9		Master Level
 
 Map	Pad 11		Selected Drum Toggle Step 1			Level
 Map	Pad 12		Selected Drum Toggle Step 2			Level
@@ -928,7 +928,7 @@ Scope	Propellerheads	MClass Compressor
 //Define Group	Keyboard Shortcut Variations
 //	Control Surface Item	Key	Remotable Item	Scale	Mode	Groups
 
-Map	_Scope		MC Compressor		Fader
+Map	_Scope		MC Compressor		
 Map	Fader 1		Input Gain		Fader
 Map	Fader 2		Threshold		Fader
 Map	Fader 3		Ratio		Fader
@@ -1103,7 +1103,7 @@ Scope	Propellerheads	Neptune Pitch Adjuster
 //	Control Surface Item	Key	Remotable Item	Scale	Mode	Groups
 Map	_Scope		Neptune
 
-Map	Fader 9		Mod Wheel
+//Map	Fader 9		Mod Wheel
 
 Map	Fader 1		Pitch Adjust Amount		Fader
 Map	Fader 2		Correction Speed		Fader
@@ -1645,7 +1645,7 @@ Scope	Peff	com.peff.Buffre
 //Define Group	Keyboard Shortcut Variations
 //	Control Surface Item	Key	Remotable Item	Scale	Mode	Groups
 Map	_Scope		Buffre
-Map	Fader 9		Mod Wheel
+//Map	Fader 9		Mod Wheel
 
 Map	Fader 1		Pitch		Fader
 Map	Fader 2		Random		Fader
