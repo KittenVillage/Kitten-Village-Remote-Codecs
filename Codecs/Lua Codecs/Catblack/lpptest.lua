@@ -14,14 +14,10 @@
 -- Different scales may go higher, but starting on 24 is probably best. 
 
 
--- TODO make all sysex table.concat
 -- TODO place util trasport remotables (undo, redo, track sel) as non-auto in out items, add them to itemnum index
 -- TODO CLASSes
--- TODO val = condition and a or b
--- http://www.computercraft.info/forums2/index.php?/topic/3592-advanced-tipthe-lua-equivalent-of-javas-ternary-operator/
--- http://hisham.hm/2011/05/04/luas-and-or-as-a-ternary-operator/
--- TODO shcl transpose goes up/dn by fifths!
-
+-- TODO velocity feedback
+-- TODO midi note playing feedback.
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- Variable defs
@@ -672,13 +668,13 @@ function remote_init(manufacturer, model)
 			{name="Modulation", input="value", min=0, max=127, itemnum="modulation"},
 			{name="Channel Pressure", input="value", min=0, max=127, itemnum="channelpressure"},
 			{name="Fader 1", input="value", min=0, max=127, output="value", itemnum="first_fader"},
-			{name="Fader 2", input="value", min=0, max=127, output="value"},
-			{name="Fader 3", input="value", min=0, max=127, output="value"},
-			{name="Fader 4", input="value", min=0, max=127, output="value"},
-			{name="Fader 5", input="value", min=0, max=127, output="value"},
-			{name="Fader 6", input="value", min=0, max=127, output="value"},
-			{name="Fader 7", input="value", min=0, max=127, output="value"},
-			{name="Fader 8", input="value", min=0, max=127, output="value"},
+			{name="Fader 2", input="value", min=0, max=127, output="value", modes="Fader"},
+			{name="Fader 3", input="value", min=0, max=127, output="value", modes="Fader"},
+			{name="Fader 4", input="value", min=0, max=127, output="value", modes="Fader"},
+			{name="Fader 5", input="value", min=0, max=127, output="value", modes="Fader"},
+			{name="Fader 6", input="value", min=0, max=127, output="value", modes="Fader"},
+			{name="Fader 7", input="value", min=0, max=127, output="value", modes="Fader"},
+			{name="Fader 8", input="value", min=0, max=127, output="value", modes="Fader"},
 --			{name="Fader 9", input="value", min=0, max=127, output="value"},
 --[[
 			{name="Pan 1", input="value", min=0, max=127, output="value"},
@@ -3000,7 +2996,22 @@ palettes = {
 						[10]={R="3B", G="3C", B="21", },		 -- yellow/white
 						[11]={R="3D", G="3D", B="0F", },		 -- yellow
 		},
-		FifthsCircleOne = {
+		FifthsCircle = {
+						[0]= {R="3F", G="00", B="00", },	--R  
+						[1]= {R="00", G="32", B="15", },	--BG 
+						[2]= {R="3F", G="09", B="00", },	--O  
+						[3]= {R="09", G="00", B="36", },	--BV 
+						[4]= {R="3F", G="3F", B="00", },	--Y  
+						[5]= {R="29", G="00", B="20", },	--RV 
+						[6]= {R="00", G="3F", B="00", },	--G  
+						[7]= {R="1F", G="02", B="01", },	--RO 
+						[8]= {R="00", G="00", B="3F", },	--B  
+						[9]= {R="19", G="09", B="00", },	--YO 
+						[10]={R="12", G="00", B="2D", },	--V  
+						[11]={R="21", G="3F", B="00", },	--YG 
+		},
+--[[
+		FifthsCircleOld = {
 						[0]={R="06", G="00", B="00", },		--R 
 						[1]={R="00", G="15", B="0D", },		--BG
 						[2]={R="3F", G="1F", B="00", },		--O 
@@ -3014,6 +3025,7 @@ palettes = {
 						[10]={R="06", G="00", B="06", },	--V 
 						[11]={R="07", G="16", B="00", },	--YG
 		},
+--]]		
 	}
 palettenames = {
 'louisBertrandCastel',
@@ -3025,10 +3037,10 @@ palettenames = {
 'aBernardKlein',
 'iJBelmont',
 'sZieverink',
-'FifthsCircleOne',
+'FifthsCircle',
 }
 g.palettes_length = table.getn(palettenames)
-palettename = 'FifthsCircleOne'
+palettename = 'FifthsCircle'
 g.palette = palettes[palettenames[10]]
 palette_int = 0 
 g.palette_delivered = 9 --for change filter
