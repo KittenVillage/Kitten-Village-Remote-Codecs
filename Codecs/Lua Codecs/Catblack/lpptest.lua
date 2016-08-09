@@ -669,6 +669,7 @@ function remote_init(manufacturer, model)
 			{name="Pitch Bend", input="value", min=0, max=16383, itemnum="pitchbend"},
 			{name="Modulation", input="value", min=0, max=127, itemnum="modulation"},
 			{name="Channel Pressure", input="value", min=0, max=127, itemnum="channelpressure"},
+<<<<<<< HEAD
 			{name="Fader 1", input="value", min=0, max=127, output="value", modes={"Fader"}, itemnum="first_fader"},
 			{name="Fader 2", input="value", min=0, max=127, output="value", modes={"Fader"}},
 			{name="Fader 3", input="value", min=0, max=127, output="value", modes={"Fader"}},
@@ -677,6 +678,16 @@ function remote_init(manufacturer, model)
 			{name="Fader 6", input="value", min=0, max=127, output="value", modes={"Fader"}},
 			{name="Fader 7", input="value", min=0, max=127, output="value", modes={"Fader"}},
 			{name="Fader 8", input="value", min=0, max=127, output="value", modes={"Fader"}},
+=======
+			{name="Fader 1", input="value", min=0, max=127, output="value", itemnum="first_fader"},
+			{name="Fader 2", input="value", min=0, max=127, output="value", modes="Fader"},
+			{name="Fader 3", input="value", min=0, max=127, output="value", modes="Fader"},
+			{name="Fader 4", input="value", min=0, max=127, output="value", modes="Fader"},
+			{name="Fader 5", input="value", min=0, max=127, output="value", modes="Fader"},
+			{name="Fader 6", input="value", min=0, max=127, output="value", modes="Fader"},
+			{name="Fader 7", input="value", min=0, max=127, output="value", modes="Fader"},
+			{name="Fader 8", input="value", min=0, max=127, output="value", modes="Fader"},
+>>>>>>> be24be31ae64f070bdb12539eb2818fba7b412bf
 --			{name="Fader 9", input="value", min=0, max=127, output="value"},
 --[[
 			{name="Pan 1", input="value", min=0, max=127, output="value"},
