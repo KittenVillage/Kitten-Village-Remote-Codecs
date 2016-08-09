@@ -288,12 +288,14 @@ sysex_pulseled = sysex_header.."28" -- pad color0-127
 
 sysend ="F7"
 
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
 
 
 
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 -- FL: Assign to these the index to the first the corresponding items according
 -- to the definition list in remote_init. (Or assign them when defining the items, depending on how you do that.)
@@ -639,7 +641,7 @@ end
 
 
 
-
+ 
 
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
