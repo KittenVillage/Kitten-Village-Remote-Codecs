@@ -119,12 +119,14 @@ scales = {
 	Iwato = {0,1,5,6,10},
 	Kumoi = {0,2,3,7,9},
 	Pelog = {0,1,3,4,7,8},
-	Spanish = {0,1,3,4,5,6,8,10}
+	Spanish = {0,1,3,4,5,6,8,10},
+	CircleOfFifths ={0,7,2,9,4,11,6,1,8,3,10,5}
 }
 scalenames = {
 			'Chromatic','DrumPad','Major','Minor','Dorian','Mixolydian', 
 			'Lydian','Phrygian', 
-			'Locrian','Diminished','Whole_half','WholeTone','MinorBlues','MinorPentatonic','MajorPentatonic','HarmonicMinor','MelodicMinor','DominantSus','SuperLocrian','NeopolitanMinor','NeopolitanMajor','EnigmaticMinor','Enigmatic','Composite','BebopLocrian','BebopDominant','BebopMajor','Bhairav','HungarianMinor','MinorGypsy','Persian','Hirojoshi','InSen','Iwato','Kumoi','Pelog','Spanish'
+			'Locrian','Diminished','Whole_half','WholeTone','MinorBlues','MinorPentatonic','MajorPentatonic','HarmonicMinor','MelodicMinor','DominantSus','SuperLocrian','NeopolitanMinor','NeopolitanMajor','EnigmaticMinor','Enigmatic','Composite','BebopLocrian','BebopDominant','BebopMajor','Bhairav','HungarianMinor','MinorGypsy','Persian','Hirojoshi','InSen','Iwato','Kumoi','Pelog','Spanish',
+			'CircleOfFifths'
 			}
 scaleabrvs = {
 			Session='SS',Auto='AA',Chromatic='CH',DrumPad='DR',Major='MM',Minor='nn',Dorian='II',Mixolydian='V_',
@@ -132,7 +134,7 @@ scaleabrvs = {
 			MinorPentatonic='mP',MajorPentatonic='MP',HarmonicMinor='mH',MelodicMinor='mM',DominantSus='Ds',SuperLocrian='SL',
 			NeopolitanMinor='mN',NeopolitanMajor='MN',EnigmaticMinor='mE',Enigmatic='ME',Composite='Cp',BebopLocrian='lB',
 			BebopDominant='DB',BebopMajor='MB',Bhairav='Bv',HungarianMinor='mH',MinorGypsy='mG',Persian='Pr',
-			Hirojoshi='Hr',InSen='IS',Iwato='Iw',Kumoi='Km',Pelog='Pg',Spanish='Sp'
+			Hirojoshi='Hr',InSen='IS',Iwato='Iw',Kumoi='Km',Pelog='Pg',Spanish='Sp',CircleOfFifths='C5'
 			}
 
 --[[
@@ -186,6 +188,7 @@ colorscale[11]={interval=11, color=18,  hcolor="12", R="07", G="16", B="00", col
 g = {}
 g.button = {}
 g.scope = {}
+
 
 g.button.shift = 0
 g.button.shift_delivered = 0 --for change filter
@@ -289,14 +292,75 @@ sysex_pulseled = sysex_header.."28" -- pad color0-127
 sysend ="F7"
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-pad ={}
-
-
-
-
+--[[
+Pad, , Palette, Transpose, Scale, Mode, Layout
+Grid, Buttons 
+Global or state
 
 
+
+
+
+--]]
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+--[[
+padcountindex=1
+Pad ={}
+Pad.__index = Pad
+function Pad:new(o,ho,ve) 
+	o = o or {}
+	setmetatable(o, self)
+	self.__index = self
+	self.thispad=(ho*10)+ve  --11-18 ... 81-88
+	self.thispadhex=string.format("%02X",self.thispad)
+	self.thisnote=notemode[ho]+ve
+	self.thisdrum= ve>4 and drummode[ho]+ve or drummode[ho]+ve+28
+--	if ve>4 then -- drum mode is 4 4x4 grids
+--		thisdrum=thisdrum+28
+--	end
+	if note[self.thisnote] == nil then
+		note[self.thisnote]={}
+	end
+	
+	--return setmetatable({ x = x or 0, y = y or 0 }, Pad)
+	return o
+end
+
+function Pad:makeSound()
+  print('I say ' .. self.sound)
+end
+
+mrDog = Pad:new() 
+mrDog:makeSound()
+
+
+
+
+
+
+
+
+
+setmetatable(Pad, { __call = function(_, ...) return Pad.new(...) end })
+
+function Pad.new(x, y)
+  return setmetatable({ x = x or 0, y = y or 0 }, Pad)
+end
+
+Button = {}
+
+
+
+
+
+setmetatable(Button, { __call = function(_, ...) return Button.new(...) end })
+
+Grid = {}
+
+
+setmetatable(Grid, { __call = function(_, ...) return Grid.new(...) end })
+
+--]]
 
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -673,14 +737,14 @@ function remote_init(manufacturer, model)
 			{name="Pitch Bend", input="value", min=0, max=16383, itemnum="pitchbend"},
 			{name="Modulation", input="value", min=0, max=127, itemnum="modulation"},
 			{name="Channel Pressure", input="value", min=0, max=127, itemnum="channelpressure"},
-			{name="Fader 1", input="value", min=0, max=127, output="value", modes={"Fader"}, itemnum="first_fader"},
-			{name="Fader 2", input="value", min=0, max=127, output="value", modes={"Fader"}},
-			{name="Fader 3", input="value", min=0, max=127, output="value", modes={"Fader"}},
-			{name="Fader 4", input="value", min=0, max=127, output="value", modes={"Fader"}},
-			{name="Fader 5", input="value", min=0, max=127, output="value", modes={"Fader"}},
-			{name="Fader 6", input="value", min=0, max=127, output="value", modes={"Fader"}},
-			{name="Fader 7", input="value", min=0, max=127, output="value", modes={"Fader"}},
-			{name="Fader 8", input="value", min=0, max=127, output="value", modes={"Fader"}},
+			{name="Fader 1", input="value", min=0, max=127, output="value", modes={"Program","Fader"}, itemnum="first_fader"},
+			{name="Fader 2", input="value", min=0, max=127, output="value", modes={"Program","Fader"}},
+			{name="Fader 3", input="value", min=0, max=127, output="value", modes={"Program","Fader"}},
+			{name="Fader 4", input="value", min=0, max=127, output="value", modes={"Program","Fader"}},
+			{name="Fader 5", input="value", min=0, max=127, output="value", modes={"Program","Fader"}},
+			{name="Fader 6", input="value", min=0, max=127, output="value", modes={"Program","Fader"}},
+			{name="Fader 7", input="value", min=0, max=127, output="value", modes={"Program","Fader"}},
+			{name="Fader 8", input="value", min=0, max=127, output="value", modes={"Program","Fader"}},
 --			{name="Fader 9", input="value", min=0, max=127, output="value"},
 --[[
 			{name="Pan 1", input="value", min=0, max=127, output="value"},
@@ -980,7 +1044,7 @@ first_button
 		local inputs={
 
 --inputs
-			{pattern="d? xx", name="Channel Pressure"},
+			{pattern="D? xx ??", name="Channel Pressure"},
 			{pattern="b0 15 xx", name="Fader 1"},
 			{pattern="b0 16 xx", name="Fader 2"},
 			{pattern="b0 17 xx", name="Fader 3"},
@@ -1694,7 +1758,10 @@ vprint("g-cof",g.transpose-cof_tr)
 			if(scale_up) then
 				if scale_up.z>0 then
 					if g.button.shiftclick_delivered == 0 then
-						scale_int = modulo(scale_int+1,36) --only use the first 36 scales
+--						scale_int = modulo(scale_int+1,36) --only use the first 36 scales
+vprint("scale was ",global_scale)
+						scale_int = modulo(global_scale+1,38) --only use the first 37 scales
+vprint("scale is ",scale_int)
 						scalename = scalenames[1+scale_int]
 						scale = scales[scalename]
 						global_scale = scale_int
@@ -1710,7 +1777,10 @@ remote.trace("scale up "..scalename)
 			if(scale_dn) then
 				if scale_dn.z>0 then
 					if g.button.shiftclick_delivered == 0 then
-						scale_int = modulo(scale_int-1,36) --only use the first 36 scales
+--						scale_int = modulo(scale_int-1,36) --only use the first 36 scales
+vprint("scale was ",global_scale)
+						scale_int = modulo(global_scale-1,38) --only use the first 38 scales
+vprint("scale is ",scale_int)
 						scalename = scalenames[1+scale_int]
 						scale = scales[scalename]
 						global_scale = scale_int
@@ -3058,6 +3128,4 @@ palette_changed = false
 
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
 
