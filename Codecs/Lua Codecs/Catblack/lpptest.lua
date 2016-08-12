@@ -303,6 +303,9 @@ Global or state
 
 --]]
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- add some methods in at the points where I draw the color palette/scale to the pad to remember the current color; 
+-- add a method into the point where I detect and transpose the note to keep an array of notes pressed and to send a method to display them; 
+-- add a button class which will get inherited with what to do with each button. 
 --[[
 padcountindex=1
 Pad ={}
@@ -348,7 +351,25 @@ function Pad.new(x, y)
 end
 
 Button = {}
+Button.__index = Button
+function Button:new(o,indx) 
+	o = o or {}
+	setmetatable(o, self)
+	self.__index = self
+	return o
+end
+function Button:press()
+	-- if (buttonindex[ret.y]~=nil
+end
+function Button:release()
 
+end
+Button:light()
+
+end
+Button:flash()
+
+end
 
 
 
