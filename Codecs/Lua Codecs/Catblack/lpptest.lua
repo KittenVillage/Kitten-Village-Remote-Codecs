@@ -295,7 +295,7 @@ sysend ="F7"
 --[[
 Pad, , Palette, Transpose, Scale, Mode, Layout
 Grid, Buttons 
-Global or state
+Global or State
 
 
 
@@ -350,6 +350,8 @@ function Pad.new(x, y)
   return setmetatable({ x = x or 0, y = y or 0 }, Pad)
 end
 
+
+-- Button contains the code for each button.
 Button = {}
 Button.__index = Button
 function Button:new(o,indx) 
@@ -370,16 +372,44 @@ end
 Button:flash()
 
 end
-
+ 
 
 
 
 setmetatable(Button, { __call = function(_, ...) return Button.new(...) end })
 
+
+-- Grid is the array of pads, pad colors, notes
+-- or Grid handles future rotation transforms  
 Grid = {}
 
 
 setmetatable(Grid, { __call = function(_, ...) return Grid.new(...) end })
+
+-- Palette has the methods for changing the Palette.
+Palette = {}
+
+
+-- Transpose has methods for transposing the note. (by half step, sh by oct, shcl by fifth)
+Transpose = {}
+
+
+-- Scale has methods for changing the current Scale 
+Scale = {}
+
+
+-- Mode has methods for detecting/changing/remembering the current Mode. 
+-- This refers to the different control layouts; chromatic, push, guitar, Co5, etc
+-- Fader mode becomes avail if fader remotabable items do.
+-- TODO baby mode
+Mode = {}
+
+-- Layout has methods for detecting/changing the current Layout. 
+-- Layout refers to the LPP Note, Drum, Fader, Programming modes. 
+-- LPP manual calls these layouts, but Reason remotemaps use a MODE column (which I use for the faders)
+-- This is an internal designation detecting/setting sysex.
+Layout = {}
+
 
 --]]
 
