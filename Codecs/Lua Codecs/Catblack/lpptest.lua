@@ -161,7 +161,7 @@ sli_end=12
 
 
 
--- Thought I'd try the colors from virtuosoism.com
+-- Circle of fifths (C = red) using LPP internal palette (and their eqivlnt hex colors)
 colorscale={}
 colorscale[0]= {interval=0,  color=7,   hcolor="07", R="06", G="00", B="00", col="R ", notename="C",} -- 5 too bright
 colorscale[1]= {interval=1,  color=65,  hcolor="41", R="00", G="15", B="0D", col="BG", notename="C#",}
@@ -318,12 +318,18 @@ function Pad:new(o,ho,ve)
 	self.thispadhex=string.format("%02X",self.thispad)
 	self.thisnote=notemode[ho]+ve
 	self.thisdrum= ve>4 and drummode[ho]+ve or drummode[ho]+ve+28
+	self.pad=(ho*10)+ve  --11-18 ... 81-88
+	self.padhex=string.format("%02X",self.pad)
+	self.note=notemode[ho]+ve
+	self.notehex=string.format("%02X",self.note)
+	self.drum= ve>4 and drummode[ho]+ve or drummode[ho]+ve+28
 --	if ve>4 then -- drum mode is 4 4x4 grids
 --		thisdrum=thisdrum+28
 --	end
 	if note[self.thisnote] == nil then
 		note[self.thisnote]={}
 	end
+	padcountindex=padcountindex+1
 	
 	--return setmetatable({ x = x or 0, y = y or 0 }, Pad)
 	return o
@@ -378,11 +384,25 @@ end
 
 setmetatable(Button, { __call = function(_, ...) return Button.new(...) end })
 
-
--- Grid is the array of pads, pad colors, notes
--- or Grid handles future rotation transforms  
---Grid = {}
+--]]
+-- Grid is the array of pads, pad colors, notes, octives
+-- Grid handles future rotation transforms
+-- 1 is normal (1,1 on bottom left) 2-4 rotate counter clockwise.
+-- could add flips.
+-- newgrid=Grid[index].rotate(oldgrid)
+-- TODO .new grid function that sets the current global roatation 
+ 
+	Grid = {
+			{rotate = function(g);local ng=g;for yy=1,8,1  do;for xx=1,8,1 do;ng[yy][xx]=g[yy][xx];end;end;return ng;end},
+			{rotate = function(g);local ng=g;for yy=8,1,-1 do;for xx=1,8,1 do;ng[9-yy][xx]=g[xx][yy];end;end;return ng;end},
+			{rotate = function(g);local ng=g;for yy=8,1,-1 do;for xx=8,1,-1 do;ng[9-yy][9-xx]=g[yy][xx];end;end;return ng;end},
+			{rotate = function(g);local ng=g;for yy=1,8,1  do;for xx=8,1,-1 do;ng[yy][9-xx]=g[xx][yy];end;end;return ng;end},
+			}
+-- newgrid =Grid[index].rotate(oldgrid)
 --setmetatable(Grid, { __call = function(_, ...) return Grid.new(...) end })
+
+--[[
+
 
 -- Palette has the methods for changing the Palette.
 Palette = {}
@@ -415,9 +435,9 @@ Layout = {}
 -- State keeps track of what notes are currently pressed/playing
 -- and what button states we are in. (shift, click, shcl, etc.)
 State = {}
-State.shift = false
-State.click = false
-State.shiftclick = false
+State.shift = 0
+State.click = 0
+State.shiftclick = 0
 
 
 
