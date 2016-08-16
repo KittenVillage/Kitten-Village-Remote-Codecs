@@ -268,7 +268,7 @@ noscaleneeded = false
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 lcd_events = {}
 
-
+Modes = {}
 
 
 --g.last_notevelocity_delivered={}
@@ -393,10 +393,10 @@ setmetatable(Button, { __call = function(_, ...) return Button.new(...) end })
 -- TODO .new grid function that sets the current global roatation 
  
 	Grid = {
-			{rotate = function(g);local ng=g;for yy=1,8,1  do;for xx=1,8,1 do;ng[yy][xx]=g[yy][xx];end;end;return ng;end},
-			{rotate = function(g);local ng=g;for yy=8,1,-1 do;for xx=1,8,1 do;ng[9-yy][xx]=g[xx][yy];end;end;return ng;end},
-			{rotate = function(g);local ng=g;for yy=8,1,-1 do;for xx=8,1,-1 do;ng[9-yy][9-xx]=g[yy][xx];end;end;return ng;end},
-			{rotate = function(g);local ng=g;for yy=1,8,1  do;for xx=8,1,-1 do;ng[yy][9-xx]=g[xx][yy];end;end;return ng;end},
+			{rotate = function(g) local ng=g for yy=1,8,1 do for xx=1,8,1 do ng[yy][xx]=g[yy][xx] end end return ng end},
+			{rotate = function(g) local ng=g for yy=8,1,-1 do for xx=1,8,1 do ng[9-yy][xx]=g[xx][yy] end end return ng end},
+			{rotate = function(g) local ng=g for yy=8,1,-1 do for xx=8,1,-1 do ng[9-yy][9-xx]=g[yy][xx] end end return ng end},
+			{rotate = function(g) local ng=g for yy=1,8,1  do for xx=8,1,-1 do ng[yy][9-xx]=g[xx][yy] end end return ng end},
 			}
 -- newgrid =Grid[index].rotate(oldgrid)
 --setmetatable(Grid, { __call = function(_, ...) return Grid.new(...) end })
@@ -432,6 +432,7 @@ Mode = {}
 -- This is an internal designation detecting/setting sysex.
 Layout = {}
 
+--]]
 -- State keeps track of what notes are currently pressed/playing
 -- and what button states we are in. (shift, click, shcl, etc.)
 State = {}
@@ -441,7 +442,6 @@ State.shiftclick = 0
 
 
 
---]]
 
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -472,13 +472,13 @@ padpress = {} -- to display pressed
 function def_vars()
 
 	local index=1
-	for ho=1,8 do --horizontal from bottom
-		for ve=1,8 do -- vertical from left
-			local thispad=(ho*10)+ve  --11-18 ... 81-88
+	for ve=1,8 do --horizontal from bottom
+		for ho=1,8 do -- vertical from left
+			local thispad=(ve*10)+ho  --11-18 ... 81-88
 			local thispadhex=string.format("%02X",thispad)
-			local thisnote=notemode[ho]+ve
-			local thisdrum=drummode[ho]+ve
-			if ve>4 then -- drum mode is 4 4x4 grids
+			local thisnote=notemode[ve]+ho
+			local thisdrum=drummode[ve]+ho
+			if ho>4 then -- drum mode is 4 4x4 grids
 				thisdrum=thisdrum+28
 			end
 			if note[thisnote] == nil then
@@ -519,10 +519,10 @@ function def_vars()
 			index=index+1 --index so I can cycle through the 64 pads quickly.
 		end
 		--items here.
-		buttonindex[90+ho]=(g.itemnum.first_button-1)+ho
-		buttonindex[ho]=(g.itemnum.first_button-1)+ho+8
-		buttonindex[10*ho]=(g.itemnum.first_button-1)+ho+16
-		buttonindex[(10*ho)+9]=(g.itemnum.first_button-1)+ho+24	
+		buttonindex[90+ve]=(g.itemnum.first_button-1)+ve
+		buttonindex[ve]=(g.itemnum.first_button-1)+ve+8
+		buttonindex[10*ve]=(g.itemnum.first_button-1)+ve+16
+		buttonindex[(10*ve)+9]=(g.itemnum.first_button-1)+ve+24	
 	end
 	--[[
 	remote.trace("start note\n")
@@ -1936,13 +1936,14 @@ remote.trace("scale dn "..scalename)
 
 
 
-
-		
+	
 --------------------------------------------------------------------------------------------------------------------------		
 -- here's where the incoming note gets transposed!
 --------------------------------------------------------------------------------------------------------------------------		
+noscaleneeded=true -- while we test new modes
 		
 		if (ret.y>10 and ret.y<89) and (noscaleneeded==false) and (button==0) then -- 11 to 88, but not button
+--		if (button==0) then -- 11 to 88, but not button
 
 
 			---if the pads have transposed, then we need to turn off the last note----------------------
@@ -1970,7 +1971,7 @@ remote.trace("scale dn "..scalename)
 				root = 24 
 			end  
 ----------------------------------------------------			
-			local ind = 1+modulo(padid,scale_len)  --modulo using the operator % gave me trouble in reason, so I wrote a custom fcn
+			local ind = 1+modulo(padid,scale_len)  --modulo using the operator % gave me trouble in reason, so Livid wrote a custom fcn
 			local oct = math.floor(padid/scale_len)
 			local addnote = scale[ind]
 			local noteout = root+g.transpose+(12*oct)+addnote
@@ -1987,6 +1988,7 @@ vprint("noteout",noteout)
 				local msg={ time_stamp = event.time_stamp, item=1, value = ret.x, note = noteout,velocity = ret.z }
 				remote.handle_input(msg)
 				g.note_delivered = noteout
+--TODO make return a var, pass to end of function!
 				return true
 			end
 ----------------------------------------------------
@@ -2010,7 +2012,36 @@ vprint("noteout",noteout)
 --[[
 --]]
 		else
-			return false
+-------------------------------------------------------		
+-- NEW MODES test here
+
+			--local padid = pad[ret.y].index-1
+			local grid={}
+			local grid = Modes.Push
+			local padx = pad[ret.y].x
+			local pady = 9-pad[ret.y].y
+--error(pady)
+			--local oct = Modes[1][2][pady][padx]*12
+			local oct = grid.oct[pady][padx]*12
+			--local addnote = scale[ind]
+			--local noteout = root+g.transpose+(12*oct)+addnote
+			
+			local noteout = grid.note[pady][padx]+oct+24
+			
+			
+		--	if (noteout<127 and noteout>0) then
+				local msg={ time_stamp = event.time_stamp, item=1, value = ret.x, note = noteout,velocity = ret.z }
+				remote.handle_input(msg)
+				g.note_delivered = noteout
+--TODO make return a var, pass to end of function!
+				return true
+		--	end
+
+		
+		
+		
+-------------------------------------------------------		
+			--return false
 		end
 	end -- ret not nil
 	
@@ -2114,7 +2145,7 @@ function remote_deliver_midi(maxbytes,port)
 		local iskong = false
 		local isvarchange = false
 		local istracktext = false
-		local do_update_pads = 0
+		 -- do_update_pads = 0
 
 -- -----------------------------------------------------------------------------------------------
 -- Keep it in programmer mode	FOR NOW
@@ -2536,7 +2567,7 @@ vprint("palette",palettenames[g.palette_global])
 		end
 --]]
 -- -----------------------------------------------------------------------------------------------
-
+--do_update_pads=1
 
 --[[
 --]]
@@ -2546,6 +2577,9 @@ vprint("palette",palettenames[g.palette_global])
 		if(do_update_pads==1) then
 --	  table.insert(lcd_events,upd_event)
 			if(scalename~='DrumPad') then
+noscaleneeded=true -- while we test new modes
+		if  (noscaleneeded==false) then -- while we test new modes
+
 				local padsysex = ""
 				for i=1,64,1 do
 					local padid = i-1
@@ -2610,12 +2644,44 @@ vprint("outnorm",outnorm)
 				padupdate=remote.make_midi(table.concat({sysex_header,"0B",padsysex,sysend}," "))
 				table.insert(lpp_events,padupdate)
 				--error(padsysex)
+				else
+-------------------------------------------------------		
+-- NEW MODES test here
+
+				local padsysex = ""
+					root = 24 
+				for i=1,64,1 do
+			grid = Modes.Push
+			local padx = padindex[i].x
+			local pady = 9-padindex[i].y
+
+					--local oct = math.floor(padid/scale_len)
+			local oct = grid.oct[pady][padx]*12
+					--local addnote = scale[1+modulo(i-1,scale_len)]
+					--local outnote = root+g.transpose+(12*oct)+addnote --note that gets played by synth
+					--local outnorm = modulo(outnote,12) --normalized to 0-11 range
+					local outnorm = grid.note[pady][padx] --normalized to 0-11 range
+--					local padnum = string.format("%x",i+35) --note# that the controller led responds to
+					local padnum = padindex[i].padhex --note# that the controller led responds to
 
 
 
+						padsysex=table.concat({padsysex,padnum,g.palette[outnorm].R,g.palette[outnorm].G,g.palette[outnorm].B}," ")
+-- even even new, keep a list of all the pads, and which are pressed, and colors they return to.
 
 
-
+						
+				end --end for 1,64
+				padupdate=remote.make_midi(table.concat({sysex_header,"0B",padsysex,sysend}," "))
+				table.insert(lpp_events,padupdate)
+				
+				
+				
+				
+				
+				
+				
+				end -- NEW MODES TEST
 
 
 			elseif scalename=='DrumPad' then
@@ -2638,7 +2704,8 @@ vprint("outnorm",outnorm)
 				
 			end -- drumpad or not
 			
-			
+		do_update_pads=0
+	
 			
 		end --update_pads ==1
 -- -----------------------------------------------------------------------------------------------
@@ -3214,9 +3281,9 @@ end
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function set_modes()
-modes = {
+Modes = {
 Push = {
-		{
+		note={
 			{0,2,4,5,7,9,11,0},
 			{7,9,11,0,2,4,5,7},
 			{2,4,5,7,9,11,0,2},
@@ -3226,7 +3293,7 @@ Push = {
 			{5,7,9,11,0,2,4,5},
 			{0,2,4,5,7,9,11,0},
 		},
-		{
+		oct={
 			{4,4,4,4,4,4,4,5},
 			{3,3,3,4,4,4,4,4},
 			{3,3,3,3,3,3,4,4},
@@ -3238,7 +3305,7 @@ Push = {
 		},
 	},
 Diatonic = {
-		{
+		note={
 			{0,2,4,5,7,9,11,0},
 			{9,11,0,2,4,5,7,9},
 			{5,7,9,11,0,2,4,5},
@@ -3248,7 +3315,7 @@ Diatonic = {
 			{4,5,7,9,11,0,2,4},
 			{0,2,4,5,7,9,11,0},
 		},
-		{
+		oct={
 			{4,4,4,4,4,4,4,5},
 			{3,3,4,4,4,4,4,4},
 			{3,3,3,3,4,4,4,4},
@@ -3260,7 +3327,7 @@ Diatonic = {
 		},
 	},
 Diagonal = {
-		{
+		note={
 			{0,2,4,5,7,9,11,0},
 			{11,0,2,4,5,7,9,11},
 			{9,11,0,2,4,5,7,9},
@@ -3270,7 +3337,7 @@ Diagonal = {
 			{2,4,5,7,9,11,0,2},
 			{0,2,4,5,7,9,11,0},
 		},
-		{
+		oct={
 			{3,3,3,3,3,3,3,4},
 			{2,3,3,3,3,3,3,3},
 			{2,2,3,3,3,3,3,3},
@@ -3282,7 +3349,7 @@ Diagonal = {
 		},
 	},
 Janko = {
-		{
+		note={
 			{1,3,5,7,9,11,1,3},
 			{0,2,4,6,8,10,0,2},
 			{2,4,6,8,10,0,2,4},
@@ -3292,7 +3359,7 @@ Janko = {
 			{1,3,5,7,9,11,1,3},
 			{0,2,4,6,8,10,0,2},
 		},
-		{
+		oct={
 			{4,4,4,4,4,4,5,5},
 			{4,4,4,4,4,4,5,5},
 			{3,3,2,2,3,4,4,4},
@@ -3304,7 +3371,7 @@ Janko = {
 		},
 	},
 Octave = {
-		{
+		note={
 			{0,2,4,5,7,9,11,0},
 			{0,2,4,5,7,9,11,0},
 			{0,2,4,5,7,9,11,0},
@@ -3314,7 +3381,7 @@ Octave = {
 			{0,2,4,5,7,9,11,0},
 			{0,2,4,5,7,9,11,0},
 		},
-		{
+		oct={
 			{7,7,7,7,7,7,7,8},
 			{6,6,6,6,6,6,6,7},
 			{5,5,5,5,5,5,5,6},
@@ -3326,7 +3393,7 @@ Octave = {
 		},
 	},
 Chromatic = {
-		{
+		note={
 			{8,9,10,11,0,1,2,3},
 			{0,1,2,3,4,5,6,7},
 			{4,5,6,7,8,9,10,11},
@@ -3336,7 +3403,7 @@ Chromatic = {
 			{8,9,10,11,0,1,2,3},
 			{0,1,2,3,4,5,6,7},
 		},
-		{
+		oct={
 			{5,5,5,5,6,6,6,6},
 			{5,5,5,5,5,5,5,5},
 			{4,4,4,4,4,4,4,4},
@@ -3348,7 +3415,7 @@ Chromatic = {
 		},
 	},
 Guitar = {
-		{
+		note={
 			{4,5,6,7,8,9,10,11},
 			{11,0,1,2,3,4,5,6},
 			{7,8,9,10,11,0,1,2},
@@ -3358,7 +3425,7 @@ Guitar = {
 			{4,5,6,7,8,9,10,11},
 			{11,0,1,2,3,4,5,6},
 		},
-		{
+		oct={
 			{3,3,3,3,3,3,3,3},
 			{2,3,3,3,3,3,3,3},
 			{2,2,2,2,2,3,3,3},
@@ -3370,7 +3437,7 @@ Guitar = {
 		},
 	},
 Guitar_2_iso = {
-		{
+		note={
 			{4,5,6,7,8,9,10,11},
 			{11,0,1,2,3,4,5,6},
 			{8,9,10,11,0,1,2,3},
@@ -3380,7 +3447,7 @@ Guitar_2_iso = {
 			{4,5,6,7,8,9,10,11},
 			{11,0,1,2,3,4,5,6},
 		},
-		{
+		oct={
 			{3,3,3,3,3,3,3,3},
 			{2,3,3,3,3,3,3,3},
 			{2,2,2,2,3,3,3,3},
@@ -3392,7 +3459,7 @@ Guitar_2_iso = {
 		},
 	},
 Guitar_2 = {
-		{
+		note={
 			{4,5,6,7,8,9,10,11},
 			{11,0,1,2,3,4,5,6},
 			{7,8,9,10,11,0,1,2},
@@ -3402,7 +3469,7 @@ Guitar_2 = {
 			{4,5,6,7,8,9,10,11},
 			{11,0,1,2,3,4,5,6},
 		},
-		{
+		oct={
 			{3,3,3,3,3,3,3,3},
 			{2,3,3,3,3,3,3,3},
 			{2,2,2,2,2,3,3,3},
@@ -3414,7 +3481,7 @@ Guitar_2 = {
 		},
 	},
 Guitar_Drop_D = {
-		{
+		note={
 			{2,3,4,5,6,7,8,9},
 			{11,0,1,2,3,4,5,6},
 			{7,8,9,10,11,0,1,2},
@@ -3424,7 +3491,7 @@ Guitar_Drop_D = {
 			{4,5,6,7,8,9,10,11},
 			{11,0,1,2,3,4,5,6},
 		},
-		{
+		oct={
 			{3,3,3,3,3,3,3,3},
 			{2,3,3,3,3,3,3,3},
 			{2,2,2,2,2,3,3,3},
@@ -3436,7 +3503,7 @@ Guitar_Drop_D = {
 		},
 	},
 Guitar_low_Fsh_B = {
-		{
+		note={
 			{4,5,6,7,8,9,10,11},
 			{11,0,1,2,3,4,5,6},
 			{7,8,9,10,11,0,1,2},
@@ -3446,7 +3513,7 @@ Guitar_low_Fsh_B = {
 			{11,0,1,2,3,4,5,6},
 			{6,7,8,9,10,11,0,1},
 		},
-		{
+		oct={
 			{3,3,3,3,3,3,3,3},
 			{2,3,3,3,3,3,3,3},
 			{2,2,2,2,2,3,3,3},
@@ -3458,7 +3525,7 @@ Guitar_low_Fsh_B = {
 		},
 	},
 Guitar_low_E_B = {
-		{
+		note={
 			{4,5,6,7,8,9,10,11},
 			{11,0,1,2,3,4,5,6},
 			{7,8,9,10,11,0,1,2},
@@ -3468,7 +3535,7 @@ Guitar_low_E_B = {
 			{11,0,1,2,3,4,5,6},
 			{4,5,6,7,8,9,10,11},
 		},
-		{
+		oct={
 			{3,3,3,3,3,3,3,3},
 			{2,3,3,3,3,3,3,3},
 			{2,2,2,2,2,3,3,3},
