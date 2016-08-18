@@ -356,12 +356,15 @@ function Pad.new(x, y)
   return setmetatable({ x = x or 0, y = y or 0 }, Pad)
 end
 
-
+--]]
 -- Button contains the code for each button.
 Button = {}
 Button.__index = Button
-function Button:new(o,indx) 
+function Button:new(num,ind,o) 
 	o = o or {}
+	number = num
+	index = ind
+	hex = string.format("%02X",ind)
 	setmetatable(o, self)
 	self.__index = self
 	return o
@@ -372,17 +375,17 @@ end
 function Button:release()
 
 end
-Button:light()
+function Button:light()
 
 end
-Button:flash()
+function Button:flash()
 
 end
- 
-
-
-
 setmetatable(Button, { __call = function(_, ...) return Button.new(...) end })
+
+--[[
+
+
 
 --]]
 -- Grid is the array of pads, pad colors, notes, octives
@@ -458,6 +461,7 @@ g.accent_count = 0
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 notemode = {35,40,45,50,55,60,65,70} -- left column -1
 drummode = {35,39,43,47,51,55,59,63} -- left column -1
+button = {}
 pad = {}
 padindex = {} 
 note = {}
@@ -465,7 +469,6 @@ drum = {}
 buttonindex = {}
 g.itemnum = {}
 padpress = {} -- to display pressed
-
 			do_update_pads = 1
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -523,6 +526,14 @@ function def_vars()
 		buttonindex[ve]=(g.itemnum.first_button-1)+ve+8
 		buttonindex[10*ve]=(g.itemnum.first_button-1)+ve+16
 		buttonindex[(10*ve)+9]=(g.itemnum.first_button-1)+ve+24	
+		
+		button[90+ve]=Button:new((g.itemnum.first_button-1)+ve,90+ve)
+		button[ve]=Button:new((g.itemnum.first_button-1)+ve+8,ve)
+		button[10*ve]=Button:new((g.itemnum.first_button-1)+ve+16,10*ve)
+		button[(10*ve)+9]=Button:new((g.itemnum.first_button-1)+ve+24,(10*ve)+9)	
+
+
+
 	end
 	--[[
 	remote.trace("start note\n")
@@ -539,7 +550,7 @@ end
 
 
 
-
+-- unused
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function set_colorscales()
 	for s,st in pairs(scales) do
@@ -2017,16 +2028,18 @@ vprint("noteout",noteout)
 
 			--local padid = pad[ret.y].index-1
 			local grid={}
-			local grid = Modes.Wicki_Hayden_R
+			--local grid = Grid[1].rotate(Modes.Wicki_Hayden_R)
+			local gridnote = Grid[1].rotate(Modes.Wicki_Hayden_R.note)
+			local gridoct  = Grid[1].rotate(Modes.Wicki_Hayden_R.oct)
 			local padx = pad[ret.y].x
 			local pady = 9-pad[ret.y].y
 --error(pady)
 			--local oct = Modes[1][2][pady][padx]*12
-			local oct = grid.oct[pady][padx]*12
+			local oct = gridoct[pady][padx]*12
 			--local addnote = scale[ind]
 			--local noteout = root+g.transpose+(12*oct)+addnote
 			
-			local noteout = grid.note[pady][padx]+oct+24
+			local noteout = gridnote[pady][padx]+oct+24
 			
 			
 		--	if (noteout<127 and noteout>0) then
@@ -2651,16 +2664,18 @@ vprint("outnorm",outnorm)
 				local padsysex = ""
 					root = 24 
 				for i=1,64,1 do
-			grid = Modes.Wicki_Hayden_R
+			--local grid = Grid[1].rotate(Modes.Wicki_Hayden_R)
+			local gridnote = Grid[1].rotate(Modes.Wicki_Hayden_R.note)
+			local gridoct  = Grid[1].rotate(Modes.Wicki_Hayden_R.oct)
 			local padx = padindex[i].x
 			local pady = 9-padindex[i].y
 
-					--local oct = math.floor(padid/scale_len)
-			local oct = grid.oct[pady][padx]*12
+			--local oct = math.floor(padid/scale_len)
+			local oct = gridoct[pady][padx]*12
 					--local addnote = scale[1+modulo(i-1,scale_len)]
 					--local outnote = root+g.transpose+(12*oct)+addnote --note that gets played by synth
 					--local outnorm = modulo(outnote,12) --normalized to 0-11 range
-					local outnorm = grid.note[pady][padx] --normalized to 0-11 range
+					local outnorm = gridnote[pady][padx] --normalized to 0-11 range
 --					local padnum = string.format("%x",i+35) --note# that the controller led responds to
 					local padnum = padindex[i].padhex --note# that the controller led responds to
 
