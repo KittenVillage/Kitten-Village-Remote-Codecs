@@ -9,6 +9,7 @@ Scope	Propellerheads	Master Keyboard
 //Define Group	Keyboard Shortcut Variations
 //	Control Surface Item	Key	Remotable Item	Scale	Mode	Groups
 Map	Keyboard		Keyboard
+Map	Channel Pressure		Channel Pressure
 
 
 Scope	Propellerheads	Reason Document
