@@ -381,7 +381,7 @@ end
 function Button:flash()
 
 end
-setmetatable(Button, { __call = function(_, ...) return Button.new(...) end })
+--setmetatable(Button, { __call = function(_, ...) return Button.new(...) end })
 
 --[[
 
@@ -396,12 +396,19 @@ setmetatable(Button, { __call = function(_, ...) return Button.new(...) end })
 -- TODO .new grid function that sets the current global roatation 
  
 	Grid = {
-			{rotate = function(g) local ng=g for yy=1,8,1 do for xx=1,8,1 do ng[yy][xx]=g[yy][xx] end end return ng end},
-			{rotate = function(g) local ng=g for yy=8,1,-1 do for xx=1,8,1 do ng[9-yy][xx]=g[xx][yy] end end return ng end},
-			{rotate = function(g) local ng=g for yy=8,1,-1 do for xx=8,1,-1 do ng[9-yy][9-xx]=g[yy][xx] end end return ng end},
-			{rotate = function(g) local ng=g for yy=1,8,1  do for xx=8,1,-1 do ng[yy][9-xx]=g[xx][yy] end end return ng end},
-			}
--- newgrid =Grid[index].rotate(oldgrid)
+			rotate = { 
+				function(g) local ng=g for yy=1,8,1 do for xx=1,8,1 do ng[yy][xx]=g[yy][xx] end end return ng end,
+				function(g) local ng=g for yy=8,1,-1 do for xx=1,8,1 do ng[9-yy][xx]=g[xx][yy] end end return ng end,
+				function(g) local ng=g for yy=8,1,-1 do for xx=8,1,-1 do ng[9-yy][9-xx]=g[yy][xx] end end return ng end,
+				function(g) local ng=g for yy=1,8,1  do for xx=8,1,-1 do ng[yy][9-xx]=g[xx][yy] end end return ng end,
+			},
+			new  = { note={{},{},{},{},{},{},{},{}},oct={{},{},{},{},{},{},{},{}} 
+			},
+			current = { note={{},{},{},{},{},{},{},{}},oct={{},{},{},{},{},{},{},{}} 
+			},
+		}
+			
+-- newgrid =Grid.rotate[index](oldgrid)
 --setmetatable(Grid, { __call = function(_, ...) return Grid.new(...) end })
 
 --[[
@@ -422,17 +429,25 @@ Transpose = {}
 -- Scale has methods for changing the current Scale 
 Scale = {}
 
+--]]
 
 -- Mode has methods for detecting/changing/remembering the current Mode. 
 -- This refers to the different control layouts; chromatic, push, guitar, Co5, etc
 -- Fader mode becomes avail if fader remotabable items do.
 -- TODO baby mode
-Mode = {}
+Mode = { 
+		current = 17,
+		last = 1,
+		select=function(n) local new = 1+modulo(n,table.getn(Modenames))  vprint("new",new) if new ~= Mode.last then Grid.current.note=Grid.rotate[1](Modes[Modenames[new]].note) Grid.current.oct=Grid.rotate[1](Modes[Modenames[new]].oct)  Mode.last = new end end,
+		}
 
+
+--[[
 -- Layout has methods for detecting/changing the current Layout. 
 -- Layout refers to the LPP Note, Drum, Fader, Programming modes. 
 -- LPP manual calls these layouts, but Reason remotemaps use a MODE column (which I use for the faders)
 -- This is an internal designation detecting/setting sysex.
+--Only programmer and fader modes enabled!
 Layout = {}
 
 --]]
@@ -2027,10 +2042,13 @@ vprint("noteout",noteout)
 -- NEW MODES test here
 
 			--local padid = pad[ret.y].index-1
+			Mode.select(0)
 			local grid={}
-			--local grid = Grid[1].rotate(Modes.Wicki_Hayden_R)
-			local gridnote = Grid[1].rotate(Modes.Sixth_and_5th.note)
-			local gridoct  = Grid[1].rotate(Modes.Sixth_and_5th.oct)
+			--local grid = Grid.rotate[1](Modes.Wicki_Hayden_R)
+--			local gridnote = Grid.rotate[1](Modes.LPP_Note_mode.note)
+--			local gridoct  = Grid.rotate[1](Modes.LPP_Note_mode.oct)
+			local gridnote = Grid.current.note
+			local gridoct  = Grid.current.oct
 			local padx = pad[ret.y].x
 			local pady = 9-pad[ret.y].y
 --error(pady)
@@ -2663,10 +2681,15 @@ vprint("outnorm",outnorm)
 
 				local padsysex = ""
 					root = 24 
+			Mode.select(17)
+
 				for i=1,64,1 do
-			--local grid = Grid[1].rotate(Modes.Wicki_Hayden_R)
-			local gridnote = Grid[1].rotate(Modes.Sixth_and_5th.note)
-			local gridoct  = Grid[1].rotate(Modes.Sixth_and_5th.oct)
+			--local grid = Grid.rotate[1](Modes.Wicki_Hayden_R)
+			--local gridnote = Grid.rotate[1](Modes.LPP_Note_mode.note)
+			--local gridoct  = Grid.rotate[1](Modes.LPP_Note_mode.oct)
+			local gridnote = Grid.current.note
+			local gridoct  = Grid.current.oct
+--tprint(Grid.current.note)
 			local padx = padindex[i].x
 			local pady = 9-padindex[i].y
 
@@ -2883,7 +2906,7 @@ g.palette_global = 9 -- current pal
 --]]
 			 
 -- -----------------------------------------------------------------------------------------------
-tprint(lpp_events)
+--tprint(lpp_events)
 			init=0
 			do_update_pads = 1
 		end
@@ -3672,15 +3695,74 @@ LPP_Note_mode =	{
 		},
 	},
 }
-
+Modenames={
+"Push",
+"Diatonic",
+"Diagonal",
+"Janko",
+"Octave",
+"Chromatic",
+"Guitar",
+"Guitar_2_iso",
+"Guitar_2",
+"Guitar_Drop_D",
+"Guitar_low_Fsh_B",
+"Guitar_low_E_B",
+"ChromaHarp",
+"Wicki_Hayden",
+"Fourth_and_5th",
+"Sixth_and_5th",
+"LPP_Note_mode",
+}
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- button lookup!
-button_functions = {
+button_function = {
 
+--left to right Top 
+[91]={},
+[92]={},
+[93]={},
+[94]={},
+[95]={},
+[96]={},
+[97]={},
+[98]={function()  Mode.select(Mode.last+1) end},
+--left to right Bottom
+[01]={},
+[02]={},
+[03]={},
+[04]={},
+[05]={},
+[06]={},
+[07]={},
+[08]={},
+--bottom to top Left
+[10]={},
+[20]={},
+[30]={},
+[40]={},
+[50]={},
+[60]={},
+[70]={},
+[80]={},
+--bottom to top Right
+[19]={},
+[29]={},
+[39]={},
+[49]={},
+[59]={},
+[69]={},
+[79]={},
+[89]={},
 
 
 }
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+vprint("mod1",modulo(0,17))
+vprint("mod2",modulo(-1,17))
+vprint("mod1",modulo(34,17))
+vprint("mod1",modulo(35,17))
+vprint("mod1",modulo(-35,17))
