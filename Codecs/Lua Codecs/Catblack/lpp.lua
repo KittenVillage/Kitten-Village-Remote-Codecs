@@ -119,12 +119,14 @@ scales = {
 	Iwato = {0,1,5,6,10},
 	Kumoi = {0,2,3,7,9},
 	Pelog = {0,1,3,4,7,8},
-	Spanish = {0,1,3,4,5,6,8,10}
+	Spanish = {0,1,3,4,5,6,8,10},
+	CircleOfFifths ={0,7,2,9,4,11,6,1,8,3,10,5}
 }
 scalenames = {
 			'Chromatic','DrumPad','Major','Minor','Dorian','Mixolydian', 
 			'Lydian','Phrygian', 
-			'Locrian','Diminished','Whole_half','WholeTone','MinorBlues','MinorPentatonic','MajorPentatonic','HarmonicMinor','MelodicMinor','DominantSus','SuperLocrian','NeopolitanMinor','NeopolitanMajor','EnigmaticMinor','Enigmatic','Composite','BebopLocrian','BebopDominant','BebopMajor','Bhairav','HungarianMinor','MinorGypsy','Persian','Hirojoshi','InSen','Iwato','Kumoi','Pelog','Spanish'
+			'Locrian','Diminished','Whole_half','WholeTone','MinorBlues','MinorPentatonic','MajorPentatonic','HarmonicMinor','MelodicMinor','DominantSus','SuperLocrian','NeopolitanMinor','NeopolitanMajor','EnigmaticMinor','Enigmatic','Composite','BebopLocrian','BebopDominant','BebopMajor','Bhairav','HungarianMinor','MinorGypsy','Persian','Hirojoshi','InSen','Iwato','Kumoi','Pelog','Spanish',
+			'CircleOfFifths'
 			}
 scaleabrvs = {
 			Session='SS',Auto='AA',Chromatic='CH',DrumPad='DR',Major='MM',Minor='nn',Dorian='II',Mixolydian='V_',
@@ -132,7 +134,7 @@ scaleabrvs = {
 			MinorPentatonic='mP',MajorPentatonic='MP',HarmonicMinor='mH',MelodicMinor='mM',DominantSus='Ds',SuperLocrian='SL',
 			NeopolitanMinor='mN',NeopolitanMajor='MN',EnigmaticMinor='mE',Enigmatic='ME',Composite='Cp',BebopLocrian='lB',
 			BebopDominant='DB',BebopMajor='MB',Bhairav='Bv',HungarianMinor='mH',MinorGypsy='mG',Persian='Pr',
-			Hirojoshi='Hr',InSen='IS',Iwato='Iw',Kumoi='Km',Pelog='Pg',Spanish='Sp'
+			Hirojoshi='Hr',InSen='IS',Iwato='Iw',Kumoi='Km',Pelog='Pg',Spanish='Sp',CircleOfFifths='C5'
 			}
 
 --[[
@@ -159,7 +161,7 @@ sli_end=12
 
 
 
--- Thought I'd try the colors from virtuosoism.com
+-- Circle of fifths (C = red) using LPP internal palette (and their eqivlnt hex colors)
 colorscale={}
 colorscale[0]= {interval=0,  color=7,   hcolor="07", R="06", G="00", B="00", col="R ", notename="C",} -- 5 too bright
 colorscale[1]= {interval=1,  color=65,  hcolor="41", R="00", G="15", B="0D", col="BG", notename="C#",}
@@ -265,7 +267,7 @@ noscaleneeded = false
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 lcd_events = {}
 
-
+Modes = {}
 
 
 --g.last_notevelocity_delivered={}
@@ -323,13 +325,13 @@ padpress = {} -- to display pressed
 function def_vars()
 
 	local index=1
-	for ho=1,8 do --horizontal from bottom
-		for ve=1,8 do -- vertical from left
-			local thispad=(ho*10)+ve  --11-18 ... 81-88
+	for ve=1,8 do --horizontal from bottom
+		for ho=1,8 do -- vertical from left
+			local thispad=(ve*10)+ho  --11-18 ... 81-88
 			local thispadhex=string.format("%02X",thispad)
-			local thisnote=notemode[ho]+ve
-			local thisdrum=drummode[ho]+ve
-			if ve>4 then -- drum mode is 4 4x4 grids
+			local thisnote=notemode[ve]+ho
+			local thisdrum=drummode[ve]+ho
+			if ho>4 then -- drum mode is 4 4x4 grids
 				thisdrum=thisdrum+28
 			end
 			if note[thisnote] == nil then
@@ -370,10 +372,10 @@ function def_vars()
 			index=index+1 --index so I can cycle through the 64 pads quickly.
 		end
 		--items here.
-		buttonindex[90+ho]=(g.itemnum.first_button-1)+ho
-		buttonindex[ho]=(g.itemnum.first_button-1)+ho+8
-		buttonindex[10*ho]=(g.itemnum.first_button-1)+ho+16
-		buttonindex[(10*ho)+9]=(g.itemnum.first_button-1)+ho+24	
+		buttonindex[90+ve]=(g.itemnum.first_button-1)+ve
+		buttonindex[ve]=(g.itemnum.first_button-1)+ve+8
+		buttonindex[10*ve]=(g.itemnum.first_button-1)+ve+16
+		buttonindex[(10*ve)+9]=(g.itemnum.first_button-1)+ve+24	
 	end
 	--[[
 	remote.trace("start note\n")
@@ -390,7 +392,7 @@ end
 
 
 
-
+-- unused
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function set_colorscales()
 	for s,st in pairs(scales) do
@@ -660,7 +662,7 @@ function remote_init(manufacturer, model)
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- this version
-	if model=="LP Pro" then
+	if model=="Launchpad Pro" then
 		local items={
 --items
 			{name="Keyboard",input="keyboard"},
@@ -976,7 +978,7 @@ first_button
 		local inputs={
 
 --inputs
-			{pattern="d? xx", name="Channel Pressure"},
+			{pattern="D? xx ??", name="Channel Pressure"},
 			{pattern="b0 15 xx", name="Fader 1"},
 			{pattern="b0 16 xx", name="Fader 2"},
 			{pattern="b0 17 xx", name="Fader 3"},
@@ -1690,7 +1692,10 @@ vprint("g-cof",g.transpose-cof_tr)
 			if(scale_up) then
 				if scale_up.z>0 then
 					if g.button.shiftclick_delivered == 0 then
-						scale_int = modulo(scale_int+1,36) --only use the first 36 scales
+--						scale_int = modulo(scale_int+1,36) --only use the first 36 scales
+vprint("scale was ",global_scale)
+						scale_int = modulo(global_scale+1,38) --only use the first 37 scales
+vprint("scale is ",scale_int)
 						scalename = scalenames[1+scale_int]
 						scale = scales[scalename]
 						global_scale = scale_int
@@ -1706,7 +1711,10 @@ remote.trace("scale up "..scalename)
 			if(scale_dn) then
 				if scale_dn.z>0 then
 					if g.button.shiftclick_delivered == 0 then
-						scale_int = modulo(scale_int-1,36) --only use the first 36 scales
+--						scale_int = modulo(scale_int-1,36) --only use the first 36 scales
+vprint("scale was ",global_scale)
+						scale_int = modulo(global_scale-1,38) --only use the first 38 scales
+vprint("scale is ",scale_int)
 						scalename = scalenames[1+scale_int]
 						scale = scales[scalename]
 						global_scale = scale_int
@@ -1814,7 +1822,7 @@ remote.trace("scale dn "..scalename)
 				root = 24 
 			end  
 ----------------------------------------------------			
-			local ind = 1+modulo(padid,scale_len)  --modulo using the operator % gave me trouble in reason, so I wrote a custom fcn
+			local ind = 1+modulo(padid,scale_len)  --modulo using the operator % gave me trouble in reason, so Livid wrote a custom fcn
 			local oct = math.floor(padid/scale_len)
 			local addnote = scale[ind]
 			local noteout = root+g.transpose+(12*oct)+addnote
@@ -1958,7 +1966,7 @@ function remote_deliver_midi(maxbytes,port)
 		local iskong = false
 		local isvarchange = false
 		local istracktext = false
-		local do_update_pads = 0
+		 -- do_update_pads = 0
 
 -- -----------------------------------------------------------------------------------------------
 -- Keep it in programmer mode	FOR NOW
@@ -2482,6 +2490,7 @@ vprint("outnorm",outnorm)
 				
 			end -- drumpad or not
 			
+		do_update_pads=0
 			
 			
 		end --update_pads ==1
@@ -3056,4 +3065,384 @@ end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+function set_modes()
+modes = {
+Push = {
+		note={
+			{0,2,4,5,7,9,11,0},
+			{7,9,11,0,2,4,5,7},
+			{2,4,5,7,9,11,0,2},
+			{9,11,0,2,4,5,7,9},
+			{4,5,7,9,11,0,2,4},
+			{11,0,2,4,5,7,9,11},
+			{5,7,9,11,0,2,4,5},
+			{0,2,4,5,7,9,11,0},
+		},
+		oct={
+			{4,4,4,4,4,4,4,5},
+			{3,3,3,4,4,4,4,4},
+			{3,3,3,3,3,3,4,4},
+			{2,2,3,3,3,3,3,3},
+			{2,2,2,2,2,3,3,3},
+			{1,2,2,2,2,2,2,2},
+			{1,1,1,1,2,2,2,2},
+			{1,1,1,1,1,1,1,2},
+		},
+	},
+Diatonic = {
+		note={
+			{0,2,4,5,7,9,11,0},
+			{9,11,0,2,4,5,7,9},
+			{5,7,9,11,0,2,4,5},
+			{2,4,5,7,9,11,0,2},
+			{11,0,2,4,5,7,9,11},
+			{7,9,11,0,2,4,5,7},
+			{4,5,7,9,11,0,2,4},
+			{0,2,4,5,7,9,11,0},
+		},
+		oct={
+			{4,4,4,4,4,4,4,5},
+			{3,3,4,4,4,4,4,4},
+			{3,3,3,3,4,4,4,4},
+			{3,3,3,3,3,3,4,4},
+			{2,3,3,3,3,3,3,3},
+			{2,2,2,3,3,3,3,3},
+			{2,2,2,2,2,3,3,3},
+			{2,2,2,2,2,2,2,3},
+		},
+	},
+Diagonal = {
+		note={
+			{0,2,4,5,7,9,11,0},
+			{11,0,2,4,5,7,9,11},
+			{9,11,0,2,4,5,7,9},
+			{7,9,11,0,2,4,5,7},
+			{5,7,9,11,0,2,4,5},
+			{4,5,7,9,11,0,2,4},
+			{2,4,5,7,9,11,0,2},
+			{0,2,4,5,7,9,11,0},
+		},
+		oct={
+			{3,3,3,3,3,3,3,4},
+			{2,3,3,3,3,3,3,3},
+			{2,2,3,3,3,3,3,3},
+			{2,2,2,3,3,3,3,3},
+			{2,2,2,2,3,3,3,3},
+			{2,2,2,2,2,3,3,3},
+			{2,2,2,2,2,2,3,3},
+			{2,2,2,2,2,2,2,3},
+		},
+	},
+Janko = {
+		note={
+			{1,3,5,7,9,11,1,3},
+			{0,2,4,6,8,10,0,2},
+			{2,4,6,8,10,0,2,4},
+			{1,3,5,7,9,11,1,3},
+			{0,2,4,6,8,10,0,2},
+			{2,4,6,8,10,0,2,4},
+			{1,3,5,7,9,11,1,3},
+			{0,2,4,6,8,10,0,2},
+		},
+		oct={
+			{4,4,4,4,4,4,5,5},
+			{4,4,4,4,4,4,5,5},
+			{3,3,2,2,3,4,4,4},
+			{3,3,2,2,3,3,4,4},
+			{3,3,2,2,3,3,4,4},
+			{2,2,2,2,2,3,3,3},
+			{2,2,2,2,2,2,3,3},
+			{2,2,2,2,2,2,3,3},
+		},
+	},
+Octave = {
+		note={
+			{0,2,4,5,7,9,11,0},
+			{0,2,4,5,7,9,11,0},
+			{0,2,4,5,7,9,11,0},
+			{0,2,4,5,7,9,11,0},
+			{0,2,4,5,7,9,11,0},
+			{0,2,4,5,7,9,11,0},
+			{0,2,4,5,7,9,11,0},
+			{0,2,4,5,7,9,11,0},
+		},
+		oct={
+			{7,7,7,7,7,7,7,8},
+			{6,6,6,6,6,6,6,7},
+			{5,5,5,5,5,5,5,6},
+			{4,4,4,4,4,4,4,5},
+			{3,3,3,3,3,3,3,4},
+			{2,2,2,2,2,2,2,3},
+			{1,1,1,1,1,1,1,2},
+			{0,0,0,0,0,0,0,1},
+		},
+	},
+Chromatic = {
+		note={
+			{8,9,10,11,0,1,2,3},
+			{0,1,2,3,4,5,6,7},
+			{4,5,6,7,8,9,10,11},
+			{8,9,10,11,0,1,2,3},
+			{0,1,2,3,4,5,6,7},
+			{4,5,6,7,8,9,10,11},
+			{8,9,10,11,0,1,2,3},
+			{0,1,2,3,4,5,6,7},
+		},
+		oct={
+			{5,5,5,5,6,6,6,6},
+			{5,5,5,5,5,5,5,5},
+			{4,4,4,4,4,4,4,4},
+			{3,3,3,3,4,4,4,4},
+			{3,3,3,3,3,3,3,3},
+			{2,2,2,2,2,2,2,2},
+			{1,1,1,1,2,2,2,2},
+			{1,1,1,1,1,1,1,1},
+		},
+	},
+Guitar = {
+		note={
+			{4,5,6,7,8,9,10,11},
+			{11,0,1,2,3,4,5,6},
+			{7,8,9,10,11,0,1,2},
+			{2,3,4,5,6,7,8,9},
+			{9,10,11,0,1,2,3,4},
+			{4,5,6,7,8,9,10,11},
+			{4,5,6,7,8,9,10,11},
+			{11,0,1,2,3,4,5,6},
+		},
+		oct={
+			{3,3,3,3,3,3,3,3},
+			{2,3,3,3,3,3,3,3},
+			{2,2,2,2,2,3,3,3},
+			{2,2,2,2,2,2,2,2},
+			{1,1,1,2,2,2,2,2},
+			{1,1,1,1,1,1,1,1},
+			{3,3,3,3,3,3,3,3},
+			{2,3,3,3,3,3,3,3},
+		},
+	},
+Guitar_2_iso = {
+		note={
+			{4,5,6,7,8,9,10,11},
+			{11,0,1,2,3,4,5,6},
+			{8,9,10,11,0,1,2,3},
+			{4,5,6,7,8,9,10,11},
+			{11,0,1,2,3,4,5,6},
+			{4,5,6,7,8,9,10,11},
+			{4,5,6,7,8,9,10,11},
+			{11,0,1,2,3,4,5,6},
+		},
+		oct={
+			{3,3,3,3,3,3,3,3},
+			{2,3,3,3,3,3,3,3},
+			{2,2,2,2,3,3,3,3},
+			{2,2,2,2,2,2,2,2},
+			{1,2,2,2,2,2,2,2},
+			{1,1,1,1,1,1,1,1},
+			{3,3,3,3,3,3,3,3},
+			{2,3,3,3,3,3,3,3},
+		},
+	},
+Guitar_2 = {
+		note={
+			{4,5,6,7,8,9,10,11},
+			{11,0,1,2,3,4,5,6},
+			{7,8,9,10,11,0,1,2},
+			{4,5,6,7,8,9,10,11},
+			{11,0,1,2,3,4,5,6},
+			{4,5,6,7,8,9,10,11},
+			{4,5,6,7,8,9,10,11},
+			{11,0,1,2,3,4,5,6},
+		},
+		oct={
+			{3,3,3,3,3,3,3,3},
+			{2,3,3,3,3,3,3,3},
+			{2,2,2,2,2,3,3,3},
+			{2,2,2,2,2,2,2,2},
+			{1,2,2,2,2,2,2,2},
+			{1,1,1,1,1,1,1,1},
+			{3,3,3,3,3,3,3,3},
+			{2,3,3,3,3,3,3,3},
+		},
+	},
+Guitar_Drop_D = {
+		note={
+			{2,3,4,5,6,7,8,9},
+			{11,0,1,2,3,4,5,6},
+			{7,8,9,10,11,0,1,2},
+			{2,3,4,5,6,7,8,9},
+			{9,10,11,0,1,2,3,4},
+			{2,3,4,5,6,7,8,9},
+			{4,5,6,7,8,9,10,11},
+			{11,0,1,2,3,4,5,6},
+		},
+		oct={
+			{3,3,3,3,3,3,3,3},
+			{2,3,3,3,3,3,3,3},
+			{2,2,2,2,2,3,3,3},
+			{2,2,2,2,2,2,2,2},
+			{1,1,1,2,2,2,2,2},
+			{1,1,1,1,1,1,1,1},
+			{3,3,3,3,3,3,3,3},
+			{2,3,3,3,3,3,3,3},
+		},
+	},
+Guitar_low_Fsh_B = {
+		note={
+			{4,5,6,7,8,9,10,11},
+			{11,0,1,2,3,4,5,6},
+			{7,8,9,10,11,0,1,2},
+			{2,3,4,5,6,7,8,9},
+			{9,10,11,0,1,2,3,4},
+			{4,5,6,7,8,9,10,11},
+			{11,0,1,2,3,4,5,6},
+			{6,7,8,9,10,11,0,1},
+		},
+		oct={
+			{3,3,3,3,3,3,3,3},
+			{2,3,3,3,3,3,3,3},
+			{2,2,2,2,2,3,3,3},
+			{2,2,2,2,2,2,2,2},
+			{1,1,1,2,2,2,2,2},
+			{1,1,1,1,1,1,1,1},
+			{0,1,1,1,1,1,1,1},
+			{0,0,0,0,0,0,1,1},
+		},
+	},
+Guitar_low_E_B = {
+		note={
+			{4,5,6,7,8,9,10,11},
+			{11,0,1,2,3,4,5,6},
+			{7,8,9,10,11,0,1,2},
+			{2,3,4,5,6,7,8,9},
+			{9,10,11,0,1,2,3,4},
+			{4,5,6,7,8,9,10,11},
+			{11,0,1,2,3,4,5,6},
+			{4,5,6,7,8,9,10,11},
+		},
+		oct={
+			{3,3,3,3,3,3,3,3},
+			{2,3,3,3,3,3,3,3},
+			{2,2,2,2,2,3,3,3},
+			{2,2,2,2,2,2,2,2},
+			{1,1,1,2,2,2,2,2},
+			{1,1,1,1,1,1,1,1},
+			{0,1,1,1,1,1,1,1},
+			{0,0,0,0,0,0,0,0},
+		},
+	},
+ChromaHarp =	{
+		note={
+			{7,9,11,1,3,5,7,9},
+			{6,8,10,0,2,4,6,8},
+			{5,7,9,11,1,3,5,7},
+			{4,6,8,10,0,2,4,6},
+			{3,5,7,9,11,1,3,5},
+			{2,4,6,8,10,0,2,4},
+			{1,3,5,7,9,11,1,3},
+			{0,2,4,6,8,10,0,2},
+		},
+		oct={
+			{4,4,4,5,5,5,5,5},
+			{4,4,4,5,5,5,5,5},
+			{3,3,3,3,4,4,4,4},
+			{3,3,3,3,4,4,4,4},
+			{2,2,2,2,2,3,3,3},
+			{2,2,2,2,2,3,3,3},
+			{1,1,1,1,1,1,2,2},
+			{1,1,1,1,1,1,2,2},
+		},
+	},
+Wicki_Hayden =	{
+		note={
+			{1,3,5,7,9,11,1,3},
+			{6,8,10,0,2,4,6,8},
+			{11,1,3,5,7,9,11,1},
+			{4,6,8,10,0,2,4,6},
+			{9,11,1,3,5,7,9,11},
+			{2,4,6,8,10,0,2,4},
+			{7,9,11,1,3,5,7,9},
+			{0,2,4,6,8,10,0,2},
+		},
+		oct={
+			{5,5,5,5,5,5,6,6},
+			{4,4,4,5,5,5,5,5},
+			{3,4,4,4,4,4,4,5},
+			{3,3,3,3,4,4,4,4},
+			{2,2,3,3,3,3,3,3},
+			{2,2,2,2,2,3,3,3},
+			{1,1,1,2,2,2,2,2},
+			{1,1,1,1,1,1,2,2},
+		},
+	},
+Fourth_and_5th =	{
+		note={
+			{1,5,9,1,5,9,1,5},
+			{6,10,2,6,10,2,6,10},
+			{11,3,7,11,3,7,11,3},
+			{4,8,0,4,8,0,4,8},
+			{9,1,5,9,1,5,9,1},
+			{2,6,10,2,6,10,2,6},
+			{7,11,3,7,11,3,7,11},
+			{0,4,8,0,4,8,0,4},
+		},
+		oct={
+			{3,3,3,4,4,4,5,5},
+			{2,2,2,3,3,3,4,4},
+			{2,2,2,3,3,3,4,4},
+			{2,2,2,3,3,3,4,4},
+			{1,1,1,2,2,2,3,3},
+			{1,1,1,2,2,2,3,3},
+			{1,1,1,2,2,2,3,3},
+			{1,1,1,2,2,2,3,3},
+		},
+	},
+Sixth_and_5th =	{
+		note={
+			{1,10,7,4,1,10,7,4},
+			{6,3,0,9,6,3,0,9},
+			{11,8,5,2,11,8,5,2},
+			{4,1,10,7,4,1,10,7},
+			{9,6,3,0,9,6,3,0},
+			{2,11,8,5,2,11,8,5},
+			{7,4,1,10,7,4,1,10},
+			{0,9,6,3,0,9,6,3},
+		},
+		oct={
+			{3,3,3,3,4,4,4,4},
+			{3,3,3,3,4,4,4,4},
+			{2,2,2,2,3,3,3,3},
+			{2,2,2,2,3,3,3,3},
+			{2,2,2,2,3,3,3,3},
+			{1,1,1,1,2,2,2,2},
+			{1,1,1,1,2,2,2,2},
+			{1,1,1,1,2,2,2,2},
+		},
+	},
+LPP_Note_mode =	{
+		note={
+			{11,0,1,2,3,4,5,6},
+			{6,7,8,9,10,11,0,2},
+			{1,2,3,4,5,6,7,8},
+			{8,9,10,11,0,1,2,3},
+			{3,4,5,6,7,8,9,10},
+			{10,11,0,1,2,3,4,5},
+			{5,6,7,8,9,10,11,0},
+			{0,1,2,3,4,5,6,7},
+		},
+		oct={
+			{3,4,4,4,4,4,4,4},
+			{3,3,3,3,3,3,4,4},
+			{3,3,3,3,3,3,3,3},
+			{2,2,2,2,3,3,3,3},
+			{2,2,2,2,2,2,2,2},
+			{1,1,2,2,2,2,2,2},
+			{1,1,1,1,1,1,1,2},
+			{1,1,1,1,1,1,1,1},
+		},
+	},
+}
+end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
