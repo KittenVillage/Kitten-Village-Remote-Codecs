@@ -393,8 +393,11 @@ end
 -- 1 is normal (1,1 on bottom left) 2-4 rotate counter clockwise.
 -- could add flips.
 -- newgrid=Grid[index].rotate(oldgrid)
--- TODO .new grid function that sets the current global roatation 
- 
+-- TODO .new grid function that sets the current global rotation --DONE
+-- TODO 
+-- newgrid =Grid.rotate[index](oldgrid) --takes a single 8x8 grid and rotates it.
+-- Grid.current has 6 sub grids, with an additional table for duplicate notes.
+-- refresh_midi counts duplicates and sets the output notes
 	Grid = {
 			rotate = { 
 				function(g) local ng=g for yy=1,8,1 do for xx=1,8,1 do ng[yy][xx]=g[yy][xx] end end return ng end,
@@ -404,18 +407,48 @@ end
 			},
 			new  = { note={{},{},{},{},{},{},{},{}},oct={{},{},{},{},{},{},{},{}} 
 			},
-			current = { note={{},{},{},{},{},{},{},{}},oct={{},{},{},{},{},{},{},{}} 
+			current = { note={{},{},{},{},{},{},{},{}},
+						oct={{},{},{},{},{},{},{},{}} ,
+						midiout={{},{},{},{},{},{},{},{}},
+						R={{},{},{},{},{},{},{},{}},
+						G={{},{},{},{},{},{},{},{}},
+						B={{},{},{},{},{},{},{},{}},
+						duplicates={} -- ??TODO
 			},
+			refresh_midiout =function() 
+				local note_index={}
+				local pad_index={}
+				for ve=1,8 do for ho=1,8 do
+				local note=(12*Grid.current.oct[ve][ho])+Grid.current.note[ve][ho]+State.root+g.transpose
+				Grid.current.midiout[ve][ho]=note
+					if note_index[note] == nil then	note_index[note]={} end
+					table.insert(note_index[note],(ve*10)+ho)
+				end end
+					for k,v in pairs(note_index) do for a,b in pairs(v) do
+					Grid.current.duplicates[b]=v
+				end end end,
+			
 		}
 			
--- newgrid =Grid.rotate[index](oldgrid)
 --setmetatable(Grid, { __call = function(_, ...) return Grid.new(...) end })
 
---[[
 
 
 -- Palette has the methods for changing the Palette.
-Palette = {}
+-- select takes from Grid.current.note 
+Palette = { 
+		current = {},
+		last = 0,
+		select=function(n) local new = 1+modulo(n,Palette.length) 
+		vprint("new pal",new) 
+		if new ~= Palette.last then for ve=1,8 do for ho=1,8 do 
+		Palette.current=Palettes[Palettenames[new]]
+		Grid.current.R[ve][ho]=Palette.current[Grid.current.note[ve][ho]].R 
+		Grid.current.G[ve][ho]=Palette.current[Grid.current.note[ve][ho]].G 
+		Grid.current.B[ve][ho]=Palette.current[Grid.current.note[ve][ho]].B 
+		end end Palette.last=new State.update=1 
+		end end,
+		}
 
 
 
@@ -423,11 +456,14 @@ Palette = {}
 
 
 -- Transpose has methods for transposing the note. (by half step, sh by oct, shcl by fifth)
-Transpose = {}
+Transpose = {
+
+}
 
 
 -- Scale has methods for changing the current Scale 
 Scale = {}
+--[[
 
 --]]
 
@@ -436,9 +472,11 @@ Scale = {}
 -- Fader mode becomes avail if fader remotabable items do.
 -- TODO baby mode
 Mode = { 
-		current = 17,
-		last = 1,
-		select=function(n) local new = 1+modulo(n,table.getn(Modenames))  vprint("new",new) if new ~= Mode.last then Grid.current.note=Grid.rotate[1](Modes[Modenames[new]].note) Grid.current.oct=Grid.rotate[1](Modes[Modenames[new]].oct)  Mode.last = new end end,
+		current = 0,
+		last = 0,
+		select=function(n) local new = 1+modulo(n,table.getn(Modenames)) local M=Modes[Modenames[new]] vprint("new mode",new) if new ~= Mode.last then Grid.current.note=Grid.rotate[State.rotate](M.note) Grid.current.oct=Grid.rotate[State.rotate](M.oct) Grid.refresh_midiout() Mode.last = new State.update=1 end end,
+		special=function() end,
+		
 		}
 
 
@@ -457,7 +495,9 @@ State = {}
 State.shift = 0
 State.click = 0
 State.shiftclick = 0
-
+State.update=0
+State.rotate=1
+State.root=24
 
 
 
@@ -1638,6 +1678,10 @@ first_button
 		def_vars()
 		set_palettes()
 		set_modes()
+Mode.select(2)
+
+Palette.select(9)
+
 	end
 end
 
@@ -2042,7 +2086,7 @@ vprint("noteout",noteout)
 -- NEW MODES test here
 
 			--local padid = pad[ret.y].index-1
-			Mode.select(0)
+--tprint(Grid.current.R)			
 			local grid={}
 			--local grid = Grid.rotate[1](Modes.Wicki_Hayden_R)
 --			local gridnote = Grid.rotate[1](Modes.LPP_Note_mode.note)
@@ -2051,7 +2095,7 @@ vprint("noteout",noteout)
 			local gridoct  = Grid.current.oct
 			local padx = pad[ret.y].x
 			local pady = 9-pad[ret.y].y
---error(pady)
+--tprint(gridoct)
 			--local oct = Modes[1][2][pady][padx]*12
 			local oct = gridoct[pady][padx]*12
 			--local addnote = scale[ind]
@@ -2681,7 +2725,6 @@ vprint("outnorm",outnorm)
 
 				local padsysex = ""
 					root = 24 
-			Mode.select(17)
 
 				for i=1,64,1 do
 			--local grid = Grid.rotate[1](Modes.Wicki_Hayden_R)
@@ -2689,7 +2732,7 @@ vprint("outnorm",outnorm)
 			--local gridoct  = Grid.rotate[1](Modes.LPP_Note_mode.oct)
 			local gridnote = Grid.current.note
 			local gridoct  = Grid.current.oct
---tprint(Grid.current.note)
+--tprint(gridoct)
 			local padx = padindex[i].x
 			local pady = 9-padindex[i].y
 
@@ -3132,6 +3175,8 @@ end
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function set_palettes()
+-- TODO piano keyboard white/black palettes
+
 palettes = {
 		louisBertrandCastel = {
 						[0]= {R="07", G="03", B="20", },		 -- blue
@@ -3302,6 +3347,7 @@ palettenames = {
 'sZieverink',
 'FifthsCircle',
 }
+
 g.palettes_length = table.getn(palettenames)
 palettename = 'FifthsCircle'
 g.palette = palettes[palettenames[10]]
@@ -3312,6 +3358,11 @@ g.palette_global = 9 -- current pal
 palette_changed = false
 
 --tprint(g.palette)
+
+-- Setting these two until I clean out the old code.
+Palettenames=palettenames
+Palettes=palettes
+Palette.length = table.getn(Palettenames)
 
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -3727,7 +3778,7 @@ button_function = {
 [94]={},
 [95]={},
 [96]={},
-[97]={},
+[97]={function()  Mode.select(Mode.last-1) end},
 [98]={function()  Mode.select(Mode.last+1) end},
 --left to right Bottom
 [01]={},
