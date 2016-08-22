@@ -20,166 +20,6 @@
 -- TODO midi note playing feedback.
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
--- Variable defs
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
--- The default pallette for the Launchpad Pro is based on Ableton Live
--- and it's kind of a mess. 
--- These color names will work for now.
---[[
-padcolor = {}
-padcolor.BLACK = 0
-padcolor.DARK_GREY = 1
-padcolor.GREY = 2
-padcolor.WHITE = 3
-padcolor.RED = 5
-padcolor.RED_HALF = 7
-padcolor.ORANGE = 9
-padcolor.ORANGE_HALF = 11
-padcolor.AMBER = 96
-padcolor.AMBER_HALF = 14
-padcolor.YELLOW = 13
-padcolor.YELLOW_HALF = 15
-padcolor.DARK_YELLOW = 17
-padcolor.DARK_YELLOW_HALF = 19
-padcolor.GREEN = 21
-padcolor.GREEN_HALF = 27
-padcolor.MINT = 29
-padcolor.MINT_HALF = 31
-padcolor.LIGHT_BLUE = 37
-padcolor.LIGHT_BLUE_HALF = 39
-padcolor.BLUE = 45
-padcolor.BLUE_HALF = 47
-padcolor.DARK_BLUE = 49
-padcolor.DARK_BLUE_HALF = 51
-padcolor.PURPLE = 53
-padcolor.PURPLE_HALF = 55
-padcolor.DARK_ORANGE = 84
-
-
-
-
---]]
-
-
-
-
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
--- Black, white, puerto rican, everybody's just a freakin
--- white,yel,red,green
--- see function map_redrum_led(v)
-pclr={}
-pclr[0]=0
-pclr[1]=3
-pclr[2]=13
-pclr[3]=5
-pclr[4]=21
-
-
-
-
-
-
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
--- Scales tbd
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-scales = {
-	Chromatic = {0,1,2,3,4,5,6,7,8,9,10,11},
-	DrumPad = {0,1,2,3, 16,17,18,19, 4,5,6,7, 20,21,22,23, 8,9,10,11, 24,25,26,27, 12,13,14,15, 28,29,30,31},
-	Major = {0,2,4,5,7,9,11},
-	Minor = {0,2,3,5,7,8,10},
-	Dorian = {0,2,3,5,7,9,10},
-	Mixolydian = {0,2,4,5,7,9,10},
-	Lydian = {0,2,4,6,7,9,11},
-	Phrygian = {0,1,3,5,7,8,10},
-	Locrian = {0,1,3,4,7,8,10},
-	Diminished = {0,1,3,4,6,7,9,10},
-	Whole_half = {0,2,3,5,6,8,9,11},
-	WholeTone = {0,2,4,6,8,10},
-	MinorBlues = {0,3,5,6,7,10},
-	MinorPentatonic = {0,3,5,7,10},
-	MajorPentatonic = {0,2,4,7,9},
-	HarmonicMinor = {0,2,3,5,7,8,11},
-	MelodicMinor = {0,2,3,5,7,9,11},
-	DominantSus = {0,2,5,7,9,10},
-	SuperLocrian = {0,1,3,4,6,8,10},
-	NeopolitanMinor = {0,1,3,5,7,8,11},
-	NeopolitanMajor = {0,1,3,5,7,9,11},
-	EnigmaticMinor = {0,1,3,6,7,10,11},
-	Enigmatic = {0,1,4,6,8,10,11},
-	Composite = {0,1,4,6,7,8,11},
-	BebopLocrian = {0,2,3,5,6,8,10,11},
-	BebopDominant = {0,2,4,5,7,9,10,11},
-	BebopMajor = {0,2,4,5,7,8,9,11},
-	Bhairav = {0,1,4,5,7,8,11},
-	HungarianMinor = {0,2,3,6,7,8,11},
-	MinorGypsy = {0,1,4,5,7,8,10},
-	Persian = {0,1,4,5,6,8,11},  
-	Hirojoshi = {0,2,3,7,8},
-	InSen = {0,1,5,7,10},
-	Iwato = {0,1,5,6,10},
-	Kumoi = {0,2,3,7,9},
-	Pelog = {0,1,3,4,7,8},
-	Spanish = {0,1,3,4,5,6,8,10},
-	CircleOfFifths ={0,7,2,9,4,11,6,1,8,3,10,5}
-}
-scalenames = {
-			'Chromatic','DrumPad','Major','Minor','Dorian','Mixolydian', 
-			'Lydian','Phrygian', 
-			'Locrian','Diminished','Whole_half','WholeTone','MinorBlues','MinorPentatonic','MajorPentatonic','HarmonicMinor','MelodicMinor','DominantSus','SuperLocrian','NeopolitanMinor','NeopolitanMajor','EnigmaticMinor','Enigmatic','Composite','BebopLocrian','BebopDominant','BebopMajor','Bhairav','HungarianMinor','MinorGypsy','Persian','Hirojoshi','InSen','Iwato','Kumoi','Pelog','Spanish',
-			'CircleOfFifths'
-			}
-scaleabrvs = {
-			Session='SS',Auto='AA',Chromatic='CH',DrumPad='DR',Major='MM',Minor='nn',Dorian='II',Mixolydian='V_',
-			Lydian='IV',Phrygian='IH',Locrian='VH',Diminished='d-',Wholehalf='Wh',WholeTone='WT',MinorBlues='mB',
-			MinorPentatonic='mP',MajorPentatonic='MP',HarmonicMinor='mH',MelodicMinor='mM',DominantSus='Ds',SuperLocrian='SL',
-			NeopolitanMinor='mN',NeopolitanMajor='MN',EnigmaticMinor='mE',Enigmatic='ME',Composite='Cp',BebopLocrian='lB',
-			BebopDominant='DB',BebopMajor='MB',Bhairav='Bv',HungarianMinor='mH',MinorGypsy='mG',Persian='Pr',
-			Hirojoshi='Hr',InSen='IS',Iwato='Iw',Kumoi='Km',Pelog='Pg',Spanish='Sp',CircleOfFifths='C5'
-			}
-
---[[
-sevseg = {
-		A='0a',B='0b',C='0c',D='0d',E='0e',F='0f',G='10',H='11',I='12',J='13',K='14',L='15',M='16',N='17',O='18',P='19',Q='1a',R='1b',S='1c',T='1d',U='1e',V='1f',W='20',X='21',Y='22',Z='23',
-		a='0a',b='0b',c='0c',d='0d',e='0e',f='0f',g='10',h='11',i='12',j='13',k='14',l='15',m='16',n='17',o='18',p='19',q='1a',r='1b',s='1c',t='1d',u='1e',v='1f',w='20',x='21',y='22',z='23'
-		}
-sevseg[0]='00'
-sevseg[1]='01'
-sevseg[2]='02'
-sevseg[3]='03'
-sevseg[4]='04'
-sevseg[5]='05'
-sevseg[6]='06'
-sevseg[7]='07'
-sevseg[8]='08'
-sevseg[9]='09'
-sevseg['-']='2A'
-sevseg['_']='27'
-sli_start=4
-sli_end=12
---]]
-
-
-
-
--- Circle of fifths (C = red) using LPP internal palette (and their eqivlnt hex colors)
-colorscale={}
-colorscale[0]= {interval=0,  color=7,   hcolor="07", R="06", G="00", B="00", col="R ", notename="C",} -- 5 too bright
-colorscale[1]= {interval=1,  color=65,  hcolor="41", R="00", G="15", B="0D", col="BG", notename="C#",}
-colorscale[2]= {interval=2,  color=96,  hcolor="60", R="3F", G="1F", B="00", col="O ", notename="D",}
-colorscale[3]= {interval=3,  color=49,  hcolor="31", R="15", G="00", B="3F", col="BV", notename="D#",}
-colorscale[4]= {interval=4,  color=97,  hcolor="61", R="2E", G="2C", B="00", col="Y ", notename="E",}
-colorscale[5]= {interval=5,  color=57,  hcolor="39", R="3F", G="00", B="15", col="RV", notename="F",}
-colorscale[6]= {interval=6,  color=21,  hcolor="15", R="00", G="3F", B="00", col="G ", notename="F#",}
-colorscale[7]= {interval=7,  color=60,  hcolor="3C", R="3F", G="05", B="00", col="RO", notename="G",}
-colorscale[8]= {interval=8,  color=45,  hcolor="2D", R="00", G="00", B="3F", col="B ", notename="G#",}
-colorscale[9]= {interval=9,  color=126, hcolor="7E", R="2C", G="17", B="00", col="YO", notename="A",}
-colorscale[10]={interval=10, color=55,  hcolor="37", R="06", G="00", B="06", col="V ", notename="A#",}
-colorscale[11]={interval=11, color=18,  hcolor="12", R="07", G="16", B="00", col="YG", notename="B",}
--- colors = {"07","3C","96","7E","61","12","15","41","2D","31","37","39"} -- BY HUE
-
-
-
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 -- Set some variables
 
@@ -215,11 +55,6 @@ trandn_btn = 0 --transpose down button state up or down
 
 
 
---scalename = 'Major'
-scalename = 'Chromatic'
-scale = scales[scalename]
-scale_int = 0 
-g.scale_delivered = 0 --for change filter
 
 
 
@@ -290,6 +125,1023 @@ sysex_flashled = sysex_header.."23" -- pad color0-127
 sysex_pulseled = sysex_header.."28" -- pad color0-127
 
 sysend ="F7"
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- Variable defs
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- The default pallette for the Launchpad Pro is based on Ableton Live
+-- and it's kind of a mess. 
+-- These color names will work for now.
+--[[
+padcolor = {}
+padcolor.BLACK = 0
+padcolor.DARK_GREY = 1
+padcolor.GREY = 2
+padcolor.WHITE = 3
+padcolor.RED = 5
+padcolor.RED_HALF = 7
+padcolor.ORANGE = 9
+padcolor.ORANGE_HALF = 11
+padcolor.AMBER = 96
+padcolor.AMBER_HALF = 14
+padcolor.YELLOW = 13
+padcolor.YELLOW_HALF = 15
+padcolor.DARK_YELLOW = 17
+padcolor.DARK_YELLOW_HALF = 19
+padcolor.GREEN = 21
+padcolor.GREEN_HALF = 27
+padcolor.MINT = 29
+padcolor.MINT_HALF = 31
+padcolor.LIGHT_BLUE = 37
+padcolor.LIGHT_BLUE_HALF = 39
+padcolor.BLUE = 45
+padcolor.BLUE_HALF = 47
+padcolor.DARK_BLUE = 49
+padcolor.DARK_BLUE_HALF = 51
+padcolor.PURPLE = 53
+padcolor.PURPLE_HALF = 55
+padcolor.DARK_ORANGE = 84
+
+
+
+
+--]]
+
+
+
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- Black, white, puerto rican, everybody's just a freakin
+-- white,yel,red,green
+-- see function map_redrum_led(v)
+pclr={}
+pclr[0]=0
+pclr[1]=3
+pclr[2]=13
+pclr[3]=5
+pclr[4]=21
+
+
+
+
+
+
+
+
+
+-- Circle of fifths (C = red) using LPP internal palette (and their eqivlnt hex colors)
+colorscale={}
+colorscale[0]= {interval=0,  color=7,   hcolor="07", R="06", G="00", B="00", col="R ", notename="C",} -- 5 too bright
+colorscale[1]= {interval=1,  color=65,  hcolor="41", R="00", G="15", B="0D", col="BG", notename="C#",}
+colorscale[2]= {interval=2,  color=96,  hcolor="60", R="3F", G="1F", B="00", col="O ", notename="D",}
+colorscale[3]= {interval=3,  color=49,  hcolor="31", R="15", G="00", B="3F", col="BV", notename="D#",}
+colorscale[4]= {interval=4,  color=97,  hcolor="61", R="2E", G="2C", B="00", col="Y ", notename="E",}
+colorscale[5]= {interval=5,  color=57,  hcolor="39", R="3F", G="00", B="15", col="RV", notename="F",}
+colorscale[6]= {interval=6,  color=21,  hcolor="15", R="00", G="3F", B="00", col="G ", notename="F#",}
+colorscale[7]= {interval=7,  color=60,  hcolor="3C", R="3F", G="05", B="00", col="RO", notename="G",}
+colorscale[8]= {interval=8,  color=45,  hcolor="2D", R="00", G="00", B="3F", col="B ", notename="G#",}
+colorscale[9]= {interval=9,  color=126, hcolor="7E", R="2C", G="17", B="00", col="YO", notename="A",}
+colorscale[10]={interval=10, color=55,  hcolor="37", R="06", G="00", B="06", col="V ", notename="A#",}
+colorscale[11]={interval=11, color=18,  hcolor="12", R="07", G="16", B="00", col="YG", notename="B",}
+-- colors = {"07","3C","96","7E","61","12","15","41","2D","31","37","39"} -- BY HUE
+
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- TODO piano keyboard white/black palettes
+
+palettes = {
+		louisBertrandCastel = {
+						[0]= {R="07", G="03", B="20", },		 -- blue
+						[1]= {R="06", G="24", B="20", },		 -- blue-green
+						[2]= {R="05", G="24", B="0C", },		 -- green
+						[3]= {R="1C", G="24", B="09", },		 -- olive green
+						[4]= {R="3D", G="3D", B="0F", },		 -- yellow
+						[5]= {R="3D", G="34", B="0E", },		 -- yellow-orange
+						[6]= {R="3E", G="20", B="04", },		 -- orange
+						[7]= {R="3E", G="02", B="03", },		 -- red
+						[8]= {R="28", G="03", B="02", },		 -- crimson
+						[9]= {R="35", G="04", B="21", },		 -- violet
+						[10]={R="12", G="03", B="1F", },		 -- agate
+						[11]={R="1F", G="02", B="1F", },		 -- indigo
+		},
+		dDJameson = {
+						[0]= {R="3E", G="02", B="03", },		 -- red
+						[1]= {R="3D", G="11", B="04", },		 -- red-orange
+						[2]= {R="3E", G="20", B="04", },		 -- orange
+						[3]= {R="3D", G="34", B="0E", },		 -- orange-yellow
+						[4]= {R="3D", G="3D", B="0F", },		 -- yellow
+						[5]= {R="05", G="24", B="0C", },		 -- green
+						[6]= {R="06", G="24", B="20", },		 -- green-blue
+						[7]= {R="07", G="03", B="20", },		 -- blue
+						[8]= {R="12", G="03", B="1F", },		 -- blue-purple
+						[9]= {R="1F", G="02", B="1F", },		 -- purple
+						[10]={R="29", G="05", B="21", },		 -- purple-violet
+						[11]={R="35", G="04", B="21", },		 -- violet
+		},
+		theodorSeemann = {
+						[0]= {R="1A", G="07", B="07", },		 -- carmine
+						[1]= {R="3E", G="02", B="03", },		 -- scarlet
+						[2]= {R="3F", G="1F", B="01", },		 -- orange
+						[3]= {R="3F", G="35", B="0C", },		 -- yellow-orange
+						[4]= {R="3D", G="3D", B="0F", },		 -- yellow
+						[5]= {R="05", G="24", B="0D", },		 -- green
+						[6]= {R="06", G="24", B="20", },		 -- green blue
+						[7]= {R="07", G="03", B="20", },		 -- blue
+						[8]= {R="1F", G="02", B="1F", },		 -- indigo
+						[9]= {R="35", G="04", B="21", },		 -- violet
+						[10]={R="1A", G="07", B="07", },		 -- brown
+						[11]={R="04", G="04", B="04", },		 -- black
+		},
+		aWallaceRimington = {
+						[0]= {R="3E", G="02", B="03", },		 -- deep red
+						[1]= {R="28", G="03", B="02", },		 -- crimson
+						[2]= {R="3D", G="11", B="04", },		 -- orange-crimson
+						[3]= {R="3E", G="20", B="04", },		 -- orange
+						[4]= {R="3D", G="3D", B="0F", },		 -- yellow
+						[5]= {R="1C", G="24", B="09", },		 -- yellow-green
+						[6]= {R="05", G="24", B="0C", },		 -- green
+						[7]= {R="09", G="29", B="20", },		 -- blueish green
+						[8]= {R="06", G="24", B="20", },		 -- blue-green
+						[9]= {R="1F", G="02", B="1F", },		 -- indigo
+						[10]={R="07", G="03", B="20", },		 -- deep blue
+						[11]={R="35", G="04", B="21", },		 -- violet
+		},
+		hHelmholtz = {
+						[0]= {R="3D", G="3D", B="0F", },		 -- yellow
+						[1]= {R="05", G="24", B="0C", },		 -- green
+						[2]= {R="06", G="24", B="20", },		 -- greenish blue
+						[3]= {R="07", G="16", B="28", },		 -- cayan-blue
+						[4]= {R="1F", G="02", B="1F", },		 -- indigo blue
+						[5]= {R="35", G="04", B="21", },		 -- violet
+						[6]= {R="27", G="03", B="15", },		 -- end of red
+						[7]= {R="3E", G="02", B="03", },		 -- red
+						[8]= {R="34", G="0B", B="02", },		 -- red
+						[9]= {R="34", G="0B", B="02", },		 -- red
+						[10]={R="36", G="06", B="14", },		 -- red orange
+						[11]={R="3C", G="1E", B="03", },		 -- orange
+		},
+		aScriabin = {
+						[0]= {R="3E", G="02", B="03", },		 -- red
+						[1]= {R="35", G="04", B="21", },		 -- violet
+						[2]= {R="3D", G="3D", B="0F", },		 -- yellow
+						[3]= {R="16", G="15", B="21", },		 -- steely with the glint of metal
+						[4]= {R="07", G="16", B="28", },		 -- pearly blue the shimmer of moonshine
+						[5]= {R="28", G="03", B="02", },		 -- dark red
+						[6]= {R="07", G="03", B="20", },		 -- bright blue
+						[7]= {R="3E", G="20", B="04", },		 -- rosy orange
+						[8]= {R="1F", G="02", B="1F", },		 -- purple
+						[9]= {R="05", G="24", B="0C", },		 -- green
+						[10]={R="16", G="15", B="21", },		 -- steely with a glint of metal
+						[11]={R="07", G="16", B="28", },		 -- pearly blue the shimmer of moonshine
+		},
+		aBernardKlein = {
+						[0]= {R="31", G="02", B="02", },		 -- dark red
+						[1]= {R="3E", G="02", B="03", },		 -- red
+						[2]= {R="3D", G="11", B="04", },		 -- red orange
+						[3]= {R="3E", G="20", B="04", },		 -- orange
+						[4]= {R="3D", G="3D", B="0F", },		 -- yellow
+						[5]= {R="2F", G="38", B="0E", },		 -- yellow green
+						[6]= {R="05", G="24", B="0C", },		 -- green
+						[7]= {R="06", G="24", B="20", },		 -- blue-green
+						[8]= {R="07", G="03", B="20", },		 -- blue
+						[9]= {R="1E", G="06", B="21", },		 -- blue violet
+						[10]={R="35", G="04", B="21", },		 -- violet
+						[11]={R="27", G="03", B="15", },		 -- dark violet
+		},
+		iJBelmont = {
+						[0]= {R="3E", G="02", B="03", },		 -- red
+						[1]= {R="3D", G="11", B="04", },		 -- red-orange
+						[2]= {R="3E", G="20", B="04", },		 -- orange
+						[3]= {R="3D", G="34", B="04", },		 -- yellow-orange
+						[4]= {R="3D", G="3D", B="0F", },		 -- yellow
+						[5]= {R="2F", G="38", B="0E", },		 -- yellow-green
+						[6]= {R="04", G="23", B="0C", },		 -- green
+						[7]= {R="06", G="24", B="20", },		 -- blue-green
+						[8]= {R="07", G="03", B="20", },		 -- blue
+						[9]= {R="29", G="05", B="21", },		 -- blue-violet
+						[10]={R="35", G="04", B="21", },		 -- violet
+						[11]={R="2B", G="03", B="12", },		 -- red-violet
+		},
+		sZieverink = {
+						[0]= {R="2F", G="38", B="0E", },		 -- yellow/green
+						[1]= {R="05", G="24", B="0C", },		 -- green
+						[2]= {R="06", G="24", B="20", },		 -- blue/green
+						[3]= {R="07", G="03", B="20", },		 -- blue
+						[4]= {R="1F", G="02", B="1F", },		 -- indigo
+						[5]= {R="35", G="04", B="21", },		 -- violet
+						[6]= {R="1B", G="03", B="11", },		 -- ultra violet
+						[7]= {R="28", G="03", B="02", },		 -- infra red
+						[8]= {R="3E", G="02", B="03", },		 -- red
+						[9]= {R="3E", G="20", B="04", },		 -- orange
+						[10]={R="3B", G="3C", B="21", },		 -- yellow/white
+						[11]={R="3D", G="3D", B="0F", },		 -- yellow
+		},
+		FifthsCircle = {
+						[0]= {R="3F", G="00", B="00", },	--R  
+						[1]= {R="00", G="32", B="15", },	--BG 
+						[2]= {R="3F", G="09", B="00", },	--O  
+						[3]= {R="09", G="00", B="36", },	--BV 
+						[4]= {R="3F", G="3F", B="00", },	--Y  
+						[5]= {R="29", G="00", B="20", },	--RV 
+						[6]= {R="00", G="3F", B="00", },	--G  
+						[7]= {R="1F", G="02", B="01", },	--RO 
+						[8]= {R="00", G="00", B="3F", },	--B  
+						[9]= {R="19", G="09", B="00", },	--YO 
+						[10]={R="12", G="00", B="2D", },	--V  
+						[11]={R="21", G="3F", B="00", },	--YG 
+		},
+--[[
+		FifthsCircleOld = {
+						[0]= {R="06", G="00", B="00", },		--R 
+						[1]= {R="00", G="15", B="0D", },		--BG
+						[2]= {R="3F", G="1F", B="00", },		--O 
+						[3]= {R="15", G="00", B="3F", },		--BV
+						[4]= {R="2E", G="2C", B="00", },		--Y 
+						[5]= {R="3F", G="00", B="15", },		--RV
+						[6]= {R="00", G="3F", B="00", },		--G 
+						[7]= {R="3F", G="05", B="00", },		--RO
+						[8]= {R="00", G="00", B="3F", },		--B 
+						[9]= {R="2C", G="17", B="00", },		--YO
+						[10]={R="06", G="00", B="06", },	--V 
+						[11]={R="07", G="16", B="00", },	--YG
+		},
+--]]		
+	}
+palettenames = {
+'louisBertrandCastel',
+'dDJameson',
+'theodorSeemann',
+'aWallaceRimington',
+'hHelmholtz',
+'aScriabin',
+'aBernardKlein',
+'iJBelmont',
+'sZieverink',
+'FifthsCircle',
+}
+
+g.palettes_length = table.getn(palettenames)
+palettename = 'FifthsCircle'
+g.palette = palettes[palettenames[10]]
+palette_int = 0 
+g.palette_delivered = 9 --for change filter
+g.palette_selected = 9 -- record of presses, goes up and dn
+g.palette_global = 9 -- current pal
+palette_changed = false
+
+--tprint(g.palette)
+
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- Scales tbd
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+scales = {
+	Chromatic = {0,1,2,3,4,5,6,7,8,9,10,11},
+	DrumPad = {0,1,2,3, 16,17,18,19, 4,5,6,7, 20,21,22,23, 8,9,10,11, 24,25,26,27, 12,13,14,15, 28,29,30,31},
+	Major = {0,2,4,5,7,9,11},
+	Minor = {0,2,3,5,7,8,10},
+	Dorian = {0,2,3,5,7,9,10},
+	Mixolydian = {0,2,4,5,7,9,10},
+	Lydian = {0,2,4,6,7,9,11},
+	Phrygian = {0,1,3,5,7,8,10},
+	Locrian = {0,1,3,4,7,8,10},
+	Diminished = {0,1,3,4,6,7,9,10},
+	Whole_half = {0,2,3,5,6,8,9,11},
+	WholeTone = {0,2,4,6,8,10},
+	MinorBlues = {0,3,5,6,7,10},
+	MinorPentatonic = {0,3,5,7,10},
+	MajorPentatonic = {0,2,4,7,9},
+	HarmonicMinor = {0,2,3,5,7,8,11},
+	MelodicMinor = {0,2,3,5,7,9,11},
+	DominantSus = {0,2,5,7,9,10},
+	SuperLocrian = {0,1,3,4,6,8,10},
+	NeopolitanMinor = {0,1,3,5,7,8,11},
+	NeopolitanMajor = {0,1,3,5,7,9,11},
+	EnigmaticMinor = {0,1,3,6,7,10,11},
+	Enigmatic = {0,1,4,6,8,10,11},
+	Composite = {0,1,4,6,7,8,11},
+	BebopLocrian = {0,2,3,5,6,8,10,11},
+	BebopDominant = {0,2,4,5,7,9,10,11},
+	BebopMajor = {0,2,4,5,7,8,9,11},
+	Bhairav = {0,1,4,5,7,8,11},
+	HungarianMinor = {0,2,3,6,7,8,11},
+	MinorGypsy = {0,1,4,5,7,8,10},
+	Persian = {0,1,4,5,6,8,11},  
+	Hirojoshi = {0,2,3,7,8},
+	InSen = {0,1,5,7,10},
+	Iwato = {0,1,5,6,10},
+	Kumoi = {0,2,3,7,9},
+	Pelog = {0,1,3,4,7,8},
+	Spanish = {0,1,3,4,5,6,8,10},
+	CircleOfFifths ={0,7,2,9,4,11,6,1,8,3,10,5}
+}
+scalenames = {
+			'Chromatic','DrumPad','Major','Minor','Dorian','Mixolydian', 
+			'Lydian','Phrygian', 
+			'Locrian','Diminished','Whole_half','WholeTone','MinorBlues','MinorPentatonic','MajorPentatonic','HarmonicMinor','MelodicMinor','DominantSus','SuperLocrian','NeopolitanMinor','NeopolitanMajor','EnigmaticMinor','Enigmatic','Composite','BebopLocrian','BebopDominant','BebopMajor','Bhairav','HungarianMinor','MinorGypsy','Persian','Hirojoshi','InSen','Iwato','Kumoi','Pelog','Spanish',
+			'CircleOfFifths'
+			}
+scaleabrvs = {
+			Session='SS',Auto='AA',Chromatic='CH',DrumPad='DR',Major='MM',Minor='nn',Dorian='II',Mixolydian='V_',
+			Lydian='IV',Phrygian='IH',Locrian='VH',Diminished='d-',Wholehalf='Wh',WholeTone='WT',MinorBlues='mB',
+			MinorPentatonic='mP',MajorPentatonic='MP',HarmonicMinor='mH',MelodicMinor='mM',DominantSus='Ds',SuperLocrian='SL',
+			NeopolitanMinor='mN',NeopolitanMajor='MN',EnigmaticMinor='mE',Enigmatic='ME',Composite='Cp',BebopLocrian='lB',
+			BebopDominant='DB',BebopMajor='MB',Bhairav='Bv',HungarianMinor='mH',MinorGypsy='mG',Persian='Pr',
+			Hirojoshi='Hr',InSen='IS',Iwato='Iw',Kumoi='Km',Pelog='Pg',Spanish='Sp',CircleOfFifths='C5'
+			}
+			
+--scalename = 'Major'
+scalename = 'Chromatic'
+scale = scales[scalename]
+scale_int = 0 
+g.scale_delivered = 0 --for change filter
+
+
+
+Scales = {
+Major = {0,2,4,5,7,9,11,12},
+Dorian = {0,2,3,5,7,9,10,12},
+Minor_Blues = {0,3,5,6,7,10,12,15},
+Minor_Jipsy = {0,1,4,5,7,8,10,12},
+Minor = {0,2,3,5,7,8,10,12},
+Mixolydian = {0,2,4,5,7,9,10,12},
+Lydian = {0,2,4,6,7,9,11,12},
+Phrygian = {0,1,3,5,7,8,10,12},
+Locrian = {0,1,3,5,6,8,10,12},
+Diminished = {0,2,3,5,6,8,9,12},
+Whole_half = {0,2,3,5,6,8,9,12},
+Whole_tone = {0,2,4,6,8,10,12,12},
+Minor_Pentatonic = {0,3,5,7,10,12,15,17},
+Major_Pentatonic = {0,2,4,7,9,12,14,16},
+Harmonic_Minor = {0,2,3,5,7,8,11,12},
+Melodic_Minor = {0,2,3,5,7,9,11,12},
+Super_Locrian = {0,1,3,4,6,8,10,12},
+Bhairav = {0,1,4,5,7,8,11,12},
+Hungarian_Minor = {0,2,3,6,7,8,11,12},
+Hirojoshi = {0,2,3,7,8,12,14,15},
+In_Sen = {0,1,5,7,10,12,13,17},
+Iwato = {0,1,5,6,10,12,13,17},
+Kumoi = {0,2,3,7,9,12,14,15},
+Pelog = {0,1,3,6,10,11,12,13},
+Spanish = {0,1,3,4,5,6,8,12},
+Zirafkend = {0,2,3,5,7,8,9,12},
+Algerian = {0,2,3,5,6,7,8,12},
+Pneutral = {0,2,5,7,10,12,14,17},
+Augmented = {0,3,4,7,8,11,12,15},
+Enigmatic = {0,1,4,6,8,10,11,12},
+LydianAug = {0,2,4,6,8,9,11,12},
+NeopMaj = {0,1,3,5,7,9,11,12},
+NeopMin = {0,1,3,5,7,8,10,12},
+Prometheus = {0,2,4,6,9,10,12,14},
+PromNeop = {0,1,4,6,9,10,12,13},
+SixToneSym = {0,1,4,5,8,9,12,13},
+LydianMin = {0,2,4,6,7,8,10,12},
+LydianDim = {0,2,3,6,7,8,10,12},
+NineTone = {0,2,3,4,6,7,8,12},
+Overtone = {0,2,4,6,7,9,10,12}
+}			
+			
+
+Scalenames = {'Major','Dorian','Minor_Blues','Minor_Jipsy','Minor','Mixolydian','Lydian','Phrygian','Locrian','Diminished','Whole_half','Whole_tone','Minor_Pentatonic','Major_Pentatonic','Harmonic_Minor','Melodic_Minor','Super_Locrian','Bhairav','Hungarian_Minor','Hirojoshi','In_Sen','Iwato','Kumoi','Pelog','Spanish','Zirafkend','Algerian','Pneutral','Augmented','Enigmatic','LydianAug','NeopMaj','NeopMin','Prometheus','PromNeop','SixToneSym','LydianMin','LydianDim','NineTone','Overtone'}
+Scaleabrvs = scaleabrvs
+
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- if the mode depends on a scale, then note is a function 
+-- and oct will get written by the note function
+-- and the scale grid will be embedded in the function.
+--[[
+Push								
+			{0,1,2,3,4,5,6,0},
+			{4,5,6,0,1,2,3,4},
+			{1,2,3,4,5,6,0,1},
+			{5,6,0,1,2,3,4,5},
+			{2,3,4,5,6,0,1,2},
+			{6,0,1,2,3,4,5,6},
+			{3,4,5,6,0,1,2,3},
+			{0,1,2,3,4,5,6,0},
+								
+Diatonic								
+			{0,21,2,3,4,5,6,0},
+			{5,6,0,1,2,3,4,5},
+			{3,4,5,6,0,1,2,3},
+			{1,2,3,4,5,6,0,1},
+			{6,0,1,2,3,4,5,6},
+			{4,5,6,0,1,2,3,4},
+			{2,3,4,5,6,0,1,2},
+			{0,1,2,3,4,5,6,0},
+								
+Diagonal								
+			{0,1,2,3,4,5,6,0},
+			{6,0,1,2,3,4,5,6},
+			{5,6,0,1,2,3,4,5},
+			{4,5,6,0,1,2,3,4},
+			{3,4,5,6,0,1,2,3},
+			{2,3,4,5,6,0,1,2},
+			{1,2,3,4,5,6,0,1},
+			{0,1,2,3,4,5,6,0},
+								
+Octave								
+			{0,1,2,3,4,5,6,0},
+			{0,1,2,3,4,5,6,0},
+			{0,1,2,3,4,5,6,0},
+			{0,1,2,3,4,5,6,0},
+			{0,1,2,3,4,5,6,0},
+			{0,1,2,3,4,5,6,0},
+			{0,1,2,3,4,5,6,0},
+			{0,1,2,3,4,5,6,0},
+
+--]]
+
+
+
+Modes = {
+Push = {
+		oldnote={
+			{0,2,4,5,7,9,11,0},
+			{7,9,11,0,2,4,5,7},
+			{2,4,5,7,9,11,0,2},
+			{9,11,0,2,4,5,7,9},
+			{4,5,7,9,11,0,2,4},
+			{11,0,2,4,5,7,9,11},
+			{5,7,9,11,0,2,4,5},
+			{0,2,4,5,7,9,11,0},
+		},
+		oct={
+			{4,4,4,4,4,4,4,5},
+			{3,3,3,4,4,4,4,4},
+			{3,3,3,3,3,3,4,4},
+			{2,2,3,3,3,3,3,3},
+			{2,2,2,2,2,3,3,3},
+			{1,2,2,2,2,2,2,2},
+			{1,1,1,1,2,2,2,2},
+			{1,1,1,1,1,1,1,2},
+		},
+		note=function(n)
+		local scalegrid ={
+			{0,1,2,3,4,5,6,0},
+			{4,5,6,0,1,2,3,4},
+			{1,2,3,4,5,6,0,1},
+			{5,6,0,1,2,3,4,5},
+			{2,3,4,5,6,0,1,2},
+			{6,0,1,2,3,4,5,6},
+			{3,4,5,6,0,1,2,3},
+			{0,1,2,3,4,5,6,0},
+		}
+		local notegrid={{},{},{},{},{},{},{},{}}
+		for ve=1,8 do for ho=1,8 do
+		notegrid[ve][ho]=Scale.current[scalegrid[ve][ho]]
+		end end
+		return notegrid
+		end,
+	},
+Diatonic = {
+		oldnote={
+			{0,2,4,5,7,9,11,0},
+			{9,11,0,2,4,5,7,9},
+			{5,7,9,11,0,2,4,5},
+			{2,4,5,7,9,11,0,2},
+			{11,0,2,4,5,7,9,11},
+			{7,9,11,0,2,4,5,7},
+			{4,5,7,9,11,0,2,4},
+			{0,2,4,5,7,9,11,0},
+		},
+		oct={
+			{4,4,4,4,4,4,4,5},
+			{3,3,4,4,4,4,4,4},
+			{3,3,3,3,4,4,4,4},
+			{3,3,3,3,3,3,4,4},
+			{2,3,3,3,3,3,3,3},
+			{2,2,2,3,3,3,3,3},
+			{2,2,2,2,2,3,3,3},
+			{2,2,2,2,2,2,2,3},
+		},
+		note=function(n)
+		local scalegrid ={
+			{0,1,2,3,4,5,6,0},
+			{5,6,0,1,2,3,4,5},
+			{3,4,5,6,0,1,2,3},
+			{1,2,3,4,5,6,0,1},
+			{6,0,1,2,3,4,5,6},
+			{4,5,6,0,1,2,3,4},
+			{2,3,4,5,6,0,1,2},
+			{0,1,2,3,4,5,6,0},
+		}
+		local notegrid={{},{},{},{},{},{},{},{}}
+		for ve=1,8 do for ho=1,8 do
+vprint("sc cur sc in grid f1",Scale.current[scalegrid[ve][ho]])
+		notegrid[ve][ho]=Scale.current[1+scalegrid[ve][ho]]
+		end end
+		return notegrid
+		end,
+	},
+Diagonal = {
+		oldnote={
+			{0,2,4,5,7,9,11,0},
+			{11,0,2,4,5,7,9,11},
+			{9,11,0,2,4,5,7,9},
+			{7,9,11,0,2,4,5,7},
+			{5,7,9,11,0,2,4,5},
+			{4,5,7,9,11,0,2,4},
+			{2,4,5,7,9,11,0,2},
+			{0,2,4,5,7,9,11,0},
+		},
+		oct={
+			{3,3,3,3,3,3,3,4},
+			{2,3,3,3,3,3,3,3},
+			{2,2,3,3,3,3,3,3},
+			{2,2,2,3,3,3,3,3},
+			{2,2,2,2,3,3,3,3},
+			{2,2,2,2,2,3,3,3},
+			{2,2,2,2,2,2,3,3},
+			{2,2,2,2,2,2,2,3},
+		},
+		note=function(n)
+		local scalegrid ={
+			{0,1,2,3,4,5,6,0},
+			{6,0,1,2,3,4,5,6},
+			{5,6,0,1,2,3,4,5},
+			{4,5,6,0,1,2,3,4},
+			{3,4,5,6,0,1,2,3},
+			{2,3,4,5,6,0,1,2},
+			{1,2,3,4,5,6,0,1},
+			{0,1,2,3,4,5,6,0},
+		}
+		local notegrid={{},{},{},{},{},{},{},{}}
+		for ve=1,8 do for ho=1,8 do
+vprint("sc cur sc in grid f2",Scale.current[scalegrid[ve][ho]])
+		notegrid[ve][ho]=Scale.current[scalegrid[ve][ho]]
+		end end
+		return notegrid
+		end,
+	},
+Janko = {
+		note={
+			{1,3,5,7,9,11,1,3},
+			{0,2,4,6,8,10,0,2},
+			{2,4,6,8,10,0,2,4},
+			{1,3,5,7,9,11,1,3},
+			{0,2,4,6,8,10,0,2},
+			{2,4,6,8,10,0,2,4},
+			{1,3,5,7,9,11,1,3},
+			{0,2,4,6,8,10,0,2},
+		},
+		oct={
+			{4,4,4,4,4,4,5,5},
+			{4,4,4,4,4,4,5,5},
+			{3,3,2,2,3,4,4,4},
+			{3,3,2,2,3,3,4,4},
+			{3,3,2,2,3,3,4,4},
+			{2,2,2,2,2,3,3,3},
+			{2,2,2,2,2,2,3,3},
+			{2,2,2,2,2,2,3,3},
+		},
+	},
+Octave = {
+		oldnote={
+			{0,2,4,5,7,9,11,0},
+			{0,2,4,5,7,9,11,0},
+			{0,2,4,5,7,9,11,0},
+			{0,2,4,5,7,9,11,0},
+			{0,2,4,5,7,9,11,0},
+			{0,2,4,5,7,9,11,0},
+			{0,2,4,5,7,9,11,0},
+			{0,2,4,5,7,9,11,0},
+		},
+		oct={
+			{7,7,7,7,7,7,7,8},
+			{6,6,6,6,6,6,6,7},
+			{5,5,5,5,5,5,5,6},
+			{4,4,4,4,4,4,4,5},
+			{3,3,3,3,3,3,3,4},
+			{2,2,2,2,2,2,2,3},
+			{1,1,1,1,1,1,1,2},
+			{0,0,0,0,0,0,0,1},
+		note=function(n)
+		local scalegrid ={
+			{0,1,2,3,4,5,6,0},
+			{0,1,2,3,4,5,6,0},
+			{0,1,2,3,4,5,6,0},
+			{0,1,2,3,4,5,6,0},
+			{0,1,2,3,4,5,6,0},
+			{0,1,2,3,4,5,6,0},
+			{0,1,2,3,4,5,6,0},
+			{0,1,2,3,4,5,6,0},
+		}
+		local notegrid={{},{},{},{},{},{},{},{}}
+		for ve=1,8 do for ho=1,8 do
+		notegrid[ve][ho]=Scale.current[scalegrid[ve][ho]]
+		end end
+		return notegrid
+		end,
+		},
+	},
+Chromatic = {
+		note={
+			{8,9,10,11,0,1,2,3},
+			{0,1,2,3,4,5,6,7},
+			{4,5,6,7,8,9,10,11},
+			{8,9,10,11,0,1,2,3},
+			{0,1,2,3,4,5,6,7},
+			{4,5,6,7,8,9,10,11},
+			{8,9,10,11,0,1,2,3},
+			{0,1,2,3,4,5,6,7},
+		},
+		oct={
+			{5,5,5,5,6,6,6,6},
+			{5,5,5,5,5,5,5,5},
+			{4,4,4,4,4,4,4,4},
+			{3,3,3,3,4,4,4,4},
+			{3,3,3,3,3,3,3,3},
+			{2,2,2,2,2,2,2,2},
+			{1,1,1,1,2,2,2,2},
+			{1,1,1,1,1,1,1,1},
+		},
+		note=function(n)
+		local scalegrid ={
+			{0,1,2,3,4,5,6,0},
+			{0,1,2,3,4,5,6,0},
+			{0,1,2,3,4,5,6,0},
+			{0,1,2,3,4,5,6,0},
+			{0,1,2,3,4,5,6,0},
+			{0,1,2,3,4,5,6,0},
+			{0,1,2,3,4,5,6,0},
+			{0,1,2,3,4,5,6,0},
+		}
+		local notegrid={{},{},{},{},{},{},{},{}}
+		local index=0
+		local scale=Scale.current
+		local sc_len
+		local root
+			if scale[8] == 12 then -- 7 and below
+				sc_len=7
+				root = 12 
+			elseif scale[7] == 12 then 
+				sc_len=6
+				root = 0 
+			elseif scale[6] == 12 then -- 2 root notes
+				table.insert(scale,1,0)
+				scale_len = 6
+				root = 0 
+			else
+				root = 24 
+			end  
+		
+		for ve=1,8 do for ho=1,8 do
+			local oct = math.floor(index/sc_len)
+			local note = scale[1+modulo(index,sc_len)]
+		Modes[Modenames[n]].oct[ve][ho]=oct
+		notegrid[ve][ho]=note
+		end end
+		return notegrid
+		end,
+		
+	},
+Chromatic2 = {
+		note={
+			{8,9,10,11,0,1,2,3},
+			{0,1,2,3,4,5,6,7},
+			{4,5,6,7,8,9,10,11},
+			{8,9,10,11,0,1,2,3},
+			{0,1,2,3,4,5,6,7},
+			{4,5,6,7,8,9,10,11},
+			{8,9,10,11,0,1,2,3},
+			{0,1,2,3,4,5,6,7},
+		},
+		oct={
+			{5,5,5,5,6,6,6,6},
+			{5,5,5,5,5,5,5,5},
+			{4,4,4,4,4,4,4,4},
+			{3,3,3,3,4,4,4,4},
+			{3,3,3,3,3,3,3,3},
+			{2,2,2,2,2,2,2,2},
+			{1,1,1,1,2,2,2,2},
+			{1,1,1,1,1,1,1,1},
+		},
+		note=function(n)
+		local scalegrid ={
+			{0,1,2,3,4,5,6,0},
+			{0,1,2,3,4,5,6,0},
+			{0,1,2,3,4,5,6,0},
+			{0,1,2,3,4,5,6,0},
+			{0,1,2,3,4,5,6,0},
+			{0,1,2,3,4,5,6,0},
+			{0,1,2,3,4,5,6,0},
+			{0,1,2,3,4,5,6,0},
+		}
+		local notegrid={{},{},{},{},{},{},{},{}}
+		for ve=1,8 do for ho=1,8 do
+		notegrid[ve][ho]=Scale.current[scalegrid[ve][ho]]
+		end end
+		return notegrid
+		end,
+	},
+Guitar = {
+		note={
+			{4,5,6,7,8,9,10,11},
+			{11,0,1,2,3,4,5,6},
+			{7,8,9,10,11,0,1,2},
+			{2,3,4,5,6,7,8,9},
+			{9,10,11,0,1,2,3,4},
+			{4,5,6,7,8,9,10,11},
+			{4,5,6,7,8,9,10,11},
+			{11,0,1,2,3,4,5,6},
+		},
+		oct={
+			{3,3,3,3,3,3,3,3},
+			{2,3,3,3,3,3,3,3},
+			{2,2,2,2,2,3,3,3},
+			{2,2,2,2,2,2,2,2},
+			{1,1,1,2,2,2,2,2},
+			{1,1,1,1,1,1,1,1},
+			{3,3,3,3,3,3,3,3},
+			{2,3,3,3,3,3,3,3},
+		},
+	},
+Guitar_2_iso = {
+		note={
+			{4,5,6,7,8,9,10,11},
+			{11,0,1,2,3,4,5,6},
+			{8,9,10,11,0,1,2,3},
+			{4,5,6,7,8,9,10,11},
+			{11,0,1,2,3,4,5,6},
+			{4,5,6,7,8,9,10,11},
+			{4,5,6,7,8,9,10,11},
+			{11,0,1,2,3,4,5,6},
+		},
+		oct={
+			{3,3,3,3,3,3,3,3},
+			{2,3,3,3,3,3,3,3},
+			{2,2,2,2,3,3,3,3},
+			{2,2,2,2,2,2,2,2},
+			{1,2,2,2,2,2,2,2},
+			{1,1,1,1,1,1,1,1},
+			{3,3,3,3,3,3,3,3},
+			{2,3,3,3,3,3,3,3},
+		},
+	},
+Guitar_2 = {
+		note={
+			{4,5,6,7,8,9,10,11},
+			{11,0,1,2,3,4,5,6},
+			{7,8,9,10,11,0,1,2},
+			{4,5,6,7,8,9,10,11},
+			{11,0,1,2,3,4,5,6},
+			{4,5,6,7,8,9,10,11},
+			{4,5,6,7,8,9,10,11},
+			{11,0,1,2,3,4,5,6},
+		},
+		oct={
+			{3,3,3,3,3,3,3,3},
+			{2,3,3,3,3,3,3,3},
+			{2,2,2,2,2,3,3,3},
+			{2,2,2,2,2,2,2,2},
+			{1,2,2,2,2,2,2,2},
+			{1,1,1,1,1,1,1,1},
+			{3,3,3,3,3,3,3,3},
+			{2,3,3,3,3,3,3,3},
+		},
+	},
+Guitar_Drop_D = {
+		note={
+			{2,3,4,5,6,7,8,9},
+			{11,0,1,2,3,4,5,6},
+			{7,8,9,10,11,0,1,2},
+			{2,3,4,5,6,7,8,9},
+			{9,10,11,0,1,2,3,4},
+			{2,3,4,5,6,7,8,9},
+			{4,5,6,7,8,9,10,11},
+			{11,0,1,2,3,4,5,6},
+		},
+		oct={
+			{3,3,3,3,3,3,3,3},
+			{2,3,3,3,3,3,3,3},
+			{2,2,2,2,2,3,3,3},
+			{2,2,2,2,2,2,2,2},
+			{1,1,1,2,2,2,2,2},
+			{1,1,1,1,1,1,1,1},
+			{3,3,3,3,3,3,3,3},
+			{2,3,3,3,3,3,3,3},
+		},
+	},
+Guitar_low_Fsh_B = {
+		note={
+			{4,5,6,7,8,9,10,11},
+			{11,0,1,2,3,4,5,6},
+			{7,8,9,10,11,0,1,2},
+			{2,3,4,5,6,7,8,9},
+			{9,10,11,0,1,2,3,4},
+			{4,5,6,7,8,9,10,11},
+			{11,0,1,2,3,4,5,6},
+			{6,7,8,9,10,11,0,1},
+		},
+		oct={
+			{3,3,3,3,3,3,3,3},
+			{2,3,3,3,3,3,3,3},
+			{2,2,2,2,2,3,3,3},
+			{2,2,2,2,2,2,2,2},
+			{1,1,1,2,2,2,2,2},
+			{1,1,1,1,1,1,1,1},
+			{0,1,1,1,1,1,1,1},
+			{0,0,0,0,0,0,1,1},
+		},
+	},
+Guitar_low_E_B = {
+		note={
+			{4,5,6,7,8,9,10,11},
+			{11,0,1,2,3,4,5,6},
+			{7,8,9,10,11,0,1,2},
+			{2,3,4,5,6,7,8,9},
+			{9,10,11,0,1,2,3,4},
+			{4,5,6,7,8,9,10,11},
+			{11,0,1,2,3,4,5,6},
+			{4,5,6,7,8,9,10,11},
+		},
+		oct={
+			{3,3,3,3,3,3,3,3},
+			{2,3,3,3,3,3,3,3},
+			{2,2,2,2,2,3,3,3},
+			{2,2,2,2,2,2,2,2},
+			{1,1,1,2,2,2,2,2},
+			{1,1,1,1,1,1,1,1},
+			{0,1,1,1,1,1,1,1},
+			{0,0,0,0,0,0,0,0},
+		},
+	},
+ChromaHarp =	{
+		note={
+			{7,9,11,1,3,5,7,9},
+			{6,8,10,0,2,4,6,8},
+			{5,7,9,11,1,3,5,7},
+			{4,6,8,10,0,2,4,6},
+			{3,5,7,9,11,1,3,5},
+			{2,4,6,8,10,0,2,4},
+			{1,3,5,7,9,11,1,3},
+			{0,2,4,6,8,10,0,2},
+		},
+		oct={
+			{4,4,4,5,5,5,5,5},
+			{4,4,4,5,5,5,5,5},
+			{3,3,3,3,4,4,4,4},
+			{3,3,3,3,4,4,4,4},
+			{2,2,2,2,2,3,3,3},
+			{2,2,2,2,2,3,3,3},
+			{1,1,1,1,1,1,2,2},
+			{1,1,1,1,1,1,2,2},
+		},
+	},
+ScaleHarp =	{
+		oldnote={
+			{7,9,11,1,3,5,7,9},
+			{6,8,10,0,2,4,6,8},
+			{5,7,9,11,1,3,5,7},
+			{4,6,8,10,0,2,4,6},
+			{3,5,7,9,11,1,3,5},
+			{2,4,6,8,10,0,2,4},
+			{1,3,5,7,9,11,1,3},
+			{0,2,4,6,8,10,0,2},
+		},
+		oct={
+			{4,4,4,5,5,5,5,5},
+			{4,4,4,5,5,5,5,5},
+			{3,3,3,3,4,4,4,4},
+			{3,3,3,3,4,4,4,4},
+			{2,2,2,2,2,3,3,3},
+			{2,2,2,2,2,3,3,3},
+			{1,1,1,1,1,1,2,2},
+			{1,1,1,1,1,1,2,2},
+		},
+	},
+Wicki_Hayden =	{
+		note={
+			{1,3,5,7,9,11,1,3},
+			{6,8,10,0,2,4,6,8},
+			{11,1,3,5,7,9,11,1},
+			{4,6,8,10,0,2,4,6},
+			{9,11,1,3,5,7,9,11},
+			{2,4,6,8,10,0,2,4},
+			{7,9,11,1,3,5,7,9},
+			{0,2,4,6,8,10,0,2},
+		},
+		oct={
+			{5,5,5,5,5,5,6,6},
+			{4,4,4,5,5,5,5,5},
+			{3,4,4,4,4,4,4,5},
+			{3,3,3,3,4,4,4,4},
+			{2,2,3,3,3,3,3,3},
+			{2,2,2,2,2,3,3,3},
+			{1,1,1,2,2,2,2,2},
+			{1,1,1,1,1,1,2,2},
+		},
+	},
+Fourth_and_5th =	{
+		note={
+			{1,5,9,1,5,9,1,5},
+			{6,10,2,6,10,2,6,10},
+			{11,3,7,11,3,7,11,3},
+			{4,8,0,4,8,0,4,8},
+			{9,1,5,9,1,5,9,1},
+			{2,6,10,2,6,10,2,6},
+			{7,11,3,7,11,3,7,11},
+			{0,4,8,0,4,8,0,4},
+		},
+		oct={
+			{3,3,3,4,4,4,5,5},
+			{2,2,2,3,3,3,4,4},
+			{2,2,2,3,3,3,4,4},
+			{2,2,2,3,3,3,4,4},
+			{1,1,1,2,2,2,3,3},
+			{1,1,1,2,2,2,3,3},
+			{1,1,1,2,2,2,3,3},
+			{1,1,1,2,2,2,3,3},
+		},
+	},
+Sixth_and_5th =	{
+		note={
+			{1,10,7,4,1,10,7,4},
+			{6,3,0,9,6,3,0,9},
+			{11,8,5,2,11,8,5,2},
+			{4,1,10,7,4,1,10,7},
+			{9,6,3,0,9,6,3,0},
+			{2,11,8,5,2,11,8,5},
+			{7,4,1,10,7,4,1,10},
+			{0,9,6,3,0,9,6,3},
+		},
+		oct={
+			{3,3,3,3,4,4,4,4},
+			{3,3,3,3,4,4,4,4},
+			{2,2,2,2,3,3,3,3},
+			{2,2,2,2,3,3,3,3},
+			{2,2,2,2,3,3,3,3},
+			{1,1,1,1,2,2,2,2},
+			{1,1,1,1,2,2,2,2},
+			{1,1,1,1,2,2,2,2},
+		},
+	},
+LPP_Note_mode =	{
+		note={
+			{11,0,1,2,3,4,5,6},
+			{6,7,8,9,10,11,0,2},
+			{1,2,3,4,5,6,7,8},
+			{8,9,10,11,0,1,2,3},
+			{3,4,5,6,7,8,9,10},
+			{10,11,0,1,2,3,4,5},
+			{5,6,7,8,9,10,11,0},
+			{0,1,2,3,4,5,6,7},
+		},
+		oct={
+			{3,4,4,4,4,4,4,4},
+			{3,3,3,3,3,3,4,4},
+			{3,3,3,3,3,3,3,3},
+			{2,2,2,2,3,3,3,3},
+			{2,2,2,2,2,2,2,2},
+			{1,1,2,2,2,2,2,2},
+			{1,1,1,1,1,1,1,2},
+			{1,1,1,1,1,1,1,1},
+		},
+	},
+}
+Modenames={
+"Push",
+"Diatonic",
+"Diagonal",
+"Janko",
+"Octave",
+"Chromatic",
+"Chromatic2",
+"Guitar",
+"Guitar_2_iso",
+"Guitar_2",
+"Guitar_Drop_D",
+"Guitar_low_Fsh_B",
+"Guitar_low_E_B",
+"ChromaHarp",
+"ScaleHarp",
+"Wicki_Hayden",
+"Fourth_and_5th",
+"Sixth_and_5th",
+"LPP_Note_mode",
+}
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+
+
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 --[[
@@ -419,6 +1271,7 @@ end
 				local note_index={}
 				local pad_index={}
 				for ve=1,8 do for ho=1,8 do
+vprint("cur note in grid",Grid.current.note[ve][ho])
 				local note=(12*Grid.current.oct[ve][ho])+Grid.current.note[ve][ho]+State.root+g.transpose
 				Grid.current.midiout[ve][ho]=note
 					if note_index[note] == nil then	note_index[note]={} end
@@ -450,19 +1303,44 @@ Palette = {
 		end end,
 		}
 
+-- Setting these two until I clean out the old code.
+Palettenames=palettenames
+Palettes=palettes
+Palette.length = table.getn(Palettenames)
 
 
 
 
 
 -- Transpose has methods for transposing the note. (by half step, sh by oct, shcl by fifth)
+-- transpose select is different from others, 
+-- can be negative.
+-- has stop when scale is out of bounds.
 Transpose = {
 
 }
 
 
 -- Scale has methods for changing the current Scale 
-Scale = {}
+-- If the current Mode is set by a function, then Scale updates!
+-- If so, we change Scale.last, then tell Mode.select to update!
+Scale = {
+		current = Scales[Scalenames[1]],
+		length = table.getn(Scalenames),
+		last = 0,
+		select=function(n) local new = 1+modulo(n,Scale.length) 
+		vprint("new scale",new)
+		if type(Modes[Modenames[Mode.last]].note)=="function" then
+		if new ~= Scale.last then 
+		Scale.last=new
+ 		Scale.current=Scales[Scalenames[new]]
+		Mode.select(Mode.last) State.update=1 
+		end end end,
+
+		}
+		
+
+		
 --[[
 
 --]]
@@ -474,7 +1352,16 @@ Scale = {}
 Mode = { 
 		current = 0,
 		last = 0,
-		select=function(n) local new = 1+modulo(n,table.getn(Modenames)) local M=Modes[Modenames[new]] vprint("new mode",new) if new ~= Mode.last then Grid.current.note=Grid.rotate[State.rotate](M.note) Grid.current.oct=Grid.rotate[State.rotate](M.oct) Grid.refresh_midiout() Mode.last = new State.update=1 end end,
+		select=function(n) local new = 1+modulo(n,table.getn(Modenames)) 
+		local Mn=type(Modes[Modenames[new]].note)=="function" and Modes[Modenames[new]].note(new) or Modes[Modenames[new]].note
+		local Mo=Modes[Modenames[new]].oct
+		vprint("new mode",new) 
+		if new ~= Mode.last then 
+		Grid.current.note=Grid.rotate[State.rotate](Mn) 
+		Grid.current.oct=Grid.rotate[State.rotate](Mo) 
+		Grid.refresh_midiout() 
+		Mode.last=new 
+		State.update=1 end end,
 		special=function() end,
 		
 		}
@@ -504,6 +1391,8 @@ State.root=24
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 -- FL: Assign to these the index to the first the corresponding items according
 -- to the definition list in remote_init. (Or assign them when defining the items, depending on how you do that.)
 -- g.btn_firstitem = 141 -- first -1 ! 
@@ -525,83 +1414,6 @@ buttonindex = {}
 g.itemnum = {}
 padpress = {} -- to display pressed
 			do_update_pads = 1
-
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-function def_vars()
-
-	local index=1
-	for ve=1,8 do --horizontal from bottom
-		for ho=1,8 do -- vertical from left
-			local thispad=(ve*10)+ho  --11-18 ... 81-88
-			local thispadhex=string.format("%02X",thispad)
-			local thisnote=notemode[ve]+ho
-			local thisdrum=drummode[ve]+ho
-			if ho>4 then -- drum mode is 4 4x4 grids
-				thisdrum=thisdrum+28
-			end
-			if note[thisnote] == nil then
-				note[thisnote]={}
-			end
-			table.insert(note[thisnote],thispad) --In note mode, a single note can be on one or two pads.	
-			table.insert(pad,thispad,{
-							padhex=thispadhex,
-							note=thisnote,
-							drum=thisdrum,
-							index=index,
-							itemindex=(index-1)+g.itemnum.first_pad,
-							x=ho,
-							y=ve,
-							color=0,
-							newcolor=0
-			})
-			table.insert(padindex,index,{
-							pad=thispad,
-							padhex=thispadhex,
-							note=thisnote,
-							drum=thisdrum,
-							itemindex=(index-1)+g.itemnum.first_pad,
-							x=ho,
-							y=ve,
-							color=0,
-							newcolor=0
-			})
-			table.insert(drum,thisdrum,{
-							pad=thispad,
-							note=thisnote,
-							index=index,
-							x=ho,
-							y=ve,
-							color=0,
-							newcolor=0
-			})
-			index=index+1 --index so I can cycle through the 64 pads quickly.
-		end
-		--items here.
-		buttonindex[90+ve]=(g.itemnum.first_button-1)+ve
-		buttonindex[ve]=(g.itemnum.first_button-1)+ve+8
-		buttonindex[10*ve]=(g.itemnum.first_button-1)+ve+16
-		buttonindex[(10*ve)+9]=(g.itemnum.first_button-1)+ve+24	
-		
-		button[90+ve]=Button:new((g.itemnum.first_button-1)+ve,90+ve)
-		button[ve]=Button:new((g.itemnum.first_button-1)+ve+8,ve)
-		button[10*ve]=Button:new((g.itemnum.first_button-1)+ve+16,10*ve)
-		button[(10*ve)+9]=Button:new((g.itemnum.first_button-1)+ve+24,(10*ve)+9)	
-
-
-
-	end
-	--[[
-	remote.trace("start note\n")
-	tprint(note)
-	remote.trace("end note\n")
-	--remote.trace(table.concat(note.pos, ", "))
-	--remote.trace(table.concat(note, ", "))
-	--remote.trace(table.concat(note.pos, ", "))
-	--]]
-	--tprint(buttonindex)
-	--remote.trace(padindex[11].pad)
-end
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
@@ -1673,12 +2485,11 @@ first_button
 
 		}
 		remote.define_auto_outputs(outputs)
+def_vars()
 		
 		
-		def_vars()
-		set_palettes()
-		set_modes()
-Mode.select(2)
+--Scale.select(2)
+Mode.select(1)
 
 Palette.select(9)
 
@@ -3173,600 +3984,90 @@ end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
+
+
+
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-function set_palettes()
--- TODO piano keyboard white/black palettes
+function def_vars()
+	local index=1
+	for ve=1,8 do --horizontal from bottom
+		for ho=1,8 do -- vertical from left
+			local thispad=(ve*10)+ho  --11-18 ... 81-88
+			local thispadhex=string.format("%02X",thispad)
+			local thisnote=notemode[ve]+ho
+			local thisdrum=drummode[ve]+ho
+			if ho>4 then -- drum mode is 4 4x4 grids
+				thisdrum=thisdrum+28
+			end
+			if note[thisnote] == nil then
+				note[thisnote]={}
+			end
+			table.insert(note[thisnote],thispad) --In note mode, a single note can be on one or two pads.	
+			table.insert(pad,thispad,{
+							padhex=thispadhex,
+							note=thisnote,
+							drum=thisdrum,
+							index=index,
+							itemindex=(index-1)+g.itemnum.first_pad,
+							x=ho,
+							y=ve,
+							color=0,
+							newcolor=0
+			})
+			table.insert(padindex,index,{
+							pad=thispad,
+							padhex=thispadhex,
+							note=thisnote,
+							drum=thisdrum,
+							itemindex=(index-1)+g.itemnum.first_pad,
+							x=ho,
+							y=ve,
+							color=0,
+							newcolor=0
+			})
+			table.insert(drum,thisdrum,{
+							pad=thispad,
+							note=thisnote,
+							index=index,
+							x=ho,
+							y=ve,
+							color=0,
+							newcolor=0
+			})
+			index=index+1 --index so I can cycle through the 64 pads quickly.
+		end
+		--items here.
+		buttonindex[90+ve]=(g.itemnum.first_button-1)+ve
+		buttonindex[ve]=(g.itemnum.first_button-1)+ve+8
+		buttonindex[10*ve]=(g.itemnum.first_button-1)+ve+16
+		buttonindex[(10*ve)+9]=(g.itemnum.first_button-1)+ve+24	
+		
+		button[90+ve]=Button:new((g.itemnum.first_button-1)+ve,90+ve)
+		button[ve]=Button:new((g.itemnum.first_button-1)+ve+8,ve)
+		button[10*ve]=Button:new((g.itemnum.first_button-1)+ve+16,10*ve)
+		button[(10*ve)+9]=Button:new((g.itemnum.first_button-1)+ve+24,(10*ve)+9)	
 
-palettes = {
-		louisBertrandCastel = {
-						[0]= {R="07", G="03", B="20", },		 -- blue
-						[1]= {R="06", G="24", B="20", },		 -- blue-green
-						[2]= {R="05", G="24", B="0C", },		 -- green
-						[3]= {R="1C", G="24", B="09", },		 -- olive green
-						[4]= {R="3D", G="3D", B="0F", },		 -- yellow
-						[5]= {R="3D", G="34", B="0E", },		 -- yellow-orange
-						[6]= {R="3E", G="20", B="04", },		 -- orange
-						[7]= {R="3E", G="02", B="03", },		 -- red
-						[8]= {R="28", G="03", B="02", },		 -- crimson
-						[9]= {R="35", G="04", B="21", },		 -- violet
-						[10]={R="12", G="03", B="1F", },		 -- agate
-						[11]={R="1F", G="02", B="1F", },		 -- indigo
-		},
-		dDJameson = {
-						[0]= {R="3E", G="02", B="03", },		 -- red
-						[1]= {R="3D", G="11", B="04", },		 -- red-orange
-						[2]= {R="3E", G="20", B="04", },		 -- orange
-						[3]= {R="3D", G="34", B="0E", },		 -- orange-yellow
-						[4]= {R="3D", G="3D", B="0F", },		 -- yellow
-						[5]= {R="05", G="24", B="0C", },		 -- green
-						[6]= {R="06", G="24", B="20", },		 -- green-blue
-						[7]= {R="07", G="03", B="20", },		 -- blue
-						[8]= {R="12", G="03", B="1F", },		 -- blue-purple
-						[9]= {R="1F", G="02", B="1F", },		 -- purple
-						[10]={R="29", G="05", B="21", },		 -- purple-violet
-						[11]={R="35", G="04", B="21", },		 -- violet
-		},
-		theodorSeemann = {
-						[0]= {R="1A", G="07", B="07", },		 -- carmine
-						[1]= {R="3E", G="02", B="03", },		 -- scarlet
-						[2]= {R="3F", G="1F", B="01", },		 -- orange
-						[3]= {R="3F", G="35", B="0C", },		 -- yellow-orange
-						[4]= {R="3D", G="3D", B="0F", },		 -- yellow
-						[5]= {R="05", G="24", B="0D", },		 -- green
-						[6]= {R="06", G="24", B="20", },		 -- green blue
-						[7]= {R="07", G="03", B="20", },		 -- blue
-						[8]= {R="1F", G="02", B="1F", },		 -- indigo
-						[9]= {R="35", G="04", B="21", },		 -- violet
-						[10]={R="1A", G="07", B="07", },		 -- brown
-						[11]={R="04", G="04", B="04", },		 -- black
-		},
-		aWallaceRimington = {
-						[0]= {R="3E", G="02", B="03", },		 -- deep red
-						[1]= {R="28", G="03", B="02", },		 -- crimson
-						[2]= {R="3D", G="11", B="04", },		 -- orange-crimson
-						[3]= {R="3E", G="20", B="04", },		 -- orange
-						[4]= {R="3D", G="3D", B="0F", },		 -- yellow
-						[5]= {R="1C", G="24", B="09", },		 -- yellow-green
-						[6]= {R="05", G="24", B="0C", },		 -- green
-						[7]= {R="09", G="29", B="20", },		 -- blueish green
-						[8]= {R="06", G="24", B="20", },		 -- blue-green
-						[9]= {R="1F", G="02", B="1F", },		 -- indigo
-						[10]={R="07", G="03", B="20", },		 -- deep blue
-						[11]={R="35", G="04", B="21", },		 -- violet
-		},
-		hHelmholtz = {
-						[0]= {R="3D", G="3D", B="0F", },		 -- yellow
-						[1]= {R="05", G="24", B="0C", },		 -- green
-						[2]= {R="06", G="24", B="20", },		 -- greenish blue
-						[3]= {R="07", G="16", B="28", },		 -- cayan-blue
-						[4]= {R="1F", G="02", B="1F", },		 -- indigo blue
-						[5]= {R="35", G="04", B="21", },		 -- violet
-						[6]= {R="27", G="03", B="15", },		 -- end of red
-						[7]= {R="3E", G="02", B="03", },		 -- red
-						[8]= {R="34", G="0B", B="02", },		 -- red
-						[9]= {R="34", G="0B", B="02", },		 -- red
-						[10]={R="36", G="06", B="14", },		 -- red orange
-						[11]={R="3C", G="1E", B="03", },		 -- orange
-		},
-		aScriabin = {
-						[0]= {R="3E", G="02", B="03", },		 -- red
-						[1]= {R="35", G="04", B="21", },		 -- violet
-						[2]= {R="3D", G="3D", B="0F", },		 -- yellow
-						[3]= {R="16", G="15", B="21", },		 -- steely with the glint of metal
-						[4]= {R="07", G="16", B="28", },		 -- pearly blue the shimmer of moonshine
-						[5]= {R="28", G="03", B="02", },		 -- dark red
-						[6]= {R="07", G="03", B="20", },		 -- bright blue
-						[7]= {R="3E", G="20", B="04", },		 -- rosy orange
-						[8]= {R="1F", G="02", B="1F", },		 -- purple
-						[9]= {R="05", G="24", B="0C", },		 -- green
-						[10]={R="16", G="15", B="21", },		 -- steely with a glint of metal
-						[11]={R="07", G="16", B="28", },		 -- pearly blue the shimmer of moonshine
-		},
-		aBernardKlein = {
-						[0]= {R="31", G="02", B="02", },		 -- dark red
-						[1]= {R="3E", G="02", B="03", },		 -- red
-						[2]= {R="3D", G="11", B="04", },		 -- red orange
-						[3]= {R="3E", G="20", B="04", },		 -- orange
-						[4]= {R="3D", G="3D", B="0F", },		 -- yellow
-						[5]= {R="2F", G="38", B="0E", },		 -- yellow green
-						[6]= {R="05", G="24", B="0C", },		 -- green
-						[7]= {R="06", G="24", B="20", },		 -- blue-green
-						[8]= {R="07", G="03", B="20", },		 -- blue
-						[9]= {R="1E", G="06", B="21", },		 -- blue violet
-						[10]={R="35", G="04", B="21", },		 -- violet
-						[11]={R="27", G="03", B="15", },		 -- dark violet
-		},
-		iJBelmont = {
-						[0]= {R="3E", G="02", B="03", },		 -- red
-						[1]= {R="3D", G="11", B="04", },		 -- red-orange
-						[2]= {R="3E", G="20", B="04", },		 -- orange
-						[3]= {R="3D", G="34", B="04", },		 -- yellow-orange
-						[4]= {R="3D", G="3D", B="0F", },		 -- yellow
-						[5]= {R="2F", G="38", B="0E", },		 -- yellow-green
-						[6]= {R="04", G="23", B="0C", },		 -- green
-						[7]= {R="06", G="24", B="20", },		 -- blue-green
-						[8]= {R="07", G="03", B="20", },		 -- blue
-						[9]= {R="29", G="05", B="21", },		 -- blue-violet
-						[10]={R="35", G="04", B="21", },		 -- violet
-						[11]={R="2B", G="03", B="12", },		 -- red-violet
-		},
-		sZieverink = {
-						[0]= {R="2F", G="38", B="0E", },		 -- yellow/green
-						[1]= {R="05", G="24", B="0C", },		 -- green
-						[2]= {R="06", G="24", B="20", },		 -- blue/green
-						[3]= {R="07", G="03", B="20", },		 -- blue
-						[4]= {R="1F", G="02", B="1F", },		 -- indigo
-						[5]= {R="35", G="04", B="21", },		 -- violet
-						[6]= {R="1B", G="03", B="11", },		 -- ultra violet
-						[7]= {R="28", G="03", B="02", },		 -- infra red
-						[8]= {R="3E", G="02", B="03", },		 -- red
-						[9]= {R="3E", G="20", B="04", },		 -- orange
-						[10]={R="3B", G="3C", B="21", },		 -- yellow/white
-						[11]={R="3D", G="3D", B="0F", },		 -- yellow
-		},
-		FifthsCircle = {
-						[0]= {R="3F", G="00", B="00", },	--R  
-						[1]= {R="00", G="32", B="15", },	--BG 
-						[2]= {R="3F", G="09", B="00", },	--O  
-						[3]= {R="09", G="00", B="36", },	--BV 
-						[4]= {R="3F", G="3F", B="00", },	--Y  
-						[5]= {R="29", G="00", B="20", },	--RV 
-						[6]= {R="00", G="3F", B="00", },	--G  
-						[7]= {R="1F", G="02", B="01", },	--RO 
-						[8]= {R="00", G="00", B="3F", },	--B  
-						[9]= {R="19", G="09", B="00", },	--YO 
-						[10]={R="12", G="00", B="2D", },	--V  
-						[11]={R="21", G="3F", B="00", },	--YG 
-		},
---[[
-		FifthsCircleOld = {
-						[0]= {R="06", G="00", B="00", },		--R 
-						[1]= {R="00", G="15", B="0D", },		--BG
-						[2]= {R="3F", G="1F", B="00", },		--O 
-						[3]= {R="15", G="00", B="3F", },		--BV
-						[4]= {R="2E", G="2C", B="00", },		--Y 
-						[5]= {R="3F", G="00", B="15", },		--RV
-						[6]= {R="00", G="3F", B="00", },		--G 
-						[7]= {R="3F", G="05", B="00", },		--RO
-						[8]= {R="00", G="00", B="3F", },		--B 
-						[9]= {R="2C", G="17", B="00", },		--YO
-						[10]={R="06", G="00", B="06", },	--V 
-						[11]={R="07", G="16", B="00", },	--YG
-		},
---]]		
-	}
-palettenames = {
-'louisBertrandCastel',
-'dDJameson',
-'theodorSeemann',
-'aWallaceRimington',
-'hHelmholtz',
-'aScriabin',
-'aBernardKlein',
-'iJBelmont',
-'sZieverink',
-'FifthsCircle',
-}
 
-g.palettes_length = table.getn(palettenames)
-palettename = 'FifthsCircle'
-g.palette = palettes[palettenames[10]]
-palette_int = 0 
-g.palette_delivered = 9 --for change filter
-g.palette_selected = 9 -- record of presses, goes up and dn
-g.palette_global = 9 -- current pal
-palette_changed = false
 
---tprint(g.palette)
-
--- Setting these two until I clean out the old code.
-Palettenames=palettenames
-Palettes=palettes
-Palette.length = table.getn(Palettenames)
-
+	end
+	--[[
+	remote.trace("start note\n")
+	tprint(note)
+	remote.trace("end note\n")
+	--remote.trace(table.concat(note.pos, ", "))
+	--remote.trace(table.concat(note, ", "))
+	--remote.trace(table.concat(note.pos, ", "))
+	--]]
+	--tprint(buttonindex)
+	--remote.trace(padindex[11].pad)
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-function set_modes()
-Modes = {
-Push = {
-		note={
-			{0,2,4,5,7,9,11,0},
-			{7,9,11,0,2,4,5,7},
-			{2,4,5,7,9,11,0,2},
-			{9,11,0,2,4,5,7,9},
-			{4,5,7,9,11,0,2,4},
-			{11,0,2,4,5,7,9,11},
-			{5,7,9,11,0,2,4,5},
-			{0,2,4,5,7,9,11,0},
-		},
-		oct={
-			{4,4,4,4,4,4,4,5},
-			{3,3,3,4,4,4,4,4},
-			{3,3,3,3,3,3,4,4},
-			{2,2,3,3,3,3,3,3},
-			{2,2,2,2,2,3,3,3},
-			{1,2,2,2,2,2,2,2},
-			{1,1,1,1,2,2,2,2},
-			{1,1,1,1,1,1,1,2},
-		},
-	},
-Diatonic = {
-		note={
-			{0,2,4,5,7,9,11,0},
-			{9,11,0,2,4,5,7,9},
-			{5,7,9,11,0,2,4,5},
-			{2,4,5,7,9,11,0,2},
-			{11,0,2,4,5,7,9,11},
-			{7,9,11,0,2,4,5,7},
-			{4,5,7,9,11,0,2,4},
-			{0,2,4,5,7,9,11,0},
-		},
-		oct={
-			{4,4,4,4,4,4,4,5},
-			{3,3,4,4,4,4,4,4},
-			{3,3,3,3,4,4,4,4},
-			{3,3,3,3,3,3,4,4},
-			{2,3,3,3,3,3,3,3},
-			{2,2,2,3,3,3,3,3},
-			{2,2,2,2,2,3,3,3},
-			{2,2,2,2,2,2,2,3},
-		},
-	},
-Diagonal = {
-		note={
-			{0,2,4,5,7,9,11,0},
-			{11,0,2,4,5,7,9,11},
-			{9,11,0,2,4,5,7,9},
-			{7,9,11,0,2,4,5,7},
-			{5,7,9,11,0,2,4,5},
-			{4,5,7,9,11,0,2,4},
-			{2,4,5,7,9,11,0,2},
-			{0,2,4,5,7,9,11,0},
-		},
-		oct={
-			{3,3,3,3,3,3,3,4},
-			{2,3,3,3,3,3,3,3},
-			{2,2,3,3,3,3,3,3},
-			{2,2,2,3,3,3,3,3},
-			{2,2,2,2,3,3,3,3},
-			{2,2,2,2,2,3,3,3},
-			{2,2,2,2,2,2,3,3},
-			{2,2,2,2,2,2,2,3},
-		},
-	},
-Janko = {
-		note={
-			{1,3,5,7,9,11,1,3},
-			{0,2,4,6,8,10,0,2},
-			{2,4,6,8,10,0,2,4},
-			{1,3,5,7,9,11,1,3},
-			{0,2,4,6,8,10,0,2},
-			{2,4,6,8,10,0,2,4},
-			{1,3,5,7,9,11,1,3},
-			{0,2,4,6,8,10,0,2},
-		},
-		oct={
-			{4,4,4,4,4,4,5,5},
-			{4,4,4,4,4,4,5,5},
-			{3,3,2,2,3,4,4,4},
-			{3,3,2,2,3,3,4,4},
-			{3,3,2,2,3,3,4,4},
-			{2,2,2,2,2,3,3,3},
-			{2,2,2,2,2,2,3,3},
-			{2,2,2,2,2,2,3,3},
-		},
-	},
-Octave = {
-		note={
-			{0,2,4,5,7,9,11,0},
-			{0,2,4,5,7,9,11,0},
-			{0,2,4,5,7,9,11,0},
-			{0,2,4,5,7,9,11,0},
-			{0,2,4,5,7,9,11,0},
-			{0,2,4,5,7,9,11,0},
-			{0,2,4,5,7,9,11,0},
-			{0,2,4,5,7,9,11,0},
-		},
-		oct={
-			{7,7,7,7,7,7,7,8},
-			{6,6,6,6,6,6,6,7},
-			{5,5,5,5,5,5,5,6},
-			{4,4,4,4,4,4,4,5},
-			{3,3,3,3,3,3,3,4},
-			{2,2,2,2,2,2,2,3},
-			{1,1,1,1,1,1,1,2},
-			{0,0,0,0,0,0,0,1},
-		},
-	},
-Chromatic = {
-		note={
-			{8,9,10,11,0,1,2,3},
-			{0,1,2,3,4,5,6,7},
-			{4,5,6,7,8,9,10,11},
-			{8,9,10,11,0,1,2,3},
-			{0,1,2,3,4,5,6,7},
-			{4,5,6,7,8,9,10,11},
-			{8,9,10,11,0,1,2,3},
-			{0,1,2,3,4,5,6,7},
-		},
-		oct={
-			{5,5,5,5,6,6,6,6},
-			{5,5,5,5,5,5,5,5},
-			{4,4,4,4,4,4,4,4},
-			{3,3,3,3,4,4,4,4},
-			{3,3,3,3,3,3,3,3},
-			{2,2,2,2,2,2,2,2},
-			{1,1,1,1,2,2,2,2},
-			{1,1,1,1,1,1,1,1},
-		},
-	},
-Guitar = {
-		note={
-			{4,5,6,7,8,9,10,11},
-			{11,0,1,2,3,4,5,6},
-			{7,8,9,10,11,0,1,2},
-			{2,3,4,5,6,7,8,9},
-			{9,10,11,0,1,2,3,4},
-			{4,5,6,7,8,9,10,11},
-			{4,5,6,7,8,9,10,11},
-			{11,0,1,2,3,4,5,6},
-		},
-		oct={
-			{3,3,3,3,3,3,3,3},
-			{2,3,3,3,3,3,3,3},
-			{2,2,2,2,2,3,3,3},
-			{2,2,2,2,2,2,2,2},
-			{1,1,1,2,2,2,2,2},
-			{1,1,1,1,1,1,1,1},
-			{3,3,3,3,3,3,3,3},
-			{2,3,3,3,3,3,3,3},
-		},
-	},
-Guitar_2_iso = {
-		note={
-			{4,5,6,7,8,9,10,11},
-			{11,0,1,2,3,4,5,6},
-			{8,9,10,11,0,1,2,3},
-			{4,5,6,7,8,9,10,11},
-			{11,0,1,2,3,4,5,6},
-			{4,5,6,7,8,9,10,11},
-			{4,5,6,7,8,9,10,11},
-			{11,0,1,2,3,4,5,6},
-		},
-		oct={
-			{3,3,3,3,3,3,3,3},
-			{2,3,3,3,3,3,3,3},
-			{2,2,2,2,3,3,3,3},
-			{2,2,2,2,2,2,2,2},
-			{1,2,2,2,2,2,2,2},
-			{1,1,1,1,1,1,1,1},
-			{3,3,3,3,3,3,3,3},
-			{2,3,3,3,3,3,3,3},
-		},
-	},
-Guitar_2 = {
-		note={
-			{4,5,6,7,8,9,10,11},
-			{11,0,1,2,3,4,5,6},
-			{7,8,9,10,11,0,1,2},
-			{4,5,6,7,8,9,10,11},
-			{11,0,1,2,3,4,5,6},
-			{4,5,6,7,8,9,10,11},
-			{4,5,6,7,8,9,10,11},
-			{11,0,1,2,3,4,5,6},
-		},
-		oct={
-			{3,3,3,3,3,3,3,3},
-			{2,3,3,3,3,3,3,3},
-			{2,2,2,2,2,3,3,3},
-			{2,2,2,2,2,2,2,2},
-			{1,2,2,2,2,2,2,2},
-			{1,1,1,1,1,1,1,1},
-			{3,3,3,3,3,3,3,3},
-			{2,3,3,3,3,3,3,3},
-		},
-	},
-Guitar_Drop_D = {
-		note={
-			{2,3,4,5,6,7,8,9},
-			{11,0,1,2,3,4,5,6},
-			{7,8,9,10,11,0,1,2},
-			{2,3,4,5,6,7,8,9},
-			{9,10,11,0,1,2,3,4},
-			{2,3,4,5,6,7,8,9},
-			{4,5,6,7,8,9,10,11},
-			{11,0,1,2,3,4,5,6},
-		},
-		oct={
-			{3,3,3,3,3,3,3,3},
-			{2,3,3,3,3,3,3,3},
-			{2,2,2,2,2,3,3,3},
-			{2,2,2,2,2,2,2,2},
-			{1,1,1,2,2,2,2,2},
-			{1,1,1,1,1,1,1,1},
-			{3,3,3,3,3,3,3,3},
-			{2,3,3,3,3,3,3,3},
-		},
-	},
-Guitar_low_Fsh_B = {
-		note={
-			{4,5,6,7,8,9,10,11},
-			{11,0,1,2,3,4,5,6},
-			{7,8,9,10,11,0,1,2},
-			{2,3,4,5,6,7,8,9},
-			{9,10,11,0,1,2,3,4},
-			{4,5,6,7,8,9,10,11},
-			{11,0,1,2,3,4,5,6},
-			{6,7,8,9,10,11,0,1},
-		},
-		oct={
-			{3,3,3,3,3,3,3,3},
-			{2,3,3,3,3,3,3,3},
-			{2,2,2,2,2,3,3,3},
-			{2,2,2,2,2,2,2,2},
-			{1,1,1,2,2,2,2,2},
-			{1,1,1,1,1,1,1,1},
-			{0,1,1,1,1,1,1,1},
-			{0,0,0,0,0,0,1,1},
-		},
-	},
-Guitar_low_E_B = {
-		note={
-			{4,5,6,7,8,9,10,11},
-			{11,0,1,2,3,4,5,6},
-			{7,8,9,10,11,0,1,2},
-			{2,3,4,5,6,7,8,9},
-			{9,10,11,0,1,2,3,4},
-			{4,5,6,7,8,9,10,11},
-			{11,0,1,2,3,4,5,6},
-			{4,5,6,7,8,9,10,11},
-		},
-		oct={
-			{3,3,3,3,3,3,3,3},
-			{2,3,3,3,3,3,3,3},
-			{2,2,2,2,2,3,3,3},
-			{2,2,2,2,2,2,2,2},
-			{1,1,1,2,2,2,2,2},
-			{1,1,1,1,1,1,1,1},
-			{0,1,1,1,1,1,1,1},
-			{0,0,0,0,0,0,0,0},
-		},
-	},
-ChromaHarp =	{
-		note={
-			{7,9,11,1,3,5,7,9},
-			{6,8,10,0,2,4,6,8},
-			{5,7,9,11,1,3,5,7},
-			{4,6,8,10,0,2,4,6},
-			{3,5,7,9,11,1,3,5},
-			{2,4,6,8,10,0,2,4},
-			{1,3,5,7,9,11,1,3},
-			{0,2,4,6,8,10,0,2},
-		},
-		oct={
-			{4,4,4,5,5,5,5,5},
-			{4,4,4,5,5,5,5,5},
-			{3,3,3,3,4,4,4,4},
-			{3,3,3,3,4,4,4,4},
-			{2,2,2,2,2,3,3,3},
-			{2,2,2,2,2,3,3,3},
-			{1,1,1,1,1,1,2,2},
-			{1,1,1,1,1,1,2,2},
-		},
-	},
-Wicki_Hayden =	{
-		note={
-			{1,3,5,7,9,11,1,3},
-			{6,8,10,0,2,4,6,8},
-			{11,1,3,5,7,9,11,1},
-			{4,6,8,10,0,2,4,6},
-			{9,11,1,3,5,7,9,11},
-			{2,4,6,8,10,0,2,4},
-			{7,9,11,1,3,5,7,9},
-			{0,2,4,6,8,10,0,2},
-		},
-		oct={
-			{5,5,5,5,5,5,6,6},
-			{4,4,4,5,5,5,5,5},
-			{3,4,4,4,4,4,4,5},
-			{3,3,3,3,4,4,4,4},
-			{2,2,3,3,3,3,3,3},
-			{2,2,2,2,2,3,3,3},
-			{1,1,1,2,2,2,2,2},
-			{1,1,1,1,1,1,2,2},
-		},
-	},
-Fourth_and_5th =	{
-		note={
-			{1,5,9,1,5,9,1,5},
-			{6,10,2,6,10,2,6,10},
-			{11,3,7,11,3,7,11,3},
-			{4,8,0,4,8,0,4,8},
-			{9,1,5,9,1,5,9,1},
-			{2,6,10,2,6,10,2,6},
-			{7,11,3,7,11,3,7,11},
-			{0,4,8,0,4,8,0,4},
-		},
-		oct={
-			{3,3,3,4,4,4,5,5},
-			{2,2,2,3,3,3,4,4},
-			{2,2,2,3,3,3,4,4},
-			{2,2,2,3,3,3,4,4},
-			{1,1,1,2,2,2,3,3},
-			{1,1,1,2,2,2,3,3},
-			{1,1,1,2,2,2,3,3},
-			{1,1,1,2,2,2,3,3},
-		},
-	},
-Sixth_and_5th =	{
-		note={
-			{1,10,7,4,1,10,7,4},
-			{6,3,0,9,6,3,0,9},
-			{11,8,5,2,11,8,5,2},
-			{4,1,10,7,4,1,10,7},
-			{9,6,3,0,9,6,3,0},
-			{2,11,8,5,2,11,8,5},
-			{7,4,1,10,7,4,1,10},
-			{0,9,6,3,0,9,6,3},
-		},
-		oct={
-			{3,3,3,3,4,4,4,4},
-			{3,3,3,3,4,4,4,4},
-			{2,2,2,2,3,3,3,3},
-			{2,2,2,2,3,3,3,3},
-			{2,2,2,2,3,3,3,3},
-			{1,1,1,1,2,2,2,2},
-			{1,1,1,1,2,2,2,2},
-			{1,1,1,1,2,2,2,2},
-		},
-	},
-LPP_Note_mode =	{
-		note={
-			{11,0,1,2,3,4,5,6},
-			{6,7,8,9,10,11,0,2},
-			{1,2,3,4,5,6,7,8},
-			{8,9,10,11,0,1,2,3},
-			{3,4,5,6,7,8,9,10},
-			{10,11,0,1,2,3,4,5},
-			{5,6,7,8,9,10,11,0},
-			{0,1,2,3,4,5,6,7},
-		},
-		oct={
-			{3,4,4,4,4,4,4,4},
-			{3,3,3,3,3,3,4,4},
-			{3,3,3,3,3,3,3,3},
-			{2,2,2,2,3,3,3,3},
-			{2,2,2,2,2,2,2,2},
-			{1,1,2,2,2,2,2,2},
-			{1,1,1,1,1,1,1,2},
-			{1,1,1,1,1,1,1,1},
-		},
-	},
-}
-Modenames={
-"Push",
-"Diatonic",
-"Diagonal",
-"Janko",
-"Octave",
-"Chromatic",
-"Guitar",
-"Guitar_2_iso",
-"Guitar_2",
-"Guitar_Drop_D",
-"Guitar_low_Fsh_B",
-"Guitar_low_E_B",
-"ChromaHarp",
-"Wicki_Hayden",
-"Fourth_and_5th",
-"Sixth_and_5th",
-"LPP_Note_mode",
-}
-end
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- button lookup!
 button_function = {
@@ -3811,9 +4112,3 @@ button_function = {
 
 }
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-vprint("mod1",modulo(0,17))
-vprint("mod2",modulo(-1,17))
-vprint("mod1",modulo(34,17))
-vprint("mod1",modulo(35,17))
-vprint("mod1",modulo(-35,17))
