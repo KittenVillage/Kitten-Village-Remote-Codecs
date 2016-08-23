@@ -796,7 +796,7 @@ vprint("sc cur sc in grid Chromatic2",Scale.current[1+scalegrid[ve][ho]])
 	},
 --TODO	
 ScaleHarp =	{
-		oldnote={
+		note={
 			{7,9,11,1,3,5,7,9},
 			{6,8,10,0,2,4,6,8},
 			{5,7,9,11,1,3,5,7},
@@ -1349,7 +1349,7 @@ vprint("modes new type",type(Modes[Modenames[new]].note))
 vprint("in mode Mode.last is",Mode.last) 
 vprint("in mode new mode",new) 
 vprint("in mode new mode",Modenames[new]) 
-		if new ~= Mode.last and ro~=State.rotate then 
+		if new ~= Mode.last or ro~=State.rotate then 
 		Grid.current.note=Grid.rotate[ro](Mn) 
 		Grid.current.oct=Grid.rotate[ro](Mo) 
 		Mode.last=new 
@@ -2476,9 +2476,9 @@ def_vars()
 		
 	
 	
---Palette.select(9)
-Scale.select(32)
+Scale.select(29)
 Mode.select(20)
+--Palette.select(9)
 
 
 	end
@@ -2880,7 +2880,7 @@ vprint("noteout",noteout)
 
 --[[
 --]]
-		else
+		elseif (button==0) then
 -------------------------------------------------------		
 -- NEW MODES test here
 
