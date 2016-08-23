@@ -396,6 +396,10 @@ g.palette_selected = 9 -- record of presses, goes up and dn
 g.palette_global = 9 -- current pal
 palette_changed = false
 
+-- Setting these two until I clean out the old code.
+Palettenames=palettenames
+Palettes=palettes
+
 --tprint(g.palette)
 
 
@@ -523,63 +527,54 @@ Scaleabrvs = scaleabrvs
 -- if the mode depends on a scale, then note is a function 
 -- and oct will get written by the note function
 -- and the scale grid will be embedded in the function.
---[[
-Push								
-			{0,1,2,3,4,5,6,0},
-			{4,5,6,0,1,2,3,4},
-			{1,2,3,4,5,6,0,1},
-			{5,6,0,1,2,3,4,5},
-			{2,3,4,5,6,0,1,2},
-			{6,0,1,2,3,4,5,6},
-			{3,4,5,6,0,1,2,3},
-			{0,1,2,3,4,5,6,0},
-								
-Diatonic								
-			{0,21,2,3,4,5,6,0},
-			{5,6,0,1,2,3,4,5},
-			{3,4,5,6,0,1,2,3},
-			{1,2,3,4,5,6,0,1},
-			{6,0,1,2,3,4,5,6},
-			{4,5,6,0,1,2,3,4},
-			{2,3,4,5,6,0,1,2},
-			{0,1,2,3,4,5,6,0},
-								
-Diagonal								
-			{0,1,2,3,4,5,6,0},
-			{6,0,1,2,3,4,5,6},
-			{5,6,0,1,2,3,4,5},
-			{4,5,6,0,1,2,3,4},
-			{3,4,5,6,0,1,2,3},
-			{2,3,4,5,6,0,1,2},
-			{1,2,3,4,5,6,0,1},
-			{0,1,2,3,4,5,6,0},
-								
-Octave								
-			{0,1,2,3,4,5,6,0},
-			{0,1,2,3,4,5,6,0},
-			{0,1,2,3,4,5,6,0},
-			{0,1,2,3,4,5,6,0},
-			{0,1,2,3,4,5,6,0},
-			{0,1,2,3,4,5,6,0},
-			{0,1,2,3,4,5,6,0},
-			{0,1,2,3,4,5,6,0},
-
---]]
-
-
-
+-- scalegrid based on pos in Scale table (normalized for 0-11, oct generated.)
+-- note 0-11 note output with matching oct
 Modes = {
-Push = {
-		oldnote={
-			{0,2,4,5,7,9,11,0},
-			{7,9,11,0,2,4,5,7},
-			{2,4,5,7,9,11,0,2},
-			{9,11,0,2,4,5,7,9},
-			{4,5,7,9,11,0,2,4},
-			{11,0,2,4,5,7,9,11},
-			{5,7,9,11,0,2,4,5},
-			{0,2,4,5,7,9,11,0},
+CircleOfFifths = {
+		note={
+			{8,3,10,5,0,7,2,9},
+			{0,7,2,9,4,11,6,1},
+			{8,3,10,5,0,7,2,9},
+			{0,7,2,9,4,11,6,1},
+			{8,3,10,5,0,7,2,9},
+			{0,7,2,9,4,11,6,1},
+			{8,3,10,5,0,7,2,9},
+			{0,7,2,9,4,11,6,1},
 		},
+		oct={
+			{5,5,5,5,6,6,6,6},
+			{5,5,5,5,5,5,5,5},
+			{4,4,4,4,4,4,4,4},
+			{3,3,3,3,4,4,4,4},
+			{3,3,3,3,3,3,3,3},
+			{2,2,2,2,2,2,2,2},
+			{1,1,1,1,2,2,2,2},
+			{1,1,1,1,1,1,1,1},
+		},
+	},
+LPP_Note_mode =	{
+		note={
+			{11,0,1,2,3,4,5,6},
+			{6,7,8,9,10,11,0,2},
+			{1,2,3,4,5,6,7,8},
+			{8,9,10,11,0,1,2,3},
+			{3,4,5,6,7,8,9,10},
+			{10,11,0,1,2,3,4,5},
+			{5,6,7,8,9,10,11,0},
+			{0,1,2,3,4,5,6,7},
+		},
+		oct={
+			{3,4,4,4,4,4,4,4},
+			{3,3,3,3,3,3,4,4},
+			{3,3,3,3,3,3,3,3},
+			{2,2,2,2,3,3,3,3},
+			{2,2,2,2,2,2,2,2},
+			{1,1,2,2,2,2,2,2},
+			{1,1,1,1,1,1,1,2},
+			{1,1,1,1,1,1,1,1},
+		},
+	},
+Push = {
 		oct={
 			{4,4,4,4,4,4,4,5},
 			{3,3,3,4,4,4,4,4},
@@ -592,14 +587,14 @@ Push = {
 		},
 		note=function(n)
 		local scalegrid ={
-			{0,1,2,3,4,5,6,0},
-			{4,5,6,0,1,2,3,4},
-			{1,2,3,4,5,6,0,1},
-			{5,6,0,1,2,3,4,5},
-			{2,3,4,5,6,0,1,2},
-			{6,0,1,2,3,4,5,6},
-			{3,4,5,6,0,1,2,3},
-			{0,1,2,3,4,5,6,0},
+			{1,2,3,4,5,6,7,1},
+			{5,6,7,1,2,3,4,5},
+			{2,3,4,5,6,7,1,2},
+			{6,7,1,2,3,4,5,6},
+			{3,4,5,6,7,1,2,3},
+			{7,1,2,3,4,5,6,7},
+			{4,5,6,7,1,2,3,4},
+			{1,2,3,4,5,6,7,1},
 		}
 		local notegrid={{},{},{},{},{},{},{},{}}
 		for ve=1,8 do for ho=1,8 do
@@ -609,16 +604,6 @@ Push = {
 		end,
 	},
 Diatonic = {
-		oldnote={
-			{0,2,4,5,7,9,11,0},
-			{9,11,0,2,4,5,7,9},
-			{5,7,9,11,0,2,4,5},
-			{2,4,5,7,9,11,0,2},
-			{11,0,2,4,5,7,9,11},
-			{7,9,11,0,2,4,5,7},
-			{4,5,7,9,11,0,2,4},
-			{0,2,4,5,7,9,11,0},
-		},
 		oct={
 			{4,4,4,4,4,4,4,5},
 			{3,3,4,4,4,4,4,4},
@@ -631,14 +616,14 @@ Diatonic = {
 		},
 		note=function(n)
 		local scalegrid ={
-			{0,1,2,3,4,5,6,0},
-			{5,6,0,1,2,3,4,5},
-			{3,4,5,6,0,1,2,3},
-			{1,2,3,4,5,6,0,1},
-			{6,0,1,2,3,4,5,6},
-			{4,5,6,0,1,2,3,4},
-			{2,3,4,5,6,0,1,2},
-			{0,1,2,3,4,5,6,0},
+			{1,2,3,4,5,6,7,1},
+			{6,7,1,2,3,4,5,6},
+			{4,5,6,7,1,2,3,4},
+			{2,3,4,5,6,7,1,2},
+			{7,1,2,3,4,5,6,7},
+			{5,6,7,1,2,3,4,5},
+			{3,4,5,6,7,1,2,3},
+			{1,2,3,4,5,6,7,1},
 		}
 		local notegrid={{},{},{},{},{},{},{},{}}
 		for ve=1,8 do for ho=1,8 do
@@ -649,16 +634,6 @@ vprint("sc cur sc in grid f1",Scale.current[scalegrid[ve][ho]])
 		end,
 	},
 Diagonal = {
-		oldnote={
-			{0,2,4,5,7,9,11,0},
-			{11,0,2,4,5,7,9,11},
-			{9,11,0,2,4,5,7,9},
-			{7,9,11,0,2,4,5,7},
-			{5,7,9,11,0,2,4,5},
-			{4,5,7,9,11,0,2,4},
-			{2,4,5,7,9,11,0,2},
-			{0,2,4,5,7,9,11,0},
-		},
 		oct={
 			{3,3,3,3,3,3,3,4},
 			{2,3,3,3,3,3,3,3},
@@ -671,19 +646,19 @@ Diagonal = {
 		},
 		note=function(n)
 		local scalegrid ={
-			{0,1,2,3,4,5,6,0},
-			{6,0,1,2,3,4,5,6},
-			{5,6,0,1,2,3,4,5},
-			{4,5,6,0,1,2,3,4},
-			{3,4,5,6,0,1,2,3},
-			{2,3,4,5,6,0,1,2},
-			{1,2,3,4,5,6,0,1},
-			{0,1,2,3,4,5,6,0},
+			{1,2,3,4,5,6,7,1},
+			{7,1,2,3,4,5,6,7},
+			{6,7,1,2,3,4,5,6},
+			{5,6,7,1,2,3,4,5},
+			{4,5,6,7,1,2,3,4},
+			{3,4,5,6,7,1,2,3},
+			{2,3,4,5,6,7,1,2},
+			{1,2,3,4,5,6,7,1},
 		}
 		local notegrid={{},{},{},{},{},{},{},{}}
 		for ve=1,8 do for ho=1,8 do
 vprint("sc cur sc in grid f2",Scale.current[scalegrid[ve][ho]])
-		notegrid[ve][ho]=Scale.current[scalegrid[ve][ho]]
+		notegrid[ve][ho]=Scale.current[1+scalegrid[ve][ho]]
 		end end
 		return notegrid
 		end,
@@ -711,43 +686,43 @@ Janko = {
 		},
 	},
 Octave = {
-		oldnote={
-			{0,2,4,5,7,9,11,0},
-			{0,2,4,5,7,9,11,0},
-			{0,2,4,5,7,9,11,0},
-			{0,2,4,5,7,9,11,0},
-			{0,2,4,5,7,9,11,0},
-			{0,2,4,5,7,9,11,0},
-			{0,2,4,5,7,9,11,0},
-			{0,2,4,5,7,9,11,0},
-		},
-		oct={
-			{7,7,7,7,7,7,7,8},
-			{6,6,6,6,6,6,6,7},
-			{5,5,5,5,5,5,5,6},
-			{4,4,4,4,4,4,4,5},
-			{3,3,3,3,3,3,3,4},
-			{2,2,2,2,2,2,2,3},
-			{1,1,1,1,1,1,1,2},
-			{0,0,0,0,0,0,0,1},
+		oct={{},{},{},{},{},{},{},{}},
 		note=function(n)
 		local scalegrid ={
-			{0,1,2,3,4,5,6,0},
-			{0,1,2,3,4,5,6,0},
-			{0,1,2,3,4,5,6,0},
-			{0,1,2,3,4,5,6,0},
-			{0,1,2,3,4,5,6,0},
-			{0,1,2,3,4,5,6,0},
-			{0,1,2,3,4,5,6,0},
-			{0,1,2,3,4,5,6,0},
+			{1,2,3,4,5,6,7,8},
+			{1,2,3,4,5,6,7,8},
+			{1,2,3,4,5,6,7,8},
+			{1,2,3,4,5,6,7,8},
+			{1,2,3,4,5,6,7,8},
+			{1,2,3,4,5,6,7,8},
+			{1,2,3,4,5,6,7,8},
+			{1,2,3,4,5,6,7,8},
 		}
 		local notegrid={{},{},{},{},{},{},{},{}}
+		local octgrid={{},{},{},{},{},{},{},{}}
+--vprint("sc cur sc in grid Octave",Scale.current[1+scalegrid[ve][ho]])
+tprint(Scale.current) 
 		for ve=1,8 do for ho=1,8 do
-		notegrid[ve][ho]=Scale.current[scalegrid[ve][ho]]
+		local note =Scale.current[scalegrid[ve][ho]]
+--vprint("sc cur sc in grid Octave",Scale.current[1+scalegrid[ve][ho]])
+		if  note > 11 then
+		notegrid[ve][ho]=note-12
+		octgrid[ve][ho]=9-ve+1
+		--Modes[Modenames[n]].oct[ve][ho]=ve-1
+vprint("sc cur sc in grid Octave","ve "..ve.." ho "..ho.." oct "..(9-ve+1).." note "..(note-12))
+		else
+		notegrid[ve][ho]=note
+		octgrid[ve][ho]=9-ve
+		--Modes[Modenames[n]].oct[ve][ho]=ve
+vprint("sc cur sc in grid Octave","ve "..ve.." ho "..ho.." oct "..(9-ve).." note ".. note)
+--vprint("sc cur sc in grid Octave",Scale.current[1+scalegrid[ve][ho]])
+		end	
 		end end
+		Modes[Modenames[n]].oct=octgrid
+tprint(Modes[Modenames[n]].oct)
+tprint(notegrid)
 		return notegrid
 		end,
-		},
 	},
 Chromatic = {
 		note={
@@ -770,17 +745,7 @@ Chromatic = {
 			{1,1,1,1,2,2,2,2},
 			{1,1,1,1,1,1,1,1},
 		},
-		note=function(n)
-		local scalegrid ={
-			{0,1,2,3,4,5,6,0},
-			{0,1,2,3,4,5,6,0},
-			{0,1,2,3,4,5,6,0},
-			{0,1,2,3,4,5,6,0},
-			{0,1,2,3,4,5,6,0},
-			{0,1,2,3,4,5,6,0},
-			{0,1,2,3,4,5,6,0},
-			{0,1,2,3,4,5,6,0},
-		}
+		xnote=function(n)
 		local notegrid={{},{},{},{},{},{},{},{}}
 		local index=0
 		local scale=Scale.current
@@ -801,6 +766,7 @@ Chromatic = {
 			end  
 		
 		for ve=1,8 do for ho=1,8 do
+vprint("sc cur sc in grid Chromatic",Scale.current[1+scalegrid[ve][ho]])
 			local oct = math.floor(index/sc_len)
 			local note = scale[1+modulo(index,sc_len)]
 		Modes[Modenames[n]].oct[ve][ho]=oct
@@ -811,7 +777,7 @@ Chromatic = {
 		
 	},
 Chromatic2 = {
-		note={
+		oldnote={
 			{8,9,10,11,0,1,2,3},
 			{0,1,2,3,4,5,6,7},
 			{4,5,6,7,8,9,10,11},
@@ -844,7 +810,8 @@ Chromatic2 = {
 		}
 		local notegrid={{},{},{},{},{},{},{},{}}
 		for ve=1,8 do for ho=1,8 do
-		notegrid[ve][ho]=Scale.current[scalegrid[ve][ho]]
+vprint("sc cur sc in grid Chromatic2",Scale.current[1+scalegrid[ve][ho]])
+		notegrid[ve][ho]=Scale.current[1+scalegrid[ve][ho]]
 		end end
 		return notegrid
 		end,
@@ -1091,30 +1058,10 @@ Sixth_and_5th =	{
 			{1,1,1,1,2,2,2,2},
 		},
 	},
-LPP_Note_mode =	{
-		note={
-			{11,0,1,2,3,4,5,6},
-			{6,7,8,9,10,11,0,2},
-			{1,2,3,4,5,6,7,8},
-			{8,9,10,11,0,1,2,3},
-			{3,4,5,6,7,8,9,10},
-			{10,11,0,1,2,3,4,5},
-			{5,6,7,8,9,10,11,0},
-			{0,1,2,3,4,5,6,7},
-		},
-		oct={
-			{3,4,4,4,4,4,4,4},
-			{3,3,3,3,3,3,4,4},
-			{3,3,3,3,3,3,3,3},
-			{2,2,2,2,3,3,3,3},
-			{2,2,2,2,2,2,2,2},
-			{1,1,2,2,2,2,2,2},
-			{1,1,1,1,1,1,1,2},
-			{1,1,1,1,1,1,1,1},
-		},
-	},
 }
 Modenames={
+"CircleOfFifths",
+"LPP_Note_mode",
 "Push",
 "Diatonic",
 "Diagonal",
@@ -1128,12 +1075,11 @@ Modenames={
 "Guitar_Drop_D",
 "Guitar_low_Fsh_B",
 "Guitar_low_E_B",
-"ChromaHarp",
 "ScaleHarp",
+"ChromaHarp",
 "Wicki_Hayden",
 "Fourth_and_5th",
 "Sixth_and_5th",
-"LPP_Note_mode",
 }
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -1240,6 +1186,28 @@ end
 
 
 --]]
+
+-- State keeps track of what notes are currently pressed/playing
+-- and what button states we are in. (shift, click, shcl, etc.)
+State = {
+shift = 0,
+click = 0,
+shiftclick = 0,
+update=0,
+rotate=1,
+root=24,
+do_update=function() 
+Palette.select(Palette.last)
+Scale.select(Scale.last)
+Mode.select(Mode.last)
+Grid.refresh_midiout() 
+
+
+
+end,
+}
+
+
 -- Grid is the array of pads, pad colors, notes, octives
 -- Grid handles future rotation transforms
 -- 1 is normal (1,1 on bottom left) 2-4 rotate counter clockwise.
@@ -1290,10 +1258,11 @@ vprint("cur note in grid",Grid.current.note[ve][ho])
 -- Palette has the methods for changing the Palette.
 -- select takes from Grid.current.note 
 Palette = { 
-		current = {},
-		last = 0,
+		current = Palettes[Palettenames[10]],
+		last = 10,
+		length = table.getn(Palettenames),
 		select=function(n) local new = 1+modulo(n,Palette.length) 
-		vprint("new pal",new) 
+vprint("new pal",new) 
 		if new ~= Palette.last then for ve=1,8 do for ho=1,8 do 
 		Palette.current=Palettes[Palettenames[new]]
 		Grid.current.R[ve][ho]=Palette.current[Grid.current.note[ve][ho]].R 
@@ -1303,10 +1272,6 @@ Palette = {
 		end end,
 		}
 
--- Setting these two until I clean out the old code.
-Palettenames=palettenames
-Palettes=palettes
-Palette.length = table.getn(Palettenames)
 
 
 
@@ -1327,14 +1292,15 @@ Transpose = {
 Scale = {
 		current = Scales[Scalenames[1]],
 		length = table.getn(Scalenames),
-		last = 0,
-		select=function(n) local new = 1+modulo(n,Scale.length) 
+		last = 15,
+		select=function(n) local new = 1+modulo(n,Scale.length) local Ml=Mode.last or 1 
 		vprint("new scale",new)
-		if type(Modes[Modenames[Mode.last]].note)=="function" then
+		vprint("in scale Mode.last",Ml)
+		if type(Modes[Modenames[Ml]].note)=="function" then
 		if new ~= Scale.last then 
 		Scale.last=new
  		Scale.current=Scales[Scalenames[new]]
-		Mode.select(Mode.last) State.update=1 
+		State.update=1 
 		end end end,
 
 		}
@@ -1351,15 +1317,19 @@ Scale = {
 -- TODO baby mode
 Mode = { 
 		current = 0,
-		last = 0,
+		last = 1,
 		select=function(n) local new = 1+modulo(n,table.getn(Modenames)) 
+tprint(Modes[Modenames[new]])
+vprint("modes new type",type(Modes[Modenames[new]].note))
 		local Mn=type(Modes[Modenames[new]].note)=="function" and Modes[Modenames[new]].note(new) or Modes[Modenames[new]].note
 		local Mo=Modes[Modenames[new]].oct
-		vprint("new mode",new) 
+tprint(Mn)
+vprint("in mode Mode.last is",Mode.last) 
+vprint("in mode new mode",new) 
+vprint("in mode new mode",Modenames[new]) 
 		if new ~= Mode.last then 
 		Grid.current.note=Grid.rotate[State.rotate](Mn) 
 		Grid.current.oct=Grid.rotate[State.rotate](Mo) 
-		Grid.refresh_midiout() 
 		Mode.last=new 
 		State.update=1 end end,
 		special=function() end,
@@ -1376,18 +1346,12 @@ Mode = {
 Layout = {}
 
 --]]
--- State keeps track of what notes are currently pressed/playing
--- and what button states we are in. (shift, click, shcl, etc.)
-State = {}
-State.shift = 0
-State.click = 0
-State.shiftclick = 0
+
+if State.update==1 then
+
+State.do_update()
 State.update=0
-State.rotate=1
-State.root=24
-
-
-
+end
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -2487,11 +2451,12 @@ first_button
 		remote.define_auto_outputs(outputs)
 def_vars()
 		
-		
---Scale.select(2)
-Mode.select(1)
-
+	
+	
 Palette.select(9)
+Scale.select(28)
+Mode.select(4)
+
 
 	end
 end
@@ -3546,7 +3511,8 @@ vprint("outnorm",outnorm)
 --tprint(gridoct)
 			local padx = padindex[i].x
 			local pady = 9-padindex[i].y
-
+--vprint("padx",padx)
+--vprint("pady",pady)
 			--local oct = math.floor(padid/scale_len)
 			local oct = gridoct[pady][padx]*12
 					--local addnote = scale[1+modulo(i-1,scale_len)]
@@ -3555,7 +3521,11 @@ vprint("outnorm",outnorm)
 					local outnorm = gridnote[pady][padx] --normalized to 0-11 range
 --					local padnum = string.format("%x",i+35) --note# that the controller led responds to
 					local padnum = padindex[i].padhex --note# that the controller led responds to
+--vprint("g.palette[outnorm].R",g.palette[outnorm].R)
+--vprint("padnum",padnum)
+--vprint("outnorm",outnorm)
 
+--tprint({padsysex,padnum,g.palette[outnorm].R,g.palette[outnorm].G,g.palette[outnorm].B})
 
 
 						padsysex=table.concat({padsysex,padnum,g.palette[outnorm].R,g.palette[outnorm].G,g.palette[outnorm].B}," ")
@@ -4070,6 +4040,7 @@ end
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- button lookup!
+--[[
 button_function = {
 
 --left to right Top 
@@ -4079,8 +4050,8 @@ button_function = {
 [94]={},
 [95]={},
 [96]={},
-[97]={function()  Mode.select(Mode.last-1) end},
-[98]={function()  Mode.select(Mode.last+1) end},
+[97]=function()  Mode.select(Mode.last-1) end,
+[98]=function()  Mode.select(Mode.last+1) end,
 --left to right Bottom
 [01]={},
 [02]={},
@@ -4111,4 +4082,5 @@ button_function = {
 
 
 }
+--]]
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
