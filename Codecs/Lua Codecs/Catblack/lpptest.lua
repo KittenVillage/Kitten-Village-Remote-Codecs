@@ -657,8 +657,8 @@ Diagonal = {
 		}
 		local notegrid={{},{},{},{},{},{},{},{}}
 		for ve=1,8 do for ho=1,8 do
-vprint("sc cur sc in grid f2",Scale.current[scalegrid[ve][ho]])
-		notegrid[ve][ho]=Scale.current[1+scalegrid[ve][ho]]
+		notegrid[ve][ho]=Scale.current[scalegrid[ve][ho]]
+vprint("sc cur sc in grid ",Modenames[n].." ve "..ve.." ho "..ho.."  note "..Scale.current[scalegrid[ve][ho]])
 		end end
 		return notegrid
 		end,
@@ -682,17 +682,17 @@ Octave = {
 tprint(Scale.current) 
 		for ve=1,8 do for ho=1,8 do
 		local note =Scale.current[scalegrid[ve][ho]]
---vprint("sc cur sc in grid Octave",Scale.current[1+scalegrid[ve][ho]])
+--vprint("sc cur sc in gri  d Octave",Scale.current[1+scalegrid[ve][ho]])
 		if  note > 11 then
 		notegrid[ve][ho]=note-12
-		octgrid[ve][ho]=9-ve+1
+		octgrid[ve][ho]=8-ve+1
 		--Modes[Modenames[n]].oct[ve][ho]=ve-1
-vprint("sc cur sc in grid Octave","ve "..ve.." ho "..ho.." oct "..(9-ve+1).." note "..(note-12))
+vprint("sc cur sc in grid Octave","ve "..ve.." ho "..ho.." oct "..(8-ve+1).." note "..(note-12))
 		else
 		notegrid[ve][ho]=note
-		octgrid[ve][ho]=9-ve
+		octgrid[ve][ho]=8-ve
 		--Modes[Modenames[n]].oct[ve][ho]=ve
-vprint("sc cur sc in grid Octave","ve "..ve.." ho "..ho.." oct "..(9-ve).." note ".. note)
+vprint("sc cur sc in grid Octave","ve "..ve.." ho "..ho.." oct "..(8-ve).." note ".. note)
 --vprint("sc cur sc in grid Octave",Scale.current[1+scalegrid[ve][ho]])
 		end	
 		end end
@@ -1228,8 +1228,27 @@ end,
 			},
 			new  = { note={{},{},{},{},{},{},{},{}},oct={{},{},{},{},{},{},{},{}} 
 			},
-			current = { note={{},{},{},{},{},{},{},{}},
-						oct={{},{},{},{},{},{},{},{}} ,
+			current = { 
+						note={
+							{8,3,10,5,0,7,2,9},
+							{0,7,2,9,4,11,6,1},
+							{8,3,10,5,0,7,2,9},
+							{0,7,2,9,4,11,6,1},
+							{8,3,10,5,0,7,2,9},
+							{0,7,2,9,4,11,6,1},
+							{8,3,10,5,0,7,2,9},
+							{0,7,2,9,4,11,6,1},
+						},
+						oct={
+							{5,5,5,5,6,6,6,6},
+							{5,5,5,5,5,5,5,5},
+							{4,4,4,4,4,4,4,4},
+							{3,3,3,3,4,4,4,4},
+							{3,3,3,3,3,3,3,3},
+							{2,2,2,2,2,2,2,2},
+							{1,1,1,1,2,2,2,2},
+							{1,1,1,1,1,1,1,1},
+						},
 						midiout={{},{},{},{},{},{},{},{}},
 						R={{},{},{},{},{},{},{},{}},
 						G={{},{},{},{},{},{},{},{}},
@@ -1262,10 +1281,12 @@ Palette = {
 		current = Palettes[Palettenames[10]],
 		last = 10,
 		length = table.getn(Palettenames),
-		select=function(n) local new = 1+modulo(n,Palette.length) 
+		select=function(n) local new = 1+modulo(n-1,Palette.length) 
 vprint("new pal",new) 
+vprint("new pal ",Palettenames[new]) 
 		if new ~= Palette.last then for ve=1,8 do for ho=1,8 do 
 		Palette.current=Palettes[Palettenames[new]]
+tprint(Grid.current.note)
 		Grid.current.R[ve][ho]=Palette.current[Grid.current.note[ve][ho]].R 
 		Grid.current.G[ve][ho]=Palette.current[Grid.current.note[ve][ho]].G 
 		Grid.current.B[ve][ho]=Palette.current[Grid.current.note[ve][ho]].B 
@@ -1286,7 +1307,6 @@ Transpose = {
 
 }
 
-
 -- Scale has methods for changing the current Scale 
 -- If the current Mode is set by a function, then Scale updates!
 -- If so, we change Scale.last, then tell Mode.select to update!
@@ -1294,9 +1314,9 @@ Scale = {
 		current = Scales[Scalenames[1]],
 		length = table.getn(Scalenames),
 		last = 15,
-		select=function(n) local new = 1+modulo(n,Scale.length) local Ml=Mode.last or 1 
-		vprint("new scale",new)
-		vprint("in scale Mode.last",Ml)
+		select=function(n) local new = 1+modulo(n-1,Scale.length) local Ml=Mode.last
+vprint("new scale",new)
+vprint("in scale Mode.last",Ml)
 		if type(Modes[Modenames[Ml]].note)=="function" then
 		if new ~= Scale.last then 
 		Scale.last=new
@@ -1319,19 +1339,21 @@ Scale = {
 Mode = { 
 		current = 0,
 		last = 1,
-		select=function(n) local new = 1+modulo(n,table.getn(Modenames)) 
+		select=function(n,r) local new = 1+modulo(n-1,table.getn(Modenames)) 
+		local ro = r or State.rotate
 tprint(Modes[Modenames[new]])
 vprint("modes new type",type(Modes[Modenames[new]].note))
 		local Mn=type(Modes[Modenames[new]].note)=="function" and Modes[Modenames[new]].note(new) or Modes[Modenames[new]].note
 		local Mo=Modes[Modenames[new]].oct
-tprint(Mn)
+--tprint(Mn)
 vprint("in mode Mode.last is",Mode.last) 
 vprint("in mode new mode",new) 
 vprint("in mode new mode",Modenames[new]) 
-		if new ~= Mode.last then 
-		Grid.current.note=Grid.rotate[State.rotate](Mn) 
-		Grid.current.oct=Grid.rotate[State.rotate](Mo) 
+		if new ~= Mode.last and ro~=State.rotate then 
+		Grid.current.note=Grid.rotate[ro](Mn) 
+		Grid.current.oct=Grid.rotate[ro](Mo) 
 		Mode.last=new 
+		State.rotate=ro
 		State.update=1 end end,
 		special=function() end,
 		
@@ -2454,9 +2476,9 @@ def_vars()
 		
 	
 	
-Palette.select(9)
-Scale.select(28)
-Mode.select(4)
+--Palette.select(9)
+Scale.select(32)
+Mode.select(20)
 
 
 	end
