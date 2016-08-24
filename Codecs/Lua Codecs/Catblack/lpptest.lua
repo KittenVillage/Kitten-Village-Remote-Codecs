@@ -3,7 +3,7 @@
 -- Launchpad Pro Lua Codec and Remote Map
 -- by Catblack@gmail.com
 --
--- Please paypal me $10 if you like this!
+-- Please paypal me $20 if you like this!
 --
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -1160,6 +1160,7 @@ end
 Button = {}
 Button.__index = Button
 function Button:new(num,ind,o) 
+vprint("new button num",num.. " ind "..ind)
 	o = o or {}
 	number = num
 	index = ind
@@ -1279,7 +1280,7 @@ vprint("cur note in grid",Grid.current.note[ve][ho])
 -- select takes from Grid.current.note 
 Palette = { 
 		current = Palettes[Palettenames[10]],
-		last = 10,
+		--last = 10,
 		length = table.getn(Palettenames),
 		select=function(n) local new = 1+modulo(n-1,Palette.length) 
 vprint("new pal",new) 
@@ -1341,7 +1342,7 @@ Mode = {
 		last = 1,
 		select=function(n,r) local new = 1+modulo(n-1,table.getn(Modenames)) 
 		local ro = r or State.rotate
-tprint(Modes[Modenames[new]])
+--tprint(Modes[Modenames[new]])
 vprint("modes new type",type(Modes[Modenames[new]].note))
 		local Mn=type(Modes[Modenames[new]].note)=="function" and Modes[Modenames[new]].note(new) or Modes[Modenames[new]].note
 		local Mo=Modes[Modenames[new]].oct
@@ -1351,6 +1352,10 @@ vprint("in mode new mode",new)
 vprint("in mode new mode",Modenames[new]) 
 		if new ~= Mode.last or ro~=State.rotate then 
 		Grid.current.note=Grid.rotate[ro](Mn) 
+tprint(Mn)
+vprint("Mode ro",ro) 
+
+tprint(Grid.current.note)
 		Grid.current.oct=Grid.rotate[ro](Mo) 
 		Mode.last=new 
 		State.rotate=ro
@@ -1395,6 +1400,7 @@ drummode = {35,39,43,47,51,55,59,63} -- left column -1
 button = {}
 pad = {}
 padindex = {} 
+padgrid = {{},{},{},{},{},{},{},{}} 
 note = {}
 drum = {}
 buttonindex = {}
@@ -2478,7 +2484,7 @@ def_vars()
 	
 Scale.select(29)
 Mode.select(20)
---Palette.select(9)
+Palette.select(10)
 
 
 	end
@@ -3455,7 +3461,8 @@ noscaleneeded=true -- while we test new modes
 		if  (noscaleneeded==false) then -- while we test new modes
 
 				local padsysex = ""
-				for i=1,64,1 do
+--[[
+--				for i=1,64,1 do
 					local padid = i-1
 					local scale_len = table.getn(scale)
 					if scale_len == 7 then -- 7 and below
@@ -3468,7 +3475,7 @@ noscaleneeded=true -- while we test new modes
 					else
 						root = 24 
 					end  
-
+					--local oct = math.floor(padid/scale_len)
 					local oct = math.floor(padid/scale_len)
 					local addnote = scale[1+modulo(i-1,scale_len)]
 					local outnote = root+g.transpose+(12*oct)+addnote --note that gets played by synth
@@ -3477,6 +3484,7 @@ noscaleneeded=true -- while we test new modes
 					local padnum = padindex[i].padhex --note# that the controller led responds to
 --					local keycolors = {"03","0D","2D"} --white,yellow,blue
 --					local whites = {2, 4, 5, 7, 9, 11}
+--]]
 --[[
 vprint("padid",padid)
 vprint("oct",oct)
@@ -3509,12 +3517,17 @@ vprint("outnorm",outnorm)
 -- Something something sysex
 --						padsysex=padsysex..padnum.." "..colorscale[outnorm].R .." ".. colorscale[outnorm].G .." "..colorscale[outnorm].B
 --						padsysex=padsysex..padnum.." "..g.palette[outnorm].R .." ".. g.palette[outnorm].G .." "..g.palette[outnorm].B
-						padsysex=table.concat({padsysex,padnum,g.palette[outnorm].R,g.palette[outnorm].G,g.palette[outnorm].B}," ")
+--						padsysex=table.concat({padsysex,padnum,g.palette[outnorm].R,g.palette[outnorm].G,g.palette[outnorm].B}," ")
 -- even even new, keep a list of all the pads, and which are pressed, and colors they return to.
 
 
 						
-				end --end for 1,64
+--				end --end for 1,64
+for ve=1,8 do for ho=1,8 do 
+					--local padnum = padgrid[ve][ho].padhex --note# that the controller led responds to
+						padsysex=table.concat({padsysex,padgrid[ve][ho].padhex,Grid.current.R[ve][ho],Grid.current.G[ve][ho],Grid.current.B[ve][ho]}," ")
+end end
+
 				padupdate=remote.make_midi(table.concat({sysex_header,"0B",padsysex,sysend}," "))
 				table.insert(lpp_events,padupdate)
 				--error(padsysex)
@@ -3537,13 +3550,16 @@ vprint("outnorm",outnorm)
 --vprint("padx",padx)
 --vprint("pady",pady)
 			--local oct = math.floor(padid/scale_len)
-			local oct = gridoct[pady][padx]*12
+--			local oct = gridoct[pady][padx]*12
 					--local addnote = scale[1+modulo(i-1,scale_len)]
 					--local outnote = root+g.transpose+(12*oct)+addnote --note that gets played by synth
 					--local outnorm = modulo(outnote,12) --normalized to 0-11 range
-					local outnorm = gridnote[pady][padx] --normalized to 0-11 range
+--					local outnorm = gridnote[pady][padx] --normalized to 0-11 range
 --					local padnum = string.format("%x",i+35) --note# that the controller led responds to
 					local padnum = padindex[i].padhex --note# that the controller led responds to
+					local R = Grid.current.R[pady][padx]
+					local G = Grid.current.G[pady][padx]
+					local B = Grid.current.B[pady][padx]
 --vprint("g.palette[outnorm].R",g.palette[outnorm].R)
 --vprint("padnum",padnum)
 --vprint("outnorm",outnorm)
@@ -3551,12 +3567,16 @@ vprint("outnorm",outnorm)
 --tprint({padsysex,padnum,g.palette[outnorm].R,g.palette[outnorm].G,g.palette[outnorm].B})
 
 
-						padsysex=table.concat({padsysex,padnum,g.palette[outnorm].R,g.palette[outnorm].G,g.palette[outnorm].B}," ")
+--						padsysex=table.concat({padsysex,padnum,g.palette[outnorm].R,g.palette[outnorm].G,g.palette[outnorm].B}," ")
+						padsysex=table.concat({padsysex,padnum,R,G,B}," ")
 -- even even new, keep a list of all the pads, and which are pressed, and colors they return to.
 
 
 						
 				end --end for 1,64
+vprint("Current","current")
+
+--tprint(Grid.current)
 				padupdate=remote.make_midi(table.concat({sysex_header,"0B",padsysex,sysend}," "))
 				table.insert(lpp_events,padupdate)
 				
@@ -3995,7 +4015,9 @@ function def_vars()
 			if note[thisnote] == nil then
 				note[thisnote]={}
 			end
+padgrid[ve][ho]={padhex=thispadhex,itemindex=(index-1)+g.itemnum.first_pad,index=index}
 			table.insert(note[thisnote],thispad) --In note mode, a single note can be on one or two pads.	
+
 			table.insert(pad,thispad,{
 							padhex=thispadhex,
 							note=thisnote,
@@ -4043,6 +4065,7 @@ function def_vars()
 
 
 	end
+tprint(button)
 	--[[
 	remote.trace("start note\n")
 	tprint(note)
