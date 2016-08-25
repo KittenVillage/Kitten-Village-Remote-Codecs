@@ -679,7 +679,7 @@ Octave = {
 		local notegrid={{},{},{},{},{},{},{},{}}
 		local octgrid={{},{},{},{},{},{},{},{}}
 --vprint("sc cur sc in grid Octave",Scale.current[1+scalegrid[ve][ho]])
-tprint(Scale.current) 
+--tprint(Scale.current) 
 		for ve=1,8 do for ho=1,8 do
 		local note =Scale.current[scalegrid[ve][ho]]
 --vprint("sc cur sc in gri  d Octave",Scale.current[1+scalegrid[ve][ho]])
@@ -697,8 +697,8 @@ vprint("sc cur sc in grid Octave","ve "..ve.." ho "..ho.." oct "..(8-ve).." note
 		end	
 		end end
 		Modes[Modenames[n]].oct=octgrid
-tprint(Modes[Modenames[n]].oct)
-tprint(notegrid)
+--tprint(Modes[Modenames[n]].oct)
+--tprint(notegrid)
 		return notegrid
 		end,
 	},
@@ -1287,7 +1287,7 @@ vprint("new pal",new)
 vprint("new pal ",Palettenames[new]) 
 		if new ~= Palette.last then for ve=1,8 do for ho=1,8 do 
 		Palette.current=Palettes[Palettenames[new]]
-tprint(Grid.current.note)
+--tprint(Grid.current.note)
 		Grid.current.R[ve][ho]=Palette.current[Grid.current.note[ve][ho]].R 
 		Grid.current.G[ve][ho]=Palette.current[Grid.current.note[ve][ho]].G 
 		Grid.current.B[ve][ho]=Palette.current[Grid.current.note[ve][ho]].B 
@@ -1305,7 +1305,8 @@ tprint(Grid.current.note)
 -- can be negative.
 -- has stop when scale is out of bounds.
 Transpose = {
-
+		current =0,
+		last = 0,
 }
 
 -- Scale has methods for changing the current Scale 
@@ -1352,10 +1353,10 @@ vprint("in mode new mode",new)
 vprint("in mode new mode",Modenames[new]) 
 		if new ~= Mode.last or ro~=State.rotate then 
 		Grid.current.note=Grid.rotate[ro](Mn) 
-tprint(Mn)
+--tprint(Mn)
 vprint("Mode ro",ro) 
 
-tprint(Grid.current.note)
+--tprint(Grid.current.note)
 		Grid.current.oct=Grid.rotate[ro](Mo) 
 		Mode.last=new 
 		State.rotate=ro
@@ -4065,7 +4066,9 @@ padgrid[ve][ho]={padhex=thispadhex,itemindex=(index-1)+g.itemnum.first_pad,index
 
 
 	end
-tprint(button)
+vprint("button 9"," ")
+tprint(button[9])
+
 	--[[
 	remote.trace("start note\n")
 	tprint(note)
