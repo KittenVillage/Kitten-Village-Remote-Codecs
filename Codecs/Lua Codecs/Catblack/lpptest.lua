@@ -534,10 +534,10 @@ CircleOfFifths = {
 		note={
 			{8,3,10,5,0,7,2,9},
 			{0,7,2,9,4,11,6,1},
+			{4,11,6,1,8,3,10,5},
 			{8,3,10,5,0,7,2,9},
 			{0,7,2,9,4,11,6,1},
-			{8,3,10,5,0,7,2,9},
-			{0,7,2,9,4,11,6,1},
+			{4,11,6,1,8,3,10,5},
 			{8,3,10,5,0,7,2,9},
 			{0,7,2,9,4,11,6,1},
 		},
@@ -795,6 +795,9 @@ vprint("sc cur sc in grid Chromatic2",Scale.current[1+scalegrid[ve][ho]])
 		end,
 	},
 --TODO	
+-- Scaleharp starts on the first row with a scale of 8
+-- the next row up adds 1, etc
+-- oct is note > 11 or modulo?
 ScaleHarp =	{
 		note={
 			{7,9,11,1,3,5,7,9},
@@ -1229,14 +1232,14 @@ end,
 			},
 			new  = { note={{},{},{},{},{},{},{},{}},oct={{},{},{},{},{},{},{},{}} 
 			},
-			current = { 
+			current = { -- CoF
 						note={
 							{8,3,10,5,0,7,2,9},
 							{0,7,2,9,4,11,6,1},
+							{4,11,6,1,8,3,10,5},
 							{8,3,10,5,0,7,2,9},
 							{0,7,2,9,4,11,6,1},
-							{8,3,10,5,0,7,2,9},
-							{0,7,2,9,4,11,6,1},
+							{4,11,6,1,8,3,10,5},
 							{8,3,10,5,0,7,2,9},
 							{0,7,2,9,4,11,6,1},
 						},
@@ -1576,6 +1579,7 @@ function vprint (strng,vari)
 	remote.trace(strng .. ": "..tostring(vari)..'\n')
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
 
 
@@ -2484,8 +2488,8 @@ def_vars()
 	
 	
 Scale.select(29)
-Mode.select(20)
 Palette.select(10)
+Mode.select(1)
 
 
 	end
@@ -2538,7 +2542,7 @@ if event.size==3 then -- Note, button, channel pressure
 	ret =    remote.match_midi("<10x1>? yy zz",event) --find a pad, button on or off
 	if(ret~=nil) then
 tprint(ret)
-		tran_pad = ret.z
+		vel_pad = ret.z
 		local notein = ret.y
 		local valuein = ret.x	  
 
@@ -2592,7 +2596,7 @@ if event.size==3 then -- Note, button, channel pressure
 		else
 			ret.x =1
 		end
-		tran_pad = ret.z
+		vel_pad = ret.z
 		
 -----------------------------------
 -- handle buttons
@@ -3106,8 +3110,8 @@ function remote_deliver_midi(maxbytes,port)
 		if g.transpose_delivered~=g.transpose  then
 			local shcolors = {"21","05"} -- green, red
 			shevent = remote.make_midi("90 50 "..shcolors[g.button.shift+1])
-			if(tran_pad~=nil) then
-				if g.button.shift==1 or tran_pad>0 then
+			if(vel_pad~=nil) then
+				if g.button.shift==1 or vel_pad>0 then
 
 --this needs to change to some color output
 -- maybe side buttons
@@ -3149,7 +3153,7 @@ function remote_deliver_midi(maxbytes,port)
 --this needs to change to some color output
 		--if scale changes, we update the LCD
 --------------------------------------------------------------------------------
-		if ( (g.scale_delivered~=scale_int or g.transpose_delivered~=g.transpose) and g.button.shift~=1 and tran_pad==0) then
+		if ( (g.scale_delivered~=scale_int or g.transpose_delivered~=g.transpose) and g.button.shift~=1 and vel_pad==0) then
 --[[
 			local scale_abrv = scaleabrvs[scalename]
 			local c_one = string.sub(scale_abrv,1,1)
