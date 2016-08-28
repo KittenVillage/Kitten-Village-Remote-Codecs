@@ -1201,6 +1201,8 @@ shiftclick = 0,
 update=0,
 rotate=1,
 root=24,
+lighton={},
+lightoff={},
 do_update=function() 
 Palette.select(Palette.last)
 Scale.select(Scale.last)
@@ -1370,14 +1372,16 @@ vprint("Mode ro",ro)
 
 
 --[[
+--]]
 -- Layout has methods for detecting/changing the current Layout. 
 -- Layout refers to the LPP Note, Drum, Fader, Programming modes. 
 -- LPP manual calls these layouts, but Reason remotemaps use a MODE column (which I use for the faders)
 -- This is an internal designation detecting/setting sysex.
---Only programmer and fader modes enabled!
+--Only programmer (3) and fader (2) modes enabled!
+-- TODO drum layout flips to internal drum Mode
 Layout = {}
+Layout.current = 3
 
---]]
 
 if State.update==1 then
 
@@ -2489,7 +2493,7 @@ def_vars()
 	
 Scale.select(29)
 Palette.select(10)
-Mode.select(1)
+Mode.select(1,1)
 
 
 	end
@@ -2535,55 +2539,11 @@ function remote_process_midi(event)
 -- Match buttons and notes and transpose notes.
 -- -----------------------------------------------------------------------------------------------
 
---[[
-if event.size==3 then -- Note, button, channel pressure
 
--- 1001 is 90 (note on) 1011 is B0 (controller) 
-	ret =    remote.match_midi("<10x1>? yy zz",event) --find a pad, button on or off
-	if(ret~=nil) then
-tprint(ret)
-		vel_pad = ret.z
-		local notein = ret.y
-		local valuein = ret.x	  
-
-
-
-			local new_note = ret.y 
-			local new_notevelocity = ret.z 
-			if (g.last_notevelocity_delivered~=new_notevelocity) and (g.last_note_delivered~=new_note) then -- draw new notevelocity
-				g.current_note=new_note
-				g.current_notevelocity=new_notevelocity
-				
-			
-			end
---]]
---[[
-
-
-				local msg={ time_stamp = event.time_stamp, item=g.itemnum.accent, value = g.accent_count, note = "2B",velocity = accent_pad.z }
-				remote.handle_input(msg)
-				g.note_delivered = noteout
-				return true
-
-
---	elseif ret
-			local var_event = make_lcd_midi_message("New Note "..new_note)
-			table.insert(lcd_events,var_event)
-	end -- ret, button not nil
---]]
-	
-	
-	
-	
-	
-	
-	
-	
-	
 -----------------------------------
 --
 -----------------------------------
-if event.size==3 then -- Note, button, channel pressure
+if event.size==3 then -- Note, button, channel pressure, fader
 
 -- 1001 is 90 (note on) 1011 is B0 (controller)	
 
@@ -2596,12 +2556,12 @@ if event.size==3 then -- Note, button, channel pressure
 		else
 			ret.x =1
 		end
-		vel_pad = ret.z
+		local vel_pad = ret.z
 		
 -----------------------------------
 -- handle buttons
 -----------------------------------
-		if button==1 then
+		if button==1 and (ret.y<21 or ret.y>29) then -- button, not fader mode
 
 			local shiftbtn = remote.match_midi("B? 50 zz",event) -- 80 Shift
 			local clickbtn = remote.match_midi("B? 46 zz",event) -- 70 Shift
@@ -2803,6 +2763,9 @@ remote.trace("scale dn "..scalename)
 		
 
 		end -- button
+-----------------------------------
+-- end handle buttons
+-----------------------------------
 --------------------------------------------------------------------------------------------------------------------------		
 --------------------------------------------------------------------------------------------------------------------------		
 
@@ -2821,6 +2784,7 @@ remote.trace("scale dn "..scalename)
 -- here's where the incoming note gets transposed!
 --------------------------------------------------------------------------------------------------------------------------		
 noscaleneeded=true -- while we test new modes
+--[[
 		
 		if (ret.y>10 and ret.y<89) and (noscaleneeded==false) and (button==0) then -- 11 to 88, but not button
 --		if (button==0) then -- 11 to 88, but not button
@@ -2856,6 +2820,7 @@ noscaleneeded=true -- while we test new modes
 			local addnote = scale[ind]
 			local noteout = root+g.transpose+(12*oct)+addnote
 ----------------------------------------------------			
+--]]
 --[[
 vprint("padid",padid)
 vprint("oct",oct)
@@ -2863,6 +2828,7 @@ vprint("addnote",addnote)
 vprint("ind",ind)
 vprint("noteout",noteout)
 --]]
+--[[
 ----------------------------------------------------			
 			if (noteout<127 and noteout>0) then
 				local msg={ time_stamp = event.time_stamp, item=1, value = ret.x, note = noteout,velocity = ret.z }
@@ -2889,44 +2855,76 @@ vprint("noteout",noteout)
 
 			
 
---[[
 --]]
-		elseif (button==0) then
+		if (button==0) then
 -------------------------------------------------------		
 -- NEW MODES test here
+---------------------------------------------------			
+-- Lookup the note delivered based on the current scale grid and pad pressed.
+---------------------------------------------------			
 
 			--local padid = pad[ret.y].index-1
 --tprint(Grid.current.R)			
-			local grid={}
 			--local grid = Grid.rotate[1](Modes.Wicki_Hayden_R)
 --			local gridnote = Grid.rotate[1](Modes.LPP_Note_mode.note)
 --			local gridoct  = Grid.rotate[1](Modes.LPP_Note_mode.oct)
-			local gridnote = Grid.current.note
-			local gridoct  = Grid.current.oct
+--			local gridnote = Grid.current.note
+--			local gridoct  = Grid.current.oct
+--
+---------------------------------------------------			
+-- we shouldn't need to copy the whole grid
+---------------------------------------------------			
 			local padx = pad[ret.y].x
 			local pady = 9-pad[ret.y].y
 --tprint(gridoct)
 			--local oct = Modes[1][2][pady][padx]*12
-			local oct = gridoct[pady][padx]*12
+--			local oct = gridoct[pady][padx]*12
 			--local addnote = scale[ind]
 			--local noteout = root+g.transpose+(12*oct)+addnote
+--			local noteout = gridnote[pady][padx]+oct+24
+			local oct = Grid.current.oct[pady][padx]*12
+-- TODO root variable here instead of 24
+			local noteout = Grid.current.note[pady][padx]+(oct+24)+g.transpose
 			
-			local noteout = gridnote[pady][padx]+oct+24
 			
-			
-		--	if (noteout<127 and noteout>0) then
+			if (noteout<127 and noteout>0) then
+local dupes = Grid.current.duplicates[ret.y]
+--for x,d
+---------------------------------------------------			
+-- Here is where we store sysex for displaying note press
+-- must use a table because RDM doesn't fire off for every incoming event
+---------------------------------------------------			
+
+if  ret.z==0 then
+table.insert(State.lightoff,table.concat({pad[ret.y].padhex,Grid.current.R[pady][padx],Grid.current.G[pady][padx],Grid.current.B[pady][padx]}," "))
+else 
+table.insert(State.lighton,table.concat({pad[ret.y].padhex,63,63,63}," "))
+end
+
+
+---------------------------------------------------			
+-- Here is where send the translated note back to Reason
+---------------------------------------------------			
+
+
 				local msg={ time_stamp = event.time_stamp, item=1, value = ret.x, note = noteout,velocity = ret.z }
 				remote.handle_input(msg)
 				g.note_delivered = noteout
 --TODO make return a var, pass to end of function!
+-- ?? oh yes, maybe not returning yet... but we are at the end of this event
+
+
+
 				return true
-		--	end
+				else 
+				vprint("noteout out of range",noteout)
+			end
 
 		
 		
 		
 -------------------------------------------------------		
-			--return false
+			--return false -- don't return this false, because incoming pad press is a midi note.
 		end
 	end -- ret not nil
 	
@@ -3623,8 +3621,6 @@ vprint("Current","current")
 
 
 
-
-
 --[[
 --]]
 -- -----------------------------------------------------------------------------------------------
@@ -3842,6 +3838,26 @@ g.palette_global = 9 -- current pal
 		end
 --]]
 --remote.trace("remdevmidi 1\n")
+
+---------------------------------------------------			
+-- Here is where we send sysex for display note press
+---------------------------------------------------			
+
+if 	(table.getn(State.lighton) ~= 0) then
+for k,v in pairs(State.lighton) do
+			padupdate=remote.make_midi(table.concat({sysex_header,"0B",v,sysend}," "))
+				table.insert(lpp_events,padupdate)
+			State.lighton ={}
+end
+end
+
+if 	(table.getn(State.lightoff) ~= 0) then
+for k,v in pairs(State.lightoff) do
+			padupdate=remote.make_midi(table.concat({sysex_header,"0B",v,sysend}," "))
+			table.insert(lpp_events,padupdate)
+			State.lightoff ={}	
+end
+end
 
 
 
