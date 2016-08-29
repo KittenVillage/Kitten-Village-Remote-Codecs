@@ -1203,12 +1203,13 @@ rotate=1,
 root=24,
 lighton={},
 lightoff={},
-do_update=function() 
-Palette.select(Palette.last)
-Scale.select(Scale.last)
-Mode.select(Mode.last)
+do_update=function(st) --table
+st = st or {}
+Scale.select(st.scale or Scale.last)
+Mode.select(st.mode or Mode.last)
+Palette.select(st.palette or Palette.last)
 Grid.refresh_midiout() 
-
+State.update=1
 
 
 end,
@@ -1265,15 +1266,19 @@ end,
 				local note_index={}
 				local pad_index={}
 				for ve=1,8 do for ho=1,8 do
-vprint("cur note in grid",Grid.current.note[ve][ho])
-				local note=(12*Grid.current.oct[ve][ho])+Grid.current.note[ve][ho]+State.root+g.transpose
+				local note= Grid.current.note[ve][ho]+(12*Grid.current.oct[ve][ho])+State.root+g.transpose
 				Grid.current.midiout[ve][ho]=note
 					if note_index[note] == nil then	note_index[note]={} end
-					table.insert(note_index[note],(ve*10)+ho)
+					table.insert(note_index[note],((9-ve)*10)+ho)
 				end end
 					for k,v in pairs(note_index) do for a,b in pairs(v) do
 					Grid.current.duplicates[b]=v
-				end end end,
+				end end 
+grprint("refresh_midiout cur grid note",Grid.current.note)
+grprint("refresh_midiout cur grid oct",Grid.current.oct)
+grprint("refresh_midiout cur grid midiout",Grid.current.midiout)
+tprint(Grid.current.duplicates)
+				end,
 			
 		}
 			
@@ -1584,6 +1589,15 @@ function vprint (strng,vari)
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+function grprint (strng,grid)
+	local a=strng..'\n'
+	for x=1,8 do
+		a=a .. table.concat(grid[x]," ") .. '\n'
+	end
+	remote.trace(a)
+end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
@@ -2492,9 +2506,9 @@ def_vars()
 	
 	
 Scale.select(29)
+Mode.select(3)
 Palette.select(10)
-Mode.select(1,1)
-
+Grid.refresh_midiout() 
 
 	end
 end
@@ -2874,55 +2888,44 @@ vprint("noteout",noteout)
 ---------------------------------------------------			
 -- we shouldn't need to copy the whole grid
 ---------------------------------------------------			
-			local padx = pad[ret.y].x
-			local pady = 9-pad[ret.y].y
 --tprint(gridoct)
 			--local oct = Modes[1][2][pady][padx]*12
 --			local oct = gridoct[pady][padx]*12
 			--local addnote = scale[ind]
 			--local noteout = root+g.transpose+(12*oct)+addnote
 --			local noteout = gridnote[pady][padx]+oct+24
+			local padx = pad[ret.y].x
+			local pady = 9-pad[ret.y].y
 			local oct = Grid.current.oct[pady][padx]*12
 -- TODO root variable here instead of 24
 			local noteout = Grid.current.note[pady][padx]+(oct+24)+g.transpose
 			
 			
-			if (noteout<127 and noteout>0) then
-local dupes = Grid.current.duplicates[ret.y]
---for x,d
+			if (noteout<128 and noteout>0) then
+				local dupes = Grid.current.duplicates[ret.y]
 ---------------------------------------------------			
 -- Here is where we store sysex for displaying note press
 -- must use a table because RDM doesn't fire off for every incoming event
 ---------------------------------------------------			
-
-if  ret.z==0 then
-table.insert(State.lightoff,table.concat({pad[ret.y].padhex,Grid.current.R[pady][padx],Grid.current.G[pady][padx],Grid.current.B[pady][padx]}," "))
-else 
-table.insert(State.lighton,table.concat({pad[ret.y].padhex,63,63,63}," "))
-end
-
+				for x,d in pairs(dupes) do
+--vprint("Grid.current.duplicates[ret.y]",table.concat(Grid.current.duplicates[ret.y]))
+					if  ret.z==0 then
+						table.insert(State.lightoff,table.concat({pad[d].padhex,Grid.current.R[pady][padx],Grid.current.G[pady][padx],Grid.current.B[pady][padx]}," "))
+					else 
+						local vel=string.format("%02X",math.floor(.5*ret.z))
+	--vprint("ret.z",ret.z.." vel "..vel)
+						table.insert(State.lighton,table.concat({pad[d].padhex,vel,vel,vel}," "))
+					end
+				end
 
 ---------------------------------------------------			
 -- Here is where send the translated note back to Reason
 ---------------------------------------------------			
-
-
 				local msg={ time_stamp = event.time_stamp, item=1, value = ret.x, note = noteout,velocity = ret.z }
 				remote.handle_input(msg)
-				g.note_delivered = noteout
---TODO make return a var, pass to end of function!
--- ?? oh yes, maybe not returning yet... but we are at the end of this event
-
-
-
-				return true
-				else 
-				vprint("noteout out of range",noteout)
+				g.note_delivered = noteout -- depreciated
 			end
-
-		
-		
-		
+		return true -- absorb the incoming note, even if it's transposed out of range
 -------------------------------------------------------		
 			--return false -- don't return this false, because incoming pad press is a midi note.
 		end
@@ -3457,14 +3460,14 @@ vprint("palette",palettenames[g.palette_global])
 -- -----------------------------------------------------------------------------------------------
 		-- color the pads if scale or transpose changed----------------------------------------
 -- -----------------------------------------------------------------------------------------------		
-		if(do_update_pads==1) then
+		if(do_update_pads==1) or (State.update==1) then
 --	  table.insert(lcd_events,upd_event)
 			if(scalename~='DrumPad') then
 noscaleneeded=true -- while we test new modes
 		if  (noscaleneeded==false) then -- while we test new modes
+--[[
 
 				local padsysex = ""
---[[
 --				for i=1,64,1 do
 					local padid = i-1
 					local scale_len = table.getn(scale)
@@ -3514,7 +3517,6 @@ vprint("outnorm",outnorm)
 -- NEW					
 						padevent[i]=remote.make_midi("90 "..padnum.." "..  colorscale[outnorm].hcolor)
 						table.insert(lpp_events,padevent[i])
---]]
 
 -- EVEN NEWER
 -- Something something sysex
@@ -3534,13 +3536,14 @@ end end
 				padupdate=remote.make_midi(table.concat({sysex_header,"0B",padsysex,sysend}," "))
 				table.insert(lpp_events,padupdate)
 				--error(padsysex)
+--]]
 				else
 -------------------------------------------------------		
 -- NEW MODES test here
 
 				local padsysex = ""
 					root = 24 
-
+ 
 				for i=1,64,1 do
 			--local grid = Grid.rotate[1](Modes.Wicki_Hayden_R)
 			--local gridnote = Grid.rotate[1](Modes.LPP_Note_mode.note)
@@ -3613,9 +3616,11 @@ vprint("Current","current")
 			end -- drumpad or not
 			
 		do_update_pads=0
-	
+		State.update=0
 			
 		end --update_pads ==1
+-- -----------------------------------------------------------------------------------------------
+-- end if do_update_pads==1 or State.update==1
 -- -----------------------------------------------------------------------------------------------
 
 
@@ -3694,11 +3699,8 @@ vprint("Current","current")
 -- -----------------------------------------------------------------------------------------------
 		if init==1 then
 		remote.trace("in init!")
-			local padsysex = ""
 --[[
-			padsysex=padsysex.."50 3D 3D 0F "
-			padsysex=padsysex.."46 3D 3D 0F "
---]]
+			local padsysex = ""
 			local firstcolors={
 				--remote.make_midi(sysex_header .."0E 10 F7"),
 				remote.make_midi("90 50 21"),
@@ -3713,7 +3715,7 @@ vprint("Current","current")
 				--initialize pads
 g.palettes_length = table.getn(palettenames)
 palettename = 'Catblack'
-g.palette = palettes[palettenames[10]]
+g.palette = palettes[palettenames[10] ]
 palette_int = 0 
 g.palette_delivered = 9 --for change filter
 g.palette_selected = 9 -- record of presses, goes up and dn
@@ -3741,6 +3743,7 @@ g.palette_global = 9 -- current pal
 				end --end for 1,64
 				padupdate=remote.make_midi(sysex_header.."0B "..padsysex.." F7")
 				table.insert(lpp_events,padupdate)
+--]]
 -- -----------------------------------------------------------------------------------------------
 --[[
 			if noscaleneeded==false then
@@ -3775,6 +3778,7 @@ g.palette_global = 9 -- current pal
 			 
 -- -----------------------------------------------------------------------------------------------
 --tprint(lpp_events)
+			State.do_update()
 			init=0
 			do_update_pads = 1
 		end
@@ -3842,24 +3846,17 @@ g.palette_global = 9 -- current pal
 ---------------------------------------------------			
 -- Here is where we send sysex for display note press
 ---------------------------------------------------			
-
 if 	(table.getn(State.lighton) ~= 0) then
-for k,v in pairs(State.lighton) do
-			padupdate=remote.make_midi(table.concat({sysex_header,"0B",v,sysend}," "))
+			padupdate=remote.make_midi(table.concat({sysex_header,"0B",table.concat(State.lighton," "),sysend}," "))
 				table.insert(lpp_events,padupdate)
 			State.lighton ={}
 end
-end
 
 if 	(table.getn(State.lightoff) ~= 0) then
-for k,v in pairs(State.lightoff) do
-			padupdate=remote.make_midi(table.concat({sysex_header,"0B",v,sysend}," "))
+			padupdate=remote.make_midi(table.concat({sysex_header,"0B",table.concat(State.lightoff," "),sysend}," "))
 			table.insert(lpp_events,padupdate)
 			State.lightoff ={}	
 end
-end
-
-
 
 
 
