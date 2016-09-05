@@ -1385,6 +1385,9 @@ Transpose = {
 		last = 0,
 }
 
+
+
+
 -- Scale has methods for changing the current Scale 
 -- If the current Mode is set by a function, then Scale updates!
 -- If so, we change Scale.last, then tell Mode.select to update!
@@ -1395,7 +1398,7 @@ Scale = {
 		select=function(n) local new = 1+modulo(n-1,Scale.length) 
 		--local Ml=Mode.last
 vprint("new scale",new)
-vprint("in scale Mode.last",Ml)
+--vprint("in scale Mode.last",Ml)
 		--if type(Modes[Modenames[Ml]].note)=="function" then
 			if new ~= Scale.last or State.update ~= 0 then 
 				Scale.last=new
@@ -1430,7 +1433,7 @@ vprint("modes new type",type(Modes[Modenames[new]].note))
 vprint("in mode Mode.last is",Mode.last) 
 vprint("in mode new mode",new) 
 vprint("in mode new mode",Modenames[new]) 
-			if new ~= Mode.last or ro~=State.rotate then 
+			if new ~= Mode.last or ro~=State.rotate or State.update ~= 0 then 
 				Grid.current.note=Grid.rotate[ro](Mn) 
 --tprint(Mn)
 vprint("Mode ro",ro) 
@@ -1458,13 +1461,13 @@ vprint("Mode ro",ro)
 Layout = {}
 Layout.current = 3
 
-
+==[[
 if State.update==1 then
 
 State.do_update()
 State.update=0
 end
-
+--]]
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -3561,7 +3564,7 @@ vprint("palette",palettenames[g.palette_global])
 -- -----------------------------------------------------------------------------------------------
 		-- color the pads if scale or transpose changed----------------------------------------
 -- -----------------------------------------------------------------------------------------------		
-		if(do_update_pads==1) or (State.update==1) then
+		if (do_update_pads==1) or (State.update==1) then
 --	  table.insert(lcd_events,upd_event)
 			if(scalename~='DrumPad') then
 noscaleneeded=true -- while we test new modes
