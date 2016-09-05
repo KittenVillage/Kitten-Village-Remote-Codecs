@@ -81,7 +81,7 @@ scale_from_parse = false
 g.is_lcd_enabled = false
 --g.lcd_state = string.format("%-16.16s","L C D")
 g.lcd_state = "LCD"
---g.lcd_state_delivered = string.format("%-16.16s","#")
+--g.lcd_state1 = string.format("%-16.16s","#")
 g.lcd_state_delivered = "#"
 g.note_delivered = 0
 
@@ -586,21 +586,42 @@ Push = {
 			{1,1,1,1,1,1,1,2},
 		},
 		note=function(n)
-		local scalegrid ={
-			{1,2,3,4,5,6,7,1},
-			{5,6,7,1,2,3,4,5},
-			{2,3,4,5,6,7,1,2},
-			{6,7,1,2,3,4,5,6},
-			{3,4,5,6,7,1,2,3},
-			{7,1,2,3,4,5,6,7},
-			{4,5,6,7,1,2,3,4},
-			{1,2,3,4,5,6,7,1},
-		}
-		local notegrid={{},{},{},{},{},{},{},{}}
-		for ve=1,8 do for ho=1,8 do
-		notegrid[ve][ho]=Scale.current[scalegrid[ve][ho]]
-		end end
-		return notegrid
+			local octgrid={
+				{4,4,4,4,4,4,4,5},
+				{3,3,3,4,4,4,4,4},
+				{3,3,3,3,3,3,4,4},
+				{2,2,3,3,3,3,3,3},
+				{2,2,2,2,2,3,3,3},
+				{1,2,2,2,2,2,2,2},
+				{1,1,1,1,2,2,2,2},
+				{1,1,1,1,1,1,1,2},
+			}
+			local scalegrid ={
+				{1,2,3,4,5,6,7,1},
+				{5,6,7,1,2,3,4,5},
+				{2,3,4,5,6,7,1,2},
+				{6,7,1,2,3,4,5,6},
+				{3,4,5,6,7,1,2,3},
+				{7,1,2,3,4,5,6,7},
+				{4,5,6,7,1,2,3,4},
+				{1,2,3,4,5,6,7,1},
+			}
+			local notegrid={{},{},{},{},{},{},{},{}}
+vprint("in Push aka ... ",Modenames[n])
+			for ve=1,8 do for ho=1,8 do
+				local note =Scale.current[scalegrid[ve][ho]]
+				if  note > 11 then
+					notegrid[ve][ho]=note-12
+					octgrid[ve][ho]=octgrid[ve][ho]+1
+				else
+					notegrid[ve][ho]=note
+					octgrid[ve][ho]=octgrid[ve][ho]
+				end	
+			end end
+			Modes[Modenames[n]].oct=octgrid
+grprint("in Push oct ..",Modes[Modenames[n]].oct)			
+grprint("in Push note ..",notegrid)			
+			return notegrid
 		end,
 	},
 Diatonic = {
@@ -615,6 +636,16 @@ Diatonic = {
 			{2,2,2,2,2,2,2,3},
 		},
 		note=function(n)
+		local octgrid={
+			{4,4,4,4,4,4,4,5},
+			{3,3,4,4,4,4,4,4},
+			{3,3,3,3,4,4,4,4},
+			{3,3,3,3,3,3,4,4},
+			{2,3,3,3,3,3,3,3},
+			{2,2,2,3,3,3,3,3},
+			{2,2,2,2,2,3,3,3},
+			{2,2,2,2,2,2,2,3},
+		}
 		local scalegrid ={
 			{1,2,3,4,5,6,7,1},
 			{6,7,1,2,3,4,5,6},
@@ -626,11 +657,21 @@ Diatonic = {
 			{1,2,3,4,5,6,7,1},
 		}
 		local notegrid={{},{},{},{},{},{},{},{}}
+vprint("in Diatonic aka ... ",Modenames[n])
 		for ve=1,8 do for ho=1,8 do
-vprint("sc cur sc in grid f1",Scale.current[scalegrid[ve][ho]])
-		notegrid[ve][ho]=Scale.current[scalegrid[ve][ho]]
-		end end
-		return notegrid
+				local note =Scale.current[scalegrid[ve][ho]]
+				if  note > 11 then
+					notegrid[ve][ho]=note-12
+					octgrid[ve][ho]=octgrid[ve][ho]+1
+				else
+					notegrid[ve][ho]=note
+					octgrid[ve][ho]=octgrid[ve][ho]
+				end	
+			end end
+			Modes[Modenames[n]].oct=octgrid
+grprint("in Diatonic oct ..",Modes[Modenames[n]].oct)			
+grprint("in Diatonic note ..",notegrid)			
+			return notegrid
 		end,
 	},
 Diagonal = {
@@ -645,6 +686,16 @@ Diagonal = {
 			{2,2,2,2,2,2,2,3},
 		},
 		note=function(n)
+		octgrid={
+			{3,3,3,3,3,3,3,4},
+			{2,3,3,3,3,3,3,3},
+			{2,2,3,3,3,3,3,3},
+			{2,2,2,3,3,3,3,3},
+			{2,2,2,2,3,3,3,3},
+			{2,2,2,2,2,3,3,3},
+			{2,2,2,2,2,2,3,3},
+			{2,2,2,2,2,2,2,3},
+		}
 		local scalegrid ={
 			{1,2,3,4,5,6,7,1},
 			{7,1,2,3,4,5,6,7},
@@ -657,9 +708,18 @@ Diagonal = {
 		}
 		local notegrid={{},{},{},{},{},{},{},{}}
 		for ve=1,8 do for ho=1,8 do
-		notegrid[ve][ho]=Scale.current[scalegrid[ve][ho]]
-vprint("sc cur sc in grid ",Modenames[n].." ve "..ve.." ho "..ho.."  note "..Scale.current[scalegrid[ve][ho]])
-		end end
+				local note =Scale.current[scalegrid[ve][ho]]
+				if  note > 11 then
+					notegrid[ve][ho]=note-12
+					octgrid[ve][ho]=octgrid[ve][ho]+1
+				else
+					notegrid[ve][ho]=note
+					octgrid[ve][ho]=octgrid[ve][ho]
+				end	
+			end end
+			Modes[Modenames[n]].oct=octgrid
+grprint("in Diag oct ..",Modes[Modenames[n]].oct)			
+grprint("in Diag note ..",notegrid)			
 		return notegrid
 		end,
 	},
@@ -681,20 +741,20 @@ Octave = {
 --vprint("sc cur sc in grid Octave",Scale.current[1+scalegrid[ve][ho]])
 --tprint(Scale.current) 
 		for ve=1,8 do for ho=1,8 do
-		local note =Scale.current[scalegrid[ve][ho]]
+			local note =Scale.current[scalegrid[ve][ho]]
 --vprint("sc cur sc in gri  d Octave",Scale.current[1+scalegrid[ve][ho]])
-		if  note > 11 then
-		notegrid[ve][ho]=note-12
-		octgrid[ve][ho]=8-ve+1
-		--Modes[Modenames[n]].oct[ve][ho]=ve-1
+			if  note > 11 then
+				notegrid[ve][ho]=note-12
+				octgrid[ve][ho]=(8-ve)+1
+--Modes[Modenames[n]].oct[ve][ho]=ve-1
 vprint("sc cur sc in grid Octave","ve "..ve.." ho "..ho.." oct "..(8-ve+1).." note "..(note-12))
-		else
-		notegrid[ve][ho]=note
-		octgrid[ve][ho]=8-ve
+			else
+				notegrid[ve][ho]=note
+				octgrid[ve][ho]=8-ve
 		--Modes[Modenames[n]].oct[ve][ho]=ve
 vprint("sc cur sc in grid Octave","ve "..ve.." ho "..ho.." oct "..(8-ve).." note ".. note)
 --vprint("sc cur sc in grid Octave",Scale.current[1+scalegrid[ve][ho]])
-		end	
+			end	
 		end end
 		Modes[Modenames[n]].oct=octgrid
 --tprint(Modes[Modenames[n]].oct)
@@ -1195,24 +1255,22 @@ end
 -- State keeps track of what notes are currently pressed/playing
 -- and what button states we are in. (shift, click, shcl, etc.)
 State = {
-shift = 0,
-click = 0,
-shiftclick = 0,
-update=0,
-rotate=1,
-root=24,
-lighton={},
-lightoff={},
-do_update=function(st) --table
-st = st or {}
-Scale.select(st.scale or Scale.last)
-Mode.select(st.mode or Mode.last)
-Palette.select(st.palette or Palette.last)
-Grid.refresh_midiout() 
-State.update=1
-
-
-end,
+	shift = 0,
+	click = 0,
+	shiftclick = 0,
+	update=0,
+	rotate=1,
+	root=24,
+	lighton={},
+	lightoff={},
+	do_update=function(st) --table
+		st = st or {}
+		State.update=1
+		Scale.select(st.scale or Scale.last)
+		Mode.select(st.mode or Mode.last,st.rotate or State.rotate)
+		Palette.select(st.palette or Palette.last)
+		Grid.refresh_midiout() 
+	end,
 }
 
 
@@ -1277,7 +1335,7 @@ end,
 grprint("refresh_midiout cur grid note",Grid.current.note)
 grprint("refresh_midiout cur grid oct",Grid.current.oct)
 grprint("refresh_midiout cur grid midiout",Grid.current.midiout)
-tprint(Grid.current.duplicates)
+--tprint(Grid.current.duplicates)
 				end,
 			
 		}
@@ -1295,14 +1353,22 @@ Palette = {
 		select=function(n) local new = 1+modulo(n-1,Palette.length) 
 vprint("new pal",new) 
 vprint("new pal ",Palettenames[new]) 
-		if new ~= Palette.last then for ve=1,8 do for ho=1,8 do 
-		Palette.current=Palettes[Palettenames[new]]
+grprint("Palette.select cur grid note",Grid.current.note)
+			if new ~= Palette.last or State.update ~= 0 then 
+				for ve=1,8 do for ho=1,8 do 
+					Palette.current=Palettes[Palettenames[new]]
+if Grid.current.note[ve][ho] > 11 then
+	error("mode "..Modenames[Mode.last].." scale "..Scalenames[Scale.last])
+end
 --tprint(Grid.current.note)
-		Grid.current.R[ve][ho]=Palette.current[Grid.current.note[ve][ho]].R 
-		Grid.current.G[ve][ho]=Palette.current[Grid.current.note[ve][ho]].G 
-		Grid.current.B[ve][ho]=Palette.current[Grid.current.note[ve][ho]].B 
-		end end Palette.last=new State.update=1 
-		end end,
+					Grid.current.R[ve][ho]=Palette.current[Grid.current.note[ve][ho]].R 
+					Grid.current.G[ve][ho]=Palette.current[Grid.current.note[ve][ho]].G 
+					Grid.current.B[ve][ho]=Palette.current[Grid.current.note[ve][ho]].B 
+				end end 
+				Palette.last=new
+				State.update=1 
+			end 
+		end,
 		}
 
 
@@ -1325,16 +1391,19 @@ Transpose = {
 Scale = {
 		current = Scales[Scalenames[1]],
 		length = table.getn(Scalenames),
-		last = 15,
-		select=function(n) local new = 1+modulo(n-1,Scale.length) local Ml=Mode.last
+		last = 1,
+		select=function(n) local new = 1+modulo(n-1,Scale.length) 
+		--local Ml=Mode.last
 vprint("new scale",new)
 vprint("in scale Mode.last",Ml)
-		if type(Modes[Modenames[Ml]].note)=="function" then
-		if new ~= Scale.last then 
-		Scale.last=new
- 		Scale.current=Scales[Scalenames[new]]
-		State.update=1 
-		end end end,
+		--if type(Modes[Modenames[Ml]].note)=="function" then
+			if new ~= Scale.last or State.update ~= 0 then 
+				Scale.last=new
+				Scale.current=Scales[Scalenames[new]]
+				State.update=1 
+			end 
+		--end 
+		end,
 
 		}
 		
@@ -1352,25 +1421,27 @@ Mode = {
 		current = 0,
 		last = 1,
 		select=function(n,r) local new = 1+modulo(n-1,table.getn(Modenames)) 
-		local ro = r or State.rotate
+			local ro = r or State.rotate
 --tprint(Modes[Modenames[new]])
 vprint("modes new type",type(Modes[Modenames[new]].note))
-		local Mn=type(Modes[Modenames[new]].note)=="function" and Modes[Modenames[new]].note(new) or Modes[Modenames[new]].note
-		local Mo=Modes[Modenames[new]].oct
+			local Mn=type(Modes[Modenames[new]].note)=="function" and Modes[Modenames[new]].note(new) or Modes[Modenames[new]].note
+			local Mo=Modes[Modenames[new]].oct
 --tprint(Mn)
 vprint("in mode Mode.last is",Mode.last) 
 vprint("in mode new mode",new) 
 vprint("in mode new mode",Modenames[new]) 
-		if new ~= Mode.last or ro~=State.rotate then 
-		Grid.current.note=Grid.rotate[ro](Mn) 
+			if new ~= Mode.last or ro~=State.rotate then 
+				Grid.current.note=Grid.rotate[ro](Mn) 
 --tprint(Mn)
 vprint("Mode ro",ro) 
 
 --tprint(Grid.current.note)
-		Grid.current.oct=Grid.rotate[ro](Mo) 
-		Mode.last=new 
-		State.rotate=ro
-		State.update=1 end end,
+				Grid.current.oct=Grid.rotate[ro](Mo) 
+				Mode.last=new 
+				State.rotate=ro
+				State.update=1 
+			end 
+		end,
 		special=function() end,
 		
 		}
@@ -2504,12 +2575,13 @@ first_button
 def_vars()
 		
 	
-	
+State.do_update({scale=29,mode=1,palette=10})
+--[[	
 Scale.select(29)
-Mode.select(3)
+Mode.select(20)
 Palette.select(10)
 Grid.refresh_midiout() 
-
+--]]
 	end
 end
 
@@ -2691,6 +2763,7 @@ vprint("g-cof",g.transpose-cof_tr)
 					end	
 				end
 			end
+--[[
 			if(scale_up) then
 				if scale_up.z>0 then
 					if g.button.shiftclick_delivered == 0 then
@@ -2730,6 +2803,34 @@ remote.trace("scale dn "..scalename)
 					end	
 				end
 			end
+--]]
+-- new
+			if(scale_up) then
+				if scale_up.z>0 then
+					if g.button.shiftclick_delivered == 0 and g.button.shift_delivered == 0 then
+vprint("New MODE is ", Modenames[1+modulo(Mode.last,table.getn(Modenames))])
+						State.do_update({mode=Mode.last+1})
+					elseif g.button.shiftclick_delivered == 0 and g.button.shift_delivered == 1  then -- color palette
+						State.do_update({scale=Scale.last+1})
+					elseif g.button.shiftclick_delivered == 1 then -- color palette
+						State.do_update({palette=Palette.last+1})
+					end	
+				end
+			end
+			if(scale_dn) then
+				if scale_dn.z>0 then
+					if g.button.shiftclick_delivered == 0 and g.button.shift_delivered == 0 then
+						State.do_update({mode=Mode.last-1})
+					elseif g.button.shiftclick_delivered == 0 and g.button.shift_delivered == 1  then -- color palette
+						State.do_update({scale=Scale.last-1})
+					elseif g.button.shiftclick_delivered == 1 then -- color palette
+						State.do_update({palette=Palette.last-1})
+					end	
+				end
+			end
+
+
+
 -- -----------------------------------------------------------------------------------------------
 -- more buttons go here
 -- TODO modulation bottom row
@@ -4084,11 +4185,11 @@ padgrid[ve][ho]={padhex=thispadhex,itemindex=(index-1)+g.itemnum.first_pad,index
 
 	end
 vprint("button 9"," ")
-tprint(button[9])
+--tprint(button[9])
 
 	--[[
 	remote.trace("start note\n")
-	tprint(note)
+--	tprint(note)
 	remote.trace("end note\n")
 	--remote.trace(table.concat(note.pos, ", "))
 	--remote.trace(table.concat(note, ", "))
