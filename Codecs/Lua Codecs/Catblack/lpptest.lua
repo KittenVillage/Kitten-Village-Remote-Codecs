@@ -24,6 +24,10 @@
 -- Set some variables
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+--keep track of what's on in case mode, scale or transpose changes
+Playing={}
+
+
 -- putting things into state so I can dump it for debug
 g = {}
 g.button = {}
@@ -1324,7 +1328,9 @@ State = {
 				local note_index={}
 				local pad_index={}
 				for ve=1,8 do for ho=1,8 do
-				local note= Grid.current.note[ve][ho]+(12*Grid.current.oct[ve][ho])+State.root+g.transpose
+--				local note= Grid.current.note[ve][ho]+(12*Grid.current.oct[ve][ho])+State.root+g.transpose
+				local note= Grid.current.note[ve][ho]+(12*Grid.current.oct[ve][ho])+State.root+Transpose.last
+					
 				Grid.current.midiout[ve][ho]=note
 					if note_index[note] == nil then	note_index[note]={} end
 					table.insert(note_index[note],((9-ve)*10)+ho)
@@ -1355,15 +1361,15 @@ vprint("new pal",new)
 vprint("new pal ",Palettenames[new]) 
 grprint("Palette.select cur grid note",Grid.current.note)
 			if new ~= Palette.last or State.update ~= 0 then 
-				for ve=1,8 do for ho=1,8 do 
 					Palette.current=Palettes[Palettenames[new]]
+				for ve=1,8 do for ho=1,8 do 
 if Grid.current.note[ve][ho] > 11 then
 	error("mode "..Modenames[Mode.last].." scale "..Scalenames[Scale.last])
 end
 --tprint(Grid.current.note)
-					Grid.current.R[ve][ho]=Palette.current[Grid.current.note[ve][ho]].R 
-					Grid.current.G[ve][ho]=Palette.current[Grid.current.note[ve][ho]].G 
-					Grid.current.B[ve][ho]=Palette.current[Grid.current.note[ve][ho]].B 
+					Grid.current.R[ve][ho]=Palette.current[modulo(Grid.current.note[ve][ho]+Transpose.last,12)].R 
+					Grid.current.G[ve][ho]=Palette.current[modulo(Grid.current.note[ve][ho]+Transpose.last,12)].G 
+					Grid.current.B[ve][ho]=Palette.current[modulo(Grid.current.note[ve][ho]+Transpose.last,12)].B 
 				end end 
 				Palette.last=new
 				State.update=1 
@@ -2578,7 +2584,7 @@ first_button
 def_vars()
 		
 	
-State.do_update({scale=29,mode=1,palette=10})
+State.do_update({scale=1,mode=1,palette=10})
 --[[	
 Scale.select(29)
 Mode.select(20)
@@ -2714,7 +2720,7 @@ if event.size==3 then -- Note, button, channel pressure, fader
 -- check below per button, then we check each for shift and click with elseif
 -- 
 -- -----------------------------------------------------------------------------------------------
-		
+--[[		
 			if(tran_up) then
 				if tran_up.z>0 then
 					if g.button.shiftclick_delivered == 0 then
@@ -2766,6 +2772,52 @@ vprint("g-cof",g.transpose-cof_tr)
 					end	
 				end
 			end
+--]]
+
+			if(tran_up) then
+				if tran_up.z>0 then
+					if g.button.shiftclick_delivered == 0 then
+vprint("Transpose.last",Transpose.last)
+						local transchk=false
+grprint("tran_up cur grid midiout",Grid.current.midiout)
+						for ve=1,8 do for ho=1,8 do
+							if Grid.current.midiout[ve][ho]+(1-g.button.shift)+(g.button.shift*12) > 127 then
+								transchk=true
+							end
+						end end
+						if transchk==false then
+							Transpose.last = Transpose.last+(1-g.button.shift)+(g.button.shift*12) -- if sh pressed, add 12, else just 1
+							State.do_update({})
+						transpose_changed = true
+vprint("Transpose.last up",Transpose.last)
+
+						end
+					end	
+				end
+			end
+			if(tran_dn) then
+				if tran_dn.z>0 then
+					if g.button.shiftclick_delivered == 0 then
+vprint("Transpose.last",Transpose.last)
+grprint("tran_dn cur grid midiout",Grid.current.midiout)
+						local transchk=false
+						for ve=1,8 do for ho=1,8 do
+							if Grid.current.midiout[ve][ho]-(1-g.button.shift)-(g.button.shift*12) < 0 then
+								transchk=true
+							end
+						end end
+						if transchk==false then
+							Transpose.last = Transpose.last-(1-g.button.shift)-(g.button.shift*12) -- if sh pressed, sub 12, else just 1
+							State.do_update({})
+						transpose_changed = true
+vprint("Transpose.last dn",Transpose.last)
+						end
+					end	
+				end
+			end
+
+
+
 --[[
 			if(scale_up) then
 				if scale_up.z>0 then
@@ -2902,6 +2954,13 @@ vprint("New MODE is ", Modenames[1+modulo(Mode.last,table.getn(Modenames))])
 -- here's where the incoming note gets transposed!
 --------------------------------------------------------------------------------------------------------------------------		
 noscaleneeded=true -- while we test new modes
+			---if the pads have transposed, then we need to turn off the last note----------------------
+			if(State.update==1) then
+				for k,v in pairs(Playing) do
+					local prev_off={ time_stamp = event.time_stamp, item=1, value = 0, note = k, velocity = 0 }
+					remote.handle_input(prev_off)
+				end
+			end 
 --[[
 		
 		if (ret.y>10 and ret.y<89) and (noscaleneeded==false) and (button==0) then -- 11 to 88, but not button
@@ -3002,7 +3061,8 @@ vprint("noteout",noteout)
 			local pady = 9-pad[ret.y].y
 			local oct = Grid.current.oct[pady][padx]*12
 -- TODO root variable here instead of 24
-			local noteout = Grid.current.note[pady][padx]+(oct+24)+g.transpose
+--			local noteout = Grid.current.note[pady][padx]+(oct+24)+g.transpose
+			local noteout = Grid.current.note[pady][padx]+(oct+State.root)+Transpose.last
 			
 			
 			if (noteout<128 and noteout>0) then
@@ -3027,7 +3087,12 @@ vprint("noteout",noteout)
 ---------------------------------------------------			
 				local msg={ time_stamp = event.time_stamp, item=1, value = ret.x, note = noteout,velocity = ret.z }
 				remote.handle_input(msg)
-				g.note_delivered = noteout -- depreciated
+					if  ret.z~=0 then
+						Playing[noteout]=ret.z
+					else
+						Playing[noteout]=nil
+					end
+				--g.note_delivered = noteout -- depreciated
 			end
 		return true -- absorb the incoming note, even if it's transposed out of range
 -------------------------------------------------------		
@@ -3289,23 +3354,25 @@ vprint("scalename",scalename)
 -- -----------------------------------------------------------------------------------------------
 		--if transpose changes, we transpose--------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
-		if g.transpose_delivered~=g.transpose then
+		if Transpose.current~=Transpose.last then
+--		if g.transpose_delivered~=g.transpose then
 --vprint("g.transpose",g.transpose)
 --tprint(palette)
 --			local color_len = g.palettes_length
 --			local color_len = table.getn(colors)
-			local color_len = 12
+--			local color_len = 12
 --			local color_ind=1 + (modulo( math.floor(math.abs(g.transpose)/12),color_len)) --change color every octave
 --			local color_ind=1 + (modulo(g.transpose,color_len)) --change color every Note, show root
 --			local color_ind = (modulo(math.abs(g.transpose),color_len)) --change color every Note, show root
-			local color_ind = (modulo(g.transpose,color_len)) --change color every Note, show root
+--			local color_ind = (modulo(g.transpose,color_len)) --change color every Note, show root
+			local color_ind = (modulo(Transpose.last,12)) --change color every Note, show root
 --vprint("color_ind",color_ind)
 
 --			local color = colors[color_ind]
 
 
 
-
+--[[
 			if g.transpose>0 then
 				--upevent = remote.make_midi("90 5D "..color)
 				dnevent = remote.make_midi(table.concat({sysex_setrgb,"5D",g.palette[color_ind].R, g.palette[color_ind].G, g.palette[color_ind].B,sysend}," "))
@@ -3322,14 +3389,30 @@ vprint("scalename",scalename)
 				upevent = remote.make_midi(table.concat({sysex_setrgb,"5D",g.palette[color_ind].R ,g.palette[color_ind].G, g.palette[color_ind].B,"5E",g.palette[color_ind].R, g.palette[color_ind].G, g.palette[color_ind].B,sysend}," "))
 				table.insert(lpp_events,upevent)
 			end	
---[[
---]]
---[[
---]]
 			g.transpose_delivered = g.transpose
 			do_update_pads = 1
-vprint("g.transpose 1",g.transpose)
-vprint("color_ind",color_ind)
+--]]
+--TODO change this button on palette change
+			if Transpose.last>0 then
+				--upevent = remote.make_midi("90 5D "..color)
+				dnevent = remote.make_midi(table.concat({sysex_setrgb,"5D",g.palette[color_ind].R, g.palette[color_ind].G, g.palette[color_ind].B,sysend}," "))
+				table.insert(lpp_events,dnevent)
+				dnevent = remote.make_midi("90 5E 00")
+				table.insert(lpp_events,dnevent)
+			elseif Transpose.last<0 then
+				upevent = remote.make_midi("90 5D 00")
+				table.insert(lpp_events,upevent)
+				--dnevent = remote.make_midi("90 5E "..color)
+				dnevent = remote.make_midi(table.concat({sysex_setrgb,"5E",g.palette[color_ind].R, g.palette[color_ind].G, g.palette[color_ind].B,sysend}," "))
+				table.insert(lpp_events,dnevent)
+			elseif Transpose.last==0 then
+				upevent = remote.make_midi(table.concat({sysex_setrgb,"5D",g.palette[color_ind].R ,g.palette[color_ind].G, g.palette[color_ind].B,"5E",g.palette[color_ind].R, g.palette[color_ind].G, g.palette[color_ind].B,sysend}," "))
+				table.insert(lpp_events,upevent)
+			end	
+vprint("Transpose.last button",Transpose.last)
+vprint("color_index for Transpose",color_ind)
+			Transpose.current=Transpose.last
+			State.update=1
 		end
 -- -----------------------------------------------------------------------------------------------
 		
