@@ -1285,7 +1285,7 @@ State = {
 -- TODO 
 -- newgrid =Grid.rotate[index](oldgrid) --takes a single 8x8 grid and rotates it.
 -- Grid.current has 6 sub grids, with an additional table for duplicate notes.
--- refresh_midi counts duplicates and sets the output notes
+-- refresh_midi counts duplicates and sets the output notes, also sets hi and lo for transpose check
 	Grid = {
 			rotate = { 
 				function(g) local ng=g for yy=1,8,1 do for xx=1,8,1 do ng[yy][xx]=g[yy][xx] end end return ng end,
@@ -1325,13 +1325,20 @@ State = {
 			refresh_midiout =function() 
 				local note_index={}
 				local pad_index={}
+				local lo= Grid.current.note[1][1]+(12*Grid.current.oct[1][1])+State.root+Transpose.last
+				local hi = lo
 				for ve=1,8 do for ho=1,8 do
---				local note= Grid.current.note[ve][ho]+(12*Grid.current.oct[ve][ho])+State.root+g.transpose
-				local note= Grid.current.note[ve][ho]+(12*Grid.current.oct[ve][ho])+State.root+Transpose.last
-					
-				Grid.current.midiout[ve][ho]=note
+					local note= Grid.current.note[ve][ho]+(12*Grid.current.oct[ve][ho])+State.root+Transpose.last
+					Grid.current.midiout[ve][ho]=note
+					if note <= lo then
+						lo=note
+					elseif note >= hi then
+						hi=note
+					end
 					if note_index[note] == nil then	note_index[note]={} end
 					table.insert(note_index[note],((9-ve)*10)+ho)
+						Grid.current.midilo=lo
+						Grid.current.midihi=hi
 				end end
 					for k,v in pairs(note_index) do for a,b in pairs(v) do
 					Grid.current.duplicates[b]=v
@@ -1340,6 +1347,8 @@ grprint("refresh_midiout cur grid note",Grid.current.note)
 grprint("refresh_midiout cur grid oct",Grid.current.oct)
 grprint("refresh_midiout cur grid midiout",Grid.current.midiout)
 --tprint(Grid.current.duplicates)
+vprint("Grid.current.midilo",Grid.current.midilo)
+vprint("Grid.current.midihi",Grid.current.midihi)
 				end,
 			
 		}
@@ -2726,11 +2735,9 @@ if event.size==3 then -- Note, button, channel pressure, fader
 vprint("Transpose.last",Transpose.last)
 						local transchk=false
 grprint("tran_up cur grid midiout",Grid.current.midiout)
-						for ve=1,8 do for ho=1,8 do
-							if Grid.current.midiout[ve][ho]+(1-g.button.shift)+(g.button.shift*12) > 127 then
-								transchk=true
-							end
-						end end
+						if Grid.current.midihi+(1-g.button.shift)+(g.button.shift*12) > 127 then
+							transchk=true
+						end
 						if transchk==false then
 							Transpose.last = Transpose.last+(1-g.button.shift)+(g.button.shift*12) -- if sh pressed, add 12, else just 1
 							State.do_update({})
@@ -2747,11 +2754,10 @@ vprint("Transpose.last up",Transpose.last)
 vprint("Transpose.last",Transpose.last)
 grprint("tran_dn cur grid midiout",Grid.current.midiout)
 						local transchk=false
-						for ve=1,8 do for ho=1,8 do
-							if Grid.current.midiout[ve][ho]-(1-g.button.shift)-(g.button.shift*12) < 0 then
-								transchk=true
-							end
-						end end
+						if Grid.current.midilo-(1-g.button.shift)-(g.button.shift*12) < 0 then
+							transchk=true
+						end
+
 						if transchk==false then
 							Transpose.last = Transpose.last-(1-g.button.shift)-(g.button.shift*12) -- if sh pressed, sub 12, else just 1
 							State.do_update({})
