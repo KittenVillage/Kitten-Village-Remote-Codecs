@@ -40,8 +40,6 @@ g.button.click_delivered = 0
 
 g.button.tranup = 0
 g.button.trandn = 0
-g.palette={}
-
 
 
 -- These are set in remote_on_auto_input() 
@@ -52,19 +50,6 @@ g.transpose_delivered = 0 --for change filter
 g.transpose = 0
 transpose_changed = false
 -- tran_rst = true -- stops transpose
-tranup_btn = 0 --transpose up button state up or down
-trandn_btn = 0 --transpose down button state up or down
-
-
-
-
-
-
-
-
-
-
-
 
 root = 12  -- not 36
 
@@ -192,33 +177,10 @@ pclr[4]=21
 
 
 
-
-
-
-
-
-
--- Circle of fifths (C = red) using LPP internal palette (and their eqivlnt hex colors)
-colorscale={}
-colorscale[0]= {interval=0,  color=7,   hcolor="07", R="06", G="00", B="00", col="R ", notename="C",} -- 5 too bright
-colorscale[1]= {interval=1,  color=65,  hcolor="41", R="00", G="15", B="0D", col="BG", notename="C#",}
-colorscale[2]= {interval=2,  color=96,  hcolor="60", R="3F", G="1F", B="00", col="O ", notename="D",}
-colorscale[3]= {interval=3,  color=49,  hcolor="31", R="15", G="00", B="3F", col="BV", notename="D#",}
-colorscale[4]= {interval=4,  color=97,  hcolor="61", R="2E", G="2C", B="00", col="Y ", notename="E",}
-colorscale[5]= {interval=5,  color=57,  hcolor="39", R="3F", G="00", B="15", col="RV", notename="F",}
-colorscale[6]= {interval=6,  color=21,  hcolor="15", R="00", G="3F", B="00", col="G ", notename="F#",}
-colorscale[7]= {interval=7,  color=60,  hcolor="3C", R="3F", G="05", B="00", col="RO", notename="G",}
-colorscale[8]= {interval=8,  color=45,  hcolor="2D", R="00", G="00", B="3F", col="B ", notename="G#",}
-colorscale[9]= {interval=9,  color=126, hcolor="7E", R="2C", G="17", B="00", col="YO", notename="A",}
-colorscale[10]={interval=10, color=55,  hcolor="37", R="06", G="00", B="06", col="V ", notename="A#",}
-colorscale[11]={interval=11, color=18,  hcolor="12", R="07", G="16", B="00", col="YG", notename="B",}
--- colors = {"07","3C","96","7E","61","12","15","41","2D","31","37","39"} -- BY HUE
-
-
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- TODO piano keyboard white/black palettes
 
-palettes = {
+Palettes = {
 		louisBertrandCastel = {
 						[0]= {R="07", G="03", B="20", },		 -- blue
 						[1]= {R="06", G="24", B="20", },		 -- blue-green
@@ -376,7 +338,7 @@ palettes = {
 		},
 --]]		
 	}
-palettenames = {
+Palettenames = {
 'louisBertrandCastel',
 'dDJameson',
 'theodorSeemann',
@@ -389,20 +351,8 @@ palettenames = {
 'FifthsCircle',
 }
 
-g.palettes_length = table.getn(palettenames)
-palettename = 'FifthsCircle'
-g.palette = palettes[palettenames[10]]
-palette_int = 0 
-g.palette_delivered = 9 --for change filter
-g.palette_selected = 9 -- record of presses, goes up and dn
-g.palette_global = 9 -- current pal
-palette_changed = false
 
 -- Setting these two until I clean out the old code.
-Palettenames=palettenames
-Palettes=palettes
-
---tprint(g.palette)
 
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -410,6 +360,7 @@ Palettes=palettes
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- Scales tbd
+-- TODO fix and reorder them
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 scales = {
 	Chromatic = {0,1,2,3,4,5,6,7,8,9,10,11},
@@ -1506,7 +1457,7 @@ drum = {}
 buttonindex = {}
 g.itemnum = {}
 padpress = {} -- to display pressed
-			do_update_pads = 1
+do_update_pads = 1
 
 
 
@@ -2591,33 +2542,11 @@ first_button
 def_vars()
 		
 	
-State.do_update({scale=1,mode=1,palette=10})
---[[	
-Scale.select(29)
-Mode.select(20)
-Palette.select(10)
-Grid.refresh_midiout() 
---]]
+--State.do_update({scale=1,mode=1,palette=10})
 	end
 end
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -2871,78 +2800,9 @@ noscaleneeded=true -- while we test new modes
 					remote.handle_input(prev_off)
 				end
 			end 
---[[
-		
-		if (ret.y>10 and ret.y<89) and (noscaleneeded==false) and (button==0) then -- 11 to 88, but not button
---		if (button==0) then -- 11 to 88, but not button
-
-
-			---if the pads have transposed, then we need to turn off the last note----------------------
-			if(transpose_changed == true) then
-				local prev_off={ time_stamp = event.time_stamp, item=1, value = ret.x, note = g.note_delivered, velocity = 0 }
-				remote.handle_input(prev_off)
-				transpose_changed = false
-			end 
-			
----------------------------------------------------			
--- Calculate the note delivered based on the current scale and pad pressed.
--- TODO add an else to keep noteout in this range
----------------------------------------------------			
-			local padid = pad[ret.y].index-1
-			local scale_len = table.getn(scale)
-----------------------------------------------------			
-			if scale_len == 7 then -- 7 and below
-				root = 12 
-			elseif scale_len == 6 then 
-				root = 0 
-			elseif scale_len == 5 then -- 2 root notes
-				table.insert(scale,1,0)
-				scale_len = 6
-			else
-				root = 24 
-			end  
-----------------------------------------------------			
-			local ind = 1+modulo(padid,scale_len)  --modulo using the operator % gave me trouble in reason, so Livid wrote a custom fcn
-			local oct = math.floor(padid/scale_len)
-			local addnote = scale[ind]
-			local noteout = root+g.transpose+(12*oct)+addnote
-----------------------------------------------------			
---]]
---[[
-vprint("padid",padid)
-vprint("oct",oct)
-vprint("addnote",addnote)
-vprint("ind",ind)
-vprint("noteout",noteout)
---]]
---[[
-----------------------------------------------------			
-			if (noteout<127 and noteout>0) then
-				local msg={ time_stamp = event.time_stamp, item=1, value = ret.x, note = noteout,velocity = ret.z }
-				remote.handle_input(msg)
-				g.note_delivered = noteout
---TODO make return a var, pass to end of function!
-				return true
-			end
-----------------------------------------------------
--- here we display the pressed note
-----------------------------------------------------
-			local new_note = ret.y 
-			local new_notevelocity = ret.z 
-			if (g.last_notevelocity_delivered~=new_notevelocity) and (g.last_note_delivered~=new_note) then -- draw new notevelocity
-				g.current_note=new_note
-				g.current_notevelocity=new_notevelocity	
-			end
-----------------------------------------------------			
-
-
-
-
-
-
 			
 
---]]
+
 		if (button==0) then
 -------------------------------------------------------		
 -- NEW MODES test here
@@ -3250,43 +3110,23 @@ vprint("scalename",scalename)
 
 --TODO change this button on palette change
 			if Transpose.last>0 then
-				dnevent = remote.make_midi(table.concat({sysex_setrgb,"5D",g.palette[color_ind].R, g.palette[color_ind].G, g.palette[color_ind].B,sysend}," "))
+				dnevent = remote.make_midi(table.concat({sysex_setrgb,"5D",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," "))
 				table.insert(lpp_events,dnevent)
 				dnevent = remote.make_midi("90 5E 00")
 				table.insert(lpp_events,dnevent)
 			elseif Transpose.last<0 then
 				upevent = remote.make_midi("90 5D 00")
 				table.insert(lpp_events,upevent)
-				dnevent = remote.make_midi(table.concat({sysex_setrgb,"5E",g.palette[color_ind].R, g.palette[color_ind].G, g.palette[color_ind].B,sysend}," "))
+				dnevent = remote.make_midi(table.concat({sysex_setrgb,"5E",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," "))
 				table.insert(lpp_events,dnevent)
 			elseif Transpose.last==0 then
-				upevent = remote.make_midi(table.concat({sysex_setrgb,"5D",g.palette[color_ind].R ,g.palette[color_ind].G, g.palette[color_ind].B,"5E",g.palette[color_ind].R, g.palette[color_ind].G, g.palette[color_ind].B,sysend}," "))
+				upevent = remote.make_midi(table.concat({sysex_setrgb,"5D",Palette.current[color_ind].R ,Palette.current[color_ind].G, Palette.current[color_ind].B,"5E",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," "))
 				table.insert(lpp_events,upevent)
 			end	
 vprint("Transpose.last button",Transpose.last)
 vprint("color_index for Transpose",color_ind)
 			Transpose.current=Transpose.last
 			State.update=1
-		end
--- -----------------------------------------------------------------------------------------------
-		
--- -----------------------------------------------------------------------------------------------
-		--if palette changes, we transpose
---------------------------------------------------------------------------------
--- -----------------------------------------------------------------------------------------------
-		if g.palette_delivered~=g.palette_selected then
--- or palette_changed = true ??????????????????
-
-			g.palette = palettes[palettenames[g.palette_global]] --glo changed at button
-			g.palette_delivered = g.palette_selected
-			do_update_pads = 1
-vprint("palette_glo",g.palette_global)
-vprint("palette_sel",g.palette_selected)
-vprint("palette",palettenames[g.palette_global])
---vprint("palette_ind",palette_ind)
---vprint("g.palette",g.palette)
---vprint("pal",table.getn(palettes))
---tprint(palette[1])
 		end
 -- -----------------------------------------------------------------------------------------------
 		
@@ -3476,7 +3316,7 @@ vprint("palette",palettenames[g.palette_global])
 --[[
 --]]
 -- -----------------------------------------------------------------------------------------------
-		-- color the pads if scale or transpose changed----------------------------------------
+-- color the pads if scale or transpose changed----------------------------------------
 -- -----------------------------------------------------------------------------------------------		
 		if (do_update_pads==1) or (State.update==1) then
 --	  table.insert(lcd_events,upd_event)
@@ -3487,44 +3327,16 @@ vprint("palette",palettenames[g.palette_global])
 					root = 24 
  
 				for i=1,64,1 do
-			--local grid = Grid.rotate[1](Modes.Wicki_Hayden_R)
-			--local gridnote = Grid.rotate[1](Modes.LPP_Note_mode.note)
-			--local gridoct  = Grid.rotate[1](Modes.LPP_Note_mode.oct)
-			local gridnote = Grid.current.note
-			local gridoct  = Grid.current.oct
---tprint(gridoct)
-			local padx = padindex[i].x
-			local pady = 9-padindex[i].y
---vprint("padx",padx)
---vprint("pady",pady)
-			--local oct = math.floor(padid/scale_len)
---			local oct = gridoct[pady][padx]*12
-					--local addnote = scale[1+modulo(i-1,scale_len)]
-					--local outnote = root+g.transpose+(12*oct)+addnote --note that gets played by synth
-					--local outnorm = modulo(outnote,12) --normalized to 0-11 range
---					local outnorm = gridnote[pady][padx] --normalized to 0-11 range
---					local padnum = string.format("%x",i+35) --note# that the controller led responds to
+					local gridnote = Grid.current.note
+					local gridoct  = Grid.current.oct
+					local padx = padindex[i].x
+					local pady = 9-padindex[i].y
 					local padnum = padindex[i].padhex --note# that the controller led responds to
 					local R = Grid.current.R[pady][padx]
 					local G = Grid.current.G[pady][padx]
 					local B = Grid.current.B[pady][padx]
---vprint("g.palette[outnorm].R",g.palette[outnorm].R)
---vprint("padnum",padnum)
---vprint("outnorm",outnorm)
-
---tprint({padsysex,padnum,g.palette[outnorm].R,g.palette[outnorm].G,g.palette[outnorm].B})
-
-
---						padsysex=table.concat({padsysex,padnum,g.palette[outnorm].R,g.palette[outnorm].G,g.palette[outnorm].B}," ")
-						padsysex=table.concat({padsysex,padnum,R,G,B}," ")
--- even even new, keep a list of all the pads, and which are pressed, and colors they return to.
-
-
-						
+					padsysex=table.concat({padsysex,padnum,R,G,B}," ")
 				end --end for 1,64
-vprint("Current","current")
-
---tprint(Grid.current)
 				padupdate=remote.make_midi(table.concat({sysex_header,"0B",padsysex,sysend}," "))
 				table.insert(lpp_events,padupdate)
 				
@@ -3639,12 +3451,12 @@ vprint("Current","current")
 		if init==1 then
 remote.trace("in init!")
 -- transpose button	
-			upevent = remote.make_midi(table.concat({sysex_setrgb,"5D",g.palette[0].R ,g.palette[0].G, g.palette[0].B,"5E",g.palette[0].R, g.palette[0].G, g.palette[0].B,sysend}," "))
+			upevent = remote.make_midi(table.concat({sysex_setrgb,"5D",Palette.current[0].R ,Palette.current[0].G, Palette.current[0].B,"5E",Palette.current[0].R, Palette.current[0].G, Palette.current[0].B,sysend}," "))
 			table.insert(lpp_events,upevent)
 			 
 -- -----------------------------------------------------------------------------------------------
 --tprint(lpp_events)
-			State.do_update()
+State.do_update({scale=1,mode=1,palette=10})
 			init=0
 			do_update_pads = 1
 		end
@@ -3719,7 +3531,6 @@ end
 	if(port==2) then
 		local le = lcd_events
 		lcd_events = {}
---remote.trace("remdevmidi 2 \n")
 		return le
 	end
 --[[
@@ -3765,10 +3576,6 @@ end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function remote_set_state(changed_items)
 --tprint(changed_items)
-
---[[
---]]
-
 
 	--look for the _Scope constant. Kong reports "KONG". Could use for a variety of things
 
@@ -3930,19 +3737,6 @@ padgrid[ve][ho]={padhex=thispadhex,itemindex=(index-1)+g.itemnum.first_pad,index
 
 
 	end
-vprint("button 9"," ")
---tprint(button[9])
-
-	--[[
-	remote.trace("start note\n")
---	tprint(note)
-	remote.trace("end note\n")
-	--remote.trace(table.concat(note.pos, ", "))
-	--remote.trace(table.concat(note, ", "))
-	--remote.trace(table.concat(note.pos, ", "))
-	--]]
-	--tprint(buttonindex)
-	--remote.trace(padindex[11].pad)
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
