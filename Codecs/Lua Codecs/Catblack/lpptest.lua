@@ -3527,10 +3527,6 @@ vprint("Current","current")
 				
 				
 				
-				
-				upevent = remote.make_midi(table.concat({sysex_setrgb,"5D",g.palette[color_ind].R ,g.palette[color_ind].G, g.palette[color_ind].B,"5E",g.palette[color_ind].R, g.palette[color_ind].G, g.palette[color_ind].B,sysend}," "))
-				table.insert(lpp_events,upevent)
-
 
 			elseif scalename=='DrumPad' then
 
