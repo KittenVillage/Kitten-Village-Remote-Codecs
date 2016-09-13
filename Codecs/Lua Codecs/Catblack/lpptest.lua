@@ -24,6 +24,8 @@
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 --keep track of what's on in case mode, scale or transpose changes
 Playing={}
+-- keep track of buttons
+Pressed={}
 
 
 -- putting things into state so I can dump it for debug
@@ -2562,6 +2564,8 @@ end
 function remote_process_midi(event)
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- Remember, RPM may get several inputs before RDM can output.
+
 --remote.trace(event.size)
 --remote.trace("evsize")
 
@@ -2592,7 +2596,31 @@ if event.size==3 then -- Note, button, channel pressure, fader
 -----------------------------------
 -- handle buttons
 -----------------------------------
+-- -----------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
+-- NEW BUTTON HANDLE RDM
+test = 1
 		if button==1 and (ret.y<21 or ret.y>29) then -- button, not fader mode
+vprint("ret y",ret.y)
+			button_function[ret.y].RPM(ret.y,ret.z)
+		end
+-- -----------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
+
+
+
+
+
+
+		if test ==0 and button==1 and (ret.y<21 or ret.y>29) then -- button, not fader mode
 
 			local shiftbtn = remote.match_midi("B? 50 zz",event) -- 80 Shift
 			local clickbtn = remote.match_midi("B? 46 zz",event) -- 70 Shift
@@ -2600,11 +2628,12 @@ if event.size==3 then -- Note, button, channel pressure, fader
 			-- accent?
 			local accent_pad = remote.match_midi("B? 32 zz",event) -- 50 delete
 			-- make checks for these
+--[[
 			local scale_up = remote.match_midi("B? 5B zz",event) --find 91 up
 			local scale_dn = remote.match_midi("B? 5C zz",event) --find 92 dn
 			local tran_up =  remote.match_midi("B? 5D zz",event) --find 93 left
 			local tran_dn =  remote.match_midi("B? 5E zz",event) --find 94 right
-
+--]]
 
 -- -----------------------------------------------------------------------------------------------
 -- Accent button
@@ -2980,7 +3009,7 @@ function remote_deliver_midi(maxbytes,port)
 -- maybe change it's color!
 
 
-
+--[[
 -- -----------------------------------------------------------------------------------------------
 -- Shift button
 -- -----------------------------------------------------------------------------------------------
@@ -3020,6 +3049,28 @@ function remote_deliver_midi(maxbytes,port)
 -- both buttons pressed reveal other options, display here
 
 		end
+
+--]]
+-- -----------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
+-- NEW BUTTON HANDLE RDM
+if table.getn(Pressed)>0 then 
+	for k,v in pairs(Pressed) do
+		for d,e in pairs(button_function[v].RDM()) do table.insert(lpp_events,e) end
+	end
+	Pressed={}
+end
+-- -----------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
+
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
 -- Transpose display
@@ -3747,14 +3798,125 @@ end
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- button lookup!
---[[
 button_function = {
-
 --left to right Top 
-[91]={},
-[92]={},
-[93]={},
-[94]={},
+[91]={ -- scale_up
+		RPM=function(y,z) 
+--vprint("91 pressed",z)
+			if z>0 then
+				if State.shiftclick == 0 and State.shift == 0 then
+vprint("New MODE is ", Modenames[1+modulo(Mode.last,table.getn(Modenames))])
+					State.do_update({mode=Mode.last+1})
+				elseif State.shiftclick == 0 and State.shift == 1  then -- color palette
+					State.do_update({scale=Scale.last+1})
+				elseif State.shiftclick == 1 then -- color palette
+					State.do_update({palette=Palette.last+1})
+				end	
+			end
+		end,
+		RDM=function()
+			local colors = {"21","05","31"} -- green, red, purp
+			local bfevent={}
+			table.insert(bfevent,remote.make_midi("90 46 "..colors[1+State.click+State.shiftclick]))		
+			table.insert(bfevent,remote.make_midi("90 50 "..colors[1+State.shift+State.shiftclick]))
+			return bfevent
+		end
+	},
+[92]={ -- scale_dn
+		RPM=function(y,z) 
+--vprint("92 pressed",z)
+			if z>0 then
+				if State.shiftclick == 0 and State.shift == 0 then
+vprint("New MODE is ", Modenames[1+modulo(Mode.last,table.getn(Modenames))])
+					State.do_update({mode=Mode.last-1})
+				elseif State.shiftclick == 0 and State.shift == 1  then -- color palette
+					State.do_update({scale=Scale.last-1})
+				elseif State.shiftclick == 1 then -- color palette
+					State.do_update({palette=Palette.last-1})
+				end	
+			end
+		end,
+		RDM=function()
+			local colors = {"21","05","31"} -- green, red, purp
+			local bfevent={}
+			table.insert(bfevent,remote.make_midi("90 46 "..colors[1+State.click+State.shiftclick]))		
+			table.insert(bfevent,remote.make_midi("90 50 "..colors[1+State.shift+State.shiftclick]))
+			return bfevent
+		end
+	},
+[93]={ -- tran_up
+		RPM=function(y,z) 
+--vprint("93 pressed",z)
+			if z>0 then
+				if State.shiftclick == 0 then
+vprint("Transpose.last",Transpose.last)
+grprint("tran_up cur grid midiout",Grid.current.midiout)
+					local transchk=false
+					if Grid.current.midihi+(1-State.shift)+(State.shift*12) > 127 then
+						transchk=true
+					end
+					if transchk==false then
+						Transpose.last = Transpose.last+(1-State.shift)+(State.shift*12) -- if sh pressed, add 12, else just 1
+						State.do_update({})
+--						transpose_changed = true
+vprint("Transpose.last up",Transpose.last)
+					end
+				end	
+			end
+		end,
+		RDM=function()
+			local color_ind = (modulo(Transpose.last,12)) --change color every Note, show root
+			local bfevent={}
+			if Transpose.last>0 then
+				table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5D",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
+				table.insert(bfevent,remote.make_midi("90 5E 00"))
+			elseif Transpose.last<0 then
+				table.insert(bfevent,remote.make_midi("90 5D 00"))
+				table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5E",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
+			elseif Transpose.last==0 then
+				table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5D",Palette.current[color_ind].R ,Palette.current[color_ind].G, Palette.current[color_ind].B,"5E",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
+			end	
+			return bfevent
+		end
+	},
+
+[94]={ -- tran_dn
+		RPM=function(y,z) 
+--vprint("94 pressed",z)
+			if z>0 then
+				if State.shiftclick == 0 then
+vprint("Transpose.last",Transpose.last)
+grprint("tran_dn cur grid midiout",Grid.current.midiout)
+					local transchk=false
+					if Grid.current.midilo-(1-State.shift)-(State.shift*12) < 0 then
+						transchk=true
+					end
+					if transchk==false then
+						Transpose.last = Transpose.last-(1-State.shift)-(State.shift*12) -- if sh pressed, sub 12, else just 1
+						State.do_update({})
+--						transpose_changed = true
+vprint("Transpose.last dn",Transpose.last)
+					end
+				end	
+			end
+		end,
+		RDM=function()
+			local color_ind = (modulo(Transpose.last,12)) --change color every Note, show root
+			local bfevent={}
+			if Transpose.last>0 then
+				table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5D",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
+				table.insert(bfevent,remote.make_midi("90 5E 00"))
+			elseif Transpose.last<0 then
+				table.insert(bfevent,remote.make_midi("90 5D 00"))
+				table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5E",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
+			elseif Transpose.last==0 then
+				table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5D",Palette.current[color_ind].R ,Palette.current[color_ind].G, Palette.current[color_ind].B,"5E",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
+			end	
+			return bfevent
+		end
+	},
+
+--[[
 [95]={},
 [96]={},
 [97]=function()  Mode.select(Mode.last-1) end,
@@ -3775,8 +3937,39 @@ button_function = {
 [40]={},
 [50]={},
 [60]={},
-[70]={},
-[80]={},
+--]]
+[70]={ -- Click
+		RPM=function(y,z) 
+			State.click = z>0 and 1 or 0
+			State.shiftclick = (State.shift==1 and State.click==1) and 1 or 0
+			table.insert(Pressed,y)
+--vprint("70 pressed",y)
+		end,
+		RDM=function()
+			local colors = {"21","05","31"} -- green, red, purp
+			local bfevent={}
+			table.insert(bfevent,remote.make_midi("90 46 "..colors[1+State.click+State.shiftclick]))		
+			table.insert(bfevent,remote.make_midi("90 50 "..colors[1+State.shift+State.shiftclick]))
+			return bfevent
+		end
+	},
+[80]={ -- Shift
+		RPM=function(y,z) 
+			State.shift = z>0 and 1 or 0
+			State.shiftclick = (State.shift==1 and State.click==1) and 1 or 0
+			table.insert(Pressed,y)
+--vprint("80 pressed",y)
+		end,
+		RDM=function()
+			local colors = {"21","05","31"} -- green, red, purp
+			local bfevent={}
+			table.insert(bfevent,remote.make_midi("90 50 "..colors[1+State.shift+State.shiftclick]))		
+			table.insert(bfevent,remote.make_midi("90 46 "..colors[1+State.click+State.shiftclick]))
+			return bfevent
+		end
+	},
+--]]
+--[[
 --bottom to top Right
 [19]={},
 [29]={},
@@ -3787,7 +3980,7 @@ button_function = {
 [79]={},
 [89]={},
 
+--]]
 
 }
---]]
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
