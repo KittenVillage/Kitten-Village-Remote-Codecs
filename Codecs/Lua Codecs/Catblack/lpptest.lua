@@ -2606,6 +2606,7 @@ if event.size==3 then -- Note, button, channel pressure, fader
 test = 1
 		if button==1 and (ret.y<21 or ret.y>29) then -- button, not fader mode
 vprint("ret y",ret.y)
+			table.insert(Pressed,ret.y) -- keep track for button_function[Pressed].RDM
 			button_function[ret.y].RPM(ret.y,ret.z)
 		end
 -- -----------------------------------------------------------------------------------------------
@@ -2653,107 +2654,6 @@ vprint("ret y",ret.y)
 				return false
 			  end
 			end
---[[
--- -----------------------------------------------------------------------------------------------
--- Shift button
--- -----------------------------------------------------------------------------------------------
-			if (shiftbtn) then
-				if shiftbtn.z>0 then
-					g.button.shift = 1 --momentary like a computer's shift key
-				else
-					g.button.shift = 0
-				end
-			end
--- -----------------------------------------------------------------------------------------------
--- Click button
--- -----------------------------------------------------------------------------------------------
-			if (clickbtn) then
-				if clickbtn.z>0 then
-					g.button.click = 1 --momentary like a computer's shift key
-				else
-					g.button.click = 0
-				end
-			end
--- -----------------------------------------------------------------------------------------------
--- shiftclick button
--- -----------------------------------------------------------------------------------------------
-			if (g.button.click == 1)  and (g.button.shift == 1) then
-				g.button.shiftclick = 1 --momentary like a computer's shift key
-			else
-				g.button.shiftclick = 0
-			end
-	-- -----------------------------------------------------------------------------------------------
--- check below per button, then we check each for shift and click with elseif
--- 
--- -----------------------------------------------------------------------------------------------
-
-
-			if(tran_up) then
-				if tran_up.z>0 then
-					if g.button.shiftclick_delivered == 0 then
-vprint("Transpose.last",Transpose.last)
-						local transchk=false
-grprint("tran_up cur grid midiout",Grid.current.midiout)
-						if Grid.current.midihi+(1-g.button.shift)+(g.button.shift*12) > 127 then
-							transchk=true
-						end
-						if transchk==false then
-							Transpose.last = Transpose.last+(1-g.button.shift)+(g.button.shift*12) -- if sh pressed, add 12, else just 1
-							State.do_update({})
-						transpose_changed = true
-vprint("Transpose.last up",Transpose.last)
-
-						end
-					end	
-				end
-			end
-			if(tran_dn) then
-				if tran_dn.z>0 then
-					if g.button.shiftclick_delivered == 0 then
-vprint("Transpose.last",Transpose.last)
-grprint("tran_dn cur grid midiout",Grid.current.midiout)
-						local transchk=false
-						if Grid.current.midilo-(1-g.button.shift)-(g.button.shift*12) < 0 then
-							transchk=true
-						end
-
-						if transchk==false then
-							Transpose.last = Transpose.last-(1-g.button.shift)-(g.button.shift*12) -- if sh pressed, sub 12, else just 1
-							State.do_update({})
-						transpose_changed = true
-vprint("Transpose.last dn",Transpose.last)
-						end
-					end	
-				end
-			end
-
-
-
-			if(scale_up) then
-				if scale_up.z>0 then
-					if g.button.shiftclick_delivered == 0 and g.button.shift_delivered == 0 then
-vprint("New MODE is ", Modenames[1+modulo(Mode.last,table.getn(Modenames))])
-						State.do_update({mode=Mode.last+1})
-					elseif g.button.shiftclick_delivered == 0 and g.button.shift_delivered == 1  then -- color palette
-						State.do_update({scale=Scale.last+1})
-					elseif g.button.shiftclick_delivered == 1 then -- color palette
-						State.do_update({palette=Palette.last+1})
-					end	
-				end
-			end
-			if(scale_dn) then
-				if scale_dn.z>0 then
-					if g.button.shiftclick_delivered == 0 and g.button.shift_delivered == 0 then
-						State.do_update({mode=Mode.last-1})
-					elseif g.button.shiftclick_delivered == 0 and g.button.shift_delivered == 1  then -- color palette
-						State.do_update({scale=Scale.last-1})
-					elseif g.button.shiftclick_delivered == 1 then -- color palette
-						State.do_update({palette=Palette.last-1})
-					end	
-				end
-			end
-
---]]
 
 -- -----------------------------------------------------------------------------------------------
 -- more buttons go here
@@ -3124,6 +3024,7 @@ end
 -- -----------------------------------------------------------------------------------------------
 --this needs to change to some color output
 		--if scale changes, we update the LCD
+-- UNNEEDED?
 --------------------------------------------------------------------------------
 		if ( (g.scale_delivered~=scale_int or g.transpose_delivered~=g.transpose) and g.button.shift~=1 and vel_pad==0) then
 --[[
@@ -3146,41 +3047,10 @@ end
 			--remote.trace(scalename)
 vprint("scalename",scalename)
 		end
---[[
---]]
 -- -----------------------------------------------------------------------------------------------
 
 
 
-
--- -----------------------------------------------------------------------------------------------
-		--if transpose changes, we transpose--------------------------------------------------------------------------------
--- -----------------------------------------------------------------------------------------------
-		if Transpose.current~=Transpose.last then
-			local color_ind = (modulo(Transpose.last,12)) --change color every Note, show root
---vprint("color_ind",color_ind)
-
---TODO change this button on palette change
-			if Transpose.last>0 then
-				dnevent = remote.make_midi(table.concat({sysex_setrgb,"5D",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," "))
-				table.insert(lpp_events,dnevent)
-				dnevent = remote.make_midi("90 5E 00")
-				table.insert(lpp_events,dnevent)
-			elseif Transpose.last<0 then
-				upevent = remote.make_midi("90 5D 00")
-				table.insert(lpp_events,upevent)
-				dnevent = remote.make_midi(table.concat({sysex_setrgb,"5E",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," "))
-				table.insert(lpp_events,dnevent)
-			elseif Transpose.last==0 then
-				upevent = remote.make_midi(table.concat({sysex_setrgb,"5D",Palette.current[color_ind].R ,Palette.current[color_ind].G, Palette.current[color_ind].B,"5E",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," "))
-				table.insert(lpp_events,upevent)
-			end	
-vprint("Transpose.last button",Transpose.last)
-vprint("color_index for Transpose",color_ind)
-			Transpose.current=Transpose.last
-			State.update=1
-		end
--- -----------------------------------------------------------------------------------------------
 		
 		
 -- -----------------------------------------------------------------------------------------------
@@ -3845,7 +3715,7 @@ vprint("New MODE is ", Modenames[1+modulo(Mode.last,table.getn(Modenames))])
 	},
 [93]={ -- tran_up
 		RPM=function(y,z) 
---vprint("93 pressed",z)
+vprint("93 pressed",z)
 			if z>0 then
 				if State.shiftclick == 0 then
 vprint("Transpose.last",Transpose.last)
@@ -3864,6 +3734,7 @@ vprint("Transpose.last up",Transpose.last)
 			end
 		end,
 		RDM=function()
+vprint("Transpose RDM ",Transpose.last)
 			local color_ind = (modulo(Transpose.last,12)) --change color every Note, show root
 			local bfevent={}
 			if Transpose.last>0 then
@@ -3875,13 +3746,14 @@ vprint("Transpose.last up",Transpose.last)
 			elseif Transpose.last==0 then
 				table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5D",Palette.current[color_ind].R ,Palette.current[color_ind].G, Palette.current[color_ind].B,"5E",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
 			end	
+tprint(bfevent)
 			return bfevent
 		end
 	},
 
 [94]={ -- tran_dn
 		RPM=function(y,z) 
---vprint("94 pressed",z)
+vprint("94 pressed",z)
 			if z>0 then
 				if State.shiftclick == 0 then
 vprint("Transpose.last",Transpose.last)
@@ -3930,7 +3802,6 @@ vprint("Transpose.last dn",Transpose.last)
 		RPM=function(y,z) 
 			State.click = z>0 and 1 or 0
 			State.shiftclick = (State.shift==1 and State.click==1) and 1 or 0
-			table.insert(Pressed,y)
 --vprint("70 pressed",y)
 		end,
 		RDM=function()
@@ -3945,7 +3816,6 @@ vprint("Transpose.last dn",Transpose.last)
 		RPM=function(y,z) 
 			State.shift = z>0 and 1 or 0
 			State.shiftclick = (State.shift==1 and State.click==1) and 1 or 0
-			table.insert(Pressed,y)
 --vprint("80 pressed",y)
 		end,
 		RDM=function()
