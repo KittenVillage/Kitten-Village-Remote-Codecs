@@ -2602,7 +2602,7 @@ if event.size==3 then -- Note, button, channel pressure, fader
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
--- NEW BUTTON HANDLE RDM
+-- NEW BUTTON HANDLE RPM
 test = 1
 		if button==1 and (ret.y<21 or ret.y>29) then -- button, not fader mode
 vprint("ret y",ret.y)
@@ -2653,6 +2653,7 @@ vprint("ret y",ret.y)
 				return false
 			  end
 			end
+--[[
 -- -----------------------------------------------------------------------------------------------
 -- Shift button
 -- -----------------------------------------------------------------------------------------------
@@ -2752,7 +2753,7 @@ vprint("New MODE is ", Modenames[1+modulo(Mode.last,table.getn(Modenames))])
 				end
 			end
 
-
+--]]
 
 -- -----------------------------------------------------------------------------------------------
 -- more buttons go here
@@ -2763,7 +2764,7 @@ vprint("New MODE is ", Modenames[1+modulo(Mode.last,table.getn(Modenames))])
 
 
 
-
+--[[
 ----------------------------------------------------
 -- TODO, comment more
 -- detecting buttons here, but only if shift pressed?
@@ -2780,7 +2781,7 @@ vprint("New MODE is ", Modenames[1+modulo(Mode.last,table.getn(Modenames))])
 		end
 
 
-
+--]]
 
 
 
@@ -3815,10 +3816,9 @@ vprint("New MODE is ", Modenames[1+modulo(Mode.last,table.getn(Modenames))])
 			end
 		end,
 		RDM=function()
-			local colors = {"21","05","31"} -- green, red, purp
+			local color_ind = (modulo(Mode.last,12)) --change color every Note, show root
 			local bfevent={}
-			table.insert(bfevent,remote.make_midi("90 46 "..colors[1+State.click+State.shiftclick]))		
-			table.insert(bfevent,remote.make_midi("90 50 "..colors[1+State.shift+State.shiftclick]))
+				table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5B",Palette.current[color_ind].R ,Palette.current[color_ind].G, Palette.current[color_ind].B,"5C",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
 			return bfevent
 		end
 	},
@@ -3837,10 +3837,9 @@ vprint("New MODE is ", Modenames[1+modulo(Mode.last,table.getn(Modenames))])
 			end
 		end,
 		RDM=function()
-			local colors = {"21","05","31"} -- green, red, purp
+			local color_ind = (modulo(Mode.last,12)) --change color every Note, show root
 			local bfevent={}
-			table.insert(bfevent,remote.make_midi("90 46 "..colors[1+State.click+State.shiftclick]))		
-			table.insert(bfevent,remote.make_midi("90 50 "..colors[1+State.shift+State.shiftclick]))
+				table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5B",Palette.current[color_ind].R ,Palette.current[color_ind].G, Palette.current[color_ind].B,"5C",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
 			return bfevent
 		end
 	},
@@ -3901,18 +3900,7 @@ vprint("Transpose.last dn",Transpose.last)
 			end
 		end,
 		RDM=function()
-			local color_ind = (modulo(Transpose.last,12)) --change color every Note, show root
-			local bfevent={}
-			if Transpose.last>0 then
-				table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5D",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
-				table.insert(bfevent,remote.make_midi("90 5E 00"))
-			elseif Transpose.last<0 then
-				table.insert(bfevent,remote.make_midi("90 5D 00"))
-				table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5E",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
-			elseif Transpose.last==0 then
-				table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5D",Palette.current[color_ind].R ,Palette.current[color_ind].G, Palette.current[color_ind].B,"5E",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
-			end	
-			return bfevent
+			return button_function[93].RDM() -- same code for both
 		end
 	},
 
