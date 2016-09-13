@@ -3776,68 +3776,248 @@ vprint("Transpose.last dn",Transpose.last)
 		end
 	},
 
---[[
-[95]={},
-[96]={},
-[97]=function()  Mode.select(Mode.last-1) end,
-[98]=function()  Mode.select(Mode.last+1) end,
---left to right Bottom
-[01]={},
-[02]={},
-[03]={},
-[04]={},
-[05]={},
-[06]={},
-[07]={},
-[08]={},
---bottom to top Left
-[10]={},
-[20]={},
-[30]={},
-[40]={},
-[50]={},
-[60]={},
---]]
-[70]={ -- Click
-		RPM=function(y,z) 
-			State.click = z>0 and 1 or 0
-			State.shiftclick = (State.shift==1 and State.click==1) and 1 or 0
---vprint("70 pressed",y)
+--[[                                                                                              
+[95]={
+		RPM=function(y,z)
 		end,
+                  
 		RDM=function()
-			local colors = {"21","05","31"} -- green, red, purp
-			local bfevent={}
+		end
+	},                                                                                              
+                                                                                          
+[96]={
+		RPM=function(y,z)
+		end,
+                  
+		RDM=function()
+		end
+	},                                                                                              
+                                                                                          
+[97]={
+		RPM=function(y,z)
+		end,
+                  
+		RDM=function()
+		end
+	},                                                                                              
+                                                                                          
+[98]={
+		RPM=function(y,z)
+		end,
+                  
+		RDM=function()
+		end
+	},                                                                                              
+--left to right Bottom                                                                            
+[01]={
+		RPM=function(y,z)
+		end,
+                  
+		RDM=function()
+		end
+	},                                                                                              
+                                                                                          
+[02]={
+		RPM=function(y,z)
+		end,
+                  
+		RDM=function()
+		end
+	},                                                                                              
+                                                                                          
+[03]={
+		RPM=function(y,z)
+		end,
+                  
+		RDM=function()
+		end
+	},                                                                                              
+                                                                                          
+[04]={
+		RPM=function(y,z)
+		end,
+                  
+		RDM=function()
+		end
+	},                                                                                              
+                                                                                          
+[05]={
+		RPM=function(y,z)
+		end,
+                  
+		RDM=function()
+		end
+	},                                                                                              
+                                                                                          
+[06]={
+		RPM=function(y,z)
+		end,
+                  
+		RDM=function()
+		end
+	},                                                                                              
+                                                                                          
+[07]={
+		RPM=function(y,z)
+		end,
+                  
+		RDM=function()
+		end
+	},                                                                                              
+                                                                                          
+[08]={
+		RPM=function(y,z)
+		end,
+                  
+		RDM=function()
+		end
+	},                                                                                              
+                                                                                          
+--bottom to top Left                                                                              
+[10]={
+		RPM=function(y,z)
+		end,
+                  
+		RDM=function()
+		end
+	},                                                                                              
+                                                                                          
+[20]={
+		RPM=function(y,z)
+		end,
+                  
+		RDM=function()
+		end
+	},                                                                                              
+                                                                                          
+[30]={
+		RPM=function(y,z)
+		end,
+                  
+		RDM=function()
+		end
+	},                                                                                              
+                                                                                          
+[40]={
+		RPM=function(y,z)
+		end,
+                  
+		RDM=function()
+		end
+	},                                                                                              
+                                                                                          
+[50]={
+		RPM=function(y,z)
+		end,
+                  
+		RDM=function()
+		end
+	},                                                                                              
+                                                                                          
+[60]={
+		RPM=function(y,z)
+		end,
+                  
+		RDM=function()
+		end
+	},                                                                                              
+                                                                                          
+--]]                                                                                              
+[70]={ -- Click                                                                                   
+		RPM=function(y,z)                                                                             
+			State.click = z>0 and 1 or 0                                                                
+			State.shiftclick = (State.shift==1 and State.click==1) and 1 or 0                           
+--vprint("70 pressed",y)                                                                          
+		end,                                                                                          
+		RDM=function()                                                                                
+			local colors = {"21","05","31"} -- green, red, purp                                         
+			local bfevent={}                                                                            
 			table.insert(bfevent,remote.make_midi("90 46 "..colors[1+State.click+State.shiftclick]))		
-			table.insert(bfevent,remote.make_midi("90 50 "..colors[1+State.shift+State.shiftclick]))
-			return bfevent
-		end
-	},
-[80]={ -- Shift
-		RPM=function(y,z) 
-			State.shift = z>0 and 1 or 0
-			State.shiftclick = (State.shift==1 and State.click==1) and 1 or 0
---vprint("80 pressed",y)
-		end,
-		RDM=function()
-			local colors = {"21","05","31"} -- green, red, purp
-			local bfevent={}
+			table.insert(bfevent,remote.make_midi("90 50 "..colors[1+State.shift+State.shiftclick]))    
+			return bfevent                                                                              
+		end                                                                                           
+	},                                                                                              
+[80]={ -- Shift                                                                                   
+		RPM=function(y,z)                                                                             
+			State.shift = z>0 and 1 or 0                                                                
+			State.shiftclick = (State.shift==1 and State.click==1) and 1 or 0                           
+--vprint("80 pressed",y)                                                                          
+		end,                                                                                          
+		RDM=function()                                                                                
+			local colors = {"21","05","31"} -- green, red, purp                                         
+			local bfevent={}                                                                            
 			table.insert(bfevent,remote.make_midi("90 50 "..colors[1+State.shift+State.shiftclick]))		
-			table.insert(bfevent,remote.make_midi("90 46 "..colors[1+State.click+State.shiftclick]))
-			return bfevent
+			table.insert(bfevent,remote.make_midi("90 46 "..colors[1+State.click+State.shiftclick]))    
+			return bfevent                                                                              
+		end                                                                                           
+	},                                                                                              
+--]]                                                                                              
+--[[                                                                                              
+--bottom to top Right                                                                             
+[19]={
+		RPM=function(y,z)
+		end,
+                  
+		RDM=function()
 		end
-	},
---]]
---[[
---bottom to top Right
-[19]={},
-[29]={},
-[39]={},
-[49]={},
-[59]={},
-[69]={},
-[79]={},
-[89]={},
-
+	},                                                                                              
+                                                                                          
+[29]={
+		RPM=function(y,z)
+		end,
+                  
+		RDM=function()
+		end
+	},                                                                                              
+                                                                                          
+[39]={
+		RPM=function(y,z)
+		end,
+                  
+		RDM=function()
+		end
+	},                                                                                              
+                                                                                          
+[49]={
+		RPM=function(y,z)
+		end,
+                  
+		RDM=function()
+		end
+	},                                                                                              
+                                                                                          
+[59]={
+		RPM=function(y,z)
+		end,
+                  
+		RDM=function()
+		end
+	},                                                                                              
+                                                                                          
+[69]={
+		RPM=function(y,z)
+		end,
+                  
+		RDM=function()
+		end
+	},                                                                                              
+                                                                                          
+[79]={
+		RPM=function(y,z)
+		end,
+                  
+		RDM=function()
+		end
+	},                                                                                              
+                                                                                          
+[89]={
+		RPM=function(y,z)
+		end,
+                  
+		RDM=function()
+		end
+	},                                                                                              
+                                                                                          
 --]]
 
 }
