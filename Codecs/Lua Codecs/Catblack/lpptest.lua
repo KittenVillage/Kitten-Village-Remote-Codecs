@@ -183,6 +183,20 @@ pclr[4]=21
 -- TODO piano keyboard white/black palettes
 
 Palettes = {
+		FifthsCircle = {
+						[0]= {R="3F", G="00", B="00", },	--R  
+						[1]= {R="00", G="32", B="15", },	--BG 
+						[2]= {R="3F", G="09", B="00", },	--O  
+						[3]= {R="09", G="00", B="36", },	--BV 
+						[4]= {R="3F", G="3F", B="00", },	--Y  
+						[5]= {R="29", G="00", B="20", },	--RV 
+						[6]= {R="00", G="3F", B="00", },	--G  
+						[7]= {R="1F", G="02", B="01", },	--RO 
+						[8]= {R="00", G="00", B="3F", },	--B  
+						[9]= {R="19", G="09", B="00", },	--YO 
+						[10]={R="12", G="00", B="2D", },	--V  
+						[11]={R="21", G="3F", B="00", },	--YG 
+		},
 		louisBertrandCastel = {
 						[0]= {R="07", G="03", B="20", },		 -- blue
 						[1]= {R="06", G="24", B="20", },		 -- blue-green
@@ -309,20 +323,6 @@ Palettes = {
 						[10]={R="3B", G="3C", B="21", },		 -- yellow/white
 						[11]={R="3D", G="3D", B="0F", },		 -- yellow
 		},
-		FifthsCircle = {
-						[0]= {R="3F", G="00", B="00", },	--R  
-						[1]= {R="00", G="32", B="15", },	--BG 
-						[2]= {R="3F", G="09", B="00", },	--O  
-						[3]= {R="09", G="00", B="36", },	--BV 
-						[4]= {R="3F", G="3F", B="00", },	--Y  
-						[5]= {R="29", G="00", B="20", },	--RV 
-						[6]= {R="00", G="3F", B="00", },	--G  
-						[7]= {R="1F", G="02", B="01", },	--RO 
-						[8]= {R="00", G="00", B="3F", },	--B  
-						[9]= {R="19", G="09", B="00", },	--YO 
-						[10]={R="12", G="00", B="2D", },	--V  
-						[11]={R="21", G="3F", B="00", },	--YG 
-		},
 --[[
 		FifthsCircleOld = {
 						[0]= {R="06", G="00", B="00", },		--R 
@@ -341,6 +341,7 @@ Palettes = {
 --]]		
 	}
 Palettenames = {
+'FifthsCircle',
 'louisBertrandCastel',
 'dDJameson',
 'theodorSeemann',
@@ -350,7 +351,6 @@ Palettenames = {
 'aBernardKlein',
 'iJBelmont',
 'sZieverink',
-'FifthsCircle',
 }
 
 
@@ -1313,8 +1313,8 @@ vprint("Grid.current.midihi",Grid.current.midihi)
 -- Palette has the methods for changing the Palette.
 -- select takes from Grid.current.note 
 Palette = { 
-		current = Palettes[Palettenames[10]],
-		--last = 10,
+--		current = Palettes[Palettenames[1]],
+--		--last = 1,
 		length = table.getn(Palettenames),
 		select=function(n) local new = 1+modulo(n-1,Palette.length) 
 vprint("new pal",new) 
@@ -1557,10 +1557,9 @@ end
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-function scroll_status()
-	local mess = table.concat({'S',tostring(Scale.last),' M',tostring(Mode.last),' P',tostring(Palette.last),' T',tostring(Transpose.last)},'')
-
-	local ssevent ={sysex_scrolltext, '14 00'}
+function scroll_status(mess)
+--	local mess = table.concat({'S',tostring(Scale.last),' M',tostring(Mode.last),' P',tostring(Palette.last),' T',tostring(Transpose.last)},'')
+	local ssevent ={sysex_scrolltext, '32 00'}
 		string.gsub(mess,".",function(c) 
 			table.insert(ssevent,string.format("%02X",string.byte(c)))
 		end)
@@ -2909,56 +2908,6 @@ function remote_deliver_midi(maxbytes,port)
 		end
 --]]
 -- -----------------------------------------------------------------------------------------------
-
-
-
-
--- Need to output shift a better way
--- maybe change it's color!
-
-
---[[
--- -----------------------------------------------------------------------------------------------
--- Shift button
--- -----------------------------------------------------------------------------------------------
-
-		--if we have pressed shift 
-		if g.button.shift_delivered~=g.button.shift  then
-			local shcolors = {"21","05"} -- green, red
-			shevent = remote.make_midi("90 50 "..shcolors[g.button.shift+1])		
-			table.insert(lpp_events,shevent)
-			g.button.shift_delivered = g.button.shift
-		end
--- -----------------------------------------------------------------------------------------------
--- -----------------------------------------------------------------------------------------------
--- Click button
--- -----------------------------------------------------------------------------------------------
-
-		--if we have pressed click----------------------------------------
-		if g.button.click_delivered~=g.button.click  then
-			local clcolors = {"21","05"} -- green, red
-			clevent = remote.make_midi("90 46 "..clcolors[g.button.click+1])	
-			table.insert(lpp_events,clevent)
-			g.button.click_delivered = g.button.click
-		end
--- -----------------------------------------------------------------------------------------------
--- -----------------------------------------------------------------------------------------------
--- shiftclick button
--- -----------------------------------------------------------------------------------------------
-
-		--if we have pressed click and shift----------------------------------------
-		if g.button.shiftclick_delivered~=g.button.shiftclick  then
-			local shclcolors = {"21","05","31"} -- green, red, purp
-			shclevent = remote.make_midi("90 50 "..shclcolors[g.button.shiftclick+g.button.shift+1])		
-			table.insert(lpp_events,shclevent)
-			shclevent = remote.make_midi("90 46 "..shclcolors[g.button.shiftclick+g.button.click+1])	
-			table.insert(lpp_events,shclevent)
-			g.button.shiftclick_delivered = g.button.shiftclick
--- both buttons pressed reveal other options, display here
-
-		end
-
---]]
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
@@ -3257,8 +3206,8 @@ vprint("scalename",scalename)
 					root = 24 
  
 				for i=1,64,1 do
-					local gridnote = Grid.current.note
-					local gridoct  = Grid.current.oct
+--					local gridnote = Grid.current.note
+--					local gridoct  = Grid.current.oct
 					local padx = padindex[i].x
 					local pady = 9-padindex[i].y
 					local padnum = padindex[i].padhex --note# that the controller led responds to
@@ -3267,7 +3216,7 @@ vprint("scalename",scalename)
 					local B = Grid.current.B[pady][padx]
 					padsysex=table.concat({padsysex,padnum,R,G,B}," ")
 				end --end for 1,64
-				padupdate=remote.make_midi(table.concat({sysex_header,"0B",padsysex,sysend}," "))
+				padupdate=remote.make_midi(table.concat({sysex_setrgb,padsysex,sysend}," "))
 				table.insert(lpp_events,padupdate)
 				
 				
@@ -3380,13 +3329,13 @@ vprint("scalename",scalename)
 -- -----------------------------------------------------------------------------------------------
 		if init==1 then
 remote.trace("in init!")
--- transpose button	
-			upevent = remote.make_midi(table.concat({sysex_setrgb,"5D",Palette.current[0].R ,Palette.current[0].G, Palette.current[0].B,"5E",Palette.current[0].R, Palette.current[0].G, Palette.current[0].B,sysend}," "))
-			table.insert(lpp_events,upevent)
 			 
 -- -----------------------------------------------------------------------------------------------
 --tprint(lpp_events)
-State.do_update({scale=1,mode=1,palette=10})
+			State.do_update({scale=1,mode=1,palette=1})
+-- transpose button	
+			upevent = remote.make_midi(table.concat({sysex_setrgb,"5D",Palette.current[0].R ,Palette.current[0].G, Palette.current[0].B,"5E",Palette.current[0].R, Palette.current[0].G, Palette.current[0].B,sysend}," "))
+			table.insert(lpp_events,upevent)
 			init=0
 			do_update_pads = 1
 		end
@@ -3789,7 +3738,7 @@ vprint("Transpose.last dn",Transpose.last)
 		end,
 									
 		RDM=function()
-		return scroll_status() end
+		return scroll_status(table.concat({'S',tostring(Scale.last),' M',tostring(Mode.last),' P',tostring(Palette.last),' T',tostring(Transpose.last)},'')) end
 	},
 
 [96]={
