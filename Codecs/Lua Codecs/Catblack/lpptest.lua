@@ -61,7 +61,7 @@ drum_mode = 0;
 
 
 
-  
+	
 init = 1
 global_scale = 0
 global_transp = 0
@@ -105,7 +105,7 @@ g.current_notevelocity = 0
 
 
 -- all sysex msg vars use table.concat
-sysex_header = "F0 00 20 29 02 10"
+sysex_header = "F0 00 20 29 02 10 "
 sysex_setrgb = sysex_header.."0B" -- pad r g b
 sysex_setled = sysex_header.."0A" -- pad color0-127
 sysex_setrgbgrid = sysex_header.."15" -- 0=10x10;1=8x8 color0-127
@@ -1153,7 +1153,7 @@ function Pad:new(o,ho,ve)
 end
 
 function Pad:makeSound()
-  print('I say ' .. self.sound)
+	print('I say ' .. self.sound)
 end
 
 mrDog = Pad:new() 
@@ -1170,7 +1170,7 @@ mrDog:makeSound()
 setmetatable(Pad, { __call = function(_, ...) return Pad.new(...) end })
 
 function Pad.new(x, y)
-  return setmetatable({ x = x or 0, y = y or 0 }, Pad)
+	return setmetatable({ x = x or 0, y = y or 0 }, Pad)
 end
 
 --]]
@@ -1528,7 +1528,7 @@ end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- FL: Helper function that combines the "Pad n" and "Pad n Playing" outputs
 function make_led_value(index,a,b)
-  local sw = (g.step_is_playing[index]>0) and 1 or 0 --range of value is 0-4, so we convert to 0-1
+	local sw = (g.step_is_playing[index]>0) and 1 or 0 --range of value is 0-4, so we convert to 0-1
 	local combined_value = g.step_value[index]*a + sw*b
 	return combined_value
 end
@@ -1555,6 +1555,22 @@ remote.trace(text)
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+function scroll_status()
+	local mess = table.concat({'S',tostring(Scale.last),' M',tostring(Mode.last),' P',tostring(Palette.last),' T',tostring(Transpose.last)},'')
+
+	local ssevent ={sysex_scrolltext, '14 00'}
+		string.gsub(mess,".",function(c) 
+			table.insert(ssevent,string.format("%02X",string.byte(c)))
+		end)
+	table.insert(ssevent,sysend)
+		local bfevent = {}
+		table.insert(bfevent,remote.make_midi(table.concat(ssevent," ")))
+	return bfevent
+end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
@@ -1612,12 +1628,12 @@ end
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function exists(f, l) -- find element v of l satisfying f(v)
-  for _, v in ipairs(l) do
-    if v==f then
-      return true
-    end
-  end
-  return nil
+	for _, v in ipairs(l) do
+		if v==f then
+			return true
+		end
+	end
+	return nil
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -1651,12 +1667,12 @@ function tprint (tbl, indent)
 		 for k, v in pairs(tbl) do
 			formatting = string.rep("  ", indent) .. k .. ": "
 			if type(v) == "table" then
-			  remote.trace('\n'..formatting ..'\n')
-			  tprint(v, indent+1)
+				remote.trace('\n'..formatting ..'\n')
+				tprint(v, indent+1)
 			elseif type(v) == 'boolean' then
-			  remote.trace(formatting .. tostring(v))		
+				remote.trace(formatting .. tostring(v))		
 			else
-			  remote.trace(formatting .. tostring(v) ..'\n')
+				remote.trace(formatting .. tostring(v) ..'\n')
 			end
 		 end
 --[[
@@ -1716,9 +1732,9 @@ end
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function map_redrum_led(v)
-  if(v<5) then
-   return pclr[v]
-  end
+	if(v<5) then
+	 return pclr[v]
+	end
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -2603,7 +2619,6 @@ if event.size==3 then -- Note, button, channel pressure, fader
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
 -- NEW BUTTON HANDLE RPM
-test = 1
 		if button==1 and (ret.y<21 or ret.y>29) then -- button, not fader mode
 vprint("ret y",ret.y)
 			table.insert(Pressed,ret.y) -- keep track for button_function[Pressed].RDM
@@ -2617,24 +2632,16 @@ vprint("ret y",ret.y)
 -- -----------------------------------------------------------------------------------------------
 
 
-
+--[[
 
 
 
 		if test ==0 and button==1 and (ret.y<21 or ret.y>29) then -- button, not fader mode
 
-			local shiftbtn = remote.match_midi("B? 50 zz",event) -- 80 Shift
-			local clickbtn = remote.match_midi("B? 46 zz",event) -- 70 Shift
-			local undobtn  = remote.match_midi("B? 3C zz",event) -- 70 Shift
 			-- accent?
 			local accent_pad = remote.match_midi("B? 32 zz",event) -- 50 delete
 			-- make checks for these
---[[
-			local scale_up = remote.match_midi("B? 5B zz",event) --find 91 up
-			local scale_dn = remote.match_midi("B? 5C zz",event) --find 92 dn
-			local tran_up =  remote.match_midi("B? 5D zz",event) --find 93 left
-			local tran_dn =  remote.match_midi("B? 5E zz",event) --find 94 right
---]]
+
 
 -- -----------------------------------------------------------------------------------------------
 -- Accent button
@@ -2643,16 +2650,16 @@ vprint("ret y",ret.y)
 -- -----------------------------------------------------------------------------------------------
 
 			if(accent_pad) then
-			  if(accent_pad.z>0) then		  
+				if(accent_pad.z>0) then		  
 				g.accent_dn = true
 				g.accent_count = modulo(g.accent_count+1,3)
 				local msg={ time_stamp = event.time_stamp, item=g.itemnum.accent, value = g.accent_count, note = "32",velocity = accent_pad.z }
 				remote.handle_input(msg)
 				--g.note_delivered = noteout
 				return true
-			  else
+				else
 				return false
-			  end
+				end
 			end
 
 -- -----------------------------------------------------------------------------------------------
@@ -2708,7 +2715,7 @@ vprint("ret y",ret.y)
 --------------------------------------------------------------------------------------------------------------------------		
 --------------------------------------------------------------------------------------------------------------------------		
 
-
+--]]
 
 
 
@@ -2964,6 +2971,7 @@ if table.getn(Pressed)>0 then
 		for d,e in pairs(button_function[v].RDM()) do table.insert(lpp_events,e) end
 	end
 	Pressed={}
+tprint(lpp_events)
 end
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
@@ -3527,10 +3535,10 @@ function remote_set_state(changed_items)
 		end
 	end
 
-  -- FL: Collect all changed states for redrum "drum playing" - this part blinks the 3rd row drum selection pads
+	-- FL: Collect all changed states for redrum "drum playing" - this part blinks the 3rd row drum selection pads
 	for k,item_index in ipairs(changed_items) do
 	if item_index == g.itemnum.accent then
-	  g.accent = remote.get_item_value(item_index)
+		g.accent = remote.get_item_value(item_index)
 	end
 
 
@@ -3776,248 +3784,249 @@ vprint("Transpose.last dn",Transpose.last)
 		end
 	},
 
---[[                                                                                              
 [95]={
 		RPM=function(y,z)
 		end,
-                  
+									
 		RDM=function()
-		end
-	},                                                                                              
-                                                                                          
+		return scroll_status() end
+	},
+
 [96]={
 		RPM=function(y,z)
 		end,
-                  
+									
 		RDM=function()
-		end
-	},                                                                                              
-                                                                                          
+		return {} end
+	},
+
 [97]={
 		RPM=function(y,z)
 		end,
-                  
+									
 		RDM=function()
-		end
-	},                                                                                              
-                                                                                          
+		return {} end
+	},
+	
 [98]={
 		RPM=function(y,z)
 		end,
-                  
+									
 		RDM=function()
-		end
-	},                                                                                              
---left to right Bottom                                                                            
+		return {} end
+	},
+	
+--left to right Bottom
 [01]={
 		RPM=function(y,z)
 		end,
-                  
+									
 		RDM=function()
-		end
-	},                                                                                              
-                                                                                          
+		return {} end
+	},
+	
 [02]={
 		RPM=function(y,z)
 		end,
-                  
+									
 		RDM=function()
-		end
-	},                                                                                              
-                                                                                          
+		return {} end
+	},
+
 [03]={
 		RPM=function(y,z)
 		end,
-                  
+									
 		RDM=function()
-		end
-	},                                                                                              
-                                                                                          
+		return {} end
+	},
+
 [04]={
 		RPM=function(y,z)
 		end,
-                  
+									
 		RDM=function()
-		end
-	},                                                                                              
-                                                                                          
+		return {} end
+	},
+
 [05]={
 		RPM=function(y,z)
 		end,
-                  
+									
 		RDM=function()
-		end
-	},                                                                                              
-                                                                                          
+		return {} end
+	},
+
 [06]={
 		RPM=function(y,z)
 		end,
-                  
+									
 		RDM=function()
-		end
-	},                                                                                              
-                                                                                          
+		return {} end
+	},
+
 [07]={
 		RPM=function(y,z)
 		end,
-                  
+									
 		RDM=function()
-		end
-	},                                                                                              
-                                                                                          
+		return {} end
+	},
+
 [08]={
 		RPM=function(y,z)
 		end,
-                  
+									
 		RDM=function()
-		end
-	},                                                                                              
-                                                                                          
---bottom to top Left                                                                              
+		return {} end
+	},
+
+--bottom to top Left
 [10]={
 		RPM=function(y,z)
 		end,
-                  
+									
 		RDM=function()
-		end
-	},                                                                                              
-                                                                                          
+		return {} end
+	},
+
 [20]={
 		RPM=function(y,z)
 		end,
-                  
+									
 		RDM=function()
-		end
-	},                                                                                              
-                                                                                          
+		return {} end
+	},
+
 [30]={
 		RPM=function(y,z)
 		end,
-                  
+									
 		RDM=function()
-		end
-	},                                                                                              
-                                                                                          
+		return {} end
+	},
+
 [40]={
 		RPM=function(y,z)
 		end,
-                  
+									
 		RDM=function()
-		end
-	},                                                                                              
-                                                                                          
+		return {} end
+	},
+
 [50]={
 		RPM=function(y,z)
 		end,
-                  
+									
 		RDM=function()
-		end
-	},                                                                                              
-                                                                                          
+		return {} end
+	},
+
 [60]={
 		RPM=function(y,z)
 		end,
-                  
+									
 		RDM=function()
-		end
-	},                                                                                              
-                                                                                          
---]]                                                                                              
-[70]={ -- Click                                                                                   
-		RPM=function(y,z)                                                                             
-			State.click = z>0 and 1 or 0                                                                
+		return {} end
+	},
+--[[
+
+--]]
+[70]={ -- Click
+		RPM=function(y,z)
+			State.click = z>0 and 1 or 0
 			State.shiftclick = (State.shift==1 and State.click==1) and 1 or 0                           
---vprint("70 pressed",y)                                                                          
-		end,                                                                                          
-		RDM=function()                                                                                
-			local colors = {"21","05","31"} -- green, red, purp                                         
+--vprint("70 pressed",y)
+		end,
+		RDM=function()
+			local colors = {"21","05","31"} -- green, red, purp
 			local bfevent={}                                                                            
-			table.insert(bfevent,remote.make_midi("90 46 "..colors[1+State.click+State.shiftclick]))		
+			table.insert(bfevent,remote.make_midi("90 46 "..colors[1+State.click+State.shiftclick]))
 			table.insert(bfevent,remote.make_midi("90 50 "..colors[1+State.shift+State.shiftclick]))    
-			return bfevent                                                                              
-		end                                                                                           
-	},                                                                                              
-[80]={ -- Shift                                                                                   
-		RPM=function(y,z)                                                                             
-			State.shift = z>0 and 1 or 0                                                                
-			State.shiftclick = (State.shift==1 and State.click==1) and 1 or 0                           
---vprint("80 pressed",y)                                                                          
-		end,                                                                                          
-		RDM=function()                                                                                
-			local colors = {"21","05","31"} -- green, red, purp                                         
-			local bfevent={}                                                                            
-			table.insert(bfevent,remote.make_midi("90 50 "..colors[1+State.shift+State.shiftclick]))		
+			return bfevent
+		end
+	},
+[80]={ -- Shift
+		RPM=function(y,z)
+			State.shift = z>0 and 1 or 0
+			State.shiftclick = (State.shift==1 and State.click==1) and 1 or 0
+--vprint("80 pressed",y)
+		end,
+		RDM=function()
+			local colors = {"21","05","31"} -- green, red, purp
+			local bfevent={}
+			table.insert(bfevent,remote.make_midi("90 50 "..colors[1+State.shift+State.shiftclick]))
 			table.insert(bfevent,remote.make_midi("90 46 "..colors[1+State.click+State.shiftclick]))    
-			return bfevent                                                                              
-		end                                                                                           
-	},                                                                                              
---]]                                                                                              
---[[                                                                                              
---bottom to top Right                                                                             
+			return bfevent
+		end
+	},
+--]]
+--[[
+--bottom to top Right
 [19]={
 		RPM=function(y,z)
 		end,
-                  
+									
 		RDM=function()
-		end
-	},                                                                                              
-                                                                                          
+		return {} end
+	},
+
 [29]={
 		RPM=function(y,z)
 		end,
-                  
+									
 		RDM=function()
-		end
-	},                                                                                              
-                                                                                          
+		return {} end
+	},
+
 [39]={
 		RPM=function(y,z)
 		end,
-                  
+									
 		RDM=function()
-		end
-	},                                                                                              
-                                                                                          
+		return {} end
+	},
+
 [49]={
 		RPM=function(y,z)
 		end,
-                  
+									
 		RDM=function()
-		end
-	},                                                                                              
-                                                                                          
+		return {} end
+	},
+
 [59]={
 		RPM=function(y,z)
 		end,
-                  
+									
 		RDM=function()
-		end
-	},                                                                                              
-                                                                                          
+		return {} end
+	},
+
 [69]={
 		RPM=function(y,z)
 		end,
-                  
+									
 		RDM=function()
-		end
-	},                                                                                              
-                                                                                          
+		return {} end
+	},
+
 [79]={
 		RPM=function(y,z)
 		end,
-                  
+									
 		RDM=function()
-		end
-	},                                                                                              
-                                                                                          
+		return {} end
+	},
+
 [89]={
 		RPM=function(y,z)
 		end,
-                  
+									
 		RDM=function()
-		end
-	},                                                                                              
-                                                                                          
+		return {} end
+	},
+
 --]]
 
 }
