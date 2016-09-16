@@ -24,11 +24,13 @@ Scope	Propellerheads	Reason Document
 //Map	Button 03		Rewind
 //Map	Button 04		Fast Forward
 
+
 Map	Button 95		Play
 Map	Button 96		Stop
 Map	Button 97		Goto Left Locator
 Map	Button 98		Record
 
+Map TrackName		Target Track Name
 Map	Button 01		Target Previous Track
 Map	Button 02		Target Next Track
 Map	Button 60		Undo

@@ -24,14 +24,40 @@
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 --keep track of what's on in case mode, scale or transpose changes
 Playing={}
--- keep track of buttons
+
+-- keep track of buttons (for handoff between RPM and RDM
 Pressed={}
+
+-- Itemnum is the array set in remote_init for knowing what the item number is
+-- when we need it for remote.handle_input
+Itemnum = {}
+
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- Set some variables for later!
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+notemode = {35,40,45,50,55,60,65,70} -- left column -1
+drummode = {35,39,43,47,51,55,59,63} -- left column -1
+button = {}
+pad = {}
+padindex = {} 
+padgrid = {{},{},{},{},{},{},{},{}} 
+note = {}
+drum = {}
+buttonindex = {}
+padpress = {} -- to display pressed
+do_update_pads = 1
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
 
 -- putting things into state so I can dump it for debug
 g = {}
 g.button = {}
-g.scope = {}
+g.accent = 0
+g.last_accent = 0
+g.accent_dn = false
+g.accent_count = 0
 
 
 g.button.shift = 0
@@ -48,7 +74,6 @@ g.button.trandn = 0
 g.last_input_time = 0
 g.last_input_item = nil
 
-g.transpose_delivered = 0 --for change filter
 g.transpose = 0
 transpose_changed = false
 -- tran_rst = true -- stops transpose
@@ -74,8 +99,6 @@ g.lcd_state = "LCD"
 g.lcd_state_delivered = "#"
 g.note_delivered = 0
 
-g.scope_item_index = 2 -- "_Scope" is item 2 in the table
-g.var_item_index = 3 -- "_Var" is item 3 in the table
 
 --FOR REDRUM BLINKING LIGHTS
 g.step_value = { 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0 }
@@ -92,7 +115,6 @@ noscaleneeded = false
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 lcd_events = {}
 
-Modes = {}
 
 
 --g.last_notevelocity_delivered={}
@@ -324,20 +346,6 @@ Palettes = {
 						[11]={R="3D", G="3D", B="0F", },		 -- yellow
 		},
 --[[
-		FifthsCircleOld = {
-						[0]= {R="06", G="00", B="00", },		--R 
-						[1]= {R="00", G="15", B="0D", },		--BG
-						[2]= {R="3F", G="1F", B="00", },		--O 
-						[3]= {R="15", G="00", B="3F", },		--BV
-						[4]= {R="2E", G="2C", B="00", },		--Y 
-						[5]= {R="3F", G="00", B="15", },		--RV
-						[6]= {R="00", G="3F", B="00", },		--G 
-						[7]= {R="3F", G="05", B="00", },		--RO
-						[8]= {R="00", G="00", B="3F", },		--B 
-						[9]= {R="2C", G="17", B="00", },		--YO
-						[10]={R="06", G="00", B="06", },	--V 
-						[11]={R="07", G="16", B="00", },	--YG
-		},
 --]]		
 	}
 Palettenames = {
@@ -364,6 +372,7 @@ Palettenames = {
 -- Scales tbd
 -- TODO fix and reorder them
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- From Livid
 scales = {
 	Chromatic = {0,1,2,3,4,5,6,7,8,9,10,11},
 	DrumPad = {0,1,2,3, 16,17,18,19, 4,5,6,7, 20,21,22,23, 8,9,10,11, 24,25,26,27, 12,13,14,15, 28,29,30,31},
@@ -421,12 +430,12 @@ scaleabrvs = {
 			
 --scalename = 'Major'
 scalename = 'Chromatic'
-scale = scales[scalename]
-scale_int = 0 
-g.scale_delivered = 0 --for change filter
+--scale = scales[scalename]
+--scale_int = 0 
+--g.scale_delivered = 0 --for change filter
 
 
-
+-- These from j74 ISO Controllers
 Scales = {
 Major = {0,2,4,5,7,9,11,12},
 Dorian = {0,2,3,5,7,9,10,12},
@@ -1209,6 +1218,7 @@ end
 
 -- State keeps track of what notes are currently pressed/playing
 -- and what button states we are in. (shift, click, shcl, etc.)
+-- State.do_update(table) is the only way to change scale,mode,palette, etc... 
 State = {
 	shift = 0,
 	click = 0,
@@ -1306,15 +1316,12 @@ vprint("Grid.current.midihi",Grid.current.midihi)
 			
 		}
 			
---setmetatable(Grid, { __call = function(_, ...) return Grid.new(...) end })
 
 
 
 -- Palette has the methods for changing the Palette.
 -- select takes from Grid.current.note 
 Palette = { 
---		current = Palettes[Palettenames[1]],
---		--last = 1,
 		length = table.getn(Palettenames),
 		select=function(n) local new = 1+modulo(n-1,Palette.length) 
 vprint("new pal",new) 
@@ -1438,85 +1445,6 @@ end
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
--- FL: Assign to these the index to the first the corresponding items according
--- to the definition list in remote_init. (Or assign them when defining the items, depending on how you do that.)
--- g.btn_firstitem = 141 -- first -1 ! 
-g.accent = 0
-g.last_accent = 0
-g.accent_dn = false
-g.accent_count = 0
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
--- Set some variables for later!
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-notemode = {35,40,45,50,55,60,65,70} -- left column -1
-drummode = {35,39,43,47,51,55,59,63} -- left column -1
-button = {}
-pad = {}
-padindex = {} 
-padgrid = {{},{},{},{},{},{},{},{}} 
-note = {}
-drum = {}
-buttonindex = {}
-g.itemnum = {}
-padpress = {} -- to display pressed
-do_update_pads = 1
-
-
-
--- unused
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-function set_colorscales()
-	for s,st in pairs(scales) do
-		if type(st) == 'table' then
-			--for u,r in ipairs(st) do
-			local scale_len = table.getn(st)
-			if scale_len == 7 then -- 7 and below
-				root = 12 
-			elseif scale_len == 6 then 
-				root = 0 
-			elseif scale_len == 5 then -- 2 root notes
-				table.insert(0,1,st)
-				scale_len = 6
-			else
-				root = 24 
-			end  
-			for pd=1,64,1 do
-				local oct = math.floor((pd-1)/scale_len)
-				local addnote = scale[1+modulo(i-1,scale_len)]
-				local outnote = root+g.transpose+(12*oct)+addnote --note that gets played by synth
-				local outnorm = modulo(outnote,12) --normalized to 0-11 range
-				local padnum = padindex[i].padhex --note# that the controller led responds to
-				
-				
-			end
-		end
-			
-		
-	end
-
-end
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1582,6 +1510,7 @@ end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 --UTILITY: this function is called when we need to update a slider LCD
 function update_slider(item)
+-- unneeded
 --[[
 	local thetext = remote.get_item_name_and_value(item)
 	local textarray = {}
@@ -1636,6 +1565,11 @@ function exists(f, l) -- find element v of l satisfying f(v)
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+function bprint (strng)
+	Outmess=Outmess..' '..strng
+end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1767,6 +1701,7 @@ function remote_init(manufacturer, model)
 			{name="Pitch Bend", input="value", min=0, max=16383, itemnum="pitchbend"},
 			{name="Modulation", input="value", min=0, max=127, itemnum="modulation"},
 			{name="Channel Pressure", input="value", min=0, max=127, itemnum="channelpressure"},
+			{name="TrackName", input="noinput", output="text", itemnum="trackname"},
 			{name="Fader 1", input="value", min=0, max=127, output="value", modes={"Program","Fader"}, itemnum="first_fader"},
 			{name="Fader 2", input="value", min=0, max=127, output="value", modes={"Program","Fader"}},
 			{name="Fader 3", input="value", min=0, max=127, output="value", modes={"Program","Fader"}},
@@ -2050,14 +1985,14 @@ function remote_init(manufacturer, model)
 
 			}
  --tprint(items) --Useful for counting
--- some items need to be noted, so here's where g.itemnum["thing"] is set
+-- some items need to be noted, so here's where Itemnum["thing"] is set
 for it=1,table.getn(items),1 do
 	if items[it].itemnum ~= nil then
-		g.itemnum[items[it].itemnum]=it
+		Itemnum[items[it].itemnum]=it
 	end
 end
---vprint("fp",g.itemnum.first_pad)
---vprint("acc",g.itemnum.accent)
+--vprint("fp",Itemnum.first_pad)
+--vprint("acc",Itemnum.accent)
 --[[
 first_fader
 first_press
@@ -2067,7 +2002,7 @@ first_step_playing_item
 accent
 first_button 
 --]] 
---tprint(g.itemnum)
+--tprint(Itemnum)
 		remote.trace("here!")
 		remote.define_items(items)
 
@@ -2652,7 +2587,7 @@ vprint("ret y",ret.y)
 				if(accent_pad.z>0) then		  
 				g.accent_dn = true
 				g.accent_count = modulo(g.accent_count+1,3)
-				local msg={ time_stamp = event.time_stamp, item=g.itemnum.accent, value = g.accent_count, note = "32",velocity = accent_pad.z }
+				local msg={ time_stamp = event.time_stamp, item=Itemnum.accent, value = g.accent_count, note = "32",velocity = accent_pad.z }
 				remote.handle_input(msg)
 				--g.note_delivered = noteout
 				return true
@@ -2668,7 +2603,7 @@ vprint("ret y",ret.y)
 
 
 
-
+--]]
 
 --[[
 ----------------------------------------------------
@@ -2855,7 +2790,6 @@ end -- eventsize=9
 
 
 
-end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2928,94 +2862,20 @@ end
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
-
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
--- Transpose display
--- -----------------------------------------------------------------------------------------------
---[[
-
-		--if there's a change in transpose, we need to show that
-		if g.transpose_delivered~=g.transpose  then
-			local shcolors = {"21","05"} -- green, red
-			shevent = remote.make_midi("90 50 "..shcolors[g.button.shift+1])
-			if(vel_pad~=nil) then
-				if g.button.shift==1 or vel_pad>0 then
-
---this needs to change to some color output
--- maybe side buttons
-				--show transpose in 7seg
-					local xpose = string.format("%02i",math.abs(g.transpose) )
-					local c_one = string.format("%02x", string.sub(xpose,1,1) )
-					local c_two = string.format("%02x", string.sub(xpose,2,2) )
-					ltevent = remote.make_midi("b0 22 "..c_one)
-					table.insert(lpp_events,ltevent)
-					rtevent = remote.make_midi("b0 23 "..c_two)
-					table.insert(lpp_events,rtevent)
-					local transpose_event = make_lcd_midi_message("/Reason/0/LPP/0/display/3/display/ "..g.transpose)
-					table.insert(lcd_events,transpose_event)
-				else
-					--return to scale
-					local scale_abrv = scaleabrvs[scalename]
-					local c_one = string.sub(scale_abrv,1,1)
-					local c_two = string.sub(scale_abrv,2,2)
-					ltevent = remote.make_midi("b0 22 "..sevseg[c_one])
-					table.insert(lpp_events,ltevent)
-					rtevent = remote.make_midi("b0 23 "..sevseg[c_two])
-					table.insert(lpp_events,rtevent)
-					local scalename_event = make_lcd_midi_message("/Reason/0/LPP/0/display/2/display/ "..scalename)
-					table.insert(lcd_events,scalename_event)
-				end
-			end
-		
-			table.insert(lpp_events,shevent)
-			g.button.shift_delivered = g.button.shift
-		end
----]]
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
-
-
-
--- -----------------------------------------------------------------------------------------------
--- -----------------------------------------------------------------------------------------------
---this needs to change to some color output
-		--if scale changes, we update the LCD
--- UNNEEDED?
---------------------------------------------------------------------------------
-		if ( (g.scale_delivered~=scale_int or g.transpose_delivered~=g.transpose) and g.button.shift~=1 and vel_pad==0) then
---[[
-			local scale_abrv = scaleabrvs[scalename]
-			local c_one = string.sub(scale_abrv,1,1)
-			local c_two = string.sub(scale_abrv,2,2)
-			ltevent = remote.make_midi("b0 22 "..sevseg[c_one])
-			table.insert(lpp_events,ltevent)
-			rtevent = remote.make_midi("b0 23 "..sevseg[c_two])
-			table.insert(lpp_events,rtevent)
---]]
-			g.scale_delivered = scale_int
---[[
-			local scalename_event = make_lcd_midi_message("/Reason/0/LPP/0/display/2/display/ "..scalename)
-			table.insert(lcd_events,scalename_event)
---]]
-			if(noscaleneeded == false) then
-				do_update_pads = 1
-			end
-			--remote.trace(scalename)
-vprint("scalename",scalename)
-		end
--- -----------------------------------------------------------------------------------------------
-
-
 
 		
 		
 -- -----------------------------------------------------------------------------------------------
 		--if vartext from _Var item in remotemap has changed	-----------------
 -- -----------------------------------------------------------------------------------------------
+-- unneeded
 		if g.vartext_prev~=g.vartext then
 			--Let the LCD know what the variation is
-			local vartext = remote.get_item_text_value(g.var_item_index)
+			local vartext = remote.get_item_text_value(Itemnum.var)
 --[[
 			local var_event = make_lcd_midi_message("/Reason/0/LPP/0/display/1/display "..vartext)
 			table.insert(lcd_events,var_event)
@@ -3028,7 +2888,7 @@ vprint("scalename",scalename)
 		
 --[[
 -- -----------------------------------------------------------------------------------------------
-		--lcd event and text parsing for scale detection from text in track name----------------------------------------
+--		--lcd event and text parsing for scale detection from text in track name----------------------------------------
 -- -----------------------------------------------------------------------------------------------
 		local new_text = g.lcd_state
 		if g.lcd_state_delivered~=new_text then
@@ -3371,7 +3231,7 @@ remote.trace("in init!")
 --[[
 		if g.vartext_prev~=g.vartext then
 			--Let the LCD know what the variation is
-			local vartext = remote.get_item_text_value(g.var_item_index)
+			local vartext = remote.get_item_text_value(Itemnum.var)
 			local var_event = make_lcd_midi_message("/Reason/0/LPP/0/display/1/display "..vartext)
 			table.insert(lcd_events,var_event)
 			g.vartext_prev = g.vartext
@@ -3458,15 +3318,15 @@ function remote_set_state(changed_items)
 
 	--look for the _Scope constant. Kong reports "KONG". Could use for a variety of things
 
-	if remote.is_item_enabled(g.itemnum.scope) then
-		local scope_text = remote.get_item_text_value(g.itemnum.scope)
+	if remote.is_item_enabled(Itemnum.scope) then
+		local scope_text = remote.get_item_text_value(Itemnum.scope)
 		g.scopetext = scope_text
 	else
 		g.scopetext = ""
 	end
 	
-	if remote.is_item_enabled(g.itemnum.var) then
-		local var_text = remote.get_item_text_value(g.itemnum.var)
+	if remote.is_item_enabled(Itemnum.var) then
+		local var_text = remote.get_item_text_value(Itemnum.var)
 		g.vartext = var_text
 	else
 		g.vartext = ""
@@ -3486,19 +3346,19 @@ function remote_set_state(changed_items)
 
 	-- FL: Collect all changed states for redrum "drum playing" - this part blinks the 3rd row drum selection pads
 	for k,item_index in ipairs(changed_items) do
-	if item_index == g.itemnum.accent then
+	if item_index == Itemnum.accent then
 		g.accent = remote.get_item_value(item_index)
 	end
 
 
-		if item_index >= g.itemnum.first_step_item and item_index < g.itemnum.first_step_item+8 then
-			local step_index = item_index - g.itemnum.first_step_item + 1
+		if item_index >= Itemnum.first_step_item and item_index < Itemnum.first_step_item+8 then
+			local step_index = item_index - Itemnum.first_step_item + 1
 			g.step_value[step_index] = remote.get_item_value(item_index)
 			-- FL: Add this if the item can be disabled
 			-- g.step_is_disabled[step_index] = remote.is_item_enabled(item_index)
 
-		elseif item_index >= g.itemnum.first_step_playing_item and item_index < g.itemnum.first_step_playing_item+8 then
-			local step_index = item_index - g.itemnum.first_step_playing_item + 1
+		elseif item_index >= Itemnum.first_step_playing_item and item_index < Itemnum.first_step_playing_item+8 then
+			local step_index = item_index - Itemnum.first_step_playing_item + 1
 			g.step_is_playing[step_index] = remote.get_item_value(item_index)
 		end
 	end
@@ -3566,7 +3426,7 @@ function def_vars()
 			if note[thisnote] == nil then
 				note[thisnote]={}
 			end
-padgrid[ve][ho]={padhex=thispadhex,itemindex=(index-1)+g.itemnum.first_pad,index=index}
+padgrid[ve][ho]={padhex=thispadhex,itemindex=(index-1)+Itemnum.first_pad,index=index}
 			table.insert(note[thisnote],thispad) --In note mode, a single note can be on one or two pads.	
 
 			table.insert(pad,thispad,{
@@ -3574,7 +3434,7 @@ padgrid[ve][ho]={padhex=thispadhex,itemindex=(index-1)+g.itemnum.first_pad,index
 							note=thisnote,
 							drum=thisdrum,
 							index=index,
-							itemindex=(index-1)+g.itemnum.first_pad,
+							itemindex=(index-1)+Itemnum.first_pad,
 							x=ho,
 							y=ve,
 							color=0,
@@ -3585,7 +3445,7 @@ padgrid[ve][ho]={padhex=thispadhex,itemindex=(index-1)+g.itemnum.first_pad,index
 							padhex=thispadhex,
 							note=thisnote,
 							drum=thisdrum,
-							itemindex=(index-1)+g.itemnum.first_pad,
+							itemindex=(index-1)+Itemnum.first_pad,
 							x=ho,
 							y=ve,
 							color=0,
@@ -3603,15 +3463,15 @@ padgrid[ve][ho]={padhex=thispadhex,itemindex=(index-1)+g.itemnum.first_pad,index
 			index=index+1 --index so I can cycle through the 64 pads quickly.
 		end
 		--items here.
-		buttonindex[90+ve]=(g.itemnum.first_button-1)+ve
-		buttonindex[ve]=(g.itemnum.first_button-1)+ve+8
-		buttonindex[10*ve]=(g.itemnum.first_button-1)+ve+16
-		buttonindex[(10*ve)+9]=(g.itemnum.first_button-1)+ve+24	
+		buttonindex[90+ve]=(Itemnum.first_button-1)+ve
+		buttonindex[ve]=(Itemnum.first_button-1)+ve+8
+		buttonindex[10*ve]=(Itemnum.first_button-1)+ve+16
+		buttonindex[(10*ve)+9]=(Itemnum.first_button-1)+ve+24	
 		
-		button[90+ve]=Button:new((g.itemnum.first_button-1)+ve,90+ve)
-		button[ve]=Button:new((g.itemnum.first_button-1)+ve+8,ve)
-		button[10*ve]=Button:new((g.itemnum.first_button-1)+ve+16,10*ve)
-		button[(10*ve)+9]=Button:new((g.itemnum.first_button-1)+ve+24,(10*ve)+9)	
+		button[90+ve]=Button:new((Itemnum.first_button-1)+ve,90+ve)
+		button[ve]=Button:new((Itemnum.first_button-1)+ve+8,ve)
+		button[10*ve]=Button:new((Itemnum.first_button-1)+ve+16,10*ve)
+		button[(10*ve)+9]=Button:new((Itemnum.first_button-1)+ve+24,(10*ve)+9)	
 
 
 
@@ -3733,15 +3593,22 @@ vprint("Transpose.last dn",Transpose.last)
 		end
 	},
 
-[95]={
+[95]={ --Session
 		RPM=function(y,z)
 		end,
 									
 		RDM=function()
-		return scroll_status(table.concat({'S',tostring(Scale.last),' M',tostring(Mode.last),' P',tostring(Palette.last),' T',tostring(Transpose.last)},'')) end
+			if State.shiftclick == 1 then
+				bfevent = scroll_status(Outmess)
+				Outmess = ''
+			else
+				bfevent = scroll_status(table.concat({'S',tostring(Scale.last),' M',tostring(Mode.last),' P',tostring(Palette.last),' T',tostring(Transpose.last)},''))
+			end
+				
+		return bfevent end
 	},
 
-[96]={
+[96]={ --Note
 		RPM=function(y,z)
 		end,
 									
@@ -3749,7 +3616,7 @@ vprint("Transpose.last dn",Transpose.last)
 		return {} end
 	},
 
-[97]={
+[97]={ --Device
 		RPM=function(y,z)
 		end,
 									
@@ -3757,7 +3624,7 @@ vprint("Transpose.last dn",Transpose.last)
 		return {} end
 	},
 	
-[98]={
+[98]={ --User
 		RPM=function(y,z)
 		end,
 									
