@@ -2578,8 +2578,10 @@ if event.size==3 then -- Note, button, channel pressure, fader
 		if button==1 and (ret.y<21 or ret.y>29) then -- button, not fader mode
 vprint("ret y",ret.y)
 			table.insert(Pressed,ret.y) -- keep track for button_function[Pressed].RDM
-			button_function[ret.y].RPM(ret.y,ret.z)
---			return true
+			local r = button_function[ret.y].RPM(ret.y,ret.z)
+
+
+--			if r then return r end
 		end
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
@@ -2587,6 +2589,16 @@ vprint("ret y",ret.y)
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
+---if the pads have transposed, then we need to turn off the last note----------------------
+-- This will need to move when we put in setup pages on the grid
+-- but must go after the button handling
+			if(State.update==1) then -- grid has changed
+				for k,v in pairs(Playing) do
+					local prev_off={ time_stamp = event.time_stamp, item=1, value = 0, note = k, velocity = 0 }
+					remote.handle_input(prev_off)
+				end
+			end 
+			
 
 
 
@@ -2640,16 +2652,6 @@ vprint("ret y",ret.y)
 --------------------------------------------------------------------------------------------------------------------------		
 -- here's where the incoming note gets transposed!
 --------------------------------------------------------------------------------------------------------------------------		
----if the pads have transposed, then we need to turn off the last note----------------------
--- This will need to move when we put in setup pages on the grid
--- but must go after the button handling
-			if(State.update==1) then -- grid has changed
-				for k,v in pairs(Playing) do
-					local prev_off={ time_stamp = event.time_stamp, item=1, value = 0, note = k, velocity = 0 }
-					remote.handle_input(prev_off)
-				end
-			end 
-			
 
 
 		if (button==0) then
@@ -3288,18 +3290,22 @@ function remote_set_state(changed_items)
 			local step_index = item_index - Itemnum.first_step_playing_item + 1
 			g.step_is_playing[step_index] = remote.get_item_value(item_index)
 		end
-	
+--TODO:	Change 'copy' to old trackname..'copy' so the first time you get it 
+--      it doesn't update, but if you click around it does.
+
 		if item_index == Itemnum.trackname then
 			local tn = string.lower(remote.get_item_text_value(item_index))
 			if State.trackname ~= tn then
-				if string.find(tn,"lpp") then
-					local out = {}
-					out.scale = tonumber(string.match(tn,"s(%d+)"))
-					out.mode = tonumber(string.match(tn,"m(%d+)")) 
-					out.palette = tonumber(string.match(tn,"p(%d+)"))
-					out.transpose = string.match(tn,"t(%-%d+)") or string.match(tn,"t(%d+)")
-					out.transpose = tonumber(out.transpose)
-					State.do_update(out)
+				if not (string.find(tn,"transport") or string.find(tn,"copy")) then
+					if string.find(tn,"lpp") then
+						local out = {}
+						out.scale = tonumber(string.match(tn,"s(%d+)"))
+						out.mode = tonumber(string.match(tn,"m(%d+)")) 
+						out.palette = tonumber(string.match(tn,"p(%d+)"))
+						out.transpose = string.match(tn,"t(%-%d+)") or string.match(tn,"t(%d+)")
+						out.transpose = tonumber(out.transpose)
+						State.do_update(out)
+					end
 				end
 				tn=State.trackname
 			end
@@ -3542,15 +3548,7 @@ vprint("Transpose.last dn",Transpose.last)
 		end,
 									
 		RDM=function()
-			local bfevent={}
-			if State.shiftclick == 1 then
-				bfevent = scroll_status(Outmess)
-				Outmess = ''
-			else
-				bfevent = scroll_status(table.concat({'S',tostring(Scale.last),' M',tostring(Mode.last),' P',tostring(Palette.last),' T',tostring(Transpose.last)},''))
-			end
-				
-		return bfevent end
+		return {} end
 	},
 
 [96]={ --Note
@@ -3690,9 +3688,7 @@ vprint("Transpose.last dn",Transpose.last)
 		RDM=function()
 		return {} end
 	},
---[[
 
---]]
 [70]={ -- Click
 		RPM=function(y,z)
 			State.click = z>0 and 1 or 0
@@ -3721,15 +3717,22 @@ vprint("Transpose.last dn",Transpose.last)
 			return bfevent
 		end
 	},
---]]
---[[
+
 --bottom to top Right
 [19]={
 		RPM=function(y,z)
 		end,
 									
 		RDM=function()
-		return {} end
+			local bfevent={}
+			if State.shiftclick == 1 then
+				bfevent = scroll_status(Outmess)
+				Outmess = ''
+			else
+				bfevent = scroll_status(table.concat({'S',tostring(Scale.last),' M',tostring(Mode.last),' P',tostring(Palette.last),' T',tostring(Transpose.last)},''))
+			end
+				
+		return bfevent end
 	},
 
 [29]={
@@ -3788,7 +3791,7 @@ vprint("Transpose.last dn",Transpose.last)
 		return {} end
 	},
 
---]]
+
 
 }
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
