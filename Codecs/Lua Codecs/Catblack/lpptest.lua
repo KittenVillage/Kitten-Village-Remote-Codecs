@@ -1187,7 +1187,7 @@ end
 Button = {}
 Button.__index = Button
 function Button:new(num,ind,o) 
-vprint("new button num",num.. " ind "..ind)
+--vprint("new button num",num.. " ind "..ind)
 	o = o or {}
 	number = num
 	index = ind
@@ -1289,9 +1289,9 @@ State = {
 						duplicates={} -- ??TODO
 			},
 			refresh_midiout =function()
+				repeat
 				local ok=true
 				Grid.current.duplicates={}
-				repeat
 					local note_index={}
 					local lo=Grid.current.note[1][1]+(12*Grid.current.oct[1][1])+State.root+Transpose.last
 					local hi=lo
@@ -1312,21 +1312,21 @@ State = {
 							end
 							if note_index[note] == nil then	note_index[note]={} end
 							table.insert(note_index[note],((9-ve)*10)+ho)
-								Grid.current.midilo=lo
-								Grid.current.midihi=hi
+							Grid.current.midilo=lo
+							Grid.current.midihi=hi
 						end
 					end end
 vprint("ok????",ok)
 					if ok then for k,v in pairs(note_index) do for a,b in pairs(v) do
 						Grid.current.duplicates[b]=v
 					end end end
-grprint("refresh_midiout cur grid note",Grid.current.note)
-grprint("refresh_midiout cur grid oct",Grid.current.oct)
+--grprint("refresh_midiout cur grid note",Grid.current.note)
+--grprint("refresh_midiout cur grid oct",Grid.current.oct)
 grprint("refresh_midiout cur grid midiout",Grid.current.midiout)
 --tprint(Grid.current.duplicates)
 vprint("Grid.current.midilo",Grid.current.midilo)
 vprint("Grid.current.midihi",Grid.current.midihi)
-				until ok
+				until ok==true
 				end,
 			
 		}
@@ -1348,11 +1348,9 @@ grprint("Palette.select cur grid note",Grid.current.note)
 if Grid.current.note[ve][ho] > 11 then
 	error("mode "..Modenames[Mode.last].." scale "..Scalenames[Scale.last])
 end
---tprint(Grid.current.note)
--- TODO remove TRANSPOSE from here
-					Grid.current.R[ve][ho]=Palette.current[modulo(Grid.current.note[ve][ho]+Transpose.last,12)].R 
-					Grid.current.G[ve][ho]=Palette.current[modulo(Grid.current.note[ve][ho]+Transpose.last,12)].G 
-					Grid.current.B[ve][ho]=Palette.current[modulo(Grid.current.note[ve][ho]+Transpose.last,12)].B 
+					Grid.current.R[ve][ho]=Palette.current[modulo(Grid.current.midiout[ve][ho],12)].R 
+					Grid.current.G[ve][ho]=Palette.current[modulo(Grid.current.midiout[ve][ho],12)].G 
+					Grid.current.B[ve][ho]=Palette.current[modulo(Grid.current.midiout[ve][ho],12)].B 
 				end end 
 				Palette.last=new
 				State.update=1 
@@ -1371,10 +1369,11 @@ end
 -- when note output is out of bounds (From user input, buttons have a check in place)
 Transpose = {
 		current =0,
-		last = 0,
 		select=function(new)
 			if new ~= Transpose.last or State.update ~= 0 then 
+				Transpose.last=new
 				Grid.refresh_midiout() 
+				table.insert(Pressed,93) -- button feedback
 				State.update=1 
 			end		
 		end,
@@ -1389,7 +1388,6 @@ Transpose = {
 Scale = {
 		current = Scales[Scalenames[1]],
 		length = table.getn(Scalenames),
-		last = 1,
 		select=function(n) local new = 1+modulo(n-1,Scale.length) 
 		--local Ml=Mode.last
 vprint("new scale",new)
@@ -1398,6 +1396,7 @@ vprint("new scale",new)
 			if new ~= Scale.last or State.update ~= 0 then 
 				Scale.last=new
 				Scale.current=Scales[Scalenames[new]]
+				table.insert(Pressed,91) -- button feedback
 				State.update=1 
 			end 
 		--end 
@@ -1417,7 +1416,6 @@ vprint("new scale",new)
 -- TODO baby mode
 Mode = { 
 		current = 0,
-		last = 1,
 		select=function(n,r) local new = 1+modulo(n-1,table.getn(Modenames)) 
 			local ro = r or State.rotate
 --tprint(Modes[Modenames[new]])
@@ -2580,7 +2578,7 @@ if event.size==3 then -- Note, button, channel pressure, fader
 vprint("ret y",ret.y)
 			table.insert(Pressed,ret.y) -- keep track for button_function[Pressed].RDM
 			button_function[ret.y].RPM(ret.y,ret.z)
-			return true
+--			return true
 		end
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
@@ -3174,7 +3172,7 @@ remote.trace("in init!")
 			 
 -- -----------------------------------------------------------------------------------------------
 --tprint(lpp_events)
-			State.do_update({scale=1,mode=1,palette=1})
+			State.do_update({scale=1,mode=1,palette=1,transpose=0})
 -- transpose button	
 			upevent = remote.make_midi(table.concat({sysex_setrgb,"5D",Palette.current[0].R ,Palette.current[0].G, Palette.current[0].B,"5E",Palette.current[0].R, Palette.current[0].G, Palette.current[0].B,sysend}," "))
 			table.insert(lpp_events,upevent)
@@ -3343,23 +3341,24 @@ function remote_set_state(changed_items)
 			local step_index = item_index - Itemnum.first_step_playing_item + 1
 			g.step_is_playing[step_index] = remote.get_item_value(item_index)
 		end
---[[	
+	
 		if item_index == Itemnum.trackname then
-			local tn = string.lower(get_item_text_value(item_index))
+			local tn = string.lower(remote.get_item_text_value(item_index))
 			if State.trackname ~= tn then
 				if string.find(tn,"lpp") then
 					local out = {}
-					out.scale = string.match(tn,"s(%d+)")
-					out.mode = string.match(tn,"m(%d+)") 
-					out.palette = string.match(tn,"p(%d+)")
+					out.scale = tonumber(string.match(tn,"s(%d+)"))
+					out.mode = tonumber(string.match(tn,"m(%d+)")) 
+					out.palette = tonumber(string.match(tn,"p(%d+)"))
 					out.transpose = string.match(tn,"t(%-%d+)") or string.match(tn,"t(%d+)")
+					out.transpose = tonumber(out.transpose)
 					State.do_update(out)
 				end
 				tn=State.trackname
 			end
 			-- error(remote.get_item_text_value(item_index))
 		end
---]]	
+	
 	end
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -3541,8 +3540,7 @@ grprint("tran_up cur grid midiout",Grid.current.midiout)
 						transchk=true
 					end
 					if transchk==false then
-						Transpose.last = Transpose.last+(1-State.shift)+(State.shift*12) -- if sh pressed, add 12, else just 1
-						State.do_update({})
+						State.do_update({transpose=Transpose.last+(1-State.shift)+(State.shift*12)}) -- if sh pressed, add 12, else just 1
 --						transpose_changed = true
 vprint("Transpose.last up",Transpose.last)
 					end
@@ -3579,8 +3577,7 @@ grprint("tran_dn cur grid midiout",Grid.current.midiout)
 						transchk=true
 					end
 					if transchk==false then
-						Transpose.last = Transpose.last-(1-State.shift)-(State.shift*12) -- if sh pressed, sub 12, else just 1
-						State.do_update({})
+						State.do_update({transpose = Transpose.last-(1-State.shift)-(State.shift*12)}) -- if sh pressed, sub 12, else just 1
 --						transpose_changed = true
 vprint("Transpose.last dn",Transpose.last)
 					end
