@@ -30,7 +30,7 @@ Pressed={}
 
 -- Itemnum is the array set in remote_init for knowing what the item number is
 -- when we need it for remote.handle_input
-Itemnum = {}
+Itemnum={}
 
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1218,7 +1218,8 @@ end
 
 -- State keeps track of what notes are currently pressed/playing
 -- and what button states we are in. (shift, click, shcl, etc.)
--- State.do_update(table) is the only way to change scale,mode,palette, etc... 
+-- State.do_update(table) is the only way to change scale,mode,palette,transpose...
+-- State.update is the can kicked down from function to function all the way to RDM! 
 State = {
 	shift = 0,
 	click = 0,
@@ -1228,13 +1229,13 @@ State = {
 	root=24,
 	lighton={},
 	lightoff={},
-	do_update=function(st) --table
+	do_update=function(st) --state table
 		st = st or {}
-		State.update=1
+--		State.update=1
 		Scale.select(st.scale or Scale.last)
 		Mode.select(st.mode or Mode.last,st.rotate or State.rotate)
+		Transpose.select(st.transpose or Transpose.last)
 		Palette.select(st.palette or Palette.last)
-		Grid.refresh_midiout() 
 	end,
 }
 
@@ -1245,10 +1246,12 @@ State = {
 -- could add flips.
 -- newgrid=Grid[index].rotate(oldgrid)
 -- TODO .new grid function that sets the current global rotation --DONE
--- TODO 
+-- TODO ROTATE NOT WORKING?
 -- newgrid =Grid.rotate[index](oldgrid) --takes a single 8x8 grid and rotates it.
 -- Grid.current has 6 sub grids, with an additional table for duplicate notes.
--- refresh_midi counts duplicates and sets the output notes, also sets hi and lo for transpose check
+-- refresh_midi counts duplicates and sets the output notes, 
+-- also sets hi and lo for transpose check
+-- and repeats with an adjustment to Transpose.last until everything is in range.
 	Grid = {
 			rotate = { 
 				function(g) local ng=g for yy=1,8,1 do for xx=1,8,1 do ng[yy][xx]=g[yy][xx] end end return ng end,
@@ -1285,33 +1288,45 @@ State = {
 						B={{},{},{},{},{},{},{},{}},
 						duplicates={} -- ??TODO
 			},
-			refresh_midiout =function() 
-				local note_index={}
-				local pad_index={}
-				local lo= Grid.current.note[1][1]+(12*Grid.current.oct[1][1])+State.root+Transpose.last
-				local hi = lo
-				for ve=1,8 do for ho=1,8 do
-					local note= Grid.current.note[ve][ho]+(12*Grid.current.oct[ve][ho])+State.root+Transpose.last
-					Grid.current.midiout[ve][ho]=note
-					if note <= lo then
-						lo=note
-					elseif note >= hi then
-						hi=note
-					end
-					if note_index[note] == nil then	note_index[note]={} end
-					table.insert(note_index[note],((9-ve)*10)+ho)
-						Grid.current.midilo=lo
-						Grid.current.midihi=hi
-				end end
-					for k,v in pairs(note_index) do for a,b in pairs(v) do
-					Grid.current.duplicates[b]=v
-				end end 
+			refresh_midiout =function()
+				local ok=true
+				Grid.current.duplicates={}
+				repeat
+					local note_index={}
+					local lo=Grid.current.note[1][1]+(12*Grid.current.oct[1][1])+State.root+Transpose.last
+					local hi=lo
+					for ve=1,8 do for ho=1,8 do
+						local note= Grid.current.note[ve][ho]+(12*Grid.current.oct[ve][ho])+State.root+Transpose.last
+						if note < 0 then
+							ok=false
+							Transpose.last=Transpose.last+12
+						elseif note > 127 then
+							ok=false
+							Transpose.last=Transpose.last-12
+						else
+							Grid.current.midiout[ve][ho]=note
+							if note <= lo then
+								lo=note
+							elseif note >= hi then
+								hi=note
+							end
+							if note_index[note] == nil then	note_index[note]={} end
+							table.insert(note_index[note],((9-ve)*10)+ho)
+								Grid.current.midilo=lo
+								Grid.current.midihi=hi
+						end
+					end end
+vprint("ok????",ok)
+					if ok then for k,v in pairs(note_index) do for a,b in pairs(v) do
+						Grid.current.duplicates[b]=v
+					end end end
 grprint("refresh_midiout cur grid note",Grid.current.note)
 grprint("refresh_midiout cur grid oct",Grid.current.oct)
 grprint("refresh_midiout cur grid midiout",Grid.current.midiout)
 --tprint(Grid.current.duplicates)
 vprint("Grid.current.midilo",Grid.current.midilo)
 vprint("Grid.current.midihi",Grid.current.midihi)
+				until ok
 				end,
 			
 		}
@@ -1334,6 +1349,7 @@ if Grid.current.note[ve][ho] > 11 then
 	error("mode "..Modenames[Mode.last].." scale "..Scalenames[Scale.last])
 end
 --tprint(Grid.current.note)
+-- TODO remove TRANSPOSE from here
 					Grid.current.R[ve][ho]=Palette.current[modulo(Grid.current.note[ve][ho]+Transpose.last,12)].R 
 					Grid.current.G[ve][ho]=Palette.current[modulo(Grid.current.note[ve][ho]+Transpose.last,12)].G 
 					Grid.current.B[ve][ho]=Palette.current[modulo(Grid.current.note[ve][ho]+Transpose.last,12)].B 
@@ -1350,13 +1366,19 @@ end
 
 
 -- Transpose has methods for transposing the note. (by half step, sh by oct, shcl by fifth)
--- transpose select is different from others, 
--- can be negative.
--- has stop when scale is out of bounds.
+-- transpose select is different from others, can be negative.
+-- Only place we call the midiout function, is adjusted up or down by an oct
+-- when note output is out of bounds (From user input, buttons have a check in place)
 Transpose = {
 		current =0,
 		last = 0,
-}
+		select=function(new)
+			if new ~= Transpose.last or State.update ~= 0 then 
+				Grid.refresh_midiout() 
+				State.update=1 
+			end		
+		end,
+		}
 
 
 
@@ -1466,6 +1488,7 @@ end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 --make a message to send ---------------------------------------
 -- TODO still not sure where this would output
+--unneeded
 function make_lcd_midi_message(text)
 
 remote.trace(text)
@@ -1573,13 +1596,13 @@ end
 
 
 --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-function vprint (strng,vari)
+function vprint(strng,vari)
 	remote.trace(strng .. ": "..tostring(vari)..'\n')
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-function grprint (strng,grid)
+function grprint(strng,grid)
 	local a=strng..'\n'
 	for x=1,8 do
 		a=a .. table.concat(grid[x]," ") .. '\n'
@@ -2557,6 +2580,7 @@ if event.size==3 then -- Note, button, channel pressure, fader
 vprint("ret y",ret.y)
 			table.insert(Pressed,ret.y) -- keep track for button_function[Pressed].RDM
 			button_function[ret.y].RPM(ret.y,ret.z)
+			return true
 		end
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
@@ -2566,11 +2590,10 @@ vprint("ret y",ret.y)
 -- -----------------------------------------------------------------------------------------------
 
 
+
+
+
 --[[
-
-
-
-		if test ==0 and button==1 and (ret.y<21 or ret.y>29) then -- button, not fader mode
 
 			-- accent?
 			local accent_pad = remote.match_midi("B? 32 zz",event) -- 50 delete
@@ -2596,60 +2619,15 @@ vprint("ret y",ret.y)
 				end
 			end
 
--- -----------------------------------------------------------------------------------------------
--- more buttons go here
--- TODO modulation bottom row
--- TODO pitch
-
-
 
 --]]
 
---[[
-----------------------------------------------------
--- TODO, comment more
--- detecting buttons here, but only if shift pressed?
-
-		
-		if (buttonindex[ret.y]~=nil and g.button.shift==1) then -- buttons
-			local noteout = ret.y --no offset
-			local itemno = buttonindex[ret.y].itemindex -- items index.
-			if(ret.z>0) then
-				local msg={ time_stamp = event.time_stamp, item=itemno, value = ret.x, note = noteout,velocity = ret.z }
-				remote.handle_input(msg)
-			end
-			return true
-		end
-
-
---]]
-
-
-
-
---[[
-
-			if(drum_tog) then
-				drum_mode = 1-drum_mode
-			end
---]]
---[[
-			if(tran_rst) then
-				g.transpose=0
-			end
---]]
-		-- change this!
-		
-		
-
-		end -- button
 -----------------------------------
 -- end handle buttons
 -----------------------------------
 --------------------------------------------------------------------------------------------------------------------------		
 --------------------------------------------------------------------------------------------------------------------------		
 
---]]
 
 
 
@@ -2663,9 +2641,10 @@ vprint("ret y",ret.y)
 --------------------------------------------------------------------------------------------------------------------------		
 -- here's where the incoming note gets transposed!
 --------------------------------------------------------------------------------------------------------------------------		
-noscaleneeded=true -- while we test new modes
-			---if the pads have transposed, then we need to turn off the last note----------------------
-			if(State.update==1) then
+---if the pads have transposed, then we need to turn off the last note----------------------
+-- This will need to move when we put in setup pages on the grid
+-- but must go after the button handling
+			if(State.update==1) then -- grid has changed
 				for k,v in pairs(Playing) do
 					local prev_off={ time_stamp = event.time_stamp, item=1, value = 0, note = k, velocity = 0 }
 					remote.handle_input(prev_off)
@@ -2718,7 +2697,7 @@ noscaleneeded=true -- while we test new modes
 		return true -- absorb the incoming note, even if it's transposed out of range
 -------------------------------------------------------		
 			--return false -- don't return this false, because incoming pad press is a midi note.
-		end
+		end --button
 	end -- ret not nil
 	
 
@@ -2736,7 +2715,7 @@ noscaleneeded=true -- while we test new modes
 
 	
 end -- eventsize=3
-
+--3
 
 	
 -- -----------------------------------------------------------------------------------------------
@@ -2752,6 +2731,7 @@ if event.size==8 then
 end -- eventsize=8
 
 	
+--8
 -- -----------------------------------------------------------------------------------------------
 -- Keep it in programmer mode	
 -- -----------------------------------------------------------------------------------------------
@@ -2784,12 +2764,14 @@ remote.trace(livemodeswitch.x)
 --]]
 	return true
 end -- eventsize=9
+--9
 -- -----------------------------------------------------------------------------------------------
 
 
 
 
 
+end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -3346,10 +3328,10 @@ function remote_set_state(changed_items)
 
 	-- FL: Collect all changed states for redrum "drum playing" - this part blinks the 3rd row drum selection pads
 	for k,item_index in ipairs(changed_items) do
-	if item_index == Itemnum.accent then
-		g.accent = remote.get_item_value(item_index)
-	end
-
+		if item_index == Itemnum.accent then
+			g.accent = remote.get_item_value(item_index)
+		end
+	
 
 		if item_index >= Itemnum.first_step_item and item_index < Itemnum.first_step_item+8 then
 			local step_index = item_index - Itemnum.first_step_item + 1
@@ -3361,6 +3343,23 @@ function remote_set_state(changed_items)
 			local step_index = item_index - Itemnum.first_step_playing_item + 1
 			g.step_is_playing[step_index] = remote.get_item_value(item_index)
 		end
+--[[	
+		if item_index == Itemnum.trackname then
+			local tn = string.lower(get_item_text_value(item_index))
+			if State.trackname ~= tn then
+				if string.find(tn,"lpp") then
+					local out = {}
+					out.scale = string.match(tn,"s(%d+)")
+					out.mode = string.match(tn,"m(%d+)") 
+					out.palette = string.match(tn,"p(%d+)")
+					out.transpose = string.match(tn,"t(%-%d+)") or string.match(tn,"t(%d+)")
+					State.do_update(out)
+				end
+				tn=State.trackname
+			end
+			-- error(remote.get_item_text_value(item_index))
+		end
+--]]	
 	end
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -3598,6 +3597,7 @@ vprint("Transpose.last dn",Transpose.last)
 		end,
 									
 		RDM=function()
+			local bfevent={}
 			if State.shiftclick == 1 then
 				bfevent = scroll_status(Outmess)
 				Outmess = ''
