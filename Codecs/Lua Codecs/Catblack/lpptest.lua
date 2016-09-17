@@ -87,7 +87,6 @@ drum_mode = 0;
 
 
 	
-init = 1
 global_scale = 0
 global_transp = 0
 scale_from_parse = false
@@ -1353,6 +1352,8 @@ end
 					Grid.current.B[ve][ho]=Palette.current[modulo(Grid.current.midiout[ve][ho],12)].B 
 				end end 
 				Palette.last=new
+				table.insert(Pressed,93) -- button feedback
+				table.insert(Pressed,91) -- button feedback
 				State.update=1 
 			end 
 		end,
@@ -3153,61 +3154,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
--- -----------------------------------------------------------------------------------------------
-		--initialize colors:
--- -----------------------------------------------------------------------------------------------
-		if init==1 then
-remote.trace("in init!")
-			 
--- -----------------------------------------------------------------------------------------------
---tprint(lpp_events)
-			State.do_update({scale=1,mode=1,palette=1,transpose=0})
--- transpose button	
-			upevent = remote.make_midi(table.concat({sysex_setrgb,"5D",Palette.current[0].R ,Palette.current[0].G, Palette.current[0].B,"5E",Palette.current[0].R, Palette.current[0].G, Palette.current[0].B,sysend}," "))
-			table.insert(lpp_events,upevent)
-			init=0
-			do_update_pads = 1
-		end
--- -----------------------------------------------------------------------------------------------
-
-		
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 --[[
 		if g.vartext_prev~=g.vartext then
 			--Let the LCD know what the variation is
@@ -3293,6 +3239,7 @@ end
 
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- Caution, RSS fires off before RPM and RDM
 function remote_set_state(changed_items)
 --tprint(changed_items)
 
@@ -3386,7 +3333,8 @@ function remote_prepare_for_use()
 --		remote.make_midi("bF 7A 40")
 --]]
 	}
-	init=1
+	State.do_update({scale=1,mode=1,palette=1,transpose=0})
+
 	return retEvents
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
