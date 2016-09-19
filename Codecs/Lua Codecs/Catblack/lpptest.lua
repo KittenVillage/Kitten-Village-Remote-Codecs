@@ -38,13 +38,11 @@ Itemnum={}
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 notemode = {35,40,45,50,55,60,65,70} -- left column -1
 drummode = {35,39,43,47,51,55,59,63} -- left column -1
-button = {}
 pad = {}
 padindex = {} 
 padgrid = {{},{},{},{},{},{},{},{}} 
 note = {}
 drum = {}
-buttonindex = {}
 padpress = {} -- to display pressed
 do_update_pads = 1
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1122,98 +1120,10 @@ Pad, , Palette, Transpose, Scale, Mode, Layout
 Grid, Buttons 
 Global or State
 
-
-
-
-
 --]]
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- add some methods in at the points where I draw the color palette/scale to the pad to remember the current color; 
 -- add a method into the point where I detect and transpose the note to keep an array of notes pressed and to send a method to display them; 
--- add a button class which will get inherited with what to do with each button. 
---[[
-padcountindex=1
-Pad ={}
-Pad.__index = Pad
-function Pad:new(o,ho,ve) 
-	o = o or {}
-	setmetatable(o, self)
-	self.__index = self
-	self.thispad=(ho*10)+ve  --11-18 ... 81-88
-	self.thispadhex=string.format("%02X",self.thispad)
-	self.thisnote=notemode[ho]+ve
-	self.thisdrum= ve>4 and drummode[ho]+ve or drummode[ho]+ve+28
-	self.pad=(ho*10)+ve  --11-18 ... 81-88
-	self.padhex=string.format("%02X",self.pad)
-	self.note=notemode[ho]+ve
-	self.notehex=string.format("%02X",self.note)
-	self.drum= ve>4 and drummode[ho]+ve or drummode[ho]+ve+28
---	if ve>4 then -- drum mode is 4 4x4 grids
---		thisdrum=thisdrum+28
---	end
-	if note[self.thisnote] == nil then
-		note[self.thisnote]={}
-	end
-	padcountindex=padcountindex+1
-	
-	--return setmetatable({ x = x or 0, y = y or 0 }, Pad)
-	return o
-end
-
-function Pad:makeSound()
-	print('I say ' .. self.sound)
-end
-
-mrDog = Pad:new() 
-mrDog:makeSound()
-
-
-
-
-
-
-
-
-
-setmetatable(Pad, { __call = function(_, ...) return Pad.new(...) end })
-
-function Pad.new(x, y)
-	return setmetatable({ x = x or 0, y = y or 0 }, Pad)
-end
-
---]]
--- Button contains the code for each button.
-Button = {}
-Button.__index = Button
-function Button:new(num,ind,o) 
---vprint("new button num",num.. " ind "..ind)
-	o = o or {}
-	number = num
-	index = ind
-	hex = string.format("%02X",ind)
-	setmetatable(o, self)
-	self.__index = self
-	return o
-end
-function Button:press()
-	-- if (buttonindex[ret.y]~=nil
-end
-function Button:release()
-
-end
-function Button:light()
-
-end
-function Button:flash()
-
-end
---setmetatable(Button, { __call = function(_, ...) return Button.new(...) end })
-
---[[
-
-
-
---]]
 
 -- State keeps track of what notes are currently pressed/playing
 -- and what button states we are in. (shift, click, shcl, etc.)
@@ -1239,6 +1149,7 @@ State = {
 }
 
 
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- Grid is the array of pads, pad colors, notes, octives
 -- Grid handles future rotation transforms
 -- 1 is normal (1,1 on bottom left) 2-4 rotate counter clockwise.
@@ -1326,13 +1237,14 @@ grprint("refresh_midiout cur grid midiout",Grid.current.midiout)
 vprint("Grid.current.midilo",Grid.current.midilo)
 vprint("Grid.current.midihi",Grid.current.midihi)
 				until ok==true
-				end,
-			
+				end,	
 		}
-			
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- Palette has the methods for changing the Palette.
 -- select takes from Grid.current.note 
 Palette = { 
@@ -1358,12 +1270,14 @@ end
 			end 
 		end,
 		}
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
 
 
 
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- Transpose has methods for transposing the note. (by half step, sh by oct, shcl by fifth)
 -- transpose select is different from others, can be negative.
 -- Only place we call the midiout function, is adjusted up or down by an oct
@@ -1379,10 +1293,12 @@ Transpose = {
 			end		
 		end,
 		}
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
 
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- Scale has methods for changing the current Scale 
 -- If the current Mode is set by a function, then Scale updates!
 -- If so, we change Scale.last, then tell Mode.select to update!
@@ -1402,15 +1318,15 @@ vprint("new scale",new)
 			end 
 		--end 
 		end,
-
 		}
-		
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 		
 --[[
 
 --]]
 
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- Mode has methods for detecting/changing/remembering the current Mode. 
 -- This refers to the different control layouts; chromatic, push, guitar, Co5, etc
 -- Fader mode becomes avail if fader remotabable items do.
@@ -1442,10 +1358,11 @@ vprint("Mode ro",ro)
 		special=function() end,
 		
 		}
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
---[[
---]]
+
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- Layout has methods for detecting/changing the current Layout. 
 -- Layout refers to the LPP Note, Drum, Fader, Programming modes. 
 -- LPP manual calls these layouts, but Reason remotemaps use a MODE column (which I use for the faders)
@@ -1675,16 +1592,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function map_redrum_led(v)
 	if(v<5) then
@@ -1732,7 +1639,6 @@ function remote_init(manufacturer, model)
 			{name="Fader 6", input="value", min=0, max=127, output="value", modes={"Program","Fader"}},
 			{name="Fader 7", input="value", min=0, max=127, output="value", modes={"Program","Fader"}},
 			{name="Fader 8", input="value", min=0, max=127, output="value", modes={"Program","Fader"}},
---			{name="Fader 9", input="value", min=0, max=127, output="value"},
 --[[
 			{name="Pan 1", input="value", min=0, max=127, output="value"},
 			{name="Pan 2", input="value", min=0, max=127, output="value"},
@@ -2000,32 +1906,16 @@ function remote_init(manufacturer, model)
 			{name="Shift Button 07", input="button", min=0, max=127, output="value"},
 			{name="Shift Button 08", input="button", min=0, max=127, output="value"},
 			{name="Pad 32 Alt", input="value", min=0, max=2, output="value", itemnum="accent"},
-
-
-
-
-
 			}
- --tprint(items) --Useful for counting
--- some items need to be noted, so here's where Itemnum["thing"] is set
+
+-- some items need to be noted, so here's where Itemnum.thing is set
 for it=1,table.getn(items),1 do
 	if items[it].itemnum ~= nil then
 		Itemnum[items[it].itemnum]=it
 	end
 end
---vprint("fp",Itemnum.first_pad)
---vprint("acc",Itemnum.accent)
---[[
-first_fader
-first_press
-first_pad
-first_step_item
-first_step_playing_item 
-accent
-first_button 
---]] 
---tprint(Itemnum)
-		remote.trace("here!")
+
+--remote.trace("here!")
 		remote.define_items(items)
 
 		local inputs={
@@ -2526,11 +2416,6 @@ end
 
 
 
-
-
-
-
-
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function remote_process_midi(event)
@@ -2546,14 +2431,9 @@ function remote_process_midi(event)
 -- Match buttons and notes and transpose notes.
 -- -----------------------------------------------------------------------------------------------
 
-
------------------------------------
---
------------------------------------
 if event.size==3 then -- Note, button, channel pressure, fader
 
 -- 1001 is 90 (note on) 1011 is B0 (controller)	
-
 	ret =    remote.match_midi("<10x1>? yy zz",event) --find a pad, button on or off, Not aftouch
 	if(ret~=nil) then
 		button = ret.x --  check 1 = button
@@ -2579,9 +2459,7 @@ if event.size==3 then -- Note, button, channel pressure, fader
 vprint("ret y",ret.y)
 			table.insert(Pressed,ret.y) -- keep track for button_function[Pressed].RDM
 			local r = button_function[ret.y].RPM(ret.y,ret.z)
-
-
---			if r then return r end
+			if r then return r end -- If we need Reason not to see the press (sh,cl or shcl) then return true in the RPM func
 		end
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
@@ -2592,12 +2470,12 @@ vprint("ret y",ret.y)
 ---if the pads have transposed, then we need to turn off the last note----------------------
 -- This will need to move when we put in setup pages on the grid
 -- but must go after the button handling
-			if(State.update==1) then -- grid has changed
-				for k,v in pairs(Playing) do
-					local prev_off={ time_stamp = event.time_stamp, item=1, value = 0, note = k, velocity = 0 }
-					remote.handle_input(prev_off)
-				end
-			end 
+		if(State.update==1) then -- grid has changed
+			for k,v in pairs(Playing) do
+				local prev_off={ time_stamp = event.time_stamp, item=1, value = 0, note = k, velocity = 0 }
+				remote.handle_input(prev_off)
+			end
+		end 
 			
 
 
@@ -2609,14 +2487,11 @@ vprint("ret y",ret.y)
 			-- accent?
 			local accent_pad = remote.match_midi("B? 32 zz",event) -- 50 delete
 			-- make checks for these
-
-
 -- -----------------------------------------------------------------------------------------------
 -- Accent button
 -- TODO: changing this to a pad, not button
 -- 
 -- -----------------------------------------------------------------------------------------------
-
 			if(accent_pad) then
 				if(accent_pad.z>0) then		  
 				g.accent_dn = true
@@ -2629,8 +2504,6 @@ vprint("ret y",ret.y)
 				return false
 				end
 			end
-
-
 --]]
 
 -----------------------------------
@@ -2652,8 +2525,6 @@ vprint("ret y",ret.y)
 --------------------------------------------------------------------------------------------------------------------------		
 -- here's where the incoming note gets transposed!
 --------------------------------------------------------------------------------------------------------------------------		
-
-
 		if (button==0) then
 -------------------------------------------------------		
 -- NEW MODES test here
@@ -2664,8 +2535,7 @@ vprint("ret y",ret.y)
 			local pady = 9-pad[ret.y].y
 			local oct = Grid.current.oct[pady][padx]*12
 			local noteout = Grid.current.note[pady][padx]+(oct+State.root)+Transpose.last
-			
-			
+
 			if (noteout<128 and noteout>0) then
 				local dupes = Grid.current.duplicates[ret.y]
 ---------------------------------------------------			
@@ -2678,7 +2548,7 @@ vprint("ret y",ret.y)
 						table.insert(State.lightoff,table.concat({pad[d].padhex,Grid.current.R[pady][padx],Grid.current.G[pady][padx],Grid.current.B[pady][padx]}," "))
 					else 
 						local vel=string.format("%02X",math.floor(.5*ret.z))
-	--vprint("ret.z",ret.z.." vel "..vel)
+--vprint("ret.z",ret.z.." vel "..vel)
 						table.insert(State.lighton,table.concat({pad[d].padhex,vel,vel,vel}," "))
 					end
 				end
@@ -2789,21 +2659,13 @@ function remote_deliver_midi(maxbytes,port)
 
 	if(port==1) then
 		local lpp_events={}
-		local upevent={}
-		local dnevent={}
 		local padevent={}
-		local ltevent={}
-		local rtevent={}
-		local shevent={}
-		local clevent={}
-		local shclevent={}
 		local padupdate={}
 		local mode_event={}
 		local frlight_event={}
 		local iskong = false
 		local isvarchange = false
 		local istracktext = false
-		 -- do_update_pads = 0
 
 -- -----------------------------------------------------------------------------------------------
 -- Keep it in programmer mode	FOR NOW
@@ -2837,7 +2699,6 @@ if table.getn(Pressed)>0 then
 		for d,e in pairs(button_function[v].RDM()) do table.insert(lpp_events,e) end
 	end
 	Pressed={}
-tprint(lpp_events)
 end
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
@@ -2851,7 +2712,7 @@ end
 -- -----------------------------------------------------------------------------------------------
 
 		
-		
+-- start del		
 -- -----------------------------------------------------------------------------------------------
 		--if vartext from _Var item in remotemap has changed	-----------------
 -- -----------------------------------------------------------------------------------------------
@@ -3033,10 +2894,11 @@ end
 		end
 --]]
 -- -----------------------------------------------------------------------------------------------
---do_update_pads=1
 
---[[
---]]
+-- end del
+
+
+
 -- -----------------------------------------------------------------------------------------------
 -- color the pads if scale or transpose changed----------------------------------------
 -- -----------------------------------------------------------------------------------------------		
@@ -3097,10 +2959,6 @@ end
 -- -----------------------------------------------------------------------------------------------
 
 
-
-
---[[
---]]
 -- -----------------------------------------------------------------------------------------------
 --Redrum
 
@@ -3153,60 +3011,32 @@ end
 		end
 -- -----------------------------------------------------------------------------------------------
 
-
-
-
---[[
-		if g.vartext_prev~=g.vartext then
-			--Let the LCD know what the variation is
-			local vartext = remote.get_item_text_value(Itemnum.var)
-			local var_event = make_lcd_midi_message("/Reason/0/LPP/0/display/1/display "..vartext)
-			table.insert(lcd_events,var_event)
-			g.vartext_prev = g.vartext
-			isvarchange = true
-		end
---]]
-
-
-
 ---------------------------------------------------			
 -- Here is where we send sysex for display note press
 ---------------------------------------------------			
-if 	(table.getn(State.lighton) ~= 0) then
-			padupdate=remote.make_midi(table.concat({sysex_header,"0B",table.concat(State.lighton," "),sysend}," "))
-				table.insert(lpp_events,padupdate)
+		if (table.getn(State.lighton) ~= 0) then
+			padupdate=remote.make_midi(table.concat({sysex_setrgb,table.concat(State.lighton," "),sysend}," "))
+			table.insert(lpp_events,padupdate)
 			State.lighton ={}
-end
-
-if 	(table.getn(State.lightoff) ~= 0) then
-			padupdate=remote.make_midi(table.concat({sysex_header,"0B",table.concat(State.lightoff," "),sysend}," "))
+		end
+		if (table.getn(State.lightoff) ~= 0) then
+			padupdate=remote.make_midi(table.concat({sysex_setrgb,table.concat(State.lightoff," "),sysend}," "))
 			table.insert(lpp_events,padupdate)
 			State.lightoff ={}	
-end
+		end
 
-
-
---tprint(lpp_events)
-		
-		return lpp_events --send out a bunch of MIDI to the Launchpad Pro
+---------------------------------------------------	
+--Send out a bunch of MIDI to the Launchpad Pro
+---------------------------------------------------	
+		return lpp_events 
 	end --end port==1
-
-
-
-
-
+	
+	
 	if(port==2) then
 		local le = lcd_events
 		lcd_events = {}
 		return le
 	end
---[[
---]]
-
-
-
-
-
 
 
 end
@@ -3414,17 +3244,6 @@ padgrid[ve][ho]={padhex=thispadhex,itemindex=(index-1)+Itemnum.first_pad,index=i
 			})
 			index=index+1 --index so I can cycle through the 64 pads quickly.
 		end
-		--items here.
-		buttonindex[90+ve]=(Itemnum.first_button-1)+ve
-		buttonindex[ve]=(Itemnum.first_button-1)+ve+8
-		buttonindex[10*ve]=(Itemnum.first_button-1)+ve+16
-		buttonindex[(10*ve)+9]=(Itemnum.first_button-1)+ve+24	
-		
-		button[90+ve]=Button:new((Itemnum.first_button-1)+ve,90+ve)
-		button[ve]=Button:new((Itemnum.first_button-1)+ve+8,ve)
-		button[10*ve]=Button:new((Itemnum.first_button-1)+ve+16,10*ve)
-		button[(10*ve)+9]=Button:new((Itemnum.first_button-1)+ve+24,(10*ve)+9)	
-
 
 
 	end
@@ -3545,7 +3364,7 @@ vprint("Transpose.last dn",Transpose.last)
 
 [95]={ --Session
 		RPM=function(y,z)
-		end,
+		return true end,
 									
 		RDM=function()
 		return {} end
