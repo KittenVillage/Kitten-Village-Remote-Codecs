@@ -40,10 +40,8 @@ notemode = {35,40,45,50,55,60,65,70} -- left column -1
 drummode = {35,39,43,47,51,55,59,63} -- left column -1
 pad = {}
 padindex = {} 
-padgrid = {{},{},{},{},{},{},{},{}} 
 note = {}
 drum = {}
-padpress = {} -- to display pressed
 do_update_pads = 1
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -56,17 +54,6 @@ g.accent = 0
 g.last_accent = 0
 g.accent_dn = false
 g.accent_count = 0
-
-
-g.button.shift = 0
-g.button.shift_delivered = 0 --for change filter
-
-g.button.click = 0
-g.button.click_delivered = 0
-
-g.button.tranup = 0
-g.button.trandn = 0
-
 
 -- These are set in remote_on_auto_input() 
 g.last_input_time = 0
@@ -1446,50 +1433,6 @@ end
 
 
 
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
---UTILITY: this function is called when we need to update a slider LCD
-function update_slider(item)
--- unneeded
---[[
-	local thetext = remote.get_item_name_and_value(item)
-	local textarray = {}
-	local p_path = ""
-	local v_path = ""
-	local p_text = ""
-	local v_text = ""
-	--local tlcd_event = make_lcd_midi_message("item "..item.." text "..thetext.." len "..#thetext )
-	--table.insert(lcd_events,tlcd_event)
-	if(string.len(thetext)>0) then
-		--strip any percent symbols
-		local pctsearch = string.find(thetext, '%%')
-		if(pctsearch~=nil) then
-			thetext = string.sub(thetext,1,pctsearch-1).." pct"
-		end
-		local wordcount = 1
-		--make a table of words so we can break the track name_and_value into "name" and "value"
-		for j in string.gmatch(thetext, "%S+") do
-			textarray[wordcount] = j
-			wordcount = wordcount+1
-		end
-		wordcount = wordcount-1 --because wordcount is really an index starting at 1, to get the true count, we subtract 1
-		p_path = "/Reason/0/LPP/0/Fader_"..(item-sli_start).."/lcd_name " -- "sli_start" (-4) because the sliders start at index 3 in table items, but we start our OSC Slider names at 0.
-		v_path = "/Reason/0/LPP/0/Fader_"..(item-sli_start).."/lcd_value "
-		if(wordcount>2) then
-			p_text = string.format( table.concat( table_slice(textarray,1,-3)," " ) ) --from first element to 3rd to last element (everything but last 2 elements)
-			v_text = string.format( table.concat( table_slice(textarray,-2)," " ) ) --last 2 elements
-		else
-			p_text = string.format(textarray[1]) --1st element, like "Mode"
-			v_text = string.format(textarray[2]) --2nd elemnt, like "10%" (with % stripped out)
-		end
-		local p_lcd_event = make_lcd_midi_message(p_path..p_text)
-		local v_lcd_event = make_lcd_midi_message(v_path..v_text)
-		table.insert(lcd_events,p_lcd_event) --put the lcd_text (e.g. "Drum 1" or "Filter Freq" into the table of midi events 
-		table.insert(lcd_events,v_lcd_event) --put the lcd_text (e.g. "Tone 16" or "220 hz" into the table of midi events 	
-	end
---]]
-end
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 
 
 
@@ -2490,7 +2433,6 @@ vprint("ret y",ret.y)
 -- -----------------------------------------------------------------------------------------------
 -- Accent button
 -- TODO: changing this to a pad, not button
--- 
 -- -----------------------------------------------------------------------------------------------
 			if(accent_pad) then
 				if(accent_pad.z>0) then		  
@@ -2717,14 +2659,14 @@ end
 		--if vartext from _Var item in remotemap has changed	-----------------
 -- -----------------------------------------------------------------------------------------------
 -- unneeded
-		if g.vartext_prev~=g.vartext then
+		if Variation_prev~=Variation then
 			--Let the LCD know what the variation is
 			local vartext = remote.get_item_text_value(Itemnum.var)
 --[[
 			local var_event = make_lcd_midi_message("/Reason/0/LPP/0/display/1/display "..vartext)
 			table.insert(lcd_events,var_event)
 --]]
-			g.vartext_prev = g.vartext
+			Variation_prev = Variation
 			isvarchange = true
 		end
 		
@@ -2758,15 +2700,10 @@ end
 -- -----------------------------------------------------------------------------------------------
 			if istracktext==true then			
 				--if scopetext from _Scope item has changed	
-				if g.scopetext_prev~=g.scopetext then
+				if Scope_prev~=Scope then
 	
---[[
-					--Let the LCD know what the device is
-					local const_event = make_lcd_midi_message("/Reason/0/LPP/0/display/4/display "..g.scopetext)
-					table.insert(lcd_events,const_event)
---]]
 					--detect Redrum
-					if(g.scopetext=="Redrum") then
+					if(Scope=="Redrum") then
 						noscaleneeded = true	
 						do_update_pads = 0
 						g.clearpads = 1
@@ -2777,7 +2714,7 @@ end
 						noscaleneeded = false
 					end
 					--if we've landed on a Kong, _Scope reports "KONG" and we change to drum scale
-					if(g.scopetext=="KONG" and scale_int~=7) then
+					if(Scope=="KONG" and scale_int~=7) then
 						if scale_from_parse==false then
 							global_scale = scale_int
 						end
@@ -2786,7 +2723,7 @@ end
 					else
 						use_global_scale = true
 					end
-					g.scopetext_prev = g.scopetext
+					Scope_prev = Scope
 				end
 --[[
 --]]	
@@ -2904,15 +2841,13 @@ end
 -- -----------------------------------------------------------------------------------------------		
 		if (do_update_pads==1) or (State.update==1) then
 --	  table.insert(lcd_events,upd_event)
+-- TODO no more drumpad
 			if(scalename~='DrumPad') then
 -- NEW MODES test here
 
 				local padsysex = ""
-					root = 24 
- 
+--[[ 
 				for i=1,64,1 do
---					local gridnote = Grid.current.note
---					local gridoct  = Grid.current.oct
 					local padx = padindex[i].x
 					local pady = 9-padindex[i].y
 					local padnum = padindex[i].padhex --note# that the controller led responds to
@@ -2921,6 +2856,13 @@ end
 					local B = Grid.current.B[pady][padx]
 					padsysex=table.concat({padsysex,padnum,R,G,B}," ")
 				end --end for 1,64
+--]]				
+-- This might be a tiny bit faster.
+				for ve=1,8 do for ho=1,8 do 
+					local padnum = padindex[((ve-1)*8)+ho].padhex --note# that the controller led responds to
+					padsysex=table.concat({padsysex,padnum,Grid.current.R[9-ve][ho],Grid.current.G[9-ve][ho],Grid.current.B[9-ve][ho]}," ")
+				end end 
+
 				padupdate=remote.make_midi(table.concat({sysex_setrgb,padsysex,sysend}," "))
 				table.insert(lpp_events,padupdate)
 				
@@ -2928,8 +2870,7 @@ end
 				
 				
 				
-				
-
+-- TODO no more drumpad
 			elseif scalename=='DrumPad' then
 
 				--do drumpad color scheme
@@ -2964,21 +2905,21 @@ end
 
 --TODO
 -- -----------------------------------------------------------------------------------------------
-		if(g.scopetext=="Redrum") then
+		if(Scope=="Redrum") then
 
 --local padnotes = {60,61,62,63,64,65,66,67, 52,53,54,55,56,57,58,59, 44,45,46,47,48,49,50,51}
 --			local padnotes = {31,32,33,34,35,36,37,38}
 			--if we've just landed on Redrum, we need to clear out the 3rd row of pads, otherwise they maintain LEDs from pvs scope
 			if g.clearpads==1 then
-				for pad=1,8 do
-		--			local padnum = string.format("%02x",padnotes[pad])
-		--			local padnum = padindex[i].padhex
-		--			local padnum = padindex[padnotes[pad]].padhex
-					local padnum = pad[i+30].padhex
-					local event = remote.make_midi("90 "..padnum.." 00")
-					table.insert(lpp_events,event)
-				end	 
-				g.clearpads=0
+				for ve=1,8 do for ho=1,8 do 
+					local padnum = padindex[((ve-1)*8)+ho].padhex --note# that the controller led responds to
+					padsysex=table.concat(padsysex,padnum,0,0,0," ")
+				end end 
+
+				padupdate=remote.make_midi(table.concat({sysex_setrgb,padsysex,sysend}," "))
+				table.insert(lpp_events,padupdate)
+
+					g.clearpads=0
 			end
 		--flash drums playing on selected pads
 			for pad=1,8 do
@@ -3076,21 +3017,24 @@ function remote_set_state(changed_items)
 --tprint(changed_items)
 
 	--look for the _Scope constant. Kong reports "KONG". Could use for a variety of things
-
+--[[
 	if remote.is_item_enabled(Itemnum.scope) then
 		local scope_text = remote.get_item_text_value(Itemnum.scope)
-		g.scopetext = scope_text
+		Scope = scope_text
 	else
-		g.scopetext = ""
+		Scope = ""
 	end
 	
 	if remote.is_item_enabled(Itemnum.var) then
 		local var_text = remote.get_item_text_value(Itemnum.var)
-		g.vartext = var_text
+		Variation = var_text
 	else
-		g.vartext = ""
+		Variation = ""
 	end
-
+--]]
+	Scope = remote.is_item_enabled(Itemnum.scope) and remote.get_item_text_value(Itemnum.scope) or ""
+	Variation = remote.is_item_enabled(Itemnum.var) and remote.get_item_text_value(Itemnum.var) or ""
+--[[
 	if(g.last_input_item~=nil) then
 		if remote.is_item_enabled(g.last_input_item) then
 			local feedback_text = remote.get_item_name_and_value(g.last_input_item)
@@ -3102,7 +3046,7 @@ function remote_set_state(changed_items)
 			end
 		end
 	end
-
+--]]
 	-- FL: Collect all changed states for redrum "drum playing" - this part blinks the 3rd row drum selection pads
 	for k,item_index in ipairs(changed_items) do
 		if item_index == Itemnum.accent then
@@ -3208,7 +3152,6 @@ function def_vars()
 			if note[thisnote] == nil then
 				note[thisnote]={}
 			end
-padgrid[ve][ho]={padhex=thispadhex,itemindex=(index-1)+Itemnum.first_pad,index=index}
 			table.insert(note[thisnote],thispad) --In note mode, a single note can be on one or two pads.	
 
 			table.insert(pad,thispad,{
@@ -3261,10 +3204,9 @@ button_function = {
 --left to right Top 
 [91]={ -- scale_up
 		RPM=function(y,z) 
---vprint("91 pressed",z)
 			if z>0 then
 				if State.shiftclick == 0 and State.shift == 0 then
-vprint("New MODE is ", Modenames[1+modulo(Mode.last,table.getn(Modenames))])
+--vprint("New MODE is ", Modenames[1+modulo(Mode.last,table.getn(Modenames))])
 					State.do_update({mode=Mode.last+1})
 				elseif State.shiftclick == 0 and State.shift == 1  then -- color palette
 					State.do_update({scale=Scale.last+1})
@@ -3282,10 +3224,9 @@ vprint("New MODE is ", Modenames[1+modulo(Mode.last,table.getn(Modenames))])
 	},
 [92]={ -- scale_dn
 		RPM=function(y,z) 
---vprint("92 pressed",z)
 			if z>0 then
 				if State.shiftclick == 0 and State.shift == 0 then
-vprint("New MODE is ", Modenames[1+modulo(Mode.last,table.getn(Modenames))])
+--vprint("New MODE is ", Modenames[1+modulo(Mode.last,table.getn(Modenames))])
 					State.do_update({mode=Mode.last-1})
 				elseif State.shiftclick == 0 and State.shift == 1  then -- color palette
 					State.do_update({scale=Scale.last-1})
@@ -3303,11 +3244,9 @@ vprint("New MODE is ", Modenames[1+modulo(Mode.last,table.getn(Modenames))])
 	},
 [93]={ -- tran_up
 		RPM=function(y,z) 
-vprint("93 pressed",z)
 			if z>0 then
 				if State.shiftclick == 0 then
-vprint("Transpose.last",Transpose.last)
-grprint("tran_up cur grid midiout",Grid.current.midiout)
+--grprint("tran_up cur grid midiout",Grid.current.midiout)
 					local transchk=false
 					if Grid.current.midihi+(1-State.shift)+(State.shift*12) > 127 then
 						transchk=true
@@ -3315,13 +3254,13 @@ grprint("tran_up cur grid midiout",Grid.current.midiout)
 					if transchk==false then
 						State.do_update({transpose=Transpose.last+(1-State.shift)+(State.shift*12)}) -- if sh pressed, add 12, else just 1
 --						transpose_changed = true
-vprint("Transpose.last up",Transpose.last)
+--vprint("Transpose.last up",Transpose.last)
 					end
 				end	
 			end
 		end,
 		RDM=function()
-vprint("Transpose RDM ",Transpose.last)
+--vprint("Transpose RDM ",Transpose.last)
 			local color_ind = (modulo(Transpose.last,12)) --change color every Note, show root
 			local bfevent={}
 			if Transpose.last>0 then
@@ -3333,18 +3272,18 @@ vprint("Transpose RDM ",Transpose.last)
 			elseif Transpose.last==0 then
 				table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5D",Palette.current[color_ind].R ,Palette.current[color_ind].G, Palette.current[color_ind].B,"5E",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
 			end	
-tprint(bfevent)
+--tprint(bfevent)
 			return bfevent
 		end
 	},
 
 [94]={ -- tran_dn
 		RPM=function(y,z) 
-vprint("94 pressed",z)
+--vprint("94 pressed",z)
 			if z>0 then
 				if State.shiftclick == 0 then
-vprint("Transpose.last",Transpose.last)
-grprint("tran_dn cur grid midiout",Grid.current.midiout)
+--vprint("Transpose.last",Transpose.last)
+--grprint("tran_dn cur grid midiout",Grid.current.midiout)
 					local transchk=false
 					if Grid.current.midilo-(1-State.shift)-(State.shift*12) < 0 then
 						transchk=true
@@ -3352,7 +3291,7 @@ grprint("tran_dn cur grid midiout",Grid.current.midiout)
 					if transchk==false then
 						State.do_update({transpose = Transpose.last-(1-State.shift)-(State.shift*12)}) -- if sh pressed, sub 12, else just 1
 --						transpose_changed = true
-vprint("Transpose.last dn",Transpose.last)
+--vprint("Transpose.last dn",Transpose.last)
 					end
 				end	
 			end
