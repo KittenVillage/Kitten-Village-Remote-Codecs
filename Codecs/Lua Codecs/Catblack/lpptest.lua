@@ -49,7 +49,6 @@ do_update_pads = 1
 
 -- putting things into state so I can dump it for debug
 g = {}
-g.button = {}
 g.accent = 0
 g.last_accent = 0
 g.accent_dn = false
@@ -59,7 +58,6 @@ g.accent_count = 0
 g.last_input_time = 0
 g.last_input_item = nil
 
-g.transpose = 0
 transpose_changed = false
 -- tran_rst = true -- stops transpose
 
@@ -76,11 +74,6 @@ global_scale = 0
 global_transp = 0
 scale_from_parse = false
 
-g.is_lcd_enabled = false
---g.lcd_state = string.format("%-16.16s","L C D")
-g.lcd_state = "LCD"
---g.lcd_state1 = string.format("%-16.16s","#")
-g.lcd_state_delivered = "#"
 g.note_delivered = 0
 
 
@@ -97,12 +90,9 @@ colors = {"07","41","60","31","61","39","15","3C","2D","7E","37","12",}
 --red,o,y,g,b,d b,v
 noscaleneeded = false
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-lcd_events = {}
 
 
 
---g.last_notevelocity_delivered={}
---g.last_note_delivered={}
 g.last_note_delivered = 0
 g.last_notevelocity_delivered = 0
 g.current_notevelocity = 0
@@ -1388,31 +1378,19 @@ end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
---make a message to send ---------------------------------------
--- TODO still not sure where this would output
---unneeded
-function make_lcd_midi_message(text)
-
-remote.trace(text)
-	local event = remote.make_midi("F0 23 23 ") --header for SysexReader
---	local event = remote.make_midi("F0 00 20 29 02 10 14") --header for Launchpad Pro, product ID 0
---	local event = remote.make_midi("f0 00 01 61 00") --header for Livid LCD, product ID 0
-	start=4
-	stop=4+string.len(text)-1
-	for i = start,stop do
-		sourcePos = i-start+1
-		event[i] = string.byte(text,sourcePos)
-	end
-	event[stop+1] = 247			-- hex f7
-	return event
-end
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function scroll_status(mess)
 --	local mess = table.concat({'S',tostring(Scale.last),' M',tostring(Mode.last),' P',tostring(Palette.last),' T',tostring(Transpose.last)},'')
+--[[
+-- This code turns the lit playing pads off, but it's a lot os sysex right before the scrolling text
+		if (table.getn(State.lightoff) ~= 0) then
+			local padupdate=remote.make_midi(table.concat({sysex_setrgb,table.concat(State.lightoff," "),sysend}," "))
+			table.insert(bfevent,padupdate)
+			State.lightoff ={}	
+		end
+--]]
 	local ssevent ={sysex_scrolltext, '32 00'}
 		string.gsub(mess,".",function(c) 
 			table.insert(ssevent,string.format("%02X",string.byte(c)))
@@ -1420,6 +1398,7 @@ function scroll_status(mess)
 	table.insert(ssevent,sysend)
 		local bfevent = {}
 		table.insert(bfevent,remote.make_midi(table.concat(ssevent," ")))
+		table.insert(bfevent,remote.make_midi("F0 00 20 29 02 10 0A 63 32 F7",{ port=1 })) --Front light purp
 	return bfevent
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1448,6 +1427,7 @@ end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- unused
 function bprint (strng)
 	Outmess=Outmess..' '..strng
 end
@@ -1574,6 +1554,8 @@ function remote_init(manufacturer, model)
 			{name="Modulation", input="value", min=0, max=127, itemnum="modulation"},
 			{name="Channel Pressure", input="value", min=0, max=127, itemnum="channelpressure"},
 			{name="TrackName", input="noinput", output="text", itemnum="trackname"},
+--			{name="AllStop", input="button", output="nooutput", itemnum="allstop"},
+
 			{name="Fader 1", input="value", min=0, max=127, output="value", modes={"Program","Fader"}, itemnum="first_fader"},
 			{name="Fader 2", input="value", min=0, max=127, output="value", modes={"Program","Fader"}},
 			{name="Fader 3", input="value", min=0, max=127, output="value", modes={"Program","Fader"}},
@@ -2380,12 +2362,7 @@ if event.size==3 then -- Note, button, channel pressure, fader
 	ret =    remote.match_midi("<10x1>? yy zz",event) --find a pad, button on or off, Not aftouch
 	if(ret~=nil) then
 		button = ret.x --  check 1 = button
-		
-		if ret.z == 0 then -- faking note on and off for the checks later. x is 'value', 0 or 1 for keyboard items.
-			ret.x =0
-		else
-			ret.x =1
-		end
+		ret.x = (ret.z==0) and 0 or 1 -- faking note on and off for the checks later. x is 'value', 0 or 1 for keyboard items.
 		local vel_pad = ret.z
 		
 -----------------------------------
@@ -2397,7 +2374,7 @@ if event.size==3 then -- Note, button, channel pressure, fader
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
--- NEW BUTTON HANDLE RPM
+-- BUTTON HANDLE RPM
 		if button==1 and (ret.y<21 or ret.y>29) then -- button, not fader mode
 vprint("ret y",ret.y)
 			table.insert(Pressed,ret.y) -- keep track for button_function[Pressed].RDM
@@ -2418,6 +2395,11 @@ vprint("ret y",ret.y)
 				local prev_off={ time_stamp = event.time_stamp, item=1, value = 0, note = k, velocity = 0 }
 				remote.handle_input(prev_off)
 			end
+--[[
+-- not working
+			local allstopmsg={ time_stamp = event.time_stamp, item=Itemnum.allstop, value = 1 }
+			remote.handle_input(allstopmsg)
+--]]
 		end 
 			
 
@@ -2494,20 +2476,17 @@ vprint("ret y",ret.y)
 						table.insert(State.lighton,table.concat({pad[d].padhex,vel,vel,vel}," "))
 					end
 				end
-
 ---------------------------------------------------			
 -- Here is where send the translated note back to Reason
 ---------------------------------------------------			
 				local msg={ time_stamp = event.time_stamp, item=1, value = ret.x, note = noteout,velocity = ret.z }
 				remote.handle_input(msg)
-					if  ret.z~=0 then
-						Playing[noteout]=ret.z
-					else
-						Playing[noteout]=nil
-					end
-				--g.note_delivered = noteout -- depreciated
+---------------------------------------------------			
+-- Now save the note for turning off notes on button press. 
+---------------------------------------------------			
+				Playing[noteout] = (ret.z~=0) and ret.z or nil
 			end
-		return true -- absorb the incoming note, even if it's transposed out of range
+			return true -- absorb the incoming note, even if it's transposed out of range
 -------------------------------------------------------		
 			--return false -- don't return this false, because incoming pad press is a midi note.
 		end --button
@@ -2662,38 +2641,12 @@ end
 		if Variation_prev~=Variation then
 			--Let the LCD know what the variation is
 			local vartext = remote.get_item_text_value(Itemnum.var)
---[[
-			local var_event = make_lcd_midi_message("/Reason/0/LPP/0/display/1/display "..vartext)
-			table.insert(lcd_events,var_event)
---]]
+
+
+
 			Variation_prev = Variation
 			isvarchange = true
 		end
-		
-		
-		
---[[
--- -----------------------------------------------------------------------------------------------
---		--lcd event and text parsing for scale detection from text in track name----------------------------------------
--- -----------------------------------------------------------------------------------------------
-		local new_text = g.lcd_state
-		if g.lcd_state_delivered~=new_text then
-			g.lcd_state_delivered = new_text
-			local use_global_scale = false
-			istracktext = string.find(new_text,"Track") == 1 --The word "track" is the first word
-			if (istracktext==false) then
---]]
---[[
-				if(g.lcd_index>=sli_start and g.lcd_index<=sli_end) then --if it's a Slider
-					--we'll make the parameter/value/unit list into two arrays for our LCD, then send a long string to LCD
-					update_slider(g.lcd_index)	
-				end
---]]
---[[
-
-			end
--- -----------------------------------------------------------------------------------------------
---]]
 
 -- -----------------------------------------------------------------------------------------------
 			--parse the text to see if there's any scale or transpose info----------------------------------------
@@ -2725,113 +2678,8 @@ end
 					end
 					Scope_prev = Scope
 				end
---[[
---]]	
---[[			
--- -----------------------------------------------------------------------------------------------
-				--send LCD the Track name text----------------------------------------------------------------
--- -----------------------------------------------------------------------------------------------
-				local track_event = make_lcd_midi_message("/Reason/0/LPP/0/display/0/display "..new_text)
-				table.insert(lcd_events,track_event)
---]]
---[[
-				--see if there's a scale in the track text
-				local result = ""
-				scsearch = string.find(new_text, 'scale')
-				eqsearch = string.find(new_text, '=%d') --look for an index
-				if(scsearch) then
-					if(eqsearch==nil) then --if we didn't find a number, search for a word after =
-						eqsearch = string.find(new_text, '=%w')			--from the first char after '=' ...
-						spsearch = string.find(new_text, '%s',eqsearch) or -1 --...to the next space (or end of line) is a 'word'
-						result = string.sub(new_text,eqsearch+1,spsearch)
-						local sindex=0;
-						for i,v in pairs(scalenames) do	 --find the index that the scalename is at
-							if v == result then
-								sindex = i-1
-								break
-							end
-						end
-						set_scale(sindex)
-						--local scalename_event = make_lcd_midi_message("SCALE_TEXT "..result.." # "..sindex)
-						--table.insert(lcd_events,scalename_event)
-					else --otherwise it's an index
-						result = string.sub(new_text,eqsearch+1,eqsearch+2)
-						set_scale(result)
-						--local scaleint_event = make_lcd_midi_message("SCALE_INT "..result.." # "..sindex)
-						--table.insert(lcd_events,scaleint_event)
-					end
-					use_global_scale = false
-					scale_from_parse = true
-				else
-					scale_from_parse = false
-					use_global_scale = true
-				end
---]]
---[[
--- -----------------------------------------------------------------------------------------------
-				--send scale name to LCD----------------------------------------
--- -----------------------------------------------------------------------------------------------
-				local scalename_event = make_lcd_midi_message("/Reason/0/LPP/0/display/2/display/ "..scalename)
-				table.insert(lcd_events,scalename_event)
---]]
-				---If it's not a Kong, and there's no scale in the Track name, set to global_scale
-				if use_global_scale and iskong==false then
-					set_scale(global_scale)
---[[
-					--local prev_event = make_lcd_midi_message("PREV SCALE "..global_scale.." "..g.scale_delivered)
-					--table.insert(lcd_events,prev_event)
---]]
-				end
---[[
--- -----------------------------------------------------------------------------------------------
-				--see if there's a transpose in the track text----------------------------------------
--- -----------------------------------------------------------------------------------------------
-
-				local transp = ""
-				tsearch = string.find(new_text, 'trans') or string.find(new_text, 'transpose')
-				eqtsearch = string.find(new_text, '=%d',tsearch) --look for a value
-				if(tsearch and eqtsearch) then
-					--global_transp = g.transpose
-					trans_parsed = tonumber( string.sub(new_text,eqtsearch+1,eqtsearch+2) )
-					if(g.transpose~=trans_parsed) then
-						g.transpose = trans_parsed
-						transpose_changed = true
-					end
-				else
-					if(g.transpose~=global_transp) then
-						g.transpose = global_transp
-						transpose_changed = true
-					end
-				end
---]]
-				--send LCD transpose value
-				if(transpose_changed) then
---[[
-					local transpose_event = make_lcd_midi_message("/Reason/0/LPP/0/display/1/display/ "..g.transpose)
-					table.insert(lcd_events,transpose_event)
---]]
-				end
---[[
 			end
-			--done looking at "Track" labels------------------------------------------------------
---]]
-		end
 -- -----------------------------------------------------------------------------------------------
-
-
-
--- -----------------------------------------------------------------------------------------------
--- -----------------------------------------------------------------------------------------------
---[[
-		if istracktext==true or isvarchange==true then
-		--refresh LCD with all the parameters and values for the sliders when a new track is selected----------------------------------------
-			for i = sli_start,sli_end do
-				--update_slider(i)
-			end
-		end
---]]
--- -----------------------------------------------------------------------------------------------
-
 -- end del
 
 
@@ -2840,7 +2688,6 @@ end
 -- color the pads if scale or transpose changed----------------------------------------
 -- -----------------------------------------------------------------------------------------------		
 		if (do_update_pads==1) or (State.update==1) then
---	  table.insert(lcd_events,upd_event)
 -- TODO no more drumpad
 			if(scalename~='DrumPad') then
 -- NEW MODES test here
@@ -2871,7 +2718,7 @@ end
 				
 				
 -- TODO no more drumpad
-			elseif scalename=='DrumPad' then
+			elseif Scale=='Redrum' then
 
 				--do drumpad color scheme
 				for i=1,64,1 do
@@ -2901,7 +2748,7 @@ end
 
 
 -- -----------------------------------------------------------------------------------------------
---Redrum
+--ReDrum
 
 --TODO
 -- -----------------------------------------------------------------------------------------------
@@ -2918,6 +2765,7 @@ end
 
 				padupdate=remote.make_midi(table.concat({sysex_setrgb,padsysex,sysend}," "))
 				table.insert(lpp_events,padupdate)
+		table.insert(lpp_events,remote.make_midi("F0 00 20 29 02 10 0E 00 F7")) -- Blank all
 
 					g.clearpads=0
 			end
@@ -2974,9 +2822,11 @@ end
 	
 	
 	if(port==2) then
+--[[
 		local le = lcd_events
 		lcd_events = {}
 		return le
+--]]
 	end
 
 
@@ -3000,8 +2850,6 @@ end
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function remote_on_auto_input(item_index)
---	g.last_input_time = remote.get_time_ms()
---	g.last_input_item = item_index
 	g.last_input_time = remote.get_time_ms()
 	g.last_input_item = item_index
 end
@@ -3017,36 +2865,10 @@ function remote_set_state(changed_items)
 --tprint(changed_items)
 
 	--look for the _Scope constant. Kong reports "KONG". Could use for a variety of things
---[[
-	if remote.is_item_enabled(Itemnum.scope) then
-		local scope_text = remote.get_item_text_value(Itemnum.scope)
-		Scope = scope_text
-	else
-		Scope = ""
-	end
-	
-	if remote.is_item_enabled(Itemnum.var) then
-		local var_text = remote.get_item_text_value(Itemnum.var)
-		Variation = var_text
-	else
-		Variation = ""
-	end
---]]
 	Scope = remote.is_item_enabled(Itemnum.scope) and remote.get_item_text_value(Itemnum.scope) or ""
 	Variation = remote.is_item_enabled(Itemnum.var) and remote.get_item_text_value(Itemnum.var) or ""
---[[
-	if(g.last_input_item~=nil) then
-		if remote.is_item_enabled(g.last_input_item) then
-			local feedback_text = remote.get_item_name_and_value(g.last_input_item)
-			if string.len(feedback_text)>0 then
-				g.feedback_enabled = true
-				--g.lcd_state = string.format("%-16.16s",feedback_text)
-				g.lcd_state = feedback_text
-				g.lcd_index = g.last_input_item
-			end
-		end
-	end
---]]
+
+
 	-- FL: Collect all changed states for redrum "drum playing" - this part blinks the 3rd row drum selection pads
 	for k,item_index in ipairs(changed_items) do
 		if item_index == Itemnum.accent then
@@ -3097,15 +2919,14 @@ end
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function remote_prepare_for_use()
---	g.lcd_state_delivered = string.format("%-16.16s","Launchpad Pro")
 	local retEvents={
 		--default settings for Launchpad Pro
 
 		remote.make_midi("F0 00 20 29 02 10 21 01 F7"), -- set standalone mode
+		remote.make_midi("F0 00 20 29 02 10 0A 63 32 F7"), --Front light
 --[[
 		remote.make_midi("F0 00 20 29 02 10 2C 03 F7"), -- Programmer mode
 		remote.make_midi("F0 00 20 29 02 10 0E 00 F7"), -- Blank all
-		remote.make_midi("F0 00 20 29 02 10 0A 63 32 F7"), --Front light
 --		remote.make_midi("F0 00 20 29 02 10 14 32 00 07 05 52 65 61 73 6F 6E F7"), -- scroll Reason
 --		remote.make_midi("F0 00 20 29 02 10	 F7"),
 --		remote.make_midi("F0 00 20 29 02 10	 F7"),
