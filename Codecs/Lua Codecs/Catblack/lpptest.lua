@@ -2381,6 +2381,87 @@ function remote_process_midi(event)
 --remote.trace("evsize")
 
 
+-------------------------------------------------------		
+-------------------------------------------------------		
+if (event.port==2 and event.size==3) then
+--		error(tblprint(event))
+-------------------------------------------------------
+-- Take an external 2nd input not and display it.	
+-------------------------------------------------------			
+-- Lookup the note delivered based on the current scale grid and pad pressed.
+---------------------------------------------------			
+			--local oct = Grid.current.oct[pady][padx]*12
+			--local noteout = Grid.current.note[pady][padx]+(oct+State.root)+Transpose.last
+			--local noteout = Grid.current.midiout[pady][padx]
+	ret = remote.match_midi("<100x>? yy zz",event) --note on or note off -- Reason sends 80 for note off, unlike LPP
+	if(ret~=nil) then
+
+			local dupes = Grid.current.duplicateNotes[ret.y]
+			if (dupes) then
+---------------------------------------------------			
+-- Here is where we store sysex for displaying note press
+-- must use a table because RDM doesn't fire off for every incoming event
+---------------------------------------------------			
+				for _,d in pairs(dupes) do
+--vprint("Grid.current.duplicate_pads[ret.y]",table.concat(Grid.current.duplicate_pads[ret.y]))
+					local padx = Pad[d].x
+					local pady = Pad[d].y
+					if  ret.x==0 then
+						--error("have off")
+						table.insert(State.lightoff,table.concat({Pad[d].padhex,Grid.current.R[pady][padx],Grid.current.G[pady][padx],Grid.current.B[pady][padx]}," "))
+					else 
+						local rbvel=string.format("%02X",math.floor((.4*ret.z)+8))
+						local gvel=string.format("%02X",math.floor(.5*ret.z))
+--vprint("ret.z",ret.z.." vel "..vel)
+						table.insert(State.lighton,table.concat({Pad[d].padhex,rbvel,gvel,rbvel}," "))
+					end
+				end
+---------------------------------------------------			
+-- Here is where send the translated note back to Reason
+---------------------------------------------------			
+--				local msg={ time_stamp = event.time_stamp, item=1, value = ret.x, note = noteout,velocity = ret.z }
+--				remote.handle_input(msg)
+---------------------------------------------------			
+-- Now save the note for turning off notes on button press. 
+---------------------------------------------------			
+				Playing[ret.y] = (ret.z~=0) and ret.z or nil
+			end -- dupes aka a note on grid
+			return true -- absorb the incoming note, even if it's transposed out of range
+-------------------------------------------------------		
+			--return false -- don't return this false, because incoming pad press is a midi note.
+
+
+
+	end -- ret not nil
+
+end --port is 2, size 3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- -----------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------
+
+
+
+
+
+
+if event.port==1 then
+
 -- -----------------------------------------------------------------------------------------------
 -- Match buttons and notes and transpose notes.
 -- -----------------------------------------------------------------------------------------------
@@ -2398,58 +2479,10 @@ if event.size==3 then -- Note, button, channel pressure, fader
 -- -----------------------------------------------------------------------------------------------
 
 
---[[
--------------------------------------------------------		
--------------------------------------------------------		
-		if (button==0 and event.port==2) then
--------------------------------------------------------
--- Take an external 2nd input not and display it.	
--------------------------------------------------------			
--- Lookup the note delivered based on the current scale grid and pad pressed.
----------------------------------------------------			
-			--local oct = Grid.current.oct[pady][padx]*12
-			--local noteout = Grid.current.note[pady][padx]+(oct+State.root)+Transpose.last
-			--local noteout = Grid.current.midiout[pady][padx]
-	ret2 = remote.match_midi("<100x>? yy zz",event) --note on or note off -- Reason sends 80 for note off, unlike LPP
-if ret2.z==0 then error("yes") end
-	test = remote.match_midi("8? yy zz",event) --note on or note off -- Reason sends 80 for note off, unlike LPP
-if test then error("yes") end
 
 
 
 
-
-
-
-
-
-
-		end --port is 2, not button (cc)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
--- -----------------------------------------------------------------------------------------------
--- -----------------------------------------------------------------------------------------------
-
-
-
-
-
---]]
 
 		
 -----------------------------------
@@ -2579,6 +2612,7 @@ if test then error("yes") end
 -------------------------------------------------------		
 			--return false -- don't return this false, because incoming pad press is a midi note.
 		end -- not button
+
 	end -- ret not nil
 	
 
@@ -2647,6 +2681,7 @@ remote.trace(livemodeswitch.x)
 end -- eventsize=9
 --9
 -- -----------------------------------------------------------------------------------------------
+end -- event.port ==1
 
 
 
@@ -2868,7 +2903,7 @@ end
 		--			local padnum = string.format("%02x",padnotes[pad])
 		--			local padnum = Padindex[i].padhex
 		--			local padnum = Padindex[padnotes[pad] ].padhex
-					local padnum = pad[dpad+30].padhex
+					local padnum = Pad[dpad+30].padhex
 					local event = remote.make_midi("90 "..padnum.." xx", { x=led_value })
 					table.insert(lpp_events,event)
 					-- FL: Change "sent", set last value
