@@ -36,12 +36,15 @@ Itemnum={}
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- Set some variables for later!
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- set after items are in remote.init(), used everywhere.
+Pad = {} -- x and y
+Padindex = {} -- 1 to 64
+
 notemode = {35,40,45,50,55,60,65,70} -- left column -1
 drummode = {35,39,43,47,51,55,59,63} -- left column -1
-Pad = {}
-Padindex = {} 
 --note = {}
 --drum = {}
+
 do_update_pads = 1
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -61,7 +64,7 @@ g.last_input_item = nil
 transpose_changed = false
 -- tran_rst = true -- stops transpose
 
-root = 12  -- not 36
+--root = 12  -- not 36
 
 
 drum_mode = 0;
@@ -74,7 +77,6 @@ global_scale = 0
 global_transp = 0
 scale_from_parse = false
 
-g.note_delivered = 0
 
 
 --FOR REDRUM BLINKING LIGHTS
@@ -83,11 +85,6 @@ g.step_is_playing = { 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0 }
 -- FL: Add state for the latest LED/Pad MIDI messages sent
 g.last_led_output = { 100,100,100,100, 100,100,100,100, 100,100,100,100, 100,100,100,100, 100,100,100,100, 100,100,100,100 }
 
-
--- used in scale modes
---colors = {"02","04","08","10","20","40","7F"}
-colors = {"07","41","60","31","61","39","15","3C","2D","7E","37","12",}
---red,o,y,g,b,d b,v
 noscaleneeded = false
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -121,43 +118,6 @@ sysend ="F7"
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- Variable defs
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
--- The default pallette for the Launchpad Pro is based on Ableton Live
--- and it's kind of a mess. 
--- These color names will work for now.
---[[
-padcolor = {}
-padcolor.BLACK = 0
-padcolor.DARK_GREY = 1
-padcolor.GREY = 2
-padcolor.WHITE = 3
-padcolor.RED = 5
-padcolor.RED_HALF = 7
-padcolor.ORANGE = 9
-padcolor.ORANGE_HALF = 11
-padcolor.AMBER = 96
-padcolor.AMBER_HALF = 14
-padcolor.YELLOW = 13
-padcolor.YELLOW_HALF = 15
-padcolor.DARK_YELLOW = 17
-padcolor.DARK_YELLOW_HALF = 19
-padcolor.GREEN = 21
-padcolor.GREEN_HALF = 27
-padcolor.MINT = 29
-padcolor.MINT_HALF = 31
-padcolor.LIGHT_BLUE = 37
-padcolor.LIGHT_BLUE_HALF = 39
-padcolor.BLUE = 45
-padcolor.BLUE_HALF = 47
-padcolor.DARK_BLUE = 49
-padcolor.DARK_BLUE_HALF = 51
-padcolor.PURPLE = 53
-padcolor.PURPLE_HALF = 55
-padcolor.DARK_ORANGE = 84
-
-
-
-
---]]
 
 
 
@@ -1089,7 +1049,7 @@ Modenames={
 
 
 
-
+                  
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 --[[
@@ -1203,16 +1163,9 @@ State = {
 							Grid.current.midihi=hi
 						end
 					end end
---vprint("ok????",ok)
 					if ok then for _,v in pairs(Grid.current.duplicateNotes) do for a,b in pairs(v) do
 						Grid.current.duplicatePads[b]=v
 					end end end
---grprint("refresh_midiout cur grid note",Grid.current.note)
---grprint("refresh_midiout cur grid oct",Grid.current.oct)
---grprint("refresh_midiout cur grid midiout",Grid.current.midiout)
---tprint(Grid.current.duplicatePads)
---vprint("Grid.current.midilo",Grid.current.midilo)
---vprint("Grid.current.midihi",Grid.current.midihi)
 			until ok==true
 				end,	
 			}
@@ -1284,7 +1237,7 @@ Scale = {
 		length = table.getn(Scalenames),
 		select=function(n) local new = 1+modulo(n-1,Scale.length) 
 		--local Ml=Mode.last
-vprint("new scale",new)
+--vprint("new scale",new)
 --vprint("in scale Mode.last",Ml)
 		--if type(Modes[Modenames[Ml]].note)=="function" then
 			if new ~= Scale.last or State.update ~= 0 then 
@@ -1312,20 +1265,10 @@ Mode = {
 		current = 0,
 		select=function(n,r) local new = 1+modulo(n-1,table.getn(Modenames)) 
 			local ro = r or State.rotate
---tprint(Modes[Modenames[new]])
-vprint("modes new type",type(Modes[Modenames[new]].note))
 			local Mn=type(Modes[Modenames[new]].note)=="function" and Modes[Modenames[new]].note(new) or Modes[Modenames[new]].note
 			local Mo=Modes[Modenames[new]].oct
---tprint(Mn)
-vprint("in mode Mode.last is",Mode.last) 
-vprint("in mode new mode",new) 
-vprint("in mode new mode",Modenames[new]) 
 			if new ~= Mode.last or ro~=State.rotate or State.update ~= 0 then 
 				Grid.current.note=Grid.rotate[ro](Mn) 
---tprint(Mn)
-vprint("Mode ro",ro) 
-
---tprint(Grid.current.note)
 				Grid.current.oct=Grid.rotate[ro](Mo) 
 				Mode.last=new 
 				State.rotate=ro
@@ -2506,7 +2449,7 @@ if event.size==3 then -- Note, button, channel pressure, fader
 				g.accent_count = modulo(g.accent_count+1,3)
 				local msg={ time_stamp = event.time_stamp, item=Itemnum.accent, value = g.accent_count, note = "32",velocity = accent_pad.z }
 				remote.handle_input(msg)
-				--g.note_delivered = noteout
+				--g.note_delivered = noteout -- depreciated
 				return true
 				else
 				return false
