@@ -2384,18 +2384,13 @@ function remote_process_midi(event)
 -------------------------------------------------------		
 -------------------------------------------------------		
 if (event.port==2 and event.size==3) then
---		error(tblprint(event))
 -------------------------------------------------------
 -- Take an external 2nd input not and display it.	
 -------------------------------------------------------			
 -- Lookup the note delivered based on the current scale grid and pad pressed.
 ---------------------------------------------------			
-			--local oct = Grid.current.oct[pady][padx]*12
-			--local noteout = Grid.current.note[pady][padx]+(oct+State.root)+Transpose.last
-			--local noteout = Grid.current.midiout[pady][padx]
 	ret = remote.match_midi("<100x>? yy zz",event) --note on or note off -- Reason sends 80 for note off, unlike LPP
 	if(ret~=nil) then
-
 			local dupes = Grid.current.duplicateNotes[ret.y]
 			if (dupes) then
 ---------------------------------------------------			
@@ -2403,21 +2398,20 @@ if (event.port==2 and event.size==3) then
 -- must use a table because RDM doesn't fire off for every incoming event
 ---------------------------------------------------			
 				for _,d in pairs(dupes) do
---vprint("Grid.current.duplicate_pads[ret.y]",table.concat(Grid.current.duplicate_pads[ret.y]))
 					local padx = Pad[d].x
-					local pady = 9-Pad[d].y
+					local pady = 9-Pad[d].y --because internal grids are t to b, lpp pads b to t
 					if  ret.x==0 then
-						--error("have off")
 						table.insert(State.lightoff,table.concat({Pad[d].padhex,Grid.current.R[pady][padx],Grid.current.G[pady][padx],Grid.current.B[pady][padx]}," "))
 					else 
 						local rbvel=string.format("%02X",math.floor((.4*ret.z)+8))
 						local gvel=string.format("%02X",math.floor(.5*ret.z))
---vprint("ret.z",ret.z.." vel "..vel)
 						table.insert(State.lighton,table.concat({Pad[d].padhex,rbvel,gvel,rbvel}," "))
 					end
 				end
 ---------------------------------------------------			
 -- Here is where send the translated note back to Reason
+-- Saving this in case want to change it. 
+-- currently just having note lane on playing track that is dup of ext midi instrm.
 ---------------------------------------------------			
 --				local msg={ time_stamp = event.time_stamp, item=1, value = ret.x, note = noteout,velocity = ret.z }
 --				remote.handle_input(msg)
@@ -2426,7 +2420,7 @@ if (event.port==2 and event.size==3) then
 ---------------------------------------------------			
 				Playing[ret.y] = (ret.z~=0) and ret.z or nil
 			end -- dupes aka a note on grid
-			return true -- absorb the incoming note, even if it's transposed out of range
+			return true -- absorb the incoming note
 -------------------------------------------------------		
 			--return false -- don't return this false, because incoming pad press is a midi note.
 
@@ -2439,26 +2433,8 @@ end --port is 2, size 3
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
-
-
-
-
-
 
 if event.port==1 then
 
@@ -2477,13 +2453,6 @@ if event.size==3 then -- Note, button, channel pressure, fader
 
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
-
-
-
-
-
-
-
 		
 -----------------------------------
 -- handle buttons
@@ -2496,7 +2465,6 @@ if event.size==3 then -- Note, button, channel pressure, fader
 -- -----------------------------------------------------------------------------------------------
 -- BUTTON HANDLE RPM
 		if button==1 and (ret.y<21 or ret.y>29) then -- button, not fader mode
---vprint("ret y",ret.y)
 			table.insert(Pressed,ret.y) -- keep track for button_function[Pressed].RDM
 			local r = button_function[ret.y].RPM(ret.y,ret.z)
 			if r then return r end -- If we need Reason not to see the press (sh,cl or shcl) then return true in the RPM func
@@ -2521,10 +2489,6 @@ if event.size==3 then -- Note, button, channel pressure, fader
 			remote.handle_input(allstopmsg)
 --]]
 		end 
-			
-
-
-
 
 
 --[[
@@ -2556,15 +2520,6 @@ if event.size==3 then -- Note, button, channel pressure, fader
 --------------------------------------------------------------------------------------------------------------------------		
 --------------------------------------------------------------------------------------------------------------------------		
 
-
-
-
-
-
-
-
-
-
 	
 --------------------------------------------------------------------------------------------------------------------------		
 -- here's where the incoming note gets transposed!
@@ -2576,9 +2531,7 @@ if event.size==3 then -- Note, button, channel pressure, fader
 -- Lookup the note delivered based on the current scale grid and pad pressed.
 ---------------------------------------------------			
 			local padx = Pad[ret.y].x
-			local pady = 9-Pad[ret.y].y
---			local oct = Grid.current.oct[pady][padx]*12
---			local noteout = Grid.current.note[pady][padx]+(oct+State.root)+Transpose.last
+			local pady = 9-Pad[ret.y].y --because internal grids are t to b, lpp pads b to t
 			local noteout = Grid.current.midiout[pady][padx]
 
 
@@ -2589,12 +2542,10 @@ if event.size==3 then -- Note, button, channel pressure, fader
 -- must use a table because RDM doesn't fire off for every incoming event
 ---------------------------------------------------			
 				for _,d in pairs(dupes) do
---vprint("Grid.current.duplicatePads[ret.y]",table.concat(Grid.current.duplicatePads[ret.y]))
 					if  ret.z==0 then
 						table.insert(State.lightoff,table.concat({Pad[d].padhex,Grid.current.R[pady][padx],Grid.current.G[pady][padx],Grid.current.B[pady][padx]}," "))
 					else 
 						local vel=string.format("%02X",math.floor(.5*ret.z))
---vprint("ret.z",ret.z.." vel "..vel)
 						table.insert(State.lighton,table.concat({Pad[d].padhex,vel,vel,vel}," "))
 					end
 				end
