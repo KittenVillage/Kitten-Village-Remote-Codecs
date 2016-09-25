@@ -1204,7 +1204,7 @@ State = {
 						end
 					end end
 --vprint("ok????",ok)
-					if ok then for k,v in pairs(Grid.current.duplicateNotes) do for a,b in pairs(v) do
+					if ok then for _,v in pairs(Grid.current.duplicateNotes) do for a,b in pairs(v) do
 						Grid.current.duplicatePads[b]=v
 					end end end
 --grprint("refresh_midiout cur grid note",Grid.current.note)
@@ -2405,7 +2405,7 @@ if (event.port==2 and event.size==3) then
 				for _,d in pairs(dupes) do
 --vprint("Grid.current.duplicate_pads[ret.y]",table.concat(Grid.current.duplicate_pads[ret.y]))
 					local padx = Pad[d].x
-					local pady = Pad[d].y
+					local pady = 9-Pad[d].y
 					if  ret.x==0 then
 						--error("have off")
 						table.insert(State.lightoff,table.concat({Pad[d].padhex,Grid.current.R[pady][padx],Grid.current.G[pady][padx],Grid.current.B[pady][padx]}," "))
