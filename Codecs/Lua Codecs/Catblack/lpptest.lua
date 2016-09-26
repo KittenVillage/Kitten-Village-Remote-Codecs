@@ -87,16 +87,6 @@ g.last_led_output = { 100,100,100,100, 100,100,100,100, 100,100,100,100, 100,100
 
 noscaleneeded = false
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-
-g.last_note_delivered = 0
-g.last_notevelocity_delivered = 0
-g.current_notevelocity = 0
---livemodeswitch=nil
---modeswitch=nil
-
-
 -- all sysex msg vars use table.concat
 sysex_header = "F0 00 20 29 02 10 "
 sysex_setrgb = sysex_header.."0B" -- pad r g b
@@ -105,9 +95,7 @@ sysex_setrgbgrid = sysex_header.."15" -- 0=10x10;1=8x8 color0-127
 sysex_scrolltext = sysex_header.."14" -- color0-127 loop1or0 asciitext
 sysex_flashled = sysex_header.."23" -- pad color0-127
 sysex_pulseled = sysex_header.."28" -- pad color0-127
-
 sysend ="F7"
-
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -362,12 +350,6 @@ scaleabrvs = {
 			Hirojoshi='Hr',InSen='IS',Iwato='Iw',Kumoi='Km',Pelog='Pg',Spanish='Sp',CircleOfFifths='C5'
 			}
 			
---scalename = 'Major'
-scalename = 'Chromatic'
---scale = scales[scalename]
---scale_int = 0 
---g.scale_delivered = 0 --for change filter
-
 
 -- These from j74 ISO Controllers
 Scales = {
@@ -505,7 +487,7 @@ Push = {
 				{1,2,3,4,5,6,7,1},
 			}
 			local notegrid={{},{},{},{},{},{},{},{}}
-vprint("in Push aka ... ",Modenames[n])
+--vprint("in Push aka ... ",Modenames[n])
 			for ve=1,8 do for ho=1,8 do
 				local note =Scale.current[scalegrid[ve][ho]]
 				if  note > 11 then
@@ -517,8 +499,8 @@ vprint("in Push aka ... ",Modenames[n])
 				end	
 			end end
 			Modes[Modenames[n]].oct=octgrid
-grprint("in Push oct ..",Modes[Modenames[n]].oct)			
-grprint("in Push note ..",notegrid)			
+--grprint("in Push oct ..",Modes[Modenames[n]].oct)			
+--grprint("in Push note ..",notegrid)			
 			return notegrid
 		end,
 	},
@@ -555,7 +537,7 @@ Diatonic = {
 			{1,2,3,4,5,6,7,1},
 		}
 		local notegrid={{},{},{},{},{},{},{},{}}
-vprint("in Diatonic aka ... ",Modenames[n])
+--vprint("in Diatonic aka ... ",Modenames[n])
 		for ve=1,8 do for ho=1,8 do
 				local note =Scale.current[scalegrid[ve][ho]]
 				if  note > 11 then
@@ -567,8 +549,8 @@ vprint("in Diatonic aka ... ",Modenames[n])
 				end	
 			end end
 			Modes[Modenames[n]].oct=octgrid
-grprint("in Diatonic oct ..",Modes[Modenames[n]].oct)			
-grprint("in Diatonic note ..",notegrid)			
+--grprint("in Diatonic oct ..",Modes[Modenames[n]].oct)			
+--grprint("in Diatonic note ..",notegrid)			
 			return notegrid
 		end,
 	},
@@ -616,8 +598,8 @@ Diagonal = {
 				end	
 			end end
 			Modes[Modenames[n]].oct=octgrid
-grprint("in Diag oct ..",Modes[Modenames[n]].oct)			
-grprint("in Diag note ..",notegrid)			
+--grprint("in Diag oct ..",Modes[Modenames[n]].oct)			
+--grprint("in Diag note ..",notegrid)			
 		return notegrid
 		end,
 	},
@@ -645,12 +627,12 @@ Octave = {
 				notegrid[ve][ho]=note-12
 				octgrid[ve][ho]=(8-ve)+1
 --Modes[Modenames[n]].oct[ve][ho]=ve-1
-vprint("sc cur sc in grid Octave","ve "..ve.." ho "..ho.." oct "..(8-ve+1).." note "..(note-12))
+--vprint("sc cur sc in grid Octave","ve "..ve.." ho "..ho.." oct "..(8-ve+1).." note "..(note-12))
 			else
 				notegrid[ve][ho]=note
 				octgrid[ve][ho]=8-ve
 		--Modes[Modenames[n]].oct[ve][ho]=ve
-vprint("sc cur sc in grid Octave","ve "..ve.." ho "..ho.." oct "..(8-ve).." note ".. note)
+--vprint("sc cur sc in grid Octave","ve "..ve.." ho "..ho.." oct "..(8-ve).." note ".. note)
 --vprint("sc cur sc in grid Octave",Scale.current[1+scalegrid[ve][ho]])
 			end	
 		end end
@@ -702,7 +684,7 @@ Chromatic = {
 			end  
 		
 		for ve=1,8 do for ho=1,8 do
-vprint("sc cur sc in grid Chromatic",Scale.current[1+scalegrid[ve][ho]])
+--vprint("sc cur sc in grid Chromatic",Scale.current[1+scalegrid[ve][ho]])
 			local oct = math.floor(index/sc_len)
 			local note = scale[1+modulo(index,sc_len)]
 		Modes[Modenames[n]].oct[ve][ho]=oct
@@ -746,7 +728,7 @@ Chromatic2 = {
 		}
 		local notegrid={{},{},{},{},{},{},{},{}}
 		for ve=1,8 do for ho=1,8 do
-vprint("sc cur sc in grid Chromatic2",Scale.current[1+scalegrid[ve][ho]])
+--vprint("sc cur sc in grid Chromatic2",Scale.current[1+scalegrid[ve][ho]])
 		notegrid[ve][ho]=Scale.current[1+scalegrid[ve][ho]]
 		end end
 		return notegrid
@@ -1180,14 +1162,14 @@ State = {
 Palette = { 
 		length = table.getn(Palettenames),
 		select=function(n) local new = 1+modulo(n-1,Palette.length) 
-vprint("new pal",new) 
-vprint("new pal ",Palettenames[new]) 
-grprint("Palette.select cur grid note",Grid.current.note)
+--vprint("new pal",new) 
+--vprint("new pal ",Palettenames[new]) 
+--grprint("Palette.select cur grid note",Grid.current.note)
 			if new ~= Palette.last or State.update ~= 0 then 
 					Palette.current=Palettes[Palettenames[new]]
 				for ve=1,8 do for ho=1,8 do 
 if Grid.current.note[ve][ho] > 11 then
-	error("mode "..Modenames[Mode.last].." scale "..Scalenames[Scale.last])
+	error("SCALE NOTE OVER 11 ERROR mode "..Modenames[Mode.last].." scale "..Scalenames[Scale.last])
 end
 					Grid.current.R[ve][ho]=Palette.current[modulo(Grid.current.midiout[ve][ho],12)].R 
 					Grid.current.G[ve][ho]=Palette.current[modulo(Grid.current.midiout[ve][ho],12)].G 
@@ -1477,6 +1459,7 @@ end
 
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- depreciated
 function set_scale(index)	
 	scale_int = index
 	scalename = scalenames[1+scale_int]
@@ -1511,6 +1494,7 @@ end
 -- right buttons end in 9
 -- top row 91 - 98
 -- Press is aftertouch, Pad is note on, Playing is for displaying state
+-- TODO revise these soon
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function remote_init(manufacturer, model)
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2634,8 +2618,8 @@ function remote_deliver_midi(maxbytes,port)
 -- -----------------------------------------------------------------------------------------------
 -- NEW BUTTON HANDLE RDM
 if table.getn(Pressed)>0 then 
-	for k,v in pairs(Pressed) do
-		for d,e in pairs(button_function[v].RDM()) do table.insert(lpp_events,e) end
+	for _,v in pairs(Pressed) do
+		for _,e in pairs(button_function[v].RDM()) do table.insert(lpp_events,e) end
 	end
 	Pressed={}
 end
@@ -2689,7 +2673,7 @@ end
 						if scale_from_parse==false then
 							global_scale = scale_int
 						end
-						set_scale(7)
+--						set_scale(7) -- unused
 						iskong = true
 					else
 						use_global_scale = true
