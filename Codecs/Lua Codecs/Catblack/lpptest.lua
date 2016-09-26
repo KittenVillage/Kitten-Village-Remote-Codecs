@@ -2669,7 +2669,7 @@ end
 						noscaleneeded = false
 					end
 					--if we've landed on a Kong, _Scope reports "KONG" and we change to drum scale
-					if(Scope=="KONG" and scale_int~=7) then
+					if(Scope=="Kong" and scale_int~=7) then
 						if scale_from_parse==false then
 							global_scale = scale_int
 						end
@@ -3027,7 +3027,7 @@ button_function = {
 				if State.shiftclick == 0 and State.shift == 0 then
 --vprint("New MODE is ", Modenames[1+modulo(Mode.last,table.getn(Modenames))])
 					State.do_update({mode=Mode.last+1})
-				elseif State.shiftclick == 0 and State.shift == 1  then -- color palette
+				elseif State.shiftclick == 0 and State.shift == 1  then -- scale
 					State.do_update({scale=Scale.last+1})
 				elseif State.shiftclick == 1 then -- color palette
 					State.do_update({palette=Palette.last+1})
@@ -3047,7 +3047,7 @@ button_function = {
 				if State.shiftclick == 0 and State.shift == 0 then
 --vprint("New MODE is ", Modenames[1+modulo(Mode.last,table.getn(Modenames))])
 					State.do_update({mode=Mode.last-1})
-				elseif State.shiftclick == 0 and State.shift == 1  then -- color palette
+				elseif State.shiftclick == 0 and State.shift == 1  then -- scale
 					State.do_update({scale=Scale.last-1})
 				elseif State.shiftclick == 1 then -- color palette
 					State.do_update({palette=Palette.last-1})
@@ -3153,7 +3153,7 @@ button_function = {
 	},
 	
 --left to right Bottom
-[01]={
+[01]={ -- record arm
 		RPM=function(y,z)
 		end,
 									
@@ -3161,7 +3161,7 @@ button_function = {
 		return {} end
 	},
 	
-[02]={
+[02]={ -- track select
 		RPM=function(y,z)
 		end,
 									
@@ -3169,7 +3169,7 @@ button_function = {
 		return {} end
 	},
 
-[03]={
+[03]={ -- mute
 		RPM=function(y,z)
 		end,
 									
@@ -3177,7 +3177,7 @@ button_function = {
 		return {} end
 	},
 
-[04]={
+[04]={ -- solo
 		RPM=function(y,z)
 		end,
 									
@@ -3185,7 +3185,7 @@ button_function = {
 		return {} end
 	},
 
-[05]={
+[05]={ -- volume
 		RPM=function(y,z)
 		end,
 									
@@ -3193,7 +3193,7 @@ button_function = {
 		return {} end
 	},
 
-[06]={
+[06]={ -- pan
 		RPM=function(y,z)
 		end,
 									
@@ -3201,7 +3201,7 @@ button_function = {
 		return {} end
 	},
 
-[07]={
+[07]={ -- sends
 		RPM=function(y,z)
 		end,
 									
@@ -3209,7 +3209,7 @@ button_function = {
 		return {} end
 	},
 
-[08]={
+[08]={ -- stop clip
 		RPM=function(y,z)
 		end,
 									
@@ -3218,7 +3218,7 @@ button_function = {
 	},
 
 --bottom to top Left
-[10]={
+[10]={ -- circle
 		RPM=function(y,z)
 		end,
 									
@@ -3226,7 +3226,7 @@ button_function = {
 		return {} end
 	},
 
-[20]={
+[20]={ -- double
 		RPM=function(y,z)
 		end,
 									
@@ -3234,7 +3234,7 @@ button_function = {
 		return {} end
 	},
 
-[30]={
+[30]={ -- duplicate
 		RPM=function(y,z)
 		end,
 									
@@ -3242,7 +3242,7 @@ button_function = {
 		return {} end
 	},
 
-[40]={
+[40]={ -- quantize
 		RPM=function(y,z)
 		end,
 									
@@ -3250,7 +3250,7 @@ button_function = {
 		return {} end
 	},
 
-[50]={
+[50]={ -- delete
 		RPM=function(y,z)
 		end,
 									
@@ -3258,7 +3258,7 @@ button_function = {
 		return {} end
 	},
 
-[60]={
+[60]={ -- undo
 		RPM=function(y,z)
 		end,
 									
