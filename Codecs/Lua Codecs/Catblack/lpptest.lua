@@ -1176,8 +1176,8 @@ end
 					Grid.current.B[ve][ho]=Palette.current[modulo(Grid.current.midiout[ve][ho],12)].B 
 				end end 
 				Palette.last=new
-				table.insert(Pressed,93) -- button feedback
-				table.insert(Pressed,91) -- button feedback
+				table.insert(Pressed,93,1) -- button feedback
+				table.insert(Pressed,91,1) -- button feedback
 				State.update=1 
 			end 
 		end,
@@ -1200,7 +1200,7 @@ Transpose = {
 			if new ~= Transpose.last or State.update ~= 0 then 
 				Transpose.last=new
 				Grid.refresh_midiout() 
-				table.insert(Pressed,93) -- button feedback
+				table.insert(Pressed,93,1) -- button feedback
 				State.update=1 
 			end		
 		end,
@@ -1225,7 +1225,7 @@ Scale = {
 			if new ~= Scale.last or State.update ~= 0 then 
 				Scale.last=new
 				Scale.current=Scales[Scalenames[new]]
-				table.insert(Pressed,91) -- button feedback
+				table.insert(Pressed,91,1) -- button feedback
 				State.update=1 
 			end 
 		--end 
@@ -1274,13 +1274,6 @@ Mode = {
 Layout = {}
 Layout.current = 3
 
-==[[
-if State.update==1 then
-
-State.do_update()
-State.update=0
-end
---]]
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2392,7 +2385,7 @@ if event.size==3 then -- Note, button, channel pressure, fader
 -- -----------------------------------------------------------------------------------------------
 -- BUTTON HANDLE RPM
 		if button==1 and (ret.y<21 or ret.y>29) then -- button, not fader mode
-			table.insert(Pressed,ret.y) -- keep track for button_function[Pressed].RDM
+			table.insert(Pressed,ret.y,ret.z) -- keep track for button_function[Pressed].RDM
 			local r = button_function[ret.y].RPM(ret.y,ret.z)
 			if r then return r end -- If we need Reason not to see the press (sh,cl or shcl) then return true in the RPM func
 		end
@@ -2617,12 +2610,13 @@ function remote_deliver_midi(maxbytes,port)
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
 -- NEW BUTTON HANDLE RDM
-if table.getn(Pressed)>0 then 
-	for _,v in pairs(Pressed) do
-		for _,e in pairs(button_function[v].RDM()) do table.insert(lpp_events,e) end
+--if table.getn(Pressed)>0 then 
+--error(tblprint(Pressed))
+	for k,v in pairs(Pressed) do
+		for _,e in pairs(button_function[k].RDM(v)) do table.insert(lpp_events,e) end
 	end
 	Pressed={}
-end
+--end
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
@@ -3272,7 +3266,7 @@ button_function = {
 			State.shiftclick = (State.shift==1 and State.click==1) and 1 or 0                           
 --vprint("70 pressed",y)
 		end,
-		RDM=function()
+		RDM=function(z)
 			local colors = {"21","05","31"} -- green, red, purp
 			local bfevent={}                                                                            
 			table.insert(bfevent,remote.make_midi("90 46 "..colors[1+State.click+State.shiftclick]))
@@ -3286,7 +3280,7 @@ button_function = {
 			State.shiftclick = (State.shift==1 and State.click==1) and 1 or 0
 --vprint("80 pressed",y)
 		end,
-		RDM=function()
+		RDM=function(z)
 			local colors = {"21","05","31"} -- green, red, purp
 			local bfevent={}
 			table.insert(bfevent,remote.make_midi("90 50 "..colors[1+State.shift+State.shiftclick]))
@@ -3306,7 +3300,7 @@ button_function = {
 				bfevent = scroll_status(Outmess)
 				Outmess = ''
 			else
-				bfevent = scroll_status(table.concat({'S',tostring(Scale.last),' M',tostring(Mode.last),' P',tostring(Palette.last),' T',tostring(Transpose.last)},''))
+				bfevent = scroll_status(table.concat({'M',tostring(Mode.last),'S',tostring(Scale.last),' T',tostring(Transpose.last),'P',tostring(Palette.last)},''))
 			end
 				
 		return bfevent end
