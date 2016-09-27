@@ -40,8 +40,8 @@ Itemnum={}
 Pad = {} -- x and y
 Padindex = {} -- 1 to 64
 
-notemode = {35,40,45,50,55,60,65,70} -- left column -1
-drummode = {35,39,43,47,51,55,59,63} -- left column -1
+--notemode = {35,40,45,50,55,60,65,70} -- left column -1
+--drummode = {35,39,43,47,51,55,59,63} -- left column -1
 --note = {}
 --drum = {}
 
@@ -58,21 +58,12 @@ g.accent_dn = false
 g.accent_count = 0
 
 -- These are set in remote_on_auto_input() 
-g.last_input_time = 0
-g.last_input_item = nil
-
-transpose_changed = false
--- tran_rst = true -- stops transpose
-
---root = 12  -- not 36
-
-
-drum_mode = 0;
---drum_tog = true -- force drums
+--g.last_input_time = 0
+--g.last_input_item = nil
 
 
 
-	
+-- del from kong section	
 global_scale = 0
 global_transp = 0
 scale_from_parse = false
@@ -2333,7 +2324,7 @@ if (event.port==2 and event.size==3) then
 -- Saving this in case want to change it. 
 -- currently just having note lane on playing track that is dup of ext midi instrm.
 ---------------------------------------------------			
---				local msg={ time_stamp = event.time_stamp, item=1, value = ret.x, note = noteout,velocity = ret.z }
+--				local msg={ time_stamp = event.time_stamp, item=1, value = ret.x, note = ret.y, velocity = ret.z }
 --				remote.handle_input(msg)
 ---------------------------------------------------			
 -- Now save the note for turning off notes on button press. 
@@ -2365,9 +2356,9 @@ if event.port==1 then
 if event.size==3 then -- Note, button, channel pressure, fader
 
 -- 1001 is 90 (note on) 1011 is B0 (controller)	
-	ret = remote.match_midi("<10x1>? yy zz",event) --find a pad, button on or off, Not aftouch
+	local ret = remote.match_midi("<10x1>? yy zz",event) --find a pad, button on or off, Not aftouch
 	if(ret~=nil) then
-		button = ret.x --  check 1 = button
+		local button = ret.x --  check 1 = button
 		ret.x = (ret.z==0) and 0 or 1 -- faking note on and off for the checks later. x is 'value', 0 or 1 for keyboard items.
 		local vel_pad = ret.z
 
@@ -2384,9 +2375,10 @@ if event.size==3 then -- Note, button, channel pressure, fader
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
 -- BUTTON HANDLE RPM
+
 		if button==1 and (ret.y<21 or ret.y>29) then -- button, not fader mode
-			table.insert(Pressed,ret.y,ret.z) -- keep track for button_function[Pressed].RDM
-			local r = button_function[ret.y].RPM(ret.y,ret.z)
+			table.insert(Pressed,ret.y,ret.z) -- keep track for Button[Pressed.y].RDM(z)
+			local r = Button[ret.y].RPM(ret.z)
 			if r then return r end -- If we need Reason not to see the press (sh,cl or shcl) then return true in the RPM func
 		end
 -- -----------------------------------------------------------------------------------------------
@@ -2609,11 +2601,11 @@ function remote_deliver_midi(maxbytes,port)
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
--- NEW BUTTON HANDLE RDM
+-- BUTTON HANDLE RDM
 --if table.getn(Pressed)>0 then 
 --error(tblprint(Pressed))
 	for k,v in pairs(Pressed) do
-		for _,e in pairs(button_function[k].RDM(v)) do table.insert(lpp_events,e) end
+		for _,e in pairs(Button[k].RDM(v)) do table.insert(lpp_events,e) end
 	end
 	Pressed={}
 --end
@@ -2846,8 +2838,8 @@ end
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function remote_on_auto_input(item_index)
-	g.last_input_time = remote.get_time_ms()
-	g.last_input_item = item_index
+--	g.last_input_time = remote.get_time_ms()
+--	g.last_input_item = item_index
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -2961,11 +2953,11 @@ function def_vars()
 		for ho=1,8 do -- vertical from left
 			local thispad=(ve*10)+ho  --11-18 ... 81-88
 			local thispadhex=string.format("%02X",thispad)
-			local thisnote=notemode[ve]+ho
-			local thisdrum=drummode[ve]+ho
-			if ho>4 then -- drum mode is 4 4x4 grids
-				thisdrum=thisdrum+28
-			end
+--			local thisnote=notemode[ve]+ho
+--			local thisdrum=drummode[ve]+ho
+--			if ho>4 then -- drum mode is 4 4x4 grids
+--				thisdrum=thisdrum+28
+--			end
 			--if note[thisnote] == nil then
 			--	note[thisnote]={}
 			--end
@@ -2973,8 +2965,8 @@ function def_vars()
 
 			table.insert(Pad,thispad,{
 							padhex=thispadhex,
-							note=thisnote,
-							drum=thisdrum,
+--							note=thisnote,
+--							drum=thisdrum,
 							index=index,
 							itemindex=(index-1)+Itemnum.first_pad,
 							x=ho,
@@ -2983,8 +2975,8 @@ function def_vars()
 			table.insert(Padindex,index,{
 							pad=thispad,
 							padhex=thispadhex,
-							note=thisnote,
-							drum=thisdrum,
+--							note=thisnote,
+--							drum=thisdrum,
 							itemindex=(index-1)+Itemnum.first_pad,
 							x=ho,
 							y=ve,
@@ -3012,14 +3004,31 @@ end
 
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- button lookup!
-button_function = {
+-- I debated having shiftclick add 100,200,300 to the button numbers
+-- and thus x4 the amount of functions. Decided against it.
+-- shiftclick: 0=none, 1=shift 2=click 3=both
+-- 
+-- RPM,RDM takes in z (vel) so we can show things only while pressed.
+-- RDM needs to return empty table or table of midi events.
+--
+-- If we need Reason not to see the press (sh,cl or shcl) 
+-- then return true in the RPM func (Still passes to RDM though!)
+-- 
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Button = {
 --left to right Top 
 [91]={ -- scale_up
-		RPM=function(y,z) 
+		RPM=function(z) 
 			if z>0 then
 				if State.shiftclick == 0 then
---vprint("New MODE is ", Modenames[1+modulo(Mode.last,table.getn(Modenames))])
 					State.do_update({mode=Mode.last+1})
 				elseif State.shiftclick == 1 then -- scale
 					State.do_update({scale=Scale.last+1})
@@ -3038,10 +3047,9 @@ button_function = {
 		end
 	},
 [92]={ -- scale_dn
-		RPM=function(y,z) 
+		RPM=function(z) 
 			if z>0 then
 				if State.shiftclick == 0 then
---vprint("New MODE is ", Modenames[1+modulo(Mode.last,table.getn(Modenames))])
 					State.do_update({mode=Mode.last-1})
 				elseif State.shiftclick == 1 then -- scale
 					State.do_update({scale=Scale.last-1})
@@ -3060,24 +3068,20 @@ button_function = {
 		end
 	},
 [93]={ -- tran_up
-		RPM=function(y,z) 
+		RPM=function(z) 
 			if z>0 then
 				if State.shiftclick == 0 then
---grprint("tran_up cur grid midiout",Grid.current.midiout)
 					local transchk=false
 					if Grid.current.midihi+(1-State.shift)+(State.shift*12) > 127 then
 						transchk=true
 					end
 					if transchk==false then
 						State.do_update({transpose=Transpose.last+(1-State.shift)+(State.shift*12)}) -- if sh pressed, add 12, else just 1
---						transpose_changed = true
---vprint("Transpose.last up",Transpose.last)
 					end
 				end	
 			end
 		end,
 		RDM=function(z)
---vprint("Transpose RDM ",Transpose.last)
 			local color_ind = (modulo(Transpose.last,12)) --change color every Note, show root
 			local bfevent={}
 			if Transpose.last>0 then
@@ -3089,37 +3093,42 @@ button_function = {
 			elseif Transpose.last==0 then
 				table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5D",Palette.current[color_ind].R ,Palette.current[color_ind].G, Palette.current[color_ind].B,"5E",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
 			end	
---tprint(bfevent)
 			return bfevent
 		end
 	},
 
 [94]={ -- tran_dn
-		RPM=function(y,z) 
---vprint("94 pressed",z)
+		RPM=function(z) 
 			if z>0 then
 				if State.shiftclick == 0 then
---vprint("Transpose.last",Transpose.last)
---grprint("tran_dn cur grid midiout",Grid.current.midiout)
 					local transchk=false
 					if Grid.current.midilo-(1-State.shift)-(State.shift*12) < 0 then
 						transchk=true
 					end
 					if transchk==false then
 						State.do_update({transpose = Transpose.last-(1-State.shift)-(State.shift*12)}) -- if sh pressed, sub 12, else just 1
---						transpose_changed = true
---vprint("Transpose.last dn",Transpose.last)
 					end
 				end	
 			end
 		end,
 		RDM=function(z)
-			return button_function[93].RDM() -- same code for both
+			return Button[93].RDM(1) -- same code for both
 		end
 	},
 
 [95]={ --Session
-		RPM=function(y,z)
+		RPM=function(z)
+			if z>0 then
+				if     State.shiftclick == 0 then
+					
+				elseif State.shiftclick == 1 then
+					
+				elseif State.shiftclick == 2 then
+					
+				elseif State.shiftclick == 3 then
+					
+				end	
+			end
 		return true end,
 									
 		RDM=function(z)
@@ -3127,7 +3136,18 @@ button_function = {
 	},
 
 [96]={ --Note
-		RPM=function(y,z)
+		RPM=function(z)
+			if z>0 then
+				if     State.shiftclick == 0 then
+					
+				elseif State.shiftclick == 1 then
+					
+				elseif State.shiftclick == 2 then
+					
+				elseif State.shiftclick == 3 then
+					
+				end	
+			end
 		end,
 									
 		RDM=function(z)
@@ -3135,7 +3155,18 @@ button_function = {
 	},
 
 [97]={ --Device
-		RPM=function(y,z)
+		RPM=function(z)
+			if z>0 then
+				if     State.shiftclick == 0 then
+					
+				elseif State.shiftclick == 1 then
+					
+				elseif State.shiftclick == 2 then
+					
+				elseif State.shiftclick == 3 then
+					
+				end	
+			end
 		end,
 									
 		RDM=function(z)
@@ -3143,7 +3174,18 @@ button_function = {
 	},
 	
 [98]={ --User
-		RPM=function(y,z)
+		RPM=function(z)
+			if z>0 then
+				if     State.shiftclick == 0 then
+					
+				elseif State.shiftclick == 1 then
+					
+				elseif State.shiftclick == 2 then
+					
+				elseif State.shiftclick == 3 then
+					
+				end	
+			end
 		end,
 									
 		RDM=function(z)
@@ -3152,7 +3194,18 @@ button_function = {
 	
 --left to right Bottom
 [01]={ -- record arm
-		RPM=function(y,z)
+		RPM=function(z)
+			if z>0 then
+				if     State.shiftclick == 0 then
+					
+				elseif State.shiftclick == 1 then
+					
+				elseif State.shiftclick == 2 then
+					
+				elseif State.shiftclick == 3 then
+					
+				end	
+			end
 		end,
 									
 		RDM=function(z)
@@ -3160,7 +3213,18 @@ button_function = {
 	},
 	
 [02]={ -- track select
-		RPM=function(y,z)
+		RPM=function(z)
+			if z>0 then
+				if     State.shiftclick == 0 then
+					
+				elseif State.shiftclick == 1 then
+					
+				elseif State.shiftclick == 2 then
+					
+				elseif State.shiftclick == 3 then
+					
+				end	
+			end
 		end,
 									
 		RDM=function(z)
@@ -3168,7 +3232,18 @@ button_function = {
 	},
 
 [03]={ -- mute
-		RPM=function(y,z)
+		RPM=function(z)
+			if z>0 then
+				if     State.shiftclick == 0 then
+					
+				elseif State.shiftclick == 1 then
+					
+				elseif State.shiftclick == 2 then
+					
+				elseif State.shiftclick == 3 then
+					
+				end	
+			end
 		end,
 									
 		RDM=function(z)
@@ -3176,7 +3251,18 @@ button_function = {
 	},
 
 [04]={ -- solo
-		RPM=function(y,z)
+		RPM=function(z)
+			if z>0 then
+				if     State.shiftclick == 0 then
+					
+				elseif State.shiftclick == 1 then
+					
+				elseif State.shiftclick == 2 then
+					
+				elseif State.shiftclick == 3 then
+					
+				end	
+			end
 		end,
 									
 		RDM=function(z)
@@ -3184,7 +3270,18 @@ button_function = {
 	},
 
 [05]={ -- volume
-		RPM=function(y,z)
+		RPM=function(z)
+			if z>0 then
+				if     State.shiftclick == 0 then
+					
+				elseif State.shiftclick == 1 then
+					
+				elseif State.shiftclick == 2 then
+					
+				elseif State.shiftclick == 3 then
+					
+				end	
+			end
 		end,
 									
 		RDM=function(z)
@@ -3192,7 +3289,18 @@ button_function = {
 	},
 
 [06]={ -- pan
-		RPM=function(y,z)
+		RPM=function(z)
+			if z>0 then
+				if     State.shiftclick == 0 then
+					
+				elseif State.shiftclick == 1 then
+					
+				elseif State.shiftclick == 2 then
+					
+				elseif State.shiftclick == 3 then
+					
+				end	
+			end
 		end,
 									
 		RDM=function(z)
@@ -3200,7 +3308,18 @@ button_function = {
 	},
 
 [07]={ -- sends
-		RPM=function(y,z)
+		RPM=function(z)
+			if z>0 then
+				if     State.shiftclick == 0 then
+					
+				elseif State.shiftclick == 1 then
+					
+				elseif State.shiftclick == 2 then
+					
+				elseif State.shiftclick == 3 then
+					
+				end	
+			end
 		end,
 									
 		RDM=function(z)
@@ -3208,7 +3327,18 @@ button_function = {
 	},
 
 [08]={ -- stop clip
-		RPM=function(y,z)
+		RPM=function(z)
+			if z>0 then
+				if     State.shiftclick == 0 then
+					
+				elseif State.shiftclick == 1 then
+					
+				elseif State.shiftclick == 2 then
+					
+				elseif State.shiftclick == 3 then
+					
+				end	
+			end
 		end,
 									
 		RDM=function(z)
@@ -3217,7 +3347,18 @@ button_function = {
 
 --bottom to top Left
 [10]={ -- circle
-		RPM=function(y,z)
+		RPM=function(z)
+			if z>0 then
+				if     State.shiftclick == 0 then
+					
+				elseif State.shiftclick == 1 then
+					
+				elseif State.shiftclick == 2 then
+					
+				elseif State.shiftclick == 3 then
+					
+				end	
+			end
 		end,
 									
 		RDM=function(z)
@@ -3225,7 +3366,18 @@ button_function = {
 	},
 
 [20]={ -- double
-		RPM=function(y,z)
+		RPM=function(z)
+			if z>0 then
+				if     State.shiftclick == 0 then
+					
+				elseif State.shiftclick == 1 then
+					
+				elseif State.shiftclick == 2 then
+					
+				elseif State.shiftclick == 3 then
+					
+				end	
+			end
 		end,
 									
 		RDM=function(z)
@@ -3233,7 +3385,18 @@ button_function = {
 	},
 
 [30]={ -- duplicate
-		RPM=function(y,z)
+		RPM=function(z)
+			if z>0 then
+				if     State.shiftclick == 0 then
+					
+				elseif State.shiftclick == 1 then
+					
+				elseif State.shiftclick == 2 then
+					
+				elseif State.shiftclick == 3 then
+					
+				end	
+			end
 		end,
 									
 		RDM=function(z)
@@ -3241,7 +3404,18 @@ button_function = {
 	},
 
 [40]={ -- quantize
-		RPM=function(y,z)
+		RPM=function(z)
+			if z>0 then
+				if     State.shiftclick == 0 then
+					
+				elseif State.shiftclick == 1 then
+					
+				elseif State.shiftclick == 2 then
+					
+				elseif State.shiftclick == 3 then
+					
+				end	
+			end
 		end,
 									
 		RDM=function(z)
@@ -3249,7 +3423,18 @@ button_function = {
 	},
 
 [50]={ -- delete
-		RPM=function(y,z)
+		RPM=function(z)
+			if z>0 then
+				if     State.shiftclick == 0 then
+					
+				elseif State.shiftclick == 1 then
+					
+				elseif State.shiftclick == 2 then
+					
+				elseif State.shiftclick == 3 then
+					
+				end	
+			end
 		end,
 									
 		RDM=function(z)
@@ -3257,18 +3442,28 @@ button_function = {
 	},
 
 [60]={ -- undo
-		RPM=function(y,z)
+		RPM=function(z)
+			if z>0 then
+				if     State.shiftclick == 0 then
+					
+				elseif State.shiftclick == 1 then
+					
+				elseif State.shiftclick == 2 then
+					
+				elseif State.shiftclick == 3 then
+					
+				end	
+			end
 		end,
 									
 		RDM=function(z)
 		return {} end
 	},
-
+-----------------------------------
 [70]={ -- Click
-		RPM=function(y,z)
+		RPM=function(z)
 			State.click = z>0 and 1 or 0
 			State.shiftclick = State.shift + (2*State.click)  -- 0,1,2,3                         
---vprint("70 pressed",y)
 		end,
 		RDM=function(z)
 			local colors = {"21","21","05","31"} -- green, red, purp
@@ -3279,41 +3474,55 @@ button_function = {
 		end
 	},
 [80]={ -- Shift
-		RPM=function(y,z)
+		RPM=function(z)
 			State.shift = z>0 and 1 or 0
 			State.shiftclick = State.shift + (2*State.click)  -- 0,1,2,3                      
---vprint("80 pressed",y)
 		end,
 		RDM=function(z)
 			local colors = {"21","21","05","31"} -- green, red, purp
 			local bfevent={}
 			table.insert(bfevent,remote.make_midi("90 50 "..colors[1+(2*State.shift)+State.click])) -- 1324
 			table.insert(bfevent,remote.make_midi("90 46 "..colors[1+(2*State.click)+State.shift])) -- 1234    
--- 1 2 3 5
--- 1 3 2 6
 			return bfevent
 		end
 	},
-
+-----------------------------------
 --bottom to top Right
 [19]={
-		RPM=function(y,z)
+		RPM=function(z)
 		end,
 									
 		RDM=function(z)
-			local bfevent={}
-			if State.shiftclick == 1 then
-				bfevent = scroll_status(Outmess)
-				Outmess = ''
-			else
-				bfevent = scroll_status(table.concat({'M',tostring(Mode.last),'S',tostring(Scale.last),' T',tostring(Transpose.last),'P',tostring(Palette.last)},''))
-			end
+				local bfevent={}
+--			if z>0 then
+				if     State.shiftclick == 0 then
+					bfevent = scroll_status(table.concat({'M',tostring(Mode.last),' S',tostring(Scale.last),' T',tostring(Transpose.last),' P',tostring(Palette.last)},''))
+				elseif State.shiftclick == 1 then
+					bfevent = scroll_status(table.concat({"New MODE is ", Modenames[1+modulo(Mode.last,table.getn(Modenames))]},''))
+					
+				elseif State.shiftclick == 2 then
+					
+				elseif State.shiftclick == 3 then
+					
+				end	
+--			end
 				
 		return bfevent end
 	},
 
 [29]={
-		RPM=function(y,z)
+		RPM=function(z)
+			if z>0 then
+				if     State.shiftclick == 0 then
+					
+				elseif State.shiftclick == 1 then
+					
+				elseif State.shiftclick == 2 then
+					
+				elseif State.shiftclick == 3 then
+					
+				end	
+			end
 		end,
 									
 		RDM=function(z)
@@ -3321,7 +3530,18 @@ button_function = {
 	},
 
 [39]={
-		RPM=function(y,z)
+		RPM=function(z)
+			if z>0 then
+				if     State.shiftclick == 0 then
+					
+				elseif State.shiftclick == 1 then
+					
+				elseif State.shiftclick == 2 then
+					
+				elseif State.shiftclick == 3 then
+					
+				end	
+			end
 		end,
 									
 		RDM=function(z)
@@ -3329,7 +3549,18 @@ button_function = {
 	},
 
 [49]={
-		RPM=function(y,z)
+		RPM=function(z)
+			if z>0 then
+				if     State.shiftclick == 0 then
+					
+				elseif State.shiftclick == 1 then
+					
+				elseif State.shiftclick == 2 then
+					
+				elseif State.shiftclick == 3 then
+					
+				end	
+			end
 		end,
 									
 		RDM=function(z)
@@ -3337,7 +3568,18 @@ button_function = {
 	},
 
 [59]={
-		RPM=function(y,z)
+		RPM=function(z)
+			if z>0 then
+				if     State.shiftclick == 0 then
+					
+				elseif State.shiftclick == 1 then
+					
+				elseif State.shiftclick == 2 then
+					
+				elseif State.shiftclick == 3 then
+					
+				end	
+			end
 		end,
 									
 		RDM=function(z)
@@ -3345,7 +3587,18 @@ button_function = {
 	},
 
 [69]={
-		RPM=function(y,z)
+		RPM=function(z)
+			if z>0 then
+				if     State.shiftclick == 0 then
+					
+				elseif State.shiftclick == 1 then
+					
+				elseif State.shiftclick == 2 then
+					
+				elseif State.shiftclick == 3 then
+					
+				end	
+			end
 		end,
 									
 		RDM=function(z)
@@ -3353,7 +3606,18 @@ button_function = {
 	},
 
 [79]={
-		RPM=function(y,z)
+		RPM=function(z)
+			if z>0 then
+				if     State.shiftclick == 0 then
+					
+				elseif State.shiftclick == 1 then
+					
+				elseif State.shiftclick == 2 then
+					
+				elseif State.shiftclick == 3 then
+					
+				end	
+			end
 		end,
 									
 		RDM=function(z)
@@ -3361,7 +3625,18 @@ button_function = {
 	},
 
 [89]={
-		RPM=function(y,z)
+		RPM=function(z)
+			if z>0 then
+				if     State.shiftclick == 0 then
+					
+				elseif State.shiftclick == 1 then
+					
+				elseif State.shiftclick == 2 then
+					
+				elseif State.shiftclick == 3 then
+					
+				end	
+			end
 		end,
 									
 		RDM=function(z)
