@@ -3018,17 +3018,19 @@ button_function = {
 [91]={ -- scale_up
 		RPM=function(y,z) 
 			if z>0 then
-				if State.shiftclick == 0 and State.shift == 0 then
+				if State.shiftclick == 0 then
 --vprint("New MODE is ", Modenames[1+modulo(Mode.last,table.getn(Modenames))])
 					State.do_update({mode=Mode.last+1})
-				elseif State.shiftclick == 0 and State.shift == 1  then -- scale
+				elseif State.shiftclick == 1 then -- scale
 					State.do_update({scale=Scale.last+1})
-				elseif State.shiftclick == 1 then -- color palette
+				elseif State.shiftclick == 2 then -- ???
+
+				elseif State.shiftclick == 3 then -- color palette
 					State.do_update({palette=Palette.last+1})
 				end	
 			end
 		end,
-		RDM=function()
+		RDM=function(z)
 			local color_ind = (modulo(Mode.last,12)) --change color every Note, show root
 			local bfevent={}
 				table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5B",Palette.current[color_ind].R ,Palette.current[color_ind].G, Palette.current[color_ind].B,"5C",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
@@ -3038,17 +3040,19 @@ button_function = {
 [92]={ -- scale_dn
 		RPM=function(y,z) 
 			if z>0 then
-				if State.shiftclick == 0 and State.shift == 0 then
+				if State.shiftclick == 0 then
 --vprint("New MODE is ", Modenames[1+modulo(Mode.last,table.getn(Modenames))])
 					State.do_update({mode=Mode.last-1})
-				elseif State.shiftclick == 0 and State.shift == 1  then -- scale
+				elseif State.shiftclick == 1 then -- scale
 					State.do_update({scale=Scale.last-1})
-				elseif State.shiftclick == 1 then -- color palette
+				elseif State.shiftclick == 2 then -- ???
+
+				elseif State.shiftclick == 3 then -- color palette
 					State.do_update({palette=Palette.last-1})
 				end	
 			end
 		end,
-		RDM=function()
+		RDM=function(z)
 			local color_ind = (modulo(Mode.last,12)) --change color every Note, show root
 			local bfevent={}
 				table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5B",Palette.current[color_ind].R ,Palette.current[color_ind].G, Palette.current[color_ind].B,"5C",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
@@ -3072,7 +3076,7 @@ button_function = {
 				end	
 			end
 		end,
-		RDM=function()
+		RDM=function(z)
 --vprint("Transpose RDM ",Transpose.last)
 			local color_ind = (modulo(Transpose.last,12)) --change color every Note, show root
 			local bfevent={}
@@ -3109,7 +3113,7 @@ button_function = {
 				end	
 			end
 		end,
-		RDM=function()
+		RDM=function(z)
 			return button_function[93].RDM() -- same code for both
 		end
 	},
@@ -3118,7 +3122,7 @@ button_function = {
 		RPM=function(y,z)
 		return true end,
 									
-		RDM=function()
+		RDM=function(z)
 		return {} end
 	},
 
@@ -3126,7 +3130,7 @@ button_function = {
 		RPM=function(y,z)
 		end,
 									
-		RDM=function()
+		RDM=function(z)
 		return {} end
 	},
 
@@ -3134,7 +3138,7 @@ button_function = {
 		RPM=function(y,z)
 		end,
 									
-		RDM=function()
+		RDM=function(z)
 		return {} end
 	},
 	
@@ -3142,7 +3146,7 @@ button_function = {
 		RPM=function(y,z)
 		end,
 									
-		RDM=function()
+		RDM=function(z)
 		return {} end
 	},
 	
@@ -3151,7 +3155,7 @@ button_function = {
 		RPM=function(y,z)
 		end,
 									
-		RDM=function()
+		RDM=function(z)
 		return {} end
 	},
 	
@@ -3159,7 +3163,7 @@ button_function = {
 		RPM=function(y,z)
 		end,
 									
-		RDM=function()
+		RDM=function(z)
 		return {} end
 	},
 
@@ -3167,7 +3171,7 @@ button_function = {
 		RPM=function(y,z)
 		end,
 									
-		RDM=function()
+		RDM=function(z)
 		return {} end
 	},
 
@@ -3175,7 +3179,7 @@ button_function = {
 		RPM=function(y,z)
 		end,
 									
-		RDM=function()
+		RDM=function(z)
 		return {} end
 	},
 
@@ -3183,7 +3187,7 @@ button_function = {
 		RPM=function(y,z)
 		end,
 									
-		RDM=function()
+		RDM=function(z)
 		return {} end
 	},
 
@@ -3191,7 +3195,7 @@ button_function = {
 		RPM=function(y,z)
 		end,
 									
-		RDM=function()
+		RDM=function(z)
 		return {} end
 	},
 
@@ -3199,7 +3203,7 @@ button_function = {
 		RPM=function(y,z)
 		end,
 									
-		RDM=function()
+		RDM=function(z)
 		return {} end
 	},
 
@@ -3207,7 +3211,7 @@ button_function = {
 		RPM=function(y,z)
 		end,
 									
-		RDM=function()
+		RDM=function(z)
 		return {} end
 	},
 
@@ -3216,7 +3220,7 @@ button_function = {
 		RPM=function(y,z)
 		end,
 									
-		RDM=function()
+		RDM=function(z)
 		return {} end
 	},
 
@@ -3224,7 +3228,7 @@ button_function = {
 		RPM=function(y,z)
 		end,
 									
-		RDM=function()
+		RDM=function(z)
 		return {} end
 	},
 
@@ -3232,7 +3236,7 @@ button_function = {
 		RPM=function(y,z)
 		end,
 									
-		RDM=function()
+		RDM=function(z)
 		return {} end
 	},
 
@@ -3240,7 +3244,7 @@ button_function = {
 		RPM=function(y,z)
 		end,
 									
-		RDM=function()
+		RDM=function(z)
 		return {} end
 	},
 
@@ -3248,7 +3252,7 @@ button_function = {
 		RPM=function(y,z)
 		end,
 									
-		RDM=function()
+		RDM=function(z)
 		return {} end
 	},
 
@@ -3256,35 +3260,37 @@ button_function = {
 		RPM=function(y,z)
 		end,
 									
-		RDM=function()
+		RDM=function(z)
 		return {} end
 	},
 
 [70]={ -- Click
 		RPM=function(y,z)
 			State.click = z>0 and 1 or 0
-			State.shiftclick = (State.shift==1 and State.click==1) and 1 or 0                           
+			State.shiftclick = State.shift + (2*State.click)  -- 0,1,2,3                         
 --vprint("70 pressed",y)
 		end,
 		RDM=function(z)
-			local colors = {"21","05","31"} -- green, red, purp
+			local colors = {"21","21","05","31"} -- green, red, purp
 			local bfevent={}                                                                            
-			table.insert(bfevent,remote.make_midi("90 46 "..colors[1+State.click+State.shiftclick]))
-			table.insert(bfevent,remote.make_midi("90 50 "..colors[1+State.shift+State.shiftclick]))    
+			table.insert(bfevent,remote.make_midi("90 46 "..colors[1+(2*State.click)+State.shift])) -- 1234   
+			table.insert(bfevent,remote.make_midi("90 50 "..colors[1+(2*State.shift)+State.click])) -- 1324
 			return bfevent
 		end
 	},
 [80]={ -- Shift
 		RPM=function(y,z)
 			State.shift = z>0 and 1 or 0
-			State.shiftclick = (State.shift==1 and State.click==1) and 1 or 0
+			State.shiftclick = State.shift + (2*State.click)  -- 0,1,2,3                      
 --vprint("80 pressed",y)
 		end,
 		RDM=function(z)
-			local colors = {"21","05","31"} -- green, red, purp
+			local colors = {"21","21","05","31"} -- green, red, purp
 			local bfevent={}
-			table.insert(bfevent,remote.make_midi("90 50 "..colors[1+State.shift+State.shiftclick]))
-			table.insert(bfevent,remote.make_midi("90 46 "..colors[1+State.click+State.shiftclick]))    
+			table.insert(bfevent,remote.make_midi("90 50 "..colors[1+(2*State.shift)+State.click])) -- 1324
+			table.insert(bfevent,remote.make_midi("90 46 "..colors[1+(2*State.click)+State.shift])) -- 1234    
+-- 1 2 3 5
+-- 1 3 2 6
 			return bfevent
 		end
 	},
@@ -3294,7 +3300,7 @@ button_function = {
 		RPM=function(y,z)
 		end,
 									
-		RDM=function()
+		RDM=function(z)
 			local bfevent={}
 			if State.shiftclick == 1 then
 				bfevent = scroll_status(Outmess)
@@ -3310,7 +3316,7 @@ button_function = {
 		RPM=function(y,z)
 		end,
 									
-		RDM=function()
+		RDM=function(z)
 		return {} end
 	},
 
@@ -3318,7 +3324,7 @@ button_function = {
 		RPM=function(y,z)
 		end,
 									
-		RDM=function()
+		RDM=function(z)
 		return {} end
 	},
 
@@ -3326,7 +3332,7 @@ button_function = {
 		RPM=function(y,z)
 		end,
 									
-		RDM=function()
+		RDM=function(z)
 		return {} end
 	},
 
@@ -3334,7 +3340,7 @@ button_function = {
 		RPM=function(y,z)
 		end,
 									
-		RDM=function()
+		RDM=function(z)
 		return {} end
 	},
 
@@ -3342,7 +3348,7 @@ button_function = {
 		RPM=function(y,z)
 		end,
 									
-		RDM=function()
+		RDM=function(z)
 		return {} end
 	},
 
@@ -3350,7 +3356,7 @@ button_function = {
 		RPM=function(y,z)
 		end,
 									
-		RDM=function()
+		RDM=function(z)
 		return {} end
 	},
 
@@ -3358,7 +3364,7 @@ button_function = {
 		RPM=function(y,z)
 		end,
 									
-		RDM=function()
+		RDM=function(z)
 		return {} end
 	},
 
