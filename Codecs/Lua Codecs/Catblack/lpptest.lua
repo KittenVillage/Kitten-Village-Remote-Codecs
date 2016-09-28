@@ -40,10 +40,6 @@ Itemnum={}
 Pad = {} -- x and y
 Padindex = {} -- 1 to 64
 
---notemode = {35,40,45,50,55,60,65,70} -- left column -1
---drummode = {35,39,43,47,51,55,59,63} -- left column -1
---note = {}
---drum = {}
 
 do_update_pads = 1
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -258,8 +254,20 @@ Palettes = {
 						[10]={R="3B", G="3C", B="21", },		 -- yellow/white
 						[11]={R="3D", G="3D", B="0F", },		 -- yellow
 		},
---[[
---]]		
+		Chromatic = {
+						[0]= {R="3F", G="00", B="00", },	--R  
+						[1]= {R="1F", G="02", B="01", },	--RO 
+						[2]= {R="3F", G="09", B="00", },	--O  
+						[3]= {R="19", G="09", B="00", },	--YO 
+						[4]= {R="3F", G="3F", B="00", },	--Y  
+						[5]= {R="21", G="3F", B="00", },	--YG 
+						[6]= {R="00", G="3F", B="00", },	--G  
+						[7]= {R="00", G="32", B="15", },	--BG 
+						[8]= {R="00", G="00", B="3F", },	--B  
+						[9]= {R="09", G="00", B="36", },	--BV 
+						[10]={R="12", G="00", B="2D", },	--V  
+						[11]={R="29", G="00", B="20", },	--RV 
+		},
 	}
 Palettenames = {
 'FifthsCircle',
@@ -272,6 +280,7 @@ Palettenames = {
 'aBernardKlein',
 'iJBelmont',
 'sZieverink',
+'Chromatic',
 }
 
 
@@ -402,6 +411,8 @@ Scaleabrvs = scaleabrvs
 -- note 0-11 note output with matching oct
 Modes = {
 CircleOfFifths = {
+		color= {R="3F", G="00", B="00", },	--R
+
 		note={
 			{8,3,10,5,0,7,2,9},
 			{0,7,2,9,4,11,6,1},
@@ -424,6 +435,7 @@ CircleOfFifths = {
 		},
 	},
 LPP_Note_mode =	{
+		color= {R="3F", G="00", B="00", },	--R
 		note={
 			{11,0,1,2,3,4,5,6},
 			{6,7,8,9,10,11,0,2},
@@ -446,6 +458,7 @@ LPP_Note_mode =	{
 		},
 	},
 Push = {
+		color= {R="00", G="00", B="3F", },	--B  
 		oct={
 			{4,4,4,4,4,4,4,5},
 			{3,3,3,4,4,4,4,4},
@@ -496,6 +509,7 @@ Push = {
 		end,
 	},
 Diatonic = {
+		color= {R="00", G="00", B="3F", },	--B  
 		oct={
 			{4,4,4,4,4,4,4,5},
 			{3,3,4,4,4,4,4,4},
@@ -546,6 +560,7 @@ Diatonic = {
 		end,
 	},
 Diagonal = {
+		color= {R="00", G="00", B="3F", },	--B  
 		oct={
 			{3,3,3,3,3,3,3,4},
 			{2,3,3,3,3,3,3,3},
@@ -595,6 +610,7 @@ Diagonal = {
 		end,
 	},
 Octave = {
+		color= {R="00", G="00", B="3F", },	--B  
 		oct={{},{},{},{},{},{},{},{}},
 		note=function(n)
 		local scalegrid ={
@@ -609,31 +625,24 @@ Octave = {
 		}
 		local notegrid={{},{},{},{},{},{},{},{}}
 		local octgrid={{},{},{},{},{},{},{},{}}
---vprint("sc cur sc in grid Octave",Scale.current[1+scalegrid[ve][ho]])
---tprint(Scale.current) 
 		for ve=1,8 do for ho=1,8 do
 			local note =Scale.current[scalegrid[ve][ho]]
---vprint("sc cur sc in gri  d Octave",Scale.current[1+scalegrid[ve][ho]])
 			if  note > 11 then
 				notegrid[ve][ho]=note-12
 				octgrid[ve][ho]=(8-ve)+1
 --Modes[Modenames[n]].oct[ve][ho]=ve-1
---vprint("sc cur sc in grid Octave","ve "..ve.." ho "..ho.." oct "..(8-ve+1).." note "..(note-12))
 			else
 				notegrid[ve][ho]=note
 				octgrid[ve][ho]=8-ve
-		--Modes[Modenames[n]].oct[ve][ho]=ve
---vprint("sc cur sc in grid Octave","ve "..ve.." ho "..ho.." oct "..(8-ve).." note ".. note)
---vprint("sc cur sc in grid Octave",Scale.current[1+scalegrid[ve][ho]])
+--Modes[Modenames[n]].oct[ve][ho]=ve
 			end	
 		end end
 		Modes[Modenames[n]].oct=octgrid
---tprint(Modes[Modenames[n]].oct)
---tprint(notegrid)
 		return notegrid
 		end,
 	},
 Chromatic = {
+		color= {R="3F", G="00", B="00", },	--R
 		note={
 			{8,9,10,11,0,1,2,3},
 			{0,1,2,3,4,5,6,7},
@@ -686,6 +695,7 @@ Chromatic = {
 		
 	},
 Chromatic2 = {
+		color= {R="00", G="00", B="3F", },	--B  
 		oldnote={
 			{8,9,10,11,0,1,2,3},
 			{0,1,2,3,4,5,6,7},
@@ -730,6 +740,7 @@ Chromatic2 = {
 -- the next row up adds 1, etc
 -- oct is note > 11 or modulo?
 ScaleHarp =	{
+		color= {R="00", G="00", B="3F", },	--B  
 		note={
 			{7,9,11,1,3,5,7,9},
 			{6,8,10,0,2,4,6,8},
@@ -752,6 +763,7 @@ ScaleHarp =	{
 		},
 	},
 ChromaHarp =	{
+		color= {R="00", G="00", B="3F", },	--B  
 		note={
 			{7,9,11,1,3,5,7,9},
 			{6,8,10,0,2,4,6,8},
@@ -774,138 +786,153 @@ ChromaHarp =	{
 		},
 	},
 Guitar = {
-		note={
-			{4,5,6,7,8,9,10,11},
-			{11,0,1,2,3,4,5,6},
-			{7,8,9,10,11,0,1,2},
-			{2,3,4,5,6,7,8,9},
-			{9,10,11,0,1,2,3,4},
-			{4,5,6,7,8,9,10,11},
-			{4,5,6,7,8,9,10,11},
-			{11,0,1,2,3,4,5,6},
-		},
-		oct={
-			{3,3,3,3,3,3,3,3},
-			{2,3,3,3,3,3,3,3},
-			{2,2,2,2,2,3,3,3},
-			{2,2,2,2,2,2,2,2},
-			{1,1,1,2,2,2,2,2},
-			{1,1,1,1,1,1,1,1},
-			{3,3,3,3,3,3,3,3},
-			{2,3,3,3,3,3,3,3},
-		},
+		color= {R="3F", G="3F", B="00", },	--Y  
+		oct={{},{},{},{},{},{},{},{}},
+		note=function(n)
+		local gmodes ={
+			Guitar = {
+					note={
+						{4,5,6,7,8,9,10,11},
+						{11,0,1,2,3,4,5,6},
+						{7,8,9,10,11,0,1,2},
+						{2,3,4,5,6,7,8,9},
+						{9,10,11,0,1,2,3,4},
+						{4,5,6,7,8,9,10,11},
+						{4,5,6,7,8,9,10,11},
+						{11,0,1,2,3,4,5,6},
+					},
+					oct={
+						{3,3,3,3,3,3,3,3},
+						{2,3,3,3,3,3,3,3},
+						{2,2,2,2,2,3,3,3},
+						{2,2,2,2,2,2,2,2},
+						{1,1,1,2,2,2,2,2},
+						{1,1,1,1,1,1,1,1},
+						{3,3,3,3,3,3,3,3},
+						{2,3,3,3,3,3,3,3},
+					},
+				},
+			Guitar_2_iso = {
+					note={
+						{4,5,6,7,8,9,10,11},
+						{11,0,1,2,3,4,5,6},
+						{8,9,10,11,0,1,2,3},
+						{4,5,6,7,8,9,10,11},
+						{11,0,1,2,3,4,5,6},
+						{4,5,6,7,8,9,10,11},
+						{4,5,6,7,8,9,10,11},
+						{11,0,1,2,3,4,5,6},
+					},
+					oct={
+						{3,3,3,3,3,3,3,3},
+						{2,3,3,3,3,3,3,3},
+						{2,2,2,2,3,3,3,3},
+						{2,2,2,2,2,2,2,2},
+						{1,2,2,2,2,2,2,2},
+						{1,1,1,1,1,1,1,1},
+						{3,3,3,3,3,3,3,3},
+						{2,3,3,3,3,3,3,3},
+					},
+				},
+			Guitar_2 = {
+					note={
+						{4,5,6,7,8,9,10,11},
+						{11,0,1,2,3,4,5,6},
+						{7,8,9,10,11,0,1,2},
+						{4,5,6,7,8,9,10,11},
+						{11,0,1,2,3,4,5,6},
+						{4,5,6,7,8,9,10,11},
+						{4,5,6,7,8,9,10,11},
+						{11,0,1,2,3,4,5,6},
+					},
+					oct={
+						{3,3,3,3,3,3,3,3},
+						{2,3,3,3,3,3,3,3},
+						{2,2,2,2,2,3,3,3},
+						{2,2,2,2,2,2,2,2},
+						{1,2,2,2,2,2,2,2},
+						{1,1,1,1,1,1,1,1},
+						{3,3,3,3,3,3,3,3},
+						{2,3,3,3,3,3,3,3},
+					},
+				},
+			Guitar_Drop_D = {
+					note={
+						{2,3,4,5,6,7,8,9},
+						{11,0,1,2,3,4,5,6},
+						{7,8,9,10,11,0,1,2},
+						{2,3,4,5,6,7,8,9},
+						{9,10,11,0,1,2,3,4},
+						{2,3,4,5,6,7,8,9},
+						{4,5,6,7,8,9,10,11},
+						{11,0,1,2,3,4,5,6},
+					},
+					oct={
+						{3,3,3,3,3,3,3,3},
+						{2,3,3,3,3,3,3,3},
+						{2,2,2,2,2,3,3,3},
+						{2,2,2,2,2,2,2,2},
+						{1,1,1,2,2,2,2,2},
+						{1,1,1,1,1,1,1,1},
+						{3,3,3,3,3,3,3,3},
+						{2,3,3,3,3,3,3,3},
+					},
+				},
+			Guitar_low_Fsh_B = {
+					note={
+						{4,5,6,7,8,9,10,11},
+						{11,0,1,2,3,4,5,6},
+						{7,8,9,10,11,0,1,2},
+						{2,3,4,5,6,7,8,9},
+						{9,10,11,0,1,2,3,4},
+						{4,5,6,7,8,9,10,11},
+						{11,0,1,2,3,4,5,6},
+						{6,7,8,9,10,11,0,1},
+					},
+					oct={
+						{3,3,3,3,3,3,3,3},
+						{2,3,3,3,3,3,3,3},
+						{2,2,2,2,2,3,3,3},
+						{2,2,2,2,2,2,2,2},
+						{1,1,1,2,2,2,2,2},
+						{1,1,1,1,1,1,1,1},
+						{0,1,1,1,1,1,1,1},
+						{0,0,0,0,0,0,1,1},
+					},
+				},
+			Guitar_low_E_B = {
+					note={
+						{4,5,6,7,8,9,10,11},
+						{11,0,1,2,3,4,5,6},
+						{7,8,9,10,11,0,1,2},
+						{2,3,4,5,6,7,8,9},
+						{9,10,11,0,1,2,3,4},
+						{4,5,6,7,8,9,10,11},
+						{11,0,1,2,3,4,5,6},
+						{4,5,6,7,8,9,10,11},
+					},
+					oct={
+						{3,3,3,3,3,3,3,3},
+						{2,3,3,3,3,3,3,3},
+						{2,2,2,2,2,3,3,3},
+						{2,2,2,2,2,2,2,2},
+						{1,1,1,2,2,2,2,2},
+						{1,1,1,1,1,1,1,1},
+						{0,1,1,1,1,1,1,1},
+						{0,0,0,0,0,0,0,0},
+					},
+				},
+		}
+--		error(tblprint(gmodes["Guitar"].note))
+		local notegrid={}
+		notegrid = gmodes["Guitar"].note 
+		Modes["Guitar"].oct=gmodes["Guitar"].oct
+		return notegrid
+		end,
 	},
-Guitar_2_iso = {
-		note={
-			{4,5,6,7,8,9,10,11},
-			{11,0,1,2,3,4,5,6},
-			{8,9,10,11,0,1,2,3},
-			{4,5,6,7,8,9,10,11},
-			{11,0,1,2,3,4,5,6},
-			{4,5,6,7,8,9,10,11},
-			{4,5,6,7,8,9,10,11},
-			{11,0,1,2,3,4,5,6},
-		},
-		oct={
-			{3,3,3,3,3,3,3,3},
-			{2,3,3,3,3,3,3,3},
-			{2,2,2,2,3,3,3,3},
-			{2,2,2,2,2,2,2,2},
-			{1,2,2,2,2,2,2,2},
-			{1,1,1,1,1,1,1,1},
-			{3,3,3,3,3,3,3,3},
-			{2,3,3,3,3,3,3,3},
-		},
-	},
-Guitar_2 = {
-		note={
-			{4,5,6,7,8,9,10,11},
-			{11,0,1,2,3,4,5,6},
-			{7,8,9,10,11,0,1,2},
-			{4,5,6,7,8,9,10,11},
-			{11,0,1,2,3,4,5,6},
-			{4,5,6,7,8,9,10,11},
-			{4,5,6,7,8,9,10,11},
-			{11,0,1,2,3,4,5,6},
-		},
-		oct={
-			{3,3,3,3,3,3,3,3},
-			{2,3,3,3,3,3,3,3},
-			{2,2,2,2,2,3,3,3},
-			{2,2,2,2,2,2,2,2},
-			{1,2,2,2,2,2,2,2},
-			{1,1,1,1,1,1,1,1},
-			{3,3,3,3,3,3,3,3},
-			{2,3,3,3,3,3,3,3},
-		},
-	},
-Guitar_Drop_D = {
-		note={
-			{2,3,4,5,6,7,8,9},
-			{11,0,1,2,3,4,5,6},
-			{7,8,9,10,11,0,1,2},
-			{2,3,4,5,6,7,8,9},
-			{9,10,11,0,1,2,3,4},
-			{2,3,4,5,6,7,8,9},
-			{4,5,6,7,8,9,10,11},
-			{11,0,1,2,3,4,5,6},
-		},
-		oct={
-			{3,3,3,3,3,3,3,3},
-			{2,3,3,3,3,3,3,3},
-			{2,2,2,2,2,3,3,3},
-			{2,2,2,2,2,2,2,2},
-			{1,1,1,2,2,2,2,2},
-			{1,1,1,1,1,1,1,1},
-			{3,3,3,3,3,3,3,3},
-			{2,3,3,3,3,3,3,3},
-		},
-	},
-Guitar_low_Fsh_B = {
-		note={
-			{4,5,6,7,8,9,10,11},
-			{11,0,1,2,3,4,5,6},
-			{7,8,9,10,11,0,1,2},
-			{2,3,4,5,6,7,8,9},
-			{9,10,11,0,1,2,3,4},
-			{4,5,6,7,8,9,10,11},
-			{11,0,1,2,3,4,5,6},
-			{6,7,8,9,10,11,0,1},
-		},
-		oct={
-			{3,3,3,3,3,3,3,3},
-			{2,3,3,3,3,3,3,3},
-			{2,2,2,2,2,3,3,3},
-			{2,2,2,2,2,2,2,2},
-			{1,1,1,2,2,2,2,2},
-			{1,1,1,1,1,1,1,1},
-			{0,1,1,1,1,1,1,1},
-			{0,0,0,0,0,0,1,1},
-		},
-	},
-Guitar_low_E_B = {
-		note={
-			{4,5,6,7,8,9,10,11},
-			{11,0,1,2,3,4,5,6},
-			{7,8,9,10,11,0,1,2},
-			{2,3,4,5,6,7,8,9},
-			{9,10,11,0,1,2,3,4},
-			{4,5,6,7,8,9,10,11},
-			{11,0,1,2,3,4,5,6},
-			{4,5,6,7,8,9,10,11},
-		},
-		oct={
-			{3,3,3,3,3,3,3,3},
-			{2,3,3,3,3,3,3,3},
-			{2,2,2,2,2,3,3,3},
-			{2,2,2,2,2,2,2,2},
-			{1,1,1,2,2,2,2,2},
-			{1,1,1,1,1,1,1,1},
-			{0,1,1,1,1,1,1,1},
-			{0,0,0,0,0,0,0,0},
-		},
-	},
+
 Janko = {
+		color= {R="3F", G="00", B="00", },	--R
 		note={
 			{1,3,5,7,9,11,1,3},
 			{0,2,4,6,8,10,0,2},
@@ -928,6 +955,7 @@ Janko = {
 		},
 	},
 Sixth_and_5th =	{
+		color= {R="3F", G="00", B="00", },	--R
 		note={
 			{1,10,7,4,1,10,7,4},
 			{6,3,0,9,6,3,0,9},
@@ -950,6 +978,7 @@ Sixth_and_5th =	{
 		},
 	},
 Fourth_and_5th =	{
+		color= {R="3F", G="00", B="00", },	--R
 		note={
 			{1,5,9,1,5,9,1,5},
 			{6,10,2,6,10,2,6,10},
@@ -972,6 +1001,7 @@ Fourth_and_5th =	{
 		},
 	},
 Wicki_Hayden =	{
+		color= {R="3F", G="00", B="00", },	--R
 		note={
 			{1,3,5,7,9,11,1,3},
 			{6,8,10,0,2,4,6,8},
@@ -1006,11 +1036,6 @@ Modenames={
 "ScaleHarp",
 "ChromaHarp",
 "Guitar",
-"Guitar_2_iso",
-"Guitar_2",
-"Guitar_Drop_D",
-"Guitar_low_Fsh_B",
-"Guitar_low_E_B",
 "Janko",
 "Sixth_and_5th",
 "Fourth_and_5th",
@@ -1039,6 +1064,7 @@ Global or State
 -- and what button states we are in. (shift, click, shcl, etc.)
 -- State.do_update(table) is the only way to change scale,mode,palette,transpose...
 -- State.update is the can kicked down from function to function all the way to RDM! 
+-- Scale is used in Mode, Transpose sets the midi output grid, and palette colors the pads (using modulo 12)
 State = {
 	shift = 0,
 	click = 0,
@@ -1052,7 +1078,7 @@ State = {
 		st = st or {}
 --		State.update=1
 		Scale.select(st.scale or Scale.last)
-		Mode.select(st.mode or Mode.last,st.rotate or State.rotate)
+		Mode.select(st.mode or Mode.last,st.rotate or State.rotate) 
 		Transpose.select(st.transpose or Transpose.last)
 		Palette.select(st.palette or Palette.last)
 	end,
@@ -1106,10 +1132,9 @@ State = {
 						R={{},{},{},{},{},{},{},{}},
 						G={{},{},{},{},{},{},{},{}},
 						B={{},{},{},{},{},{},{},{}},
-						duplicates={} -- ??TODO
 			},
-			refresh_midiout =function()
-			repeat
+		refresh_midiout =function()
+				repeat
 				local ok=true
 				Grid.current.duplicatePads={}
 				Grid.current.duplicateNotes={}
@@ -1139,7 +1164,7 @@ State = {
 					if ok then for _,v in pairs(Grid.current.duplicateNotes) do for a,b in pairs(v) do
 						Grid.current.duplicatePads[b]=v
 					end end end
-			until ok==true
+				until ok==true
 				end,	
 			}
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1153,9 +1178,6 @@ State = {
 Palette = { 
 		length = table.getn(Palettenames),
 		select=function(n) local new = 1+modulo(n-1,Palette.length) 
---vprint("new pal",new) 
---vprint("new pal ",Palettenames[new]) 
---grprint("Palette.select cur grid note",Grid.current.note)
 			if new ~= Palette.last or State.update ~= 0 then 
 					Palette.current=Palettes[Palettenames[new]]
 				for ve=1,8 do for ho=1,8 do 
@@ -1209,17 +1231,12 @@ Scale = {
 		current = Scales[Scalenames[1]],
 		length = table.getn(Scalenames),
 		select=function(n) local new = 1+modulo(n-1,Scale.length) 
-		--local Ml=Mode.last
---vprint("new scale",new)
---vprint("in scale Mode.last",Ml)
-		--if type(Modes[Modenames[Ml]].note)=="function" then
 			if new ~= Scale.last or State.update ~= 0 then 
 				Scale.last=new
 				Scale.current=Scales[Scalenames[new]]
 				table.insert(Pressed,91,1) -- button feedback
 				State.update=1 
 			end 
-		--end 
 		end,
 		}
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1247,9 +1264,7 @@ Mode = {
 				State.rotate=ro
 				State.update=1 
 			end 
-		end,
-		special=function() end,
-		
+		end,		
 		}
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -1258,12 +1273,13 @@ Mode = {
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- Layout has methods for detecting/changing the current Layout. 
 -- Layout refers to the LPP Note, Drum, Fader, Programming modes. 
--- LPP manual calls these layouts, but Reason remotemaps use a MODE column (which I use for the faders)
+-- LPP manual calls these layouts, but Reason remotemaps use a 
+-- MODE column (which I use for the faders)
 -- This is an internal designation detecting/setting sysex.
 --Only programmer (3) and fader (2) modes enabled!
 -- TODO drum layout flips to internal drum Mode
 Layout = {}
-Layout.current = 3
+--Layout.mode = 3
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -2296,7 +2312,7 @@ function remote_process_midi(event)
 -------------------------------------------------------		
 if (event.port==2 and event.size==3) then
 -------------------------------------------------------
--- Take an external 2nd input not and display it.	
+-- Take an external 2nd input note and display it.	
 -------------------------------------------------------			
 -- Lookup the note delivered based on the current scale grid and pad pressed.
 ---------------------------------------------------			
@@ -2323,6 +2339,7 @@ if (event.port==2 and event.size==3) then
 -- Here is where send the translated note back to Reason
 -- Saving this in case want to change it. 
 -- currently just having note lane on playing track that is dup of ext midi instrm.
+-- and not having it sent to Reason
 ---------------------------------------------------			
 --				local msg={ time_stamp = event.time_stamp, item=1, value = ret.x, note = ret.y, velocity = ret.z }
 --				remote.handle_input(msg)
@@ -2334,11 +2351,7 @@ if (event.port==2 and event.size==3) then
 			return true -- absorb the incoming note
 -------------------------------------------------------		
 			--return false -- don't return this false, because incoming pad press is a midi note.
-
-
-
 	end -- ret not nil
-
 end --port is 2, size 3
 
 
@@ -2346,9 +2359,7 @@ end --port is 2, size 3
 
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
-
 if event.port==1 then
-
 -- -----------------------------------------------------------------------------------------------
 -- Match buttons and notes and transpose notes.
 -- -----------------------------------------------------------------------------------------------
@@ -2375,7 +2386,6 @@ if event.size==3 then -- Note, button, channel pressure, fader
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
 -- BUTTON HANDLE RPM
-
 		if button==1 and (ret.y<21 or ret.y>29) then -- button, not fader mode
 			table.insert(Pressed,ret.y,ret.z) -- keep track for Button[Pressed.y].RDM(z)
 			local r = Button[ret.y].RPM(ret.z)
@@ -2457,7 +2467,7 @@ if event.size==3 then -- Note, button, channel pressure, fader
 					if  ret.z==0 then
 						table.insert(State.lightoff,table.concat({Pad[d].padhex,Grid.current.R[pady][padx],Grid.current.G[pady][padx],Grid.current.B[pady][padx]}," "))
 					else 
-						local vel=string.format("%02X",math.floor(.5*ret.z))
+						local vel=string.format("%02X",math.floor(.5*ret.z)) -- COLOR OF Playing Pads
 						table.insert(State.lighton,table.concat({Pad[d].padhex,vel,vel,vel}," "))
 					end
 				end
@@ -2475,7 +2485,6 @@ if event.size==3 then -- Note, button, channel pressure, fader
 -------------------------------------------------------		
 			--return false -- don't return this false, because incoming pad press is a midi note.
 		end -- not button
-
 	end -- ret not nil
 	
 
@@ -2485,15 +2494,13 @@ if event.size==3 then -- Note, button, channel pressure, fader
 -- TODO: map poly to chan, maybe display output
 -- poly not supported in reason...	
 -----------------------------------
-
+-- return false here means chan aftert gets passed on to Reason
 	return false
 	
 
--------------------------------------------------------
-
-	
 end -- eventsize=3
 --3
+-------------------------------------------------------
 
 	
 -- -----------------------------------------------------------------------------------------------
@@ -2503,39 +2510,38 @@ if event.size==8 then
 	local textreturnswitch = remote.match_midi("F0 00 20 29 02 10 15 F7",event) --find if we are retuning from scrolling text
 	if (textreturnswitch) then
 		-- probably do nothing
-		g.set_mode=1 -- should flash it back to frlight on
+		Layout.set_mode=4
+		Layout.set_frlight=1-- should flash it back to frlight on
 	end
 	return true
 end -- eventsize=8
-
-	
 --8
+-------------------------------------------------------
+
 -- -----------------------------------------------------------------------------------------------
 -- Keep it in programmer mode	
 -- -----------------------------------------------------------------------------------------------
--- in the furture we will allow other modes... fader, etc.
+-- TODO in the future we will allow other modes... fader, etc.
 
 if event.size==9 then
 	local modeswitch = remote.match_midi("F0 00 20 29 02 10 2F xx F7",event) --find what mode we are in
 	local livemodeswitch = remote.match_midi("F0 00 20 29 02 10 2D xx F7",event) --find if we are in live mode (At startup, we turn on standalone, which fires this.)
 	if (modeswitch) then
---remote.trace(modeswitch.x)
-		g.mode=modeswitch.x
+		Layout.mode=modeswitch.x
 		if modeswitch.x ~=3 then
-			g.set_mode=3
+			Layout.set_mode=3
 		end
 	elseif (livemodeswitch) then 
-			g.set_mode=3
+			Layout.set_mode=3
 	end
 	
 -- This next will only be sent on the 1st LPP midi channel, so it's not relevant here.
 --[[
-	livemodeswitch = remote.match_midi("F0 00 20 29 02 10 2D xx F7",event) --find if we are in live mode
+	local livemodeswitch = remote.match_midi("F0 00 20 29 02 10 2D xx F7",event) --find if we are in live mode
 	if(livemodeswitch) then
-remote.trace(livemodeswitch.x)
-		g.livemode=livemodeswitch.x
+		Layout.livemode=livemodeswitch.x
 		if livemodeswitch.x ~=1 then
-			g.set_livemode=1
+			Layout.set_livemode=1
 		end
 	
 	end
@@ -2578,12 +2584,13 @@ function remote_deliver_midi(maxbytes,port)
 -- -----------------------------------------------------------------------------------------------
 -- Keep it in programmer mode	FOR NOW
 -- -----------------------------------------------------------------------------------------------
-		if g.set_mode~=g.mode then
-			mode_event = remote.make_midi("F0 00 20 29 02 10 2C xx F7",{ x = g.set_mode, port=1 })
+		if Layout.set_mode~=Layout.mode then
+			mode_event = remote.make_midi("F0 00 20 29 02 10 2C xx F7",{ x = Layout.set_mode, port=1 })
 			table.insert(lpp_events,mode_event)
 			frlight_event = remote.make_midi("F0 00 20 29 02 10 0A 63 32 F7",{ port=1 }) --Front light purp
 			table.insert(lpp_events,frlight_event)
-			g.mode=g.set_mode
+			Layout.mode=Layout.set_mode
+			Layout.set_frlight=1
 			return lpp_events
 		end
 -- This next will switch the unit to the 1st LPP midi channel in Live mode, so it's not relevant here.
@@ -2594,6 +2601,12 @@ function remote_deliver_midi(maxbytes,port)
 			g.livemode=g.set_livemode
 		end
 --]]
+		if Layout.set_frlight~=0 then
+			frlight_event = remote.make_midi("F0 00 20 29 02 10 0A 63 32 F7",{ port=1 }) --Front light purp
+			table.insert(lpp_events,frlight_event)
+			Layout.set_frlight=0
+--			return lpp_events
+		end
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
@@ -2936,7 +2949,7 @@ end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function remote_release_from_use()
 	local retEvents={
---		remote.make_midi("F0 00 20 29 02 10 2C 00 F7"), -- Note mode
+--		remote.make_midi("F0 00 20 29 02 10 2C 03 F7"), -- P mode
 	}
 	return retEvents
 end
@@ -2953,20 +2966,9 @@ function def_vars()
 		for ho=1,8 do -- vertical from left
 			local thispad=(ve*10)+ho  --11-18 ... 81-88
 			local thispadhex=string.format("%02X",thispad)
---			local thisnote=notemode[ve]+ho
---			local thisdrum=drummode[ve]+ho
---			if ho>4 then -- drum mode is 4 4x4 grids
---				thisdrum=thisdrum+28
---			end
-			--if note[thisnote] == nil then
-			--	note[thisnote]={}
-			--end
-			--table.insert(note[thisnote],thispad) --In note mode, a single note can be on one or two pads.	
 
 			table.insert(Pad,thispad,{
 							padhex=thispadhex,
---							note=thisnote,
---							drum=thisdrum,
 							index=index,
 							itemindex=(index-1)+Itemnum.first_pad,
 							x=ho,
@@ -2975,21 +2977,10 @@ function def_vars()
 			table.insert(Padindex,index,{
 							pad=thispad,
 							padhex=thispadhex,
---							note=thisnote,
---							drum=thisdrum,
 							itemindex=(index-1)+Itemnum.first_pad,
 							x=ho,
 							y=ve,
 			})
---[[
-			table.insert(drum,thisdrum,{
-							pad=thispad,
-							note=thisnote,
-							index=index,
-							x=ho,
-							y=ve,
-			})
---]]
 			index=index+1 --index so I can cycle through the 64 pads quickly.
 		end
 
@@ -3042,7 +3033,10 @@ Button = {
 		RDM=function(z)
 			local color_ind = (modulo(Mode.last,12)) --change color every Note, show root
 			local bfevent={}
-				table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5B",Palette.current[color_ind].R ,Palette.current[color_ind].G, Palette.current[color_ind].B,"5C",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
+-- TODO color button 91 5B per Modes[Mode.last].color (?)
+				table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,
+					"5B",Palette.current[color_ind].R ,Palette.current[color_ind].G, Palette.current[color_ind].B,
+					"5C",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
 			return bfevent
 		end
 	},
@@ -3063,7 +3057,9 @@ Button = {
 		RDM=function(z)
 			local color_ind = (modulo(Mode.last,12)) --change color every Note, show root
 			local bfevent={}
-				table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5B",Palette.current[color_ind].R ,Palette.current[color_ind].G, Palette.current[color_ind].B,"5C",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
+				table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,
+					"5B",Palette.current[color_ind].R ,Palette.current[color_ind].G, Palette.current[color_ind].B,
+					"5C",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
 			return bfevent
 		end
 	},
@@ -3506,7 +3502,8 @@ Button = {
 					
 				end	
 --			end
-				
+				Layout.set_frlight=1
+			
 		return bfevent end
 	},
 
