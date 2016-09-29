@@ -3041,12 +3041,32 @@ Button = {
 					table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,
 						"5B",Mc.R, Mc.G, Mc.B,
 						"5C",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
+
 				elseif State.shiftclick == 1 then
-					
+					local color_ind = (modulo(Scale.last,12)) --change color every Note, show root
+-- TODO color button 91 5B per Modes[Mode.last].color (?)
+					table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,
+						"5B",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,
+						"5C",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))					
 				elseif State.shiftclick == 2 then
+--[[
+					local color_ind = (modulo(Mode.last,12)) --change color every Note, show root
+-- TODO color button 91 5B per Modes[Mode.last].color (?)
+					local Mn = Modenames[1+modulo(Mode.last,table.getn(Modenames))]
+					local Mc = Modes[Mn].color
+					table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,
+						"5B",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,
+						"5C",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
+--]]
 					
 				elseif State.shiftclick == 3 then
-					
+					local color_ind = (modulo(Palette.last,12)) --change color every Note, show root
+-- TODO color button 91 5B per Modes[Mode.last].color (?)
+					local Mn = Modenames[1+modulo(Mode.last,table.getn(Modenames))]
+					local Mc = Modes[Mn].color
+					table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,
+						"5B",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,
+						"5C",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
 				end	
 --error(tblprint(bfevent))
 			end
@@ -3484,6 +3504,8 @@ Button = {
 			table.insert(bfevent,remote.make_midi("90 50 "..colors[1+(2*State.shift)+State.click])) -- 1324
 -- Here we list the buttons that are changed on sh/cl.
 --			table.insert(bfevent,Button[91].RDM(1))
+--error(tblprint(Button[91].RDM(1)))
+				table.insert(Pressed,91,1) -- button feedback
 
 
 			return bfevent
@@ -3495,14 +3517,14 @@ Button = {
 			State.shiftclick = State.shift + (2*State.click)  -- 0,1,2,3                      
 		end,
 		RDM=function(z)
+--[[
 			local colors = {"21","21","05","31"} -- green, red, purp
 			local bfevent={}
 			table.insert(bfevent,remote.make_midi("90 50 "..colors[1+(2*State.shift)+State.click])) -- 1324
 			table.insert(bfevent,remote.make_midi("90 46 "..colors[1+(2*State.click)+State.shift])) -- 1234    
 			return bfevent
---[[
-			return Button[70].RDM(1) -- same for both
 --]]
+			return Button[70].RDM(1) -- same for both
 		end
 	},
 -----------------------------------
