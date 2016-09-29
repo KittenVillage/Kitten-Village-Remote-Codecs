@@ -40,7 +40,7 @@ Itemnum={}
 Pad = {} -- x and y
 Padindex = {} -- 1 to 64
 
-
+-- del, used in redrum right now
 do_update_pads = 1
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -1351,13 +1351,6 @@ function exists(f, l) -- find element v of l satisfying f(v)
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
---+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
--- unused
-function bprint (strng)
-	Outmess=Outmess..' '..strng
-end
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 
 --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function vprint(strng,vari)
@@ -1433,6 +1426,16 @@ function tblprint (tbl, indent)
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+function gridprint(strng,grid)
+	local a=strng..'\n'
+	for xxx=1,8 do
+		a=a .. table.concat(grid[xxx]," ") .. '\n'
+	end
+	return a..'\n'
+end
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2486,7 +2489,6 @@ if event.size==3 then -- Note, button, channel pressure, fader
 			--return false -- don't return this false, because incoming pad press is a midi note.
 		end -- not button
 	end -- ret not nil
-	
 
 -----------------------------------
 -- 1010 is poly aftertouch
@@ -2497,7 +2499,6 @@ if event.size==3 then -- Note, button, channel pressure, fader
 -- return false here means chan aftert gets passed on to Reason
 	return false
 	
-
 end -- eventsize=3
 --3
 -------------------------------------------------------
@@ -2713,10 +2714,9 @@ function remote_deliver_midi(maxbytes,port)
 
 				padupdate=remote.make_midi(table.concat({sysex_setrgb,padsysex,sysend}," "))
 				table.insert(lpp_events,padupdate)
-				
-				
-				
-				
+
+
+
 --[[				
 -- TODO no more drumpad
 			elseif Scope=='Redrum' then
@@ -2735,7 +2735,8 @@ function remote_deliver_midi(maxbytes,port)
 						table.insert(lpp_events,padevent[i])
 					end
 				end
-				
+
+
 --]]				
 			end -- drumpad or not
 			
@@ -2983,8 +2984,6 @@ function def_vars()
 			})
 			index=index+1 --index so I can cycle through the 64 pads quickly.
 		end
-
-
 	end
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -3031,13 +3030,27 @@ Button = {
 			end
 		end,
 		RDM=function(z)
-			local color_ind = (modulo(Mode.last,12)) --change color every Note, show root
-			local bfevent={}
+				local bfevent={}
+			if z>0 then
+				if State.shiftclick == 0 then
+
+					local color_ind = (modulo(Mode.last,12)) --change color every Note, show root
 -- TODO color button 91 5B per Modes[Mode.last].color (?)
-				table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,
-					"5B",Palette.current[color_ind].R ,Palette.current[color_ind].G, Palette.current[color_ind].B,
-					"5C",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
-			return bfevent
+					local Mn = Modenames[1+modulo(Mode.last,table.getn(Modenames))]
+					local Mc = Modes[Mn].color
+					table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,
+						"5B",Mc.R, Mc.G, Mc.B,
+						"5C",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
+				elseif State.shiftclick == 1 then
+					
+				elseif State.shiftclick == 2 then
+					
+				elseif State.shiftclick == 3 then
+					
+				end	
+--error(tblprint(bfevent))
+			end
+				return bfevent
 		end
 	},
 [92]={ -- scale_dn
@@ -3055,12 +3068,15 @@ Button = {
 			end
 		end,
 		RDM=function(z)
+--[[
 			local color_ind = (modulo(Mode.last,12)) --change color every Note, show root
 			local bfevent={}
 				table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,
 					"5B",Palette.current[color_ind].R ,Palette.current[color_ind].G, Palette.current[color_ind].B,
 					"5C",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
 			return bfevent
+--]]
+			return Button[91].RDM(1) -- same code for both
 		end
 	},
 [93]={ -- tran_up
@@ -3466,6 +3482,10 @@ Button = {
 			local bfevent={}                                                                            
 			table.insert(bfevent,remote.make_midi("90 46 "..colors[1+(2*State.click)+State.shift])) -- 1234   
 			table.insert(bfevent,remote.make_midi("90 50 "..colors[1+(2*State.shift)+State.click])) -- 1324
+-- Here we list the buttons that are changed on sh/cl.
+--			table.insert(bfevent,Button[91].RDM(1))
+
+
 			return bfevent
 		end
 	},
@@ -3480,6 +3500,9 @@ Button = {
 			table.insert(bfevent,remote.make_midi("90 50 "..colors[1+(2*State.shift)+State.click])) -- 1324
 			table.insert(bfevent,remote.make_midi("90 46 "..colors[1+(2*State.click)+State.shift])) -- 1234    
 			return bfevent
+--[[
+			return Button[70].RDM(1) -- same for both
+--]]
 		end
 	},
 -----------------------------------
