@@ -1066,6 +1066,7 @@ Global or State
 -- State.update is the can kicked down from function to function all the way to RDM! 
 -- Scale is used in Mode, Transpose sets the midi output grid, and palette colors the pads (using modulo 12)
 State = {
+	trackname='',
 	shift = 0,
 	click = 0,
 	shiftclick = 0,
@@ -2888,13 +2889,14 @@ function remote_set_state(changed_items)
 			local step_index = item_index - Itemnum.first_step_playing_item + 1
 			g.step_is_playing[step_index] = remote.get_item_value(item_index)
 		end
---TODO:	Change 'copy' to old trackname..'copy' so the first time you get it 
---      it doesn't update, but if you click around it does.
+- old trackname or 'copy' so the first time you get it it doesnt update, but if you click around it does.
+-- so you can duplicate a device while in a new mode, sc, tr and no change
 
 		if item_index == Itemnum.trackname then
 			local tn = string.lower(remote.get_item_text_value(item_index))
-			if State.trackname ~= tn then
-				if not (string.find(tn,"transport") or string.find(tn,"copy")) then
+			if tn ~= State.trackname then
+--				if not (string.find(tn,"transport") or string.find(tn," copy")) then
+				if not (string.find(tn,"transport") or string.find(tn," copy") or string.find(tn,State.trackname,1,true)) then
 					if string.find(tn,"lpp") then
 						local out = {}
 						out.scale = tonumber(string.match(tn,"s(%d+)"))
@@ -2905,7 +2907,8 @@ function remote_set_state(changed_items)
 						State.do_update(out)
 					end
 				end
-				tn=State.trackname
+				State.trackname=tn
+--error(State.trackname)
 			end
 			-- error(remote.get_item_text_value(item_index))
 		end
@@ -2937,6 +2940,7 @@ function remote_prepare_for_use()
 --]]
 	}
 	State.do_update({scale=1,mode=1,palette=1,transpose=0})
+	table.insert(Pressed,70,1) -- button feedback sh cl init light
 
 	return retEvents
 end
@@ -3503,10 +3507,9 @@ Button = {
 			table.insert(bfevent,remote.make_midi("90 46 "..colors[1+(2*State.click)+State.shift])) -- 1234   
 			table.insert(bfevent,remote.make_midi("90 50 "..colors[1+(2*State.shift)+State.click])) -- 1324
 -- Here we list the buttons that are changed on sh/cl.
---			table.insert(bfevent,Button[91].RDM(1))
---error(tblprint(Button[91].RDM(1)))
-				table.insert(Pressed,91,1) -- button feedback
-
+-- We have to add to pressed and let that handle the function on the next event,
+-- bfevent from other RDM function could be multiple.
+			table.insert(Pressed,91,1) -- button feedback
 
 			return bfevent
 		end
@@ -3542,7 +3545,7 @@ Button = {
 					bfevent = scroll_status(table.concat({"New MODE is ", Modenames[1+modulo(Mode.last,table.getn(Modenames))]},''))
 					
 				elseif State.shiftclick == 2 then
-					
+					bfevent = scroll_status(table.concat({"New TN is _", State.trackname},''))					
 				elseif State.shiftclick == 3 then
 					
 				end	
