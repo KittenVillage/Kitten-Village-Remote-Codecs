@@ -37,8 +37,8 @@ Itemnum={}
 -- Set some variables for later!
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- set after items are in remote.init(), used everywhere.
-Pad = {} -- x and y
-Padindex = {} -- 1 to 64
+Pad={} -- x and y
+Padindex={} -- 1 to 64
 
 -- del, used in redrum right now
 do_update_pads = 1
@@ -47,7 +47,7 @@ do_update_pads = 1
 
 
 -- putting things into state so I can dump it for debug
-g = {}
+g={}
 g.accent = 0
 g.last_accent = 0
 g.accent_dn = false
@@ -1307,7 +1307,7 @@ Mode = {
 -- This is an internal designation detecting/setting sysex.
 --Only programmer (3) and fader (2) modes enabled!
 -- TODO drum layout flips to internal drum Mode
-Layout = {}
+Layout={}
 --Layout.mode = 3
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1350,7 +1350,7 @@ function scroll_status(mess)
 			table.insert(ssevent,string.format("%02X",string.byte(c)))
 		end)
 	table.insert(ssevent,sysend)
-		local bfevent = {}
+		local bfevent={}
 		table.insert(bfevent,remote.make_midi(table.concat(ssevent," ")))
 		table.insert(bfevent,remote.make_midi("F0 00 20 29 02 10 0A 63 32 F7",{ port=1 })) --Front light purp
 	return bfevent
@@ -2721,7 +2721,7 @@ function remote_deliver_midi(maxbytes,port)
 -- -----------------------------------------------------------------------------------------------		
 		if (do_update_pads==1) or (State.update==1) then
 -- TODO no more drumpad
-			if(scalename~='DrumPad') then
+			if(Scope~='Redrum') then
 -- NEW MODES test here
 
 				local padsysex = ""
@@ -2838,12 +2838,14 @@ function remote_deliver_midi(maxbytes,port)
 		if (table.getn(State.lighton) ~= 0) then
 			padupdate=remote.make_midi(table.concat({sysex_setrgb,table.concat(State.lighton," "),sysend}," "))
 			table.insert(lpp_events,padupdate)
-			State.lighton ={}
+			for k,_ in pairs(State.lighton) do State.lighton[k] = nil end
+			--State.lighton ={}
 		end
 		if (table.getn(State.lightoff) ~= 0) then
 			padupdate=remote.make_midi(table.concat({sysex_setrgb,table.concat(State.lightoff," "),sysend}," "))
 			table.insert(lpp_events,padupdate)
-			State.lightoff ={}	
+			for k,_ in pairs(State.lightoff) do State.lightoff[k] = nil end
+			--State.lightoff ={}	
 		end
 
 ---------------------------------------------------	
@@ -2856,7 +2858,7 @@ function remote_deliver_midi(maxbytes,port)
 	if(port==2) then
 --[[
 		local le = lcd_events
-		lcd_events = {}
+		lcd_events ={}
 		return le
 --]]
 	end
@@ -2927,7 +2929,7 @@ function remote_set_state(changed_items)
 --				if not (string.find(tn,"transport") or string.find(tn," copy")) then
 				if not (string.find(tn,"transport") or string.find(tn," copy") or string.find(tn,State.trackname,1,true)) then
 					if string.find(tn,"lpp") then
-						local out = {}
+						local out={}
 						out.scale = tonumber(string.match(tn,"s(%d+)"))
 						out.mode = tonumber(string.match(tn,"m(%d+)")) 
 						out.rotate = tonumber(string.match(tn,"r(%d)"))
