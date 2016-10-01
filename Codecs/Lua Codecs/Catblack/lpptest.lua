@@ -1100,12 +1100,38 @@ State = {
 -- also sets hi and lo for transpose check
 -- and repeats with an adjustment to Transpose.last until everything is in range.
 	Grid = {
-			rotate = { 
-				function(g) local ng=g for yy=1,8,1 do for xx=1,8,1 do ng[yy][xx]=g[yy][xx] end end return ng end,
-				function(g) local ng=g for yy=8,1,-1 do for xx=1,8,1 do ng[9-yy][xx]=g[xx][yy] end end return ng end,
-				function(g) local ng=g for yy=8,1,-1 do for xx=8,1,-1 do ng[9-yy][9-xx]=g[yy][xx] end end return ng end,
-				function(g) local ng=g for yy=1,8,1  do for xx=8,1,-1 do ng[yy][9-xx]=g[xx][yy] end end return ng end,
-			},
+			rotate = function(r,g) local ng={{},{},{},{},{},{},{},{}} local rx=0
+				
+				for ve=1,8 do for ho=1,8 do 
+					if r==2 then
+						ng[ve][ho]=g[9-ho][ve] --1cw
+					elseif r==3 then
+						ng[ve][ho]=g[9-ve][9-ho] --2cw
+					elseif r==4 then
+						ng[ve][ho]=g[ho][9-ve] -- 3cw
+					elseif r>4 and r<9 then
+						ng[ve][ho]=g[9-ve][ho] --flip v
+					elseif r>8 and r<13 then 
+						ng[ve][ho]=g[ve][9-ho] --flip h
+					elseif r>12 and r<17 then 
+						ng[ve][ho]=g[ho][ve] -- flip v and h
+					else
+						ng[ve][ho]=g[ve][ho] -- no change 1 or gt 16
+					end
+				end end
+				if r>5 and r<9 then -- 6,7,8 flip h then rot
+					rx=r-4
+				elseif r>9 and r<13 then -- 10,11,12 flip v then rot
+					rx=r-8
+				elseif r>13 and r<17 then -- 14,15,16 flip h and v then rot
+					rx=r-12
+				end
+				if rx > 0 then
+					ng=Grid.rotate(rx,ng)
+				end
+--error(gridprint(gridprint('\nrotate '..r,g),ng))
+				return ng end,
+
 			new  = { note={{},{},{},{},{},{},{},{}},oct={{},{},{},{},{},{},{},{}} 
 			},
 			current = { -- CoF
@@ -1254,13 +1280,15 @@ Scale = {
 -- TODO baby mode
 Mode = { 
 		current = 0,
-		select=function(n,r) local new = 1+modulo(n-1,table.getn(Modenames)) 
-			local ro = r or State.rotate
+		select=function(n,r) 
+			local new = 1+modulo(n-1,table.getn(Modenames)) 
+			local ro
+			if r then ro = 1+modulo(r-1,16) else ro=State.rotate end
 			local Mn=type(Modes[Modenames[new]].note)=="function" and Modes[Modenames[new]].note(new) or Modes[Modenames[new]].note
 			local Mo=Modes[Modenames[new]].oct
 			if new ~= Mode.last or ro~=State.rotate or State.update ~= 0 then 
-				Grid.current.note=Grid.rotate[ro](Mn) 
-				Grid.current.oct=Grid.rotate[ro](Mo) 
+				Grid.current.note=Grid.rotate(ro,Mn) 
+				Grid.current.oct=Grid.rotate(ro,Mo) 
 				Mode.last=new 
 				State.rotate=ro
 				State.update=1 
@@ -1432,7 +1460,7 @@ end
 function gridprint(strng,grid)
 	local a=strng..'\n'
 	for xxx=1,8 do
-		a=a .. table.concat(grid[xxx]," ") .. '\n'
+		a=a .. table.concat(grid[xxx],"\t") .. '\n'
 	end
 	return a..'\n'
 end
@@ -2408,6 +2436,7 @@ if event.size==3 then -- Note, button, channel pressure, fader
 			for k,v in pairs(Playing) do
 				local prev_off={ time_stamp = event.time_stamp, item=1, value = 0, note = k, velocity = 0 }
 				remote.handle_input(prev_off)
+				Playing[k]=nil --!!!
 			end
 --[[
 -- not working
@@ -2621,8 +2650,8 @@ function remote_deliver_midi(maxbytes,port)
 --error(tblprint(Pressed))
 	for k,v in pairs(Pressed) do
 		for _,e in pairs(Button[k].RDM(v)) do table.insert(lpp_events,e) end
+		Pressed[k]=nil -- !!!!
 	end
-	Pressed={}
 --end
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
@@ -2744,7 +2773,7 @@ function remote_deliver_midi(maxbytes,port)
 		do_update_pads=0
 		State.update=0
 			
-		end --update_pads ==1
+		end --update_pads, State.update ==1
 -- -----------------------------------------------------------------------------------------------
 -- end if do_update_pads==1 or State.update==1
 -- -----------------------------------------------------------------------------------------------
@@ -2889,7 +2918,7 @@ function remote_set_state(changed_items)
 			local step_index = item_index - Itemnum.first_step_playing_item + 1
 			g.step_is_playing[step_index] = remote.get_item_value(item_index)
 		end
-- old trackname or 'copy' so the first time you get it it doesnt update, but if you click around it does.
+-- old trackname or 'copy' so the first time you get it it doesnt update, but if you click around it does.
 -- so you can duplicate a device while in a new mode, sc, tr and no change
 
 		if item_index == Itemnum.trackname then
@@ -2901,6 +2930,7 @@ function remote_set_state(changed_items)
 						local out = {}
 						out.scale = tonumber(string.match(tn,"s(%d+)"))
 						out.mode = tonumber(string.match(tn,"m(%d+)")) 
+						out.rotate = tonumber(string.match(tn,"r(%d)"))
 						out.palette = tonumber(string.match(tn,"p(%d+)"))
 						out.transpose = string.match(tn,"t(%-%d+)") or string.match(tn,"t(%d+)")
 						out.transpose = tonumber(out.transpose)
@@ -2939,7 +2969,7 @@ function remote_prepare_for_use()
 --		remote.make_midi("bF 7A 40")
 --]]
 	}
-	State.do_update({scale=1,mode=1,palette=1,transpose=0})
+	State.do_update({scale=1,mode=1,palette=1,transpose=0,rotate=0})
 	table.insert(Pressed,70,1) -- button feedback sh cl init light
 
 	return retEvents
@@ -3012,6 +3042,9 @@ end
 -- If we need Reason not to see the press (sh,cl or shcl) 
 -- then return true in the RPM func (Still passes to RDM though!)
 -- 
+-- Add a button to sh or cl (Playing) if we need to display it 
+-- to show that something has a different state when func buttons pressed
+-- When adding (Pressed) use 1, actual press z is 127!
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -3027,47 +3060,35 @@ Button = {
 				elseif State.shiftclick == 1 then -- scale
 					State.do_update({scale=Scale.last+1})
 				elseif State.shiftclick == 2 then -- ???
-
+					State.do_update({rotate=State.rotate+1})
 				elseif State.shiftclick == 3 then -- color palette
 					State.do_update({palette=Palette.last+1})
 				end	
 			end
 		end,
-		RDM=function(z)
+		RDM=function(z) --91
 				local bfevent={}
 			if z>0 then
 				if State.shiftclick == 0 then
-
-					local color_ind = (modulo(Mode.last,12)) --change color every Note, show root
--- TODO color button 91 5B per Modes[Mode.last].color (?)
+					local color_ind = (modulo(Mode.last-1,12)) --change color every Note, show root -1 because pal start at 0
 					local Mn = Modenames[1+modulo(Mode.last,table.getn(Modenames))]
 					local Mc = Modes[Mn].color
 					table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,
 						"5B",Mc.R, Mc.G, Mc.B,
 						"5C",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
-
 				elseif State.shiftclick == 1 then
-					local color_ind = (modulo(Scale.last,12)) --change color every Note, show root
--- TODO color button 91 5B per Modes[Mode.last].color (?)
+					local color_ind = (modulo(Scale.last-1,12)) --change color every Note, show root
 					table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,
 						"5B",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,
 						"5C",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))					
 				elseif State.shiftclick == 2 then
---[[
-					local color_ind = (modulo(Mode.last,12)) --change color every Note, show root
--- TODO color button 91 5B per Modes[Mode.last].color (?)
-					local Mn = Modenames[1+modulo(Mode.last,table.getn(Modenames))]
-					local Mc = Modes[Mn].color
+					local color_ind = (modulo(State.rotate-1,12)) --change color every Note, show root
 					table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,
 						"5B",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,
 						"5C",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
---]]
 					
 				elseif State.shiftclick == 3 then
-					local color_ind = (modulo(Palette.last,12)) --change color every Note, show root
--- TODO color button 91 5B per Modes[Mode.last].color (?)
-					local Mn = Modenames[1+modulo(Mode.last,table.getn(Modenames))]
-					local Mc = Modes[Mn].color
+					local color_ind = (modulo(Palette.last-1,12)) --change color every Note, show root
 					table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,
 						"5B",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,
 						"5C",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
@@ -3085,21 +3106,13 @@ Button = {
 				elseif State.shiftclick == 1 then -- scale
 					State.do_update({scale=Scale.last-1})
 				elseif State.shiftclick == 2 then -- ???
-
+					State.do_update({rotate=State.rotate-1})
 				elseif State.shiftclick == 3 then -- color palette
 					State.do_update({palette=Palette.last-1})
 				end	
 			end
 		end,
-		RDM=function(z)
---[[
-			local color_ind = (modulo(Mode.last,12)) --change color every Note, show root
-			local bfevent={}
-				table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,
-					"5B",Palette.current[color_ind].R ,Palette.current[color_ind].G, Palette.current[color_ind].B,
-					"5C",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
-			return bfevent
---]]
+		RDM=function(z) --92
 			return Button[91].RDM(1) -- same code for both
 		end
 	},
@@ -3117,7 +3130,7 @@ Button = {
 				end	
 			end
 		end,
-		RDM=function(z)
+		RDM=function(z) --93
 			local color_ind = (modulo(Transpose.last,12)) --change color every Note, show root
 			local bfevent={}
 			if Transpose.last>0 then
@@ -3147,7 +3160,7 @@ Button = {
 				end	
 			end
 		end,
-		RDM=function(z)
+		RDM=function(z) --94
 			return Button[93].RDM(1) -- same code for both
 		end
 	},
@@ -3158,7 +3171,7 @@ Button = {
 				if     State.shiftclick == 0 then
 					
 				elseif State.shiftclick == 1 then
-					
+				
 				elseif State.shiftclick == 2 then
 					
 				elseif State.shiftclick == 3 then
@@ -3167,8 +3180,32 @@ Button = {
 			end
 		return true end,
 									
-		RDM=function(z)
-		return {} end
+		RDM=function(z) --95
+				local bfevent={}
+			if z>1 then
+				if     State.shiftclick == 0 then
+				
+				elseif State.shiftclick == 1 then
+					bfevent = scroll_status(table.concat({"S",Scale.last," ", Scalenames[1+modulo(Scale.last,table.getn(Scalenames))]},''))
+				elseif State.shiftclick == 2 then
+					bfevent = scroll_status(table.concat({'M',tostring(Mode.last),' S',tostring(Scale.last),' T',tostring(Transpose.last),' R',tostring(State.rotate),' P',tostring(Palette.last)},''))	
+				elseif State.shiftclick == 3 then
+					bfevent = scroll_status(table.concat({"M",Mode.last," ", Modenames[1+modulo(Mode.last,table.getn(Modenames))]},''))
+
+				end	
+			elseif z==1 then
+				if     State.shiftclick == 0 then
+					table.insert(bfevent,remote.make_midi("90 5F 00")) -- off   
+				elseif State.shiftclick == 1 then
+					local color_ind = (modulo(Scale.last-1,12)) --change color every Note, show root
+					table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5F",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))					
+				elseif State.shiftclick > 1 then
+					local color_ind = (modulo(Mode.last-1,12)) --change color every Note, show root -1 because pal start at 0
+					table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5F",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
+										
+				end	
+			end
+		return bfevent end
 	},
 
 [96]={ --Note
@@ -3186,7 +3223,7 @@ Button = {
 			end
 		end,
 									
-		RDM=function(z)
+		RDM=function(z) --96
 		return {} end
 	},
 
@@ -3510,6 +3547,8 @@ Button = {
 -- We have to add to pressed and let that handle the function on the next event,
 -- bfevent from other RDM function could be multiple.
 			table.insert(Pressed,91,1) -- button feedback
+			table.insert(Pressed,95,1) -- button feedback
+--error(tblprint(Pressed))
 
 			return bfevent
 		end
@@ -3540,9 +3579,9 @@ Button = {
 				local bfevent={}
 --			if z>0 then
 				if     State.shiftclick == 0 then
-					bfevent = scroll_status(table.concat({'M',tostring(Mode.last),' S',tostring(Scale.last),' T',tostring(Transpose.last),' P',tostring(Palette.last)},''))
+					bfevent = scroll_status(table.concat({'M',tostring(Mode.last),' S',tostring(Scale.last),' T',tostring(Transpose.last),' P',tostring(Palette.last),' r',tostring(State.rotate)},''))
 				elseif State.shiftclick == 1 then
-					bfevent = scroll_status(table.concat({"New MODE is ", Modenames[1+modulo(Mode.last,table.getn(Modenames))]},''))
+					bfevent = scroll_status(table.concat({"M",Mode.last," ", Modenames[1+modulo(Mode.last,table.getn(Modenames))]},''))
 					
 				elseif State.shiftclick == 2 then
 					bfevent = scroll_status(table.concat({"New TN is _", State.trackname},''))					
@@ -3673,7 +3712,7 @@ Button = {
 		RPM=function(z)
 			if z>0 then
 				if     State.shiftclick == 0 then
-					
+
 				elseif State.shiftclick == 1 then
 					
 				elseif State.shiftclick == 2 then
