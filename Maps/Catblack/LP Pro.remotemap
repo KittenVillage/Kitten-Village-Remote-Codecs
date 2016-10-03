@@ -33,9 +33,9 @@ Map	Button 98		Record
 Map	TrackName		Target Track Name
 //Map	AllStop		Send All Notes Off
 
-Map	Button 01		Target Previous Track
-Map	Button 02		Target Next Track
-Map	Button 60		Undo
+Map	Button 91		Target Previous Track
+Map	Button 92		Target Next Track
+//Map	Button 60		Undo
 //uncomment for documentation generation:
 //Map	Button 94		Scale Up
 //Map	Button 95		Scale Down
