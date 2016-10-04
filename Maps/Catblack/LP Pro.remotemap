@@ -33,15 +33,10 @@ Map	Button 98		Record
 Map	TrackName		Target Track Name
 //Map	AllStop		Send All Notes Off
 
-Map	Button 91		Target Previous Track
-Map	Button 92		Target Next Track
-//Map	Button 60		Undo
-//uncomment for documentation generation:
-//Map	Button 94		Scale Up
-//Map	Button 95		Scale Down
-//Map	Button 96		Transpose Up
-//Map	Button 97		Transpose Dn
-//Map	Button 98		Octave Shift
+Map	Button 93		Target Previous Track
+Map	Button 94		Target Next Track
+Map	Undo		Undo
+Map	Redo		Redo
 
 
 Scope	Propellerheads	Reason Master Section
@@ -112,8 +107,8 @@ Map	Fader 8		Button 4		Fader
 //Map	Fader 9		Mod Wheel
 
 
-Map	Shift Button 91		Select Previous Patch
-Map	Shift Button 92		Select Next Patch
+Map	Button 91		Select Previous Patch
+Map	Button 92		Select Next Patch
 
 
 Scope	Propellerheads	Mixer 14:2
@@ -243,8 +238,8 @@ Map	Fader 6		Sound D		Fader
 //Map	Fader 7
 Map	Fader 8		Volume		Fader
 
-Map	Shift Button 91		Select Previous Preset
-Map	Shift Button 92		Select Next Preset
+Map	Button 91		Select Previous Preset
+Map	Button 92		Select Next Preset
 
 
 Scope	Propellerheads	Kong Drum Designer
@@ -255,8 +250,8 @@ Map	Button 06		Keyboard Shortcut Variations=D3&4
 Map	Button 07		Keyboard Shortcut Variations=D5&6
 Map	Button 08		Keyboard Shortcut Variations=D7&8
 
-Map	Shift Button 91		Select Previous Patch
-Map	Shift Button 92		Select Next Patch
+Map	Button 91		Select Previous Patch
+Map	Button 92		Select Next Patch
 
 Map	_Scope		KONG
 //Map	Fader 9		Mod Wheel
@@ -361,8 +356,8 @@ Map	Button 06		Keyboard Shortcut Variations=Env
 Map	Button 07		Keyboard Shortcut Variations=Osc
 Map	Button 08		Keyboard Shortcut Variations=FX
 
-Map	Shift Button 91		Select Previous Patch
-Map	Shift Button 92		Select Next Patch
+Map	Button 91		Select Previous Patch
+Map	Button 92		Select Next Patch
 
 Map	Fader 1		Filter 1 Freq		Fader	FilterMod
 Map	Fader 2		Filter 1 Res		Fader	FilterMod
@@ -414,8 +409,8 @@ Map	Button 06		Keyboard Shortcut Variations=Env
 Map	Button 07		Keyboard Shortcut Variations=Osc
 //Map	Button 08		Keyboard Shortcut Variations=
 
-Map	Shift Button 91		Select Previous Patch
-Map	Shift Button 92		Select Next Patch
+Map	Button 91		Select Previous Patch
+Map	Button 92		Select Next Patch
 
 //Map	Fader 9		Mod Wheel
 
@@ -459,8 +454,8 @@ Map	Button 06		Keyboard Shortcut Variations=Env
 Map	Button 07		Keyboard Shortcut Variations=Osc A
 Map	Button 08		Keyboard Shortcut Variations=Osc B
 
-Map	Shift Button 91		Select Previous Patch
-Map	Shift Button 92		Select Next Patch
+Map	Button 91		Select Previous Patch
+Map	Button 92		Select Next Patch
 
 //Map	Fader 9		Mod Wheel
 
@@ -514,8 +509,8 @@ Map	Button 06		Keyboard Shortcut Variations=Env
 Map	Button 07		Keyboard Shortcut Variations=Osc
 //Map	Button 08		Keyboard Shortcut Variations=
 
-Map	Shift Button 91		Select Previous Patch
-Map	Shift Button 92		Select Next Patch
+Map	Button 91		Select Previous Patch
+Map	Button 92		Select Next Patch
 
 //Map	Fader 9		Mod Wheel
 
@@ -564,8 +559,8 @@ Map	Fader 6		Mod Env Decay		Fader
 Map	Fader 7		External Controller		Fader
 Map	Fader 8		Master Volume		Fader
 
-Map	Shift Button 91		Select Previous Patch
-Map	Shift Button 92		Select Next Patch
+Map	Button 91		Select Previous Patch
+Map	Button 92		Select Next Patch
 
 
 Scope	Propellerheads	Dr.REX Loop Player
@@ -577,8 +572,8 @@ Map	Button 06		Keyboard Shortcut Variations=Env
 Map	Button 07		Keyboard Shortcut Variations=Osc
 //Map	Button 08		Keyboard Shortcut Variations=
 
-Map	Shift Button 91		Select Previous Patch
-Map	Shift Button 92		Select Next Patch
+Map	Button 91		Select Previous Patch
+Map	Button 92		Select Next Patch
 
 //Map	Fader 9		Mod Wheel
 
@@ -621,8 +616,8 @@ Map	Button 06		Keyboard Shortcut Variations=Pan
 Map	Button 07		Keyboard Shortcut Variations=Velocity
 Map	Button 08		Keyboard Shortcut Variations=Length
 
-Map	Shift Button 91		Select Previous Patch
-Map	Shift Button 92		Select Next Patch
+Map	Button 91		Select Previous Patch
+Map	Button 92		Select Next Patch
 
 //Map	Fader 9		Master Level
 
@@ -963,8 +958,8 @@ Scope	Propellerheads	RV7000 Advanced Reverb
 //Define Group	Keyboard Shortcut Variations
 //	Control Surface Item	Key	Remotable Item	Scale	Mode	Groups
 
-Map	Shift Button 91		Select Previous Patch
-Map	Shift Button 92		Select Next Patch
+Map	Button 91		Select Previous Patch
+Map	Button 92		Select Next Patch
 
 Map	_Scope		RV7000 Reverb
 Map	Fader 1		Decay		Fader
@@ -988,8 +983,8 @@ Map	Button 06		Keyboard Shortcut Variations=Body
 
 Map	Fader 8		Master Level
 
-Map	Shift Button 91		Select Previous Patch
-Map	Shift Button 92		Select Next Patch
+Map	Button 91		Select Previous Patch
+Map	Button 92		Select Next Patch
 
 Map	Fader 1		Damage Control		Fader	Damage & Cut
 Map	Fader 2		Damage Type		Fader	Damage & Cut
@@ -1083,8 +1078,8 @@ Map	Fader 6		Treble		Fader
 Map	Fader 7		Presence		Fader
 Map	Fader 8		Volume		Fader
 
-Map	Shift Button 91		Select Previous Patch
-Map	Shift Button 92		Select Next Patch
+Map	Button 91		Select Previous Patch
+Map	Button 92		Select Next Patch
 
 
 Scope	Propellerheads	Line 6 Bass Amp
@@ -1099,8 +1094,8 @@ Map	Fader 5		Hi Mid		Fader
 Map	Fader 6		Treble		Fader
 Map	Fader 8		Volume		Fader
 
-Map	Shift Button 91		Select Previous Patch
-Map	Shift Button 92		Select Next Patch
+Map	Button 91		Select Previous Patch
+Map	Button 92		Select Next Patch
 
 
 Scope	Propellerheads	Neptune Pitch Adjuster
@@ -1124,8 +1119,8 @@ Scope	Propellerheads	Pulveriser
 Define Group	Keyboard Shortcut Variations	Main	Follower	Tremor
 Map	_Scope		Pulveriser
 
-Map	Shift Button 91		Select Previous Patch
-Map	Shift Button 92		Select Next Patch
+Map	Button 91		Select Previous Patch
+Map	Button 92		Select Next Patch
 
 Map	Button 05		Keyboard Shortcut Variations=Main
 Map	Button 06		Keyboard Shortcut Variations=Follower
@@ -1169,8 +1164,8 @@ Map	Button 06		Keyboard Shortcut Variations=FilterMod
 //Map	Button 07		Keyboard Shortcut Variations=
 //Map	Button 08		Keyboard Shortcut Variations=
 
-Map	Shift Button 91		Select Previous Patch
-Map	Shift Button 92		Select Next Patch
+Map	Button 91		Select Previous Patch
+Map	Button 92		Select Next Patch
 
 Map	Fader 1		Delay Time		Fader	Delay
 Map	Fader 2		Right Ch Time Offset		Fader	Delay
@@ -1204,8 +1199,8 @@ Map	Button 06		Keyboard Shortcut Variations=High
 Map	Button 07		Keyboard Shortcut Variations=Band
 Map	Button 08		Keyboard Shortcut Variations=Low
 
-Map	Shift Button 91		Select Previous Patch
-Map	Shift Button 92		Select Next Patch
+Map	Button 91		Select Previous Patch
+Map	Button 92		Select Next Patch
 
 Map	Fader 1		Resolution		Fader	MainFX
 Map	Fader 2		LFO Waveform		Fader	MainFX

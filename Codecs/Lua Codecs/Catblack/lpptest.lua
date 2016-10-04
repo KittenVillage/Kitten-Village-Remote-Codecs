@@ -1544,6 +1544,8 @@ function remote_init(manufacturer, model)
 			{name="Channel Pressure", input="value", min=0, max=127, itemnum="channelpressure"},
 			{name="TrackName", input="noinput", output="text", itemnum="trackname"},
 --			{name="AllStop", input="button", output="nooutput", itemnum="allstop"},
+			{name="Redo", input="button", output="nooutput", itemnum="redo"},
+			{name="Undo", input="button", output="nooutput", itemnum="undo"},
 
 			{name="Fader 1", input="value", min=0, max=127, output="value", modes={"Program","Fader"}, itemnum="first_fader"},
 			{name="Fader 2", input="value", min=0, max=127, output="value", modes={"Program","Fader"}},
@@ -1790,8 +1792,10 @@ function remote_init(manufacturer, model)
 			{name="Button 40", input="button", min=0, max=127, output="value"},
 			{name="Button 50", input="button", min=0, max=127, output="value"},
 			{name="Button 60", input="button", min=0, max=127, output="value"},
+--[[
 			{name="Button 70", input="button", min=0, max=127, output="value"},
 			{name="Button 80", input="button", min=0, max=127, output="value"},
+--]]
 --bottom to top Right
 			{name="Button 19", input="button", min=0, max=127, output="value"},
 			{name="Button 29", input="button", min=0, max=127, output="value"},
@@ -1801,24 +1805,6 @@ function remote_init(manufacturer, model)
 			{name="Button 69", input="button", min=0, max=127, output="value"},
 			{name="Button 79", input="button", min=0, max=127, output="value"},
 			{name="Button 89", input="button", min=0, max=127, output="value"},
---left to right Top
-			{name="Shift Button 91", input="button", min=0, max=127, output="value"},
-			{name="Shift Button 92", input="button", min=0, max=127, output="value"},
-			{name="Shift Button 93", input="button", min=0, max=127, output="value"},
-			{name="Shift Button 94", input="button", min=0, max=127, output="value"},
-			{name="Shift Button 95", input="button", min=0, max=127, output="value"},
-			{name="Shift Button 96", input="button", min=0, max=127, output="value"},
-			{name="Shift Button 97", input="button", min=0, max=127, output="value"},
-			{name="Shift Button 98", input="button", min=0, max=127, output="value"},
---left to right Bottom
-			{name="Shift Button 01", input="button", min=0, max=127, output="value"},
-			{name="Shift Button 02", input="button", min=0, max=127, output="value"},
-			{name="Shift Button 03", input="button", min=0, max=127, output="value"},
-			{name="Shift Button 04", input="button", min=0, max=127, output="value"},
-			{name="Shift Button 05", input="button", min=0, max=127, output="value"},
-			{name="Shift Button 06", input="button", min=0, max=127, output="value"},
-			{name="Shift Button 07", input="button", min=0, max=127, output="value"},
-			{name="Shift Button 08", input="button", min=0, max=127, output="value"},
 			{name="Pad 32 Alt", input="value", min=0, max=2, output="value", itemnum="accent"},
 			}
 
@@ -2017,8 +2003,10 @@ end
 			{name="Button 40",	 pattern="B? 28 ?<???x>"},
 			{name="Button 50",	 pattern="B? 32 ?<???x>"},
 			{name="Button 60",	 pattern="B? 3C ?<???x>"},
+--[[
 			{name="Button 70",	 pattern="B? 46 ?<???x>"},
 			{name="Button 80",	 pattern="B? 50 ?<???x>"},
+--]]
 --bottom to top Right
 			{name="Button 19",  pattern="B? 13 ?<???x>"},
 			{name="Button 29",  pattern="B? 1D ?<???x>"},
@@ -2036,7 +2024,7 @@ end
 
 --ouputs
 
-
+--[[
 			{pattern="90 01 xx", name="Button 01", x="1+(126*value)"},
 			{pattern="90 02 xx", name="Button 02", x="1+(31*value)"}, 
 			{pattern="90 03 xx", name="Button 03", x="4+(28*value)"}, 
@@ -2046,15 +2034,7 @@ end
 			{pattern="90 07 xx", name="Button 07", x="64*value"}, 
 			{pattern="90 08 xx", name="Button 08", x="64*value"}, 
 			
-			{pattern="90 01 xx", name="Shift Button 01", x="1+(126*value)"},
-			{pattern="90 02 xx", name="Shift Button 02", x="1+(31*value)"}, 
-			{pattern="90 03 xx", name="Shift Button 03", x="4+(28*value)"}, 
-			{pattern="90 04 xx", name="Shift Button 04", x="8+(8*value)"},
-			{pattern="90 05 xx", name="Shift Button 05", x="64*value"}, 
-			{pattern="90 06 xx", name="Shift Button 06", x="64*value"}, 
-			{pattern="90 07 xx", name="Shift Button 07", x="64*value"}, 
-			{pattern="90 08 xx", name="Shift Button 08", x="64*value"}, 
-
+--]]
 			--touch Faders
 			{pattern="F0 00 20 29 02 10 2B 00 00 05 xx F7", name="Fader 1"},
 			{pattern="F0 00 20 29 02 10 2B 01 00 05 xx F7", name="Fader 2"},
@@ -2421,7 +2401,12 @@ if event.size==3 then -- Note, button, channel pressure, fader
 -- BUTTON HANDLE RPM
 		if button==1 and (ret.y<21 or ret.y>29) then -- button, not fader mode
 			table.insert(Pressed,ret.y,ret.z) -- keep track for Button[Pressed.y].RDM(z)
-			local r = Button[ret.y].RPM(ret.z)
+			local r,rhi = Button[ret.y].RPM(ret.z)
+			if rhi then
+				local msg={ time_stamp = event.time_stamp, item=rhi.item, value = rhi.value}
+				remote.handle_input(msg)
+			end
+
 			if r then return r end -- If we need Reason not to see the press (sh,cl or shcl) then return true in the RPM func
 		end
 -- -----------------------------------------------------------------------------------------------
@@ -3216,11 +3201,11 @@ Button = {
 				if     State.shiftclick == 0 then
 				
 				elseif State.shiftclick == 1 then
-					bfevent = scroll_status(table.concat({"S",Scale.last," ", Scalenames[1+modulo(Scale.last,table.getn(Scalenames))]},''))
+					bfevent = scroll_status(table.concat({"S",Scale.last," ", Scalenames[1+modulo(Scale.last-1,table.getn(Scalenames))]},''))
 				elseif State.shiftclick == 2 then
 					bfevent = scroll_status(table.concat({'M',tostring(Mode.last),' S',tostring(Scale.last),' T',tostring(Transpose.last),' R',tostring(State.rotate),' P',tostring(Palette.last)},''))	
 				elseif State.shiftclick == 3 then
-					bfevent = scroll_status(table.concat({"M",Mode.last," ", Modenames[1+modulo(Mode.last,table.getn(Modenames))]},''))
+					bfevent = scroll_status(table.concat({"M",Mode.last," ", Modenames[1+modulo(Mode.last-1,table.getn(Modenames))]},''))
 
 				end	
 			elseif z==1 then -- sh cl lights
@@ -3550,13 +3535,16 @@ Button = {
 				if     State.shiftclick == 0 then
 					
 				elseif State.shiftclick == 1 then
-					
+					local handle={ item=Itemnum.redo, value = 1 }
+					return true,handle 
 				elseif State.shiftclick == 2 then
-					
+					local handle={ item=Itemnum.undo, value = 1 }
+					return true,handle 
 				elseif State.shiftclick == 3 then
 					
 				end	
 			end
+			return true 
 		end,
 									
 		RDM=function(z)
