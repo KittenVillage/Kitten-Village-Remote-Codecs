@@ -1053,7 +1053,8 @@ Modenames={
 --[[
 Pad, , Palette, Transpose, Scale, Mode, Layout
 Grid, Buttons 
-Global or State
+State
+Pressed, Playing
 
 --]]
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1093,43 +1094,31 @@ State = {
 -- could add flips.
 -- newgrid=Grid[index].rotate(oldgrid)
 -- TODO .new grid function that sets the current global rotation --DONE
--- TODO ROTATE NOT WORKING?
 -- newgrid =Grid.rotate[index](oldgrid) --takes a single 8x8 grid and rotates it.
 -- Grid.current has 6 sub grids, with an additional table for duplicate notes.
 -- refresh_midi counts duplicates and sets the output notes, 
 -- also sets hi and lo for transpose check
 -- and repeats with an adjustment to Transpose.last until everything is in range.
 	Grid = {
-			rotate = function(r,g) local ng={{},{},{},{},{},{},{},{}} local rx=0
-				
+			rotate = function(r,g) local ng={{},{},{},{},{},{},{},{}} 
+--	rotate flip v 5-8 only one flip needed!			
 				for ve=1,8 do for ho=1,8 do 
 					if r==2 then
-						ng[ve][ho]=g[9-ho][ve] --1cw
+						ng[ve][ho]=g[ho][9-ve] -- 1cw
 					elseif r==3 then
 						ng[ve][ho]=g[9-ve][9-ho] --2cw
 					elseif r==4 then
-						ng[ve][ho]=g[ho][9-ve] -- 3cw
+						ng[ve][ho]=g[9-ho][ve] -- 3cw
 					elseif r>4 and r<9 then
 						ng[ve][ho]=g[9-ve][ho] --flip v
-					elseif r>8 and r<13 then 
-						ng[ve][ho]=g[ve][9-ho] --flip h
-					elseif r>12 and r<17 then 
-						ng[ve][ho]=g[ho][ve] -- flip v and h
 					else
-						ng[ve][ho]=g[ve][ho] -- no change 1 or gt 16
+						ng[ve][ho]=g[ve][ho] -- no change 1 or gt 9
 					end
 				end end
-				if r>5 and r<9 then -- 6,7,8 flip h then rot
-					rx=r-4
-				elseif r>9 and r<13 then -- 10,11,12 flip v then rot
-					rx=r-8
-				elseif r>13 and r<17 then -- 14,15,16 flip h and v then rot
-					rx=r-12
-				end
-				if rx > 0 then
-					ng=Grid.rotate(rx,ng)
-				end
 --error(gridprint(gridprint('\nrotate '..r,g),ng))
+				if r>4 and r<9 then
+					ng=Grid.rotate(r-4,ng)
+				end
 				return ng end,
 
 			new  = { note={{},{},{},{},{},{},{},{}},oct={{},{},{},{},{},{},{},{}} 
@@ -1167,6 +1156,7 @@ State = {
 				Grid.current.duplicateNotes={}
 					local lo=Grid.current.note[1][1]+(12*Grid.current.oct[1][1])+State.root+Transpose.last --init val
 					local hi=lo
+--error(gridprint("test",Grid.current.note))
 					for ve=1,8 do for ho=1,8 do
 						local note= Grid.current.note[ve][ho]+(12*Grid.current.oct[ve][ho])+State.root+Transpose.last
 						if note < 0 then -- because transpose sets the grid
@@ -1284,7 +1274,7 @@ Mode = {
 		select=function(n,r) 
 			local new = 1+modulo(n-1,table.getn(Modenames)) 
 			local ro
-			if r then ro = 1+modulo(r-1,16) else ro=State.rotate end
+			if r then ro = 1+modulo(r-1,8) else ro=State.rotate end -- 8 rotate states
 			local Mn=type(Modes[Modenames[new]].note)=="function" and Modes[Modenames[new]].note(new) or Modes[Modenames[new]].note
 			local Mo=Modes[Modenames[new]].oct
 			if new ~= Mode.last or ro~=State.rotate or State.update ~= 0 then 
@@ -1392,7 +1382,7 @@ end
 function grprint(strng,grid)
 	local a=strng..'\n'
 	for xxx=1,8 do
-		a=a .. table.concat(grid[xxx]," ") .. '\n'
+		a=table.concat(grid[xxx]," ") .. '\n' .. a
 	end
 	remote.trace(a)
 end
@@ -3029,6 +3019,7 @@ end
 --
 -- If we need Reason not to see the press (sh,cl or shcl) 
 -- then return true in the RPM func (Still passes to RDM though!)
+-- RPM returns t|f, {rpi table item, value}
 -- 
 -- Add a button to sh or cl (Playing) if we need to display it 
 -- to show that something has a different state when func buttons pressed
@@ -3072,13 +3063,8 @@ Button = {
 						"5B",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,
 						"5C",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))					
 				elseif State.shiftclick == 2 then
---TODO Display track select????
---[[
-					local color_ind = (modulo(State.rotate-1,12)) --change color every Note, show root
-					table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,
-						"5B",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,
-						"5C",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
---]]					
+					table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5B","3F","3F","3F",sysend}," ")))
+					table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5C","3F","3F","3F",sysend}," ")))
 				elseif State.shiftclick == 3 then
 					local color_ind = (modulo(Palette.last-1,12)) --change color every Note, show root
 					table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,
@@ -3144,10 +3130,13 @@ Button = {
 						table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5D",Palette.current[color_ind].R ,Palette.current[color_ind].G, Palette.current[color_ind].B,"5E",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
 					end	
 				elseif State.shiftclick == 2 then
+					table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5D","3F","3F","3F",sysend}," ")))
+					table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5E","3F","3F","3F",sysend}," ")))
+				elseif State.shiftclick == 3 then
 					local color_ind = (modulo(State.rotate-1,12)) --change color every Note, show root
 					table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,
-						"5B",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,
-						"5C",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
+						"5D",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,
+						"5E",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
 				end	
 --error(tblprint(bfevent))
 			end
@@ -3566,6 +3555,7 @@ Button = {
 -- We have to add to pressed and let that handle the function on the next event,
 -- bfevent from other RDM function could be multiple.
 			table.insert(Pressed,91,1) -- button feedback
+			table.insert(Pressed,93,1) -- button feedback
 			table.insert(Pressed,95,1) -- button feedback
 --error(tblprint(Pressed))
 
