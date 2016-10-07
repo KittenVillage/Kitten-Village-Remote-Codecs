@@ -13,10 +13,6 @@
 -- Oct up/dn may be impl as shifted item of transpose button.
 -- Different scales may go higher, but starting on 24 is probably best. 
 
-
--- TODO place util trasport remotables (undo, redo, track sel) as non-auto in out items, add them to itemnum index
--- TODO midi note playing feedback.
-
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 -- Set some variables
@@ -32,11 +28,7 @@ Pressed={}
 -- when we need it for remote.handle_input
 Itemnum={}
 
-
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
--- Set some variables for later!
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
--- set after items are in remote.init(), used everywhere.
+-- set in def_vars func after items are in remote.init(), used everywhere.
 Pad={} -- x and y
 Padindex={} -- 1 to 64
 
@@ -44,6 +36,10 @@ Padindex={} -- 1 to 64
 do_update_pads = 1
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+--Not sure...
+PitchBend={}
+
+Modulation={}
 
 
 -- putting things into state so I can dump it for debug
@@ -112,7 +108,7 @@ pclr[4]=21
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- TODO piano keyboard white/black palettes
-
+-- TODO more palettes
 Palettes = {
 		FifthsCircle = {
 						[0]= {R="3F", G="00", B="00", },	--R  
@@ -2396,6 +2392,22 @@ if event.size==3 then -- Note, button, channel pressure, fader
 				local msg={ time_stamp = event.time_stamp, item=rhi.item, value = rhi.value}
 				remote.handle_input(msg)
 			end
+---if the pads have transposed, then we need to turn off the last note----------------------
+-- This will need to move when we put in setup pages on the grid
+-- but must go after the button handling
+			if(State.update==1) then -- grid has changed
+				for k,v in pairs(Playing) do
+					local prev_off={ time_stamp = event.time_stamp, item=1, value = 0, note = k, velocity = 0 }
+					remote.handle_input(prev_off)
+					Playing[k]=nil --!!!
+				end
+--[[
+-- not working
+			local allstopmsg={ time_stamp = event.time_stamp, item=Itemnum.allstop, value = 1 }
+			remote.handle_input(allstopmsg)
+--]]
+			end 
+
 
 			if r then return r end -- If we need Reason not to see the press (sh,cl or shcl) then return true in the RPM func
 		end
@@ -2405,22 +2417,6 @@ if event.size==3 then -- Note, button, channel pressure, fader
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------
----if the pads have transposed, then we need to turn off the last note----------------------
--- This will need to move when we put in setup pages on the grid
--- but must go after the button handling
-		if(State.update==1) then -- grid has changed
-			for k,v in pairs(Playing) do
-				local prev_off={ time_stamp = event.time_stamp, item=1, value = 0, note = k, velocity = 0 }
-				remote.handle_input(prev_off)
-				Playing[k]=nil --!!!
-			end
---[[
--- not working
-			local allstopmsg={ time_stamp = event.time_stamp, item=Itemnum.allstop, value = 1 }
-			remote.handle_input(allstopmsg)
---]]
-		end 
-
 
 --[[
 
@@ -2563,7 +2559,7 @@ end -- event.port ==1
 
 
 
-end
+end --RPM
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2698,24 +2694,11 @@ function remote_deliver_midi(maxbytes,port)
 		if (do_update_pads==1) or (State.update==1) then
 -- TODO no more drumpad
 			if(Scope~='Redrum') then
--- NEW MODES test here
 
 				local padsysex = ""
---[[ 
-				for i=1,64,1 do
-					local padx = Padindex[i].x
-					local pady = 9-Padindex[i].y
-					local padnum = Padindex[i].padhex --note# that the controller led responds to
-					local R = Grid.current.R[pady][padx]
-					local G = Grid.current.G[pady][padx]
-					local B = Grid.current.B[pady][padx]
-					padsysex=table.concat({padsysex,padnum,R,G,B}," ")
-				end --end for 1,64
---]]				
--- This might be a tiny bit faster.
 				for ve=1,8 do for ho=1,8 do 
 					local padnum = Padindex[((ve-1)*8)+ho].padhex --note# that the controller led responds to
-					padsysex=table.concat({padsysex,padnum,Grid.current.R[9-ve][ho],Grid.current.G[9-ve][ho],Grid.current.B[9-ve][ho]}," ")
+					padsysex=table.concat({padsysex,padnum,Grid.current.R[9-ve][ho],Grid.current.G[9-ve][ho],Grid.current.B[9-ve][ho]}," ") -- lpp pads b to t, not t to b
 				end end 
 
 				padupdate=remote.make_midi(table.concat({sysex_setrgb,padsysex,sysend}," "))
@@ -2840,8 +2823,11 @@ function remote_deliver_midi(maxbytes,port)
 	end
 
 
-end
--- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+end -- RDM
+-- 
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
@@ -3108,7 +3094,7 @@ Button = {
 						State.do_update({transpose=Transpose.last+(1-State.shift)+(State.shift*12)}) -- if sh pressed, add 12, else just 1
 					end
 				elseif State.shiftclick == 2 then -- ???
-				
+					return false -- target prev track
 				elseif State.shiftclick == 3 then -- rotate
 					State.do_update({rotate=State.rotate+1})
 				end	
@@ -3156,7 +3142,7 @@ Button = {
 						State.do_update({transpose = Transpose.last-(1-State.shift)-(State.shift*12)}) -- if sh pressed, sub 12, else just 1
 					end
 				elseif State.shiftclick == 2 then -- ???
-				
+					return false -- target next track
 				elseif State.shiftclick == 3 then -- rotate
 					State.do_update({rotate=State.rotate-1})
 				end	
@@ -3426,7 +3412,7 @@ Button = {
 [10]={ -- circle
 		RPM=function(z)
 			if z>0 then
-				if     State.shiftclick == 0 then
+				if     State.shiftclick == 0 then -- pb
 					
 				elseif State.shiftclick == 1 then
 					
@@ -3439,13 +3425,38 @@ Button = {
 		end,
 									
 		RDM=function(z)
-		return {} end
+			local bfevent={}
+			if z>1 then
+				if     State.shiftclick == 0 then
+				
+				elseif State.shiftclick == 1 then
+
+				elseif State.shiftclick == 2 then
+
+				elseif State.shiftclick == 3 then
+
+
+				end	
+			elseif z==1 then -- sh cl lights
+				if     State.shiftclick == 0 then
+					table.insert(bfevent,remote.make_midi("90 5F 00")) -- off   
+				elseif State.shiftclick == 1 then
+					local color_ind = (modulo(Scale.last-1,12)) --change color every Note, show root
+					table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5F",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))					
+				elseif State.shiftclick > 1 then
+					local color_ind = (modulo(Mode.last-1,12)) --change color every Note, show root -1 because pal start at 0
+					table.insert(bfevent,remote  
+					.make_midi(table.concat({sysex_setrgb,"5F",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
+										
+				end	
+			end
+		return bfevent end
 	},
 
 [20]={ -- double
 		RPM=function(z)
 			if z>0 then
-				if     State.shiftclick == 0 then
+				if     State.shiftclick == 0 then -- pb
 					
 				elseif State.shiftclick == 1 then
 					
@@ -3464,7 +3475,7 @@ Button = {
 [30]={ -- duplicate
 		RPM=function(z)
 			if z>0 then
-				if     State.shiftclick == 0 then
+				if     State.shiftclick == 0 then -- pb
 					
 				elseif State.shiftclick == 1 then
 					
@@ -3483,7 +3494,7 @@ Button = {
 [40]={ -- quantize
 		RPM=function(z)
 			if z>0 then
-				if     State.shiftclick == 0 then
+				if     State.shiftclick == 0 then -- pb
 					
 				elseif State.shiftclick == 1 then
 					
@@ -3502,7 +3513,7 @@ Button = {
 [50]={ -- delete
 		RPM=function(z)
 			if z>0 then
-				if     State.shiftclick == 0 then
+				if     State.shiftclick == 0 then -- pb
 					
 				elseif State.shiftclick == 1 then
 					
@@ -3521,7 +3532,7 @@ Button = {
 [60]={ -- undo
 		RPM=function(z)
 			if z>0 then
-				if     State.shiftclick == 0 then
+				if     State.shiftclick == 0 then -- pb
 					
 				elseif State.shiftclick == 1 then
 					local handle={ item=Itemnum.redo, value = 1 }
