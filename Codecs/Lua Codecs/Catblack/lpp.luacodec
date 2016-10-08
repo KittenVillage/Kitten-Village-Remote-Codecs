@@ -5,16 +5,16 @@ function remote_supported_control_surfaces()
 		{
 			{ manufacturer="Catblack", model="Launchpad Pro",
 				source="lpp.lua", picture="lpp.png",
-				in_ports={ {description="In Port"} },
-				out_ports={ {description="Out Port"},{description="LCD Port",optional=true} },
+				in_ports={ {description="In Port",optional=true},  {description="Playback Port (optional) ",optional=true}},
+				out_ports={ {description="Out Port"} },
 				has_keyboard=true,
 				--setup_warning_text="Use the 2nd Launchpad Pro midi port, and do not set it into Live mode.  Do you want to continue?"
 			},
 
 			{ manufacturer="Catblack", model="LP Pro",
 				source="lpptest.lua", picture="lpp.png",
-				in_ports={ {description="In Port",optional=true},  {description="In Port 2",optional=true}},
-				out_ports={ {description="Out Port"},{description="LCD Port",optional=true} },
+				in_ports={ {description="In Port",optional=true},  {description="Playback Port (optional) ",optional=true}},
+				out_ports={ {description="Out Port"} },
 				has_keyboard=true,
 				--setup_warning_text="Use the 2nd Launchpad Pro midi port, and do not set it into Live mode .  Do you want to continue?"
 			},
