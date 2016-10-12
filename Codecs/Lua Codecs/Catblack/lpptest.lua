@@ -41,7 +41,6 @@ PitchBend={}
 
 Modulation={}
 
-
 -- putting things into state so I can dump it for debug
 g={}
 g.accent = 0
@@ -451,6 +450,29 @@ LPP_Note_mode =	{
 			{1,1,2,2,2,2,2,2},
 			{1,1,1,1,1,1,1,2},
 			{1,1,1,1,1,1,1,1},
+		},
+	},
+Harmonic =	{ --http://hotchk155.blogspot.com/2010/01/poor-mans-harmonic-keyboard.html
+		color= {R="3F", G="00", B="00", },	--R
+		note={
+			{1,10,2,11,3,0,4,1},
+			{6,3,7,4,8,5,9,6},
+			{11,8,0,9,1,10,2,11},
+			{4,1,5,2,6,3,7,4},
+			{9,6,10,7,11,8,0,9},
+			{2,11,3,0,4,1,5,2},
+			{7,4,8,5,9,6,10,7},
+			{0,9,1,10,2,11,3,0},
+		},
+		oct={
+			{5,4,5,4,5,5,5,5},
+			{4,4,4,4,4,4,4,4},
+			{3,3,4,3,4,3,4,3},
+			{3,3,3,3,3,3,3,3},
+			{2,2,2,2,2,2,3,2},
+			{2,1,2,2,2,2,2,2},
+			{1,1,1,1,1,1,1,1},
+			{1,0,1,0,1,0,1,1},
 		},
 	},
 Push = {
@@ -1023,6 +1045,7 @@ Wicki_Hayden =	{
 Modenames={
 "CircleOfFifths",
 "LPP_Note_mode",
+"Harmonic",
 "Push",
 "Diatonic",
 "Diagonal",
@@ -2292,8 +2315,6 @@ end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-
-
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2302,11 +2323,6 @@ function remote_process_midi(event)
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- Remember, RPM may get several inputs before RDM can output.
---error(event.port)
---remote.trace(event.size)
---remote.trace("evsize")
-
-
 -------------------------------------------------------		
 -------------------------------------------------------		
 if (event.port==2 and event.size==3) then
@@ -2930,7 +2946,7 @@ function remote_prepare_for_use()
 --		remote.make_midi("bF 7A 40")
 --]]
 	}
-	State.do_update({scale=1,mode=1,palette=1,transpose=0,rotate=0})
+	State.do_update({scale=1,mode=1,palette=1,transpose=0,rotate=1})
 	table.insert(Pressed,70,1) -- button feedback sh cl init light
 
 	return retEvents
@@ -3104,11 +3120,9 @@ Button = {
 				if State.shiftclick < 2 then
 					local color_ind = (modulo(Transpose.last,12)) --change color every Note, show root
 					if Transpose.last>0 then
-						table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5D",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
-						table.insert(bfevent,remote.make_midi("90 5E 00"))
+						table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5D",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,"5E","00","00","00",sysend}," ")))
 					elseif Transpose.last<0 then
-						table.insert(bfevent,remote.make_midi("90 5D 00"))
-						table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5E",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
+						table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5D","00","00","00","5E",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
 					elseif Transpose.last==0 then
 						table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5D",Palette.current[color_ind].R ,Palette.current[color_ind].G, Palette.current[color_ind].B,"5E",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))
 					end	
@@ -3182,7 +3196,8 @@ Button = {
 				end	
 			elseif z==1 then -- sh cl lights
 				if     State.shiftclick == 0 then
-					table.insert(bfevent,remote.make_midi("90 5F 00")) -- off   
+					table.insert(bfevent,remote.make_midi("90 5F 17")) -- 
+--					table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5F","00","00","00","5E",sysend}," ")))
 				elseif State.shiftclick == 1 then
 					local color_ind = (modulo(Scale.last-1,12)) --change color every Note, show root
 					table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5F",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))					
@@ -3211,7 +3226,14 @@ Button = {
 		end,
 									
 		RDM=function(z) --96
-		return {} end
+			local bfevent={}
+			if z>0 then
+				if     State.shiftclick == 0 then
+					table.insert(bfevent,remote.make_midi("90 60 07")) -- 
+
+				end	
+			end
+		return bfevent end
 	},
 
 [97]={ --Device
@@ -3230,7 +3252,15 @@ Button = {
 		end,
 									
 		RDM=function(z)
-		return {} end
+			local bfevent={}
+			if z>0 then
+				if     State.shiftclick == 0 then
+					table.insert(bfevent,remote.make_midi("90 61 15")) -- 
+
+			
+				end	
+			end
+		return bfevent end
 	},
 	
 [98]={ --User
@@ -3249,7 +3279,15 @@ Button = {
 		end,
 									
 		RDM=function(z)
-		return {} end
+			local bfevent={}
+			if z>0 then
+				if     State.shiftclick == 0 then
+					table.insert(bfevent,remote.make_midi("90 62 05")) -- 
+
+			
+				end	
+			end
+		return bfevent end
 	},
 	
 --left to right Bottom
@@ -3565,6 +3603,9 @@ Button = {
 			table.insert(Pressed,91,1) -- button feedback
 			table.insert(Pressed,93,1) -- button feedback
 			table.insert(Pressed,95,1) -- button feedback
+			table.insert(Pressed,96,1) -- button feedback
+			table.insert(Pressed,97,1) -- button feedback
+			table.insert(Pressed,98,1) -- button feedback
 --error(tblprint(Pressed))
 
 			return bfevent
