@@ -41,6 +41,7 @@ PitchBend={}
 
 Modulation={}
 
+
 -- putting things into state so I can dump it for debug
 g={}
 g.accent = 0
@@ -331,7 +332,8 @@ scales = {
 	CircleOfFifths ={0,7,2,9,4,11,6,1,8,3,10,5}
 }
 scalenames = {
-			'Chromatic','DrumPad','Major','Minor','Dorian','Mixolydian', 
+			'Chromatic',
+			'DrumPad','Major','Minor','Dorian','Mixolydian', 
 			'Lydian','Phrygian', 
 			'Locrian','Diminished','Whole_half','WholeTone','MinorBlues','MinorPentatonic','MajorPentatonic','HarmonicMinor','MelodicMinor','DominantSus','SuperLocrian','NeopolitanMinor','NeopolitanMajor','EnigmaticMinor','Enigmatic','Composite','BebopLocrian','BebopDominant','BebopMajor','Bhairav','HungarianMinor','MinorGypsy','Persian','Hirojoshi','InSen','Iwato','Kumoi','Pelog','Spanish',
 			'CircleOfFifths'
@@ -452,6 +454,7 @@ LPP_Note_mode =	{
 			{1,1,1,1,1,1,1,1},
 		},
 	},
+--[[
 Harmonic =	{ --http://hotchk155.blogspot.com/2010/01/poor-mans-harmonic-keyboard.html
 		color= {R="3F", G="00", B="00", },	--R
 		note={
@@ -475,6 +478,7 @@ Harmonic =	{ --http://hotchk155.blogspot.com/2010/01/poor-mans-harmonic-keyboard
 			{1,0,1,0,1,0,1,1},
 		},
 	},
+--]]
 Push = {
 		color= {R="00", G="00", B="3F", },	--B  
 		oct={
@@ -1045,7 +1049,7 @@ Wicki_Hayden =	{
 Modenames={
 "CircleOfFifths",
 "LPP_Note_mode",
-"Harmonic",
+--"Harmonic",
 "Push",
 "Diatonic",
 "Diagonal",
@@ -3051,7 +3055,7 @@ Button = {
 			if z>0 then
 				if State.shiftclick == 0 then
 					local color_ind = (modulo(Mode.last-1,12)) --change color every Note, show root -1 because pal start at 0
-					local Mn = Modenames[1+modulo(Mode.last,table.getn(Modenames))]
+					local Mn = Modenames[1+modulo(Mode.last-1,table.getn(Modenames))]
 					local Mc = Modes[Mn].color
 					table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,
 						"5B",Mc.R, Mc.G, Mc.B,
@@ -3196,8 +3200,7 @@ Button = {
 				end	
 			elseif z==1 then -- sh cl lights
 				if     State.shiftclick == 0 then
-					table.insert(bfevent,remote.make_midi("90 5F 17")) -- 
---					table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5F","00","00","00","5E",sysend}," ")))
+					table.insert(bfevent,remote.make_midi("90 5F 17")) --
 				elseif State.shiftclick == 1 then
 					local color_ind = (modulo(Scale.last-1,12)) --change color every Note, show root
 					table.insert(bfevent,remote.make_midi(table.concat({sysex_setrgb,"5F",Palette.current[color_ind].R, Palette.current[color_ind].G, Palette.current[color_ind].B,sysend}," ")))					
@@ -3229,6 +3232,7 @@ Button = {
 			local bfevent={}
 			if z>0 then
 				if     State.shiftclick == 0 then
+-- TODO sysex
 					table.insert(bfevent,remote.make_midi("90 60 07")) -- 
 
 				end	
@@ -3255,6 +3259,7 @@ Button = {
 			local bfevent={}
 			if z>0 then
 				if     State.shiftclick == 0 then
+-- TODO sysex
 					table.insert(bfevent,remote.make_midi("90 61 15")) -- 
 
 			
@@ -3282,6 +3287,7 @@ Button = {
 			local bfevent={}
 			if z>0 then
 				if     State.shiftclick == 0 then
+-- TODO sysex
 					table.insert(bfevent,remote.make_midi("90 62 05")) -- 
 
 			
