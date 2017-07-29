@@ -1,0 +1,15 @@
+version={0,0,1}
+
+function remote_supported_control_surfaces()
+	local surfaces =
+		{
+			{ manufacturer="Catblack", model="DaScratch",
+				source="DaScratch.lua", picture="lpp.png",
+				in_ports={ {description="In Port", optional=false}},
+				out_ports={ {description="Out Port"} },
+				has_keyboard=false,
+				--setup_warning_text="Do you want to continue?"
+			},
+		}
+	return surfaces
+end

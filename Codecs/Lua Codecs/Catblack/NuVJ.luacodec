@@ -1,0 +1,15 @@
+version={0,0,1}
+
+function remote_supported_control_surfaces()
+	local surfaces =
+		{
+			{ manufacturer="Catblack", model="NuVJ",
+				source="NuVJ.lua", picture="lpp.png",
+				in_ports={ {description="In Port",optional=true}},
+				out_ports={ {description="Out Port"} },
+				has_keyboard=false,
+				--setup_warning_text="Do you want to continue?"
+			},
+		}
+	return surfaces
+end
