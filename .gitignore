@@ -465,3 +465,55 @@ Maps/Catblack/Launchpad Proold.remotemap
 Codecs/Lua Codecs/Catblack/lpptest-prestripdown.lua
 Codecs/Lua Codecs/Curious Inventor/Lua/Raveshaper/
 Codecs/Lua Codecs/Curious Inventor/Maps/Raveshaper/
+Maps/Grid64g/Jam_Grid64g.remotemap
+Maps/Grid64g/LP_MK1_Grid64g.remotemap
+Maps/Grid64g/LP_MK2_Grid64g.remotemap
+Maps/Grid64g/LP_Pro_Grid64g.remotemap
+Maps/Grid64g/Push_Grid64g.remotemap
+Maps/Grid64g/Push2_Grid64g.remotemap
+Maps/Grid64g/PusheR_Grid64g.remotemap
+Maps/Grid64g/PusheR2_Grid64g.remotemap
+Maps/Novation/Launchpad Mini custom.remotemap
+Maps/Novation/Launchpad Pro custom.remotemap
+Maps/Novation/Novation Automap Mixer.remotemap
+Maps/Zvork/Zvork Volt SL-1.remotemap
+Maps/Launchpad Pro/nlpro.remotemap
+Maps/Launchpad Pro/old_nlpro.remotemap
+Maps/Lurc/RePatcher.remotemap
+Codecs/Lua Codecs/Zvork/lpp.png
+Codecs/Lua Codecs/Zvork/Zvork Volt SL-1.lua
+Codecs/Lua Codecs/Zvork/Zvork Volt SL-1.luacodec
+Codecs/Lua Codecs/Zvork/Zvork Volt SL-1first.lua
+Codecs/Lua Codecs/Lurc/RePatcher.lua
+Codecs/Lua Codecs/Lurc/RePatcher.luacodec
+Codecs/Lua Codecs/Lurc/RePatcher.png
+Codecs/Lua Codecs/Livid/code - Copy.lua
+Codecs/Lua Codecs/Grid64g/.DS_Store
+Codecs/Lua Codecs/Grid64g/Grid64g.luacodec
+Codecs/Lua Codecs/Grid64g/Jam_Grid64g.lua
+Codecs/Lua Codecs/Grid64g/Jam_Grid64g.png
+Codecs/Lua Codecs/Grid64g/LP_MK1_Grid64g.lua
+Codecs/Lua Codecs/Grid64g/LP_MK1_Grid64g.png
+Codecs/Lua Codecs/Grid64g/LP_MK2_Grid64g.lua
+Codecs/Lua Codecs/Grid64g/LP_MK2_Grid64g.png
+Codecs/Lua Codecs/Grid64g/LP_Pro_Grid64g.lua
+Codecs/Lua Codecs/Grid64g/LP_Pro_Grid64g.png
+Codecs/Lua Codecs/Grid64g/Push_Grid64g.lua
+Codecs/Lua Codecs/Grid64g/Push_Grid64g.png
+Codecs/Lua Codecs/Grid64g/Push2_Grid64g.lua
+Codecs/Lua Codecs/Grid64g/Push2_Grid64g.png
+Codecs/Lua Codecs/Grid64g/PusheR_Grid64g.lua
+Codecs/Lua Codecs/Grid64g/PusheR_Grid64g.png
+Codecs/Lua Codecs/Grid64g/PusheR2_Grid64g.lua
+Codecs/Lua Codecs/Grid64g/PusheR2_Grid64g.png
+Codecs/Lua Codecs/Launchpad Pro/nlpro.lua
+Codecs/Lua Codecs/Launchpad Pro/nlpro.luacodec
+Codecs/Lua Codecs/Launchpad Pro/nlpro.png
+Codecs/Lua Codecs/Launchpad Pro/old_nlpro.lua
+Codecs/Lua Codecs/Launchpad Pro/old_nlpro.luacodec
+Codecs/Lua Codecs/Novation/Launchpad Mini custom.lua
+Codecs/Lua Codecs/Novation/Launchpad Mini custom.luacodec
+Codecs/Lua Codecs/Novation/Launchpad Mini Custom.png
+Codecs/Lua Codecs/Novation/Launchpad Pro custom.lua
+Codecs/Lua Codecs/Novation/Launchpad Pro custom.luacodec
+Codecs/Lua Codecs/Novation/Novation Automap Mixer.lua

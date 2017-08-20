@@ -3,6 +3,19 @@
 --Example Remote lua start
 
 --++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-- Global Variables
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+-- Itemnum is the array set in remote_init for knowing what the item number is
+-- when we need it for remote.handle_input
+Itemnum={}
+
+
+
+
+--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- Custom functions
 --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- Usage: error(tableprint(tbl)) returns contents of `tbl`, with indentation.
@@ -39,19 +52,37 @@ end
 --++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
+
 --++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 --Callback Functions
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function remote_init(manufacturer, model)
 --items
 		local items={
-			{name="Keyboard",input="keyboard"},
-			{name="Pitch Bend", input="value", min=0, max=16383},
-			{name="Modulation", input="value", min=0, max=127},
+--			{name="Keyboard",input="keyboard"},
+--			{name="Pitch Bend", input="value", min=0, max=16383},
+--			{name="Modulation", input="value", min=0, max=127},
+			{name="_Scope", output="text", itemnum="scope"}, --device, e.g. "Thor" 
+			{name="_Var", output="text", itemnum="var"}, --variation, e.g. "Volume" or "Filters"
+
 			{name="Fader 1", input="value", min=0, max=127, output="value"},
 			{name="Fader 2", input="value", min=0, max=127, output="value"}
 		}
 		remote.define_items(items)
+
+-- some items need to be noted, so here's where Itemnum.thing is set
+-- this is so we don't have to keep track of the item's index -- the order the items are defined above --
+-- in remote.remote_set_state() or remote_on_auto_input() or other places.
+-- turns itemnum="scope" in the definition into the variable Itemnum.scope
+-- 
+for it=1,table.getn(items),1 do
+	if items[it].itemnum ~= nil then
+		Itemnum[items[it].itemnum]=it
+	end
+end
+
+
+
 
 --inputs
 		local inputs={
@@ -86,10 +117,10 @@ end
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function remote_deliver_midi(max_bytes, port)
---	local midi_events={}
+	local midi_events={}
 --	sysex_event = remote.make_midi("F0 00 00 00 00 xx F7",{ x = some_var, port=1 })
 --	table.insert(midi_events,sysex_event)
---	return midi_events
+	return midi_events
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 

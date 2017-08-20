@@ -611,283 +611,283 @@ Scope	Propellerheads	Redrum Drum Computer
 Define Group	Keyboard Shortcut Variations	Level	Pan	Velocity	Length
 //	Control Surface Item	Key	Remotable Item	Scale	Mode	Groups
 Map	_Scope		Redrum
-Map	Button 05		Keyboard Shortcut Variations=Level
-Map	Button 06		Keyboard Shortcut Variations=Pan
-Map	Button 07		Keyboard Shortcut Variations=Velocity
-Map	Button 08		Keyboard Shortcut Variations=Length
+//Map	Button 05		Keyboard Shortcut Variations=Level
+//Map	Button 06		Keyboard Shortcut Variations=Pan
+//Map	Button 07		Keyboard Shortcut Variations=Velocity
+//Map	Button 08		Keyboard Shortcut Variations=Length
 
-Map	Button 91		Select Previous Patch
-Map	Button 92		Select Next Patch
+//Map	Button 91		Select Previous Patch
+//Map	Button 92		Select Next Patch
 
-//Map	Fader 9		Master Level
+////Map	Fader 9		Master Level
 
-Map	Pad 11		Selected Drum Toggle Step 1			Level
-Map	Pad 12		Selected Drum Toggle Step 2			Level
-Map	Pad 13		Selected Drum Toggle Step 3			Level
-Map	Pad 14		Selected Drum Toggle Step 4			Level
-Map	Pad 15		Selected Drum Toggle Step 5			Level
-Map	Pad 16		Selected Drum Toggle Step 6			Level
-Map	Pad 17		Selected Drum Toggle Step 7			Level
-Map	Pad 18		Selected Drum Toggle Step 8			Level
-Map	Pad 21		Selected Drum Toggle Step 9			Level
-Map	Pad 22		Selected Drum Toggle Step 10			Level
-Map	Pad 23		Selected Drum Toggle Step 11			Level
-Map	Pad 24		Selected Drum Toggle Step 12			Level
-Map	Pad 25		Selected Drum Toggle Step 13			Level
-Map	Pad 26		Selected Drum Toggle Step 14			Level
-Map	Pad 27		Selected Drum Toggle Step 15			Level
-Map	Pad 28		Selected Drum Toggle Step 16			Level
-Map	Pad 31		Select Drum 1			Level
-Map	Pad 32		Select Drum 2			Level
-Map	Pad 33		Select Drum 3			Level
-Map	Pad 34		Select Drum 4			Level
-Map	Pad 35		Select Drum 5			Level
-Map	Pad 36		Select Drum 6			Level
-Map	Pad 37		Select Drum 7			Level
-Map	Pad 38		Select Drum 8			Level
-Map	Pad 41		Pattern 1			Level
-Map	Pad 42		Pattern 2			Level
-Map	Pad 43		Pattern 3			Level
-Map	Pad 44		Pattern 4			Level
-Map	Pad 45		Pattern 5			Level
-Map	Pad 46		Pattern 6			Level
-Map	Pad 47		Shuffle			Level
-Map	Pad 48		Edit Accent			Level
-Map	Pad 11 Playing		Selected Drum Step Out 1			Level
-Map	Pad 12 Playing		Selected Drum Step Out 2			Level
-Map	Pad 13 Playing		Selected Drum Step Out 3			Level
-Map	Pad 14 Playing		Selected Drum Step Out 4			Level
-Map	Pad 15 Playing		Selected Drum Step Out 5			Level
-Map	Pad 16 Playing		Selected Drum Step Out 6			Level
-Map	Pad 17 Playing		Selected Drum Step Out 7			Level
-Map	Pad 18 Playing		Selected Drum Step Out 8			Level
-Map	Pad 21 Playing		Selected Drum Step Out 9			Level
-Map	Pad 22 Playing		Selected Drum Step Out 10			Level
-Map	Pad 23 Playing		Selected Drum Step Out 11			Level
-Map	Pad 24 Playing		Selected Drum Step Out 12			Level
-Map	Pad 25 Playing		Selected Drum Step Out 13			Level
-Map	Pad 26 Playing		Selected Drum Step Out 14			Level
-Map	Pad 27 Playing		Selected Drum Step Out 15			Level
-Map	Pad 28 Playing		Selected Drum Step Out 16			Level
-Map	Pad 31 Playing		Drum 1 is playing			Level
-Map	Pad 32 Playing		Drum 2 is playing			Level
-Map	Pad 33 Playing		Drum 3 is playing			Level
-Map	Pad 34 Playing		Drum 4 is playing			Level
-Map	Pad 35 Playing		Drum 5 is playing			Level
-Map	Pad 36 Playing		Drum 6 is playing			Level
-Map	Pad 37 Playing		Drum 7 is playing			Level
-Map	Pad 38 Playing		Drum 8 is playing			Level
+//Map	Pad 11		Selected Drum Toggle Step 1			Level
+//Map	Pad 12		Selected Drum Toggle Step 2			Level
+//Map	Pad 13		Selected Drum Toggle Step 3			Level
+//Map	Pad 14		Selected Drum Toggle Step 4			Level
+//Map	Pad 15		Selected Drum Toggle Step 5			Level
+//Map	Pad 16		Selected Drum Toggle Step 6			Level
+//Map	Pad 17		Selected Drum Toggle Step 7			Level
+//Map	Pad 18		Selected Drum Toggle Step 8			Level
+//Map	Pad 21		Selected Drum Toggle Step 9			Level
+//Map	Pad 22		Selected Drum Toggle Step 10			Level
+//Map	Pad 23		Selected Drum Toggle Step 11			Level
+//Map	Pad 24		Selected Drum Toggle Step 12			Level
+//Map	Pad 25		Selected Drum Toggle Step 13			Level
+//Map	Pad 26		Selected Drum Toggle Step 14			Level
+//Map	Pad 27		Selected Drum Toggle Step 15			Level
+//Map	Pad 28		Selected Drum Toggle Step 16			Level
+//Map	Pad 31		Select Drum 1			Level
+//Map	Pad 32		Select Drum 2			Level
+//Map	Pad 33		Select Drum 3			Level
+//Map	Pad 34		Select Drum 4			Level
+//Map	Pad 35		Select Drum 5			Level
+//Map	Pad 36		Select Drum 6			Level
+//Map	Pad 37		Select Drum 7			Level
+//Map	Pad 38		Select Drum 8			Level
+//Map	Pad 41		Pattern 1			Level
+//Map	Pad 42		Pattern 2			Level
+//Map	Pad 43		Pattern 3			Level
+//Map	Pad 44		Pattern 4			Level
+//Map	Pad 45		Pattern 5			Level
+//Map	Pad 46		Pattern 6			Level
+//Map	Pad 47		Shuffle			Level
+//Map	Pad 48		Edit Accent			Level
+//Map	Pad 11 Playing		Selected Drum Step Out 1			Level
+//Map	Pad 12 Playing		Selected Drum Step Out 2			Level
+//Map	Pad 13 Playing		Selected Drum Step Out 3			Level
+//Map	Pad 14 Playing		Selected Drum Step Out 4			Level
+//Map	Pad 15 Playing		Selected Drum Step Out 5			Level
+//Map	Pad 16 Playing		Selected Drum Step Out 6			Level
+//Map	Pad 17 Playing		Selected Drum Step Out 7			Level
+//Map	Pad 18 Playing		Selected Drum Step Out 8			Level
+//Map	Pad 21 Playing		Selected Drum Step Out 9			Level
+//Map	Pad 22 Playing		Selected Drum Step Out 10			Level
+//Map	Pad 23 Playing		Selected Drum Step Out 11			Level
+//Map	Pad 24 Playing		Selected Drum Step Out 12			Level
+//Map	Pad 25 Playing		Selected Drum Step Out 13			Level
+//Map	Pad 26 Playing		Selected Drum Step Out 14			Level
+//Map	Pad 27 Playing		Selected Drum Step Out 15			Level
+//Map	Pad 28 Playing		Selected Drum Step Out 16			Level
+//Map	Pad 31 Playing		Drum 1 is playing			Level
+//Map	Pad 32 Playing		Drum 2 is playing			Level
+//Map	Pad 33 Playing		Drum 3 is playing			Level
+//Map	Pad 34 Playing		Drum 4 is playing			Level
+//Map	Pad 35 Playing		Drum 5 is playing			Level
+//Map	Pad 36 Playing		Drum 6 is playing			Level
+//Map	Pad 37 Playing		Drum 7 is playing			Level
+//Map	Pad 38 Playing		Drum 8 is playing			Level
 
-Map	Pad 11		Selected Drum Toggle Step 1			Pan
-Map	Pad 12		Selected Drum Toggle Step 2			Pan
-Map	Pad 13		Selected Drum Toggle Step 3			Pan
-Map	Pad 14		Selected Drum Toggle Step 4			Pan
-Map	Pad 15		Selected Drum Toggle Step 5			Pan
-Map	Pad 16		Selected Drum Toggle Step 6			Pan
-Map	Pad 17		Selected Drum Toggle Step 7			Pan
-Map	Pad 18		Selected Drum Toggle Step 8			Pan
-Map	Pad 21		Selected Drum Toggle Step 9			Pan
-Map	Pad 22		Selected Drum Toggle Step 10			Pan
-Map	Pad 23		Selected Drum Toggle Step 11			Pan
-Map	Pad 24		Selected Drum Toggle Step 12			Pan
-Map	Pad 25		Selected Drum Toggle Step 13			Pan
-Map	Pad 26		Selected Drum Toggle Step 14			Pan
-Map	Pad 27		Selected Drum Toggle Step 15			Pan
-Map	Pad 28		Selected Drum Toggle Step 16			Pan
-Map	Pad 31		Select Drum 1			Pan
-Map	Pad 32		Select Drum 2			Pan
-Map	Pad 33		Select Drum 3			Pan
-Map	Pad 34		Select Drum 4			Pan
-Map	Pad 35		Select Drum 5			Pan
-Map	Pad 36		Select Drum 6			Pan
-Map	Pad 37		Select Drum 7			Pan
-Map	Pad 38		Select Drum 8			Pan
-Map	Pad 41		Pattern 1			Pan
-Map	Pad 42		Pattern 2			Pan
-Map	Pad 43		Pattern 3			Pan
-Map	Pad 44		Pattern 4			Pan
-Map	Pad 45		Pattern 5			Pan
-Map	Pad 46		Pattern 6			Pan
-Map	Pad 47		Shuffle			Pan
-Map	Pad 48		Edit Accent			Pan
-Map	Pad 11 Playing		Selected Drum Step Out 1			Pan
-Map	Pad 12 Playing		Selected Drum Step Out 2			Pan
-Map	Pad 13 Playing		Selected Drum Step Out 3			Pan
-Map	Pad 14 Playing		Selected Drum Step Out 4			Pan
-Map	Pad 15 Playing		Selected Drum Step Out 5			Pan
-Map	Pad 16 Playing		Selected Drum Step Out 6			Pan
-Map	Pad 17 Playing		Selected Drum Step Out 7			Pan
-Map	Pad 18 Playing		Selected Drum Step Out 8			Pan
-Map	Pad 21 Playing		Selected Drum Step Out 9			Pan
-Map	Pad 22 Playing		Selected Drum Step Out 10			Pan
-Map	Pad 23 Playing		Selected Drum Step Out 11			Pan
-Map	Pad 24 Playing		Selected Drum Step Out 12			Pan
-Map	Pad 25 Playing		Selected Drum Step Out 13			Pan
-Map	Pad 26 Playing		Selected Drum Step Out 14			Pan
-Map	Pad 27 Playing		Selected Drum Step Out 15			Pan
-Map	Pad 28 Playing		Selected Drum Step Out 16			Pan
-Map	Pad 31 Playing		Drum 1 is playing			Pan
-Map	Pad 32 Playing		Drum 2 is playing			Pan
-Map	Pad 33 Playing		Drum 3 is playing			Pan
-Map	Pad 34 Playing		Drum 4 is playing			Pan
-Map	Pad 35 Playing		Drum 5 is playing			Pan
-Map	Pad 36 Playing		Drum 6 is playing			Pan
-Map	Pad 37 Playing		Drum 7 is playing			Pan
-Map	Pad 38 Playing		Drum 8 is playing			Pan
+//Map	Pad 11		Selected Drum Toggle Step 1			Pan
+//Map	Pad 12		Selected Drum Toggle Step 2			Pan
+//Map	Pad 13		Selected Drum Toggle Step 3			Pan
+//Map	Pad 14		Selected Drum Toggle Step 4			Pan
+//Map	Pad 15		Selected Drum Toggle Step 5			Pan
+//Map	Pad 16		Selected Drum Toggle Step 6			Pan
+//Map	Pad 17		Selected Drum Toggle Step 7			Pan
+//Map	Pad 18		Selected Drum Toggle Step 8			Pan
+//Map	Pad 21		Selected Drum Toggle Step 9			Pan
+//Map	Pad 22		Selected Drum Toggle Step 10			Pan
+//Map	Pad 23		Selected Drum Toggle Step 11			Pan
+//Map	Pad 24		Selected Drum Toggle Step 12			Pan
+//Map	Pad 25		Selected Drum Toggle Step 13			Pan
+//Map	Pad 26		Selected Drum Toggle Step 14			Pan
+//Map	Pad 27		Selected Drum Toggle Step 15			Pan
+//Map	Pad 28		Selected Drum Toggle Step 16			Pan
+//Map	Pad 31		Select Drum 1			Pan
+//Map	Pad 32		Select Drum 2			Pan
+//Map	Pad 33		Select Drum 3			Pan
+//Map	Pad 34		Select Drum 4			Pan
+//Map	Pad 35		Select Drum 5			Pan
+//Map	Pad 36		Select Drum 6			Pan
+//Map	Pad 37		Select Drum 7			Pan
+//Map	Pad 38		Select Drum 8			Pan
+//Map	Pad 41		Pattern 1			Pan
+//Map	Pad 42		Pattern 2			Pan
+//Map	Pad 43		Pattern 3			Pan
+//Map	Pad 44		Pattern 4			Pan
+//Map	Pad 45		Pattern 5			Pan
+//Map	Pad 46		Pattern 6			Pan
+//Map	Pad 47		Shuffle			Pan
+//Map	Pad 48		Edit Accent			Pan
+//Map	Pad 11 Playing		Selected Drum Step Out 1			Pan
+//Map	Pad 12 Playing		Selected Drum Step Out 2			Pan
+//Map	Pad 13 Playing		Selected Drum Step Out 3			Pan
+//Map	Pad 14 Playing		Selected Drum Step Out 4			Pan
+//Map	Pad 15 Playing		Selected Drum Step Out 5			Pan
+//Map	Pad 16 Playing		Selected Drum Step Out 6			Pan
+//Map	Pad 17 Playing		Selected Drum Step Out 7			Pan
+//Map	Pad 18 Playing		Selected Drum Step Out 8			Pan
+//Map	Pad 21 Playing		Selected Drum Step Out 9			Pan
+//Map	Pad 22 Playing		Selected Drum Step Out 10			Pan
+//Map	Pad 23 Playing		Selected Drum Step Out 11			Pan
+//Map	Pad 24 Playing		Selected Drum Step Out 12			Pan
+//Map	Pad 25 Playing		Selected Drum Step Out 13			Pan
+//Map	Pad 26 Playing		Selected Drum Step Out 14			Pan
+//Map	Pad 27 Playing		Selected Drum Step Out 15			Pan
+//Map	Pad 28 Playing		Selected Drum Step Out 16			Pan
+//Map	Pad 31 Playing		Drum 1 is playing			Pan
+//Map	Pad 32 Playing		Drum 2 is playing			Pan
+//Map	Pad 33 Playing		Drum 3 is playing			Pan
+//Map	Pad 34 Playing		Drum 4 is playing			Pan
+//Map	Pad 35 Playing		Drum 5 is playing			Pan
+//Map	Pad 36 Playing		Drum 6 is playing			Pan
+//Map	Pad 37 Playing		Drum 7 is playing			Pan
+//Map	Pad 38 Playing		Drum 8 is playing			Pan
 
-Map	Pad 11		Selected Drum Step 1			Velocity
-Map	Pad 12		Selected Drum Step 2			Velocity
-Map	Pad 13		Selected Drum Step 3			Velocity
-Map	Pad 14		Selected Drum Step 4			Velocity
-Map	Pad 15		Selected Drum Step 5			Velocity
-Map	Pad 16		Selected Drum Step 6			Velocity
-Map	Pad 17		Selected Drum Step 7			Velocity
-Map	Pad 18		Selected Drum Step 8			Velocity
-Map	Pad 21		Selected Drum Step 9			Velocity
-Map	Pad 22		Selected Drum Step 10			Velocity
-Map	Pad 23		Selected Drum Step 11			Velocity
-Map	Pad 24		Selected Drum Step 12			Velocity
-Map	Pad 25		Selected Drum Step 13			Velocity
-Map	Pad 26		Selected Drum Step 14			Velocity
-Map	Pad 27		Selected Drum Step 15			Velocity
-Map	Pad 28		Selected Drum Step 16			Velocity
-Map	Pad 31		Select Drum 1			Velocity
-Map	Pad 32		Select Drum 2			Velocity
-Map	Pad 33		Select Drum 3			Velocity
-Map	Pad 34		Select Drum 4			Velocity
-Map	Pad 35		Select Drum 5			Velocity
-Map	Pad 36		Select Drum 6			Velocity
-Map	Pad 37		Select Drum 7			Velocity
-Map	Pad 38		Select Drum 8			Velocity
-Map	Pad 41		Pattern 1			Velocity
-Map	Pad 42		Pattern 2			Velocity
-Map	Pad 43		Pattern 3			Velocity
-Map	Pad 44		Pattern 4			Velocity
-Map	Pad 45		Pattern 5			Velocity
-Map	Pad 46		Pattern 6			Velocity
-Map	Pad 47		Shuffle			Velocity
-Map	Pad 48		Edit Accent			Velocity
-Map	Pad 11 Playing		Selected Drum Step Out 1			Velocity
-Map	Pad 12 Playing		Selected Drum Step Out 2			Velocity
-Map	Pad 13 Playing		Selected Drum Step Out 3			Velocity
-Map	Pad 14 Playing		Selected Drum Step Out 4			Velocity
-Map	Pad 15 Playing		Selected Drum Step Out 5			Velocity
-Map	Pad 16 Playing		Selected Drum Step Out 6			Velocity
-Map	Pad 17 Playing		Selected Drum Step Out 7			Velocity
-Map	Pad 18 Playing		Selected Drum Step Out 8			Velocity
-Map	Pad 21 Playing		Selected Drum Step Out 9			Velocity
-Map	Pad 22 Playing		Selected Drum Step Out 10			Velocity
-Map	Pad 23 Playing		Selected Drum Step Out 11			Velocity
-Map	Pad 24 Playing		Selected Drum Step Out 12			Velocity
-Map	Pad 25 Playing		Selected Drum Step Out 13			Velocity
-Map	Pad 26 Playing		Selected Drum Step Out 14			Velocity
-Map	Pad 27 Playing		Selected Drum Step Out 15			Velocity
-Map	Pad 28 Playing		Selected Drum Step Out 16			Velocity
-Map	Pad 31 Playing		Drum 1 is playing			Velocity
-Map	Pad 32 Playing		Drum 2 is playing			Velocity
-Map	Pad 33 Playing		Drum 3 is playing			Velocity
-Map	Pad 34 Playing		Drum 4 is playing			Velocity
-Map	Pad 35 Playing		Drum 5 is playing			Velocity
-Map	Pad 36 Playing		Drum 6 is playing			Velocity
-Map	Pad 37 Playing		Drum 7 is playing			Velocity
-Map	Pad 38 Playing		Drum 8 is playing			Velocity
+//Map	Pad 11		Selected Drum Step 1			Velocity
+//Map	Pad 12		Selected Drum Step 2			Velocity
+//Map	Pad 13		Selected Drum Step 3			Velocity
+//Map	Pad 14		Selected Drum Step 4			Velocity
+//Map	Pad 15		Selected Drum Step 5			Velocity
+//Map	Pad 16		Selected Drum Step 6			Velocity
+//Map	Pad 17		Selected Drum Step 7			Velocity
+//Map	Pad 18		Selected Drum Step 8			Velocity
+//Map	Pad 21		Selected Drum Step 9			Velocity
+//Map	Pad 22		Selected Drum Step 10			Velocity
+//Map	Pad 23		Selected Drum Step 11			Velocity
+//Map	Pad 24		Selected Drum Step 12			Velocity
+//Map	Pad 25		Selected Drum Step 13			Velocity
+//Map	Pad 26		Selected Drum Step 14			Velocity
+//Map	Pad 27		Selected Drum Step 15			Velocity
+//Map	Pad 28		Selected Drum Step 16			Velocity
+//Map	Pad 31		Select Drum 1			Velocity
+//Map	Pad 32		Select Drum 2			Velocity
+//Map	Pad 33		Select Drum 3			Velocity
+//Map	Pad 34		Select Drum 4			Velocity
+//Map	Pad 35		Select Drum 5			Velocity
+//Map	Pad 36		Select Drum 6			Velocity
+//Map	Pad 37		Select Drum 7			Velocity
+//Map	Pad 38		Select Drum 8			Velocity
+//Map	Pad 41		Pattern 1			Velocity
+//Map	Pad 42		Pattern 2			Velocity
+//Map	Pad 43		Pattern 3			Velocity
+//Map	Pad 44		Pattern 4			Velocity
+//Map	Pad 45		Pattern 5			Velocity
+//Map	Pad 46		Pattern 6			Velocity
+//Map	Pad 47		Shuffle			Velocity
+//Map	Pad 48		Edit Accent			Velocity
+//Map	Pad 11 Playing		Selected Drum Step Out 1			Velocity
+//Map	Pad 12 Playing		Selected Drum Step Out 2			Velocity
+//Map	Pad 13 Playing		Selected Drum Step Out 3			Velocity
+//Map	Pad 14 Playing		Selected Drum Step Out 4			Velocity
+//Map	Pad 15 Playing		Selected Drum Step Out 5			Velocity
+//Map	Pad 16 Playing		Selected Drum Step Out 6			Velocity
+//Map	Pad 17 Playing		Selected Drum Step Out 7			Velocity
+//Map	Pad 18 Playing		Selected Drum Step Out 8			Velocity
+//Map	Pad 21 Playing		Selected Drum Step Out 9			Velocity
+//Map	Pad 22 Playing		Selected Drum Step Out 10			Velocity
+//Map	Pad 23 Playing		Selected Drum Step Out 11			Velocity
+//Map	Pad 24 Playing		Selected Drum Step Out 12			Velocity
+//Map	Pad 25 Playing		Selected Drum Step Out 13			Velocity
+//Map	Pad 26 Playing		Selected Drum Step Out 14			Velocity
+//Map	Pad 27 Playing		Selected Drum Step Out 15			Velocity
+//Map	Pad 28 Playing		Selected Drum Step Out 16			Velocity
+//Map	Pad 31 Playing		Drum 1 is playing			Velocity
+//Map	Pad 32 Playing		Drum 2 is playing			Velocity
+//Map	Pad 33 Playing		Drum 3 is playing			Velocity
+//Map	Pad 34 Playing		Drum 4 is playing			Velocity
+//Map	Pad 35 Playing		Drum 5 is playing			Velocity
+//Map	Pad 36 Playing		Drum 6 is playing			Velocity
+//Map	Pad 37 Playing		Drum 7 is playing			Velocity
+//Map	Pad 38 Playing		Drum 8 is playing			Velocity
 
-Map	Pad 11		Selected Drum Step 1			Length
-Map	Pad 12		Selected Drum Step 2			Length
-Map	Pad 13		Selected Drum Step 3			Length
-Map	Pad 14		Selected Drum Step 4			Length
-Map	Pad 15		Selected Drum Step 5			Length
-Map	Pad 16		Selected Drum Step 6			Length
-Map	Pad 17		Selected Drum Step 7			Length
-Map	Pad 18		Selected Drum Step 8			Length
-Map	Pad 21		Selected Drum Step 9			Length
-Map	Pad 22		Selected Drum Step 10			Length
-Map	Pad 23		Selected Drum Step 11			Length
-Map	Pad 24		Selected Drum Step 12			Length
-Map	Pad 25		Selected Drum Step 13			Length
-Map	Pad 26		Selected Drum Step 14			Length
-Map	Pad 27		Selected Drum Step 15			Length
-Map	Pad 28		Selected Drum Step 16			Length
-Map	Pad 31		Select Drum 1			Length
-Map	Pad 32		Select Drum 2			Length
-Map	Pad 33		Select Drum 3			Length
-Map	Pad 34		Select Drum 4			Length
-Map	Pad 35		Select Drum 5			Length
-Map	Pad 36		Select Drum 6			Length
-Map	Pad 37		Select Drum 7			Length
-Map	Pad 38		Select Drum 8			Length
-Map	Pad 41		Pattern 1			Length
-Map	Pad 42		Pattern 2			Length
-Map	Pad 43		Pattern 3			Length
-Map	Pad 44		Pattern 4			Length
-Map	Pad 45		Pattern 5			Length
-Map	Pad 46		Pattern 6			Length
-Map	Pad 47		Shuffle			Length
-Map	Pad 48		Edit Accent			Length
-Map	Pad 11 Playing		Selected Drum Step Out 1			Length
-Map	Pad 12 Playing		Selected Drum Step Out 2			Length
-Map	Pad 13 Playing		Selected Drum Step Out 3			Length
-Map	Pad 14 Playing		Selected Drum Step Out 4			Length
-Map	Pad 15 Playing		Selected Drum Step Out 5			Length
-Map	Pad 16 Playing		Selected Drum Step Out 6			Length
-Map	Pad 17 Playing		Selected Drum Step Out 7			Length
-Map	Pad 18 Playing		Selected Drum Step Out 8			Length
-Map	Pad 21 Playing		Selected Drum Step Out 9			Length
-Map	Pad 22 Playing		Selected Drum Step Out 10			Length
-Map	Pad 23 Playing		Selected Drum Step Out 11			Length
-Map	Pad 24 Playing		Selected Drum Step Out 12			Length
-Map	Pad 25 Playing		Selected Drum Step Out 13			Length
-Map	Pad 26 Playing		Selected Drum Step Out 14			Length
-Map	Pad 27 Playing		Selected Drum Step Out 15			Length
-Map	Pad 28 Playing		Selected Drum Step Out 16			Length
-Map	Pad 31 Playing		Drum 1 is playing			Length
-Map	Pad 32 Playing		Drum 2 is playing			Length
-Map	Pad 33 Playing		Drum 3 is playing			Length
-Map	Pad 34 Playing		Drum 4 is playing			Length
-Map	Pad 35 Playing		Drum 5 is playing			Length
-Map	Pad 36 Playing		Drum 6 is playing			Length
-Map	Pad 37 Playing		Drum 7 is playing			Length
-Map	Pad 38 Playing		Drum 8 is playing			Length
+//Map	Pad 11		Selected Drum Step 1			Length
+//Map	Pad 12		Selected Drum Step 2			Length
+//Map	Pad 13		Selected Drum Step 3			Length
+//Map	Pad 14		Selected Drum Step 4			Length
+//Map	Pad 15		Selected Drum Step 5			Length
+//Map	Pad 16		Selected Drum Step 6			Length
+//Map	Pad 17		Selected Drum Step 7			Length
+//Map	Pad 18		Selected Drum Step 8			Length
+//Map	Pad 21		Selected Drum Step 9			Length
+//Map	Pad 22		Selected Drum Step 10			Length
+//Map	Pad 23		Selected Drum Step 11			Length
+//Map	Pad 24		Selected Drum Step 12			Length
+//Map	Pad 25		Selected Drum Step 13			Length
+//Map	Pad 26		Selected Drum Step 14			Length
+//Map	Pad 27		Selected Drum Step 15			Length
+//Map	Pad 28		Selected Drum Step 16			Length
+//Map	Pad 31		Select Drum 1			Length
+//Map	Pad 32		Select Drum 2			Length
+//Map	Pad 33		Select Drum 3			Length
+//Map	Pad 34		Select Drum 4			Length
+//Map	Pad 35		Select Drum 5			Length
+//Map	Pad 36		Select Drum 6			Length
+//Map	Pad 37		Select Drum 7			Length
+//Map	Pad 38		Select Drum 8			Length
+//Map	Pad 41		Pattern 1			Length
+//Map	Pad 42		Pattern 2			Length
+//Map	Pad 43		Pattern 3			Length
+//Map	Pad 44		Pattern 4			Length
+//Map	Pad 45		Pattern 5			Length
+//Map	Pad 46		Pattern 6			Length
+//Map	Pad 47		Shuffle			Length
+//Map	Pad 48		Edit Accent			Length
+//Map	Pad 11 Playing		Selected Drum Step Out 1			Length
+//Map	Pad 12 Playing		Selected Drum Step Out 2			Length
+//Map	Pad 13 Playing		Selected Drum Step Out 3			Length
+//Map	Pad 14 Playing		Selected Drum Step Out 4			Length
+//Map	Pad 15 Playing		Selected Drum Step Out 5			Length
+//Map	Pad 16 Playing		Selected Drum Step Out 6			Length
+//Map	Pad 17 Playing		Selected Drum Step Out 7			Length
+//Map	Pad 18 Playing		Selected Drum Step Out 8			Length
+//Map	Pad 21 Playing		Selected Drum Step Out 9			Length
+//Map	Pad 22 Playing		Selected Drum Step Out 10			Length
+//Map	Pad 23 Playing		Selected Drum Step Out 11			Length
+//Map	Pad 24 Playing		Selected Drum Step Out 12			Length
+//Map	Pad 25 Playing		Selected Drum Step Out 13			Length
+//Map	Pad 26 Playing		Selected Drum Step Out 14			Length
+//Map	Pad 27 Playing		Selected Drum Step Out 15			Length
+//Map	Pad 28 Playing		Selected Drum Step Out 16			Length
+//Map	Pad 31 Playing		Drum 1 is playing			Length
+//Map	Pad 32 Playing		Drum 2 is playing			Length
+//Map	Pad 33 Playing		Drum 3 is playing			Length
+//Map	Pad 34 Playing		Drum 4 is playing			Length
+//Map	Pad 35 Playing		Drum 5 is playing			Length
+//Map	Pad 36 Playing		Drum 6 is playing			Length
+//Map	Pad 37 Playing		Drum 7 is playing			Length
+//Map	Pad 38 Playing		Drum 8 is playing			Length
 
-Map	Fader 1		Drum 1 Level		Fader	Level
-Map	Fader 2		Drum 2 Level		Fader	Level
-Map	Fader 3		Drum 3 Level		Fader	Level
-Map	Fader 4		Drum 4 Level		Fader	Level
-Map	Fader 5		Drum 5 Level		Fader	Level
-Map	Fader 6		Drum 6 Level		Fader	Level
-Map	Fader 7		Drum 7 Level		Fader	Level
-Map	Fader 8		Drum 8 Level		Fader	Level
-Map	_Var		Level			Level
+//Map	Fader 1		Drum 1 Level		Fader	Level
+//Map	Fader 2		Drum 2 Level		Fader	Level
+//Map	Fader 3		Drum 3 Level		Fader	Level
+//Map	Fader 4		Drum 4 Level		Fader	Level
+//Map	Fader 5		Drum 5 Level		Fader	Level
+//Map	Fader 6		Drum 6 Level		Fader	Level
+//Map	Fader 7		Drum 7 Level		Fader	Level
+//Map	Fader 8		Drum 8 Level		Fader	Level
+//Map	_Var		Level			Level
 
-Map	Fader 1		Drum 1 Pan		Fader	Pan
-Map	Fader 2		Drum 2 Pan		Fader	Pan
-Map	Fader 3		Drum 3 Pan		Fader	Pan
-Map	Fader 4		Drum 4 Pan		Fader	Pan
-Map	Fader 5		Drum 5 Pan		Fader	Pan
-Map	Fader 6		Drum 6 Pan		Fader	Pan
-Map	Fader 7		Drum 7 Pan		Fader	Pan
-Map	Fader 8		Drum 8 Pan		Fader	Pan
-Map	_Var		Pan			Pan
+//Map	Fader 1		Drum 1 Pan		Fader	Pan
+//Map	Fader 2		Drum 2 Pan		Fader	Pan
+//Map	Fader 3		Drum 3 Pan		Fader	Pan
+//Map	Fader 4		Drum 4 Pan		Fader	Pan
+//Map	Fader 5		Drum 5 Pan		Fader	Pan
+//Map	Fader 6		Drum 6 Pan		Fader	Pan
+//Map	Fader 7		Drum 7 Pan		Fader	Pan
+//Map	Fader 8		Drum 8 Pan		Fader	Pan
+//Map	_Var		Pan			Pan
 
-Map	Fader 1		Drum 1 Vel to Level		Fader	Velocity
-Map	Fader 2		Drum 2 Vel to Level		Fader	Velocity
-Map	Fader 3		Drum 3 Vel to Level		Fader	Velocity
-Map	Fader 4		Drum 4 Vel to Level		Fader	Velocity
-Map	Fader 5		Drum 5 Vel to Level		Fader	Velocity
-Map	Fader 6		Drum 6 Vel to Level		Fader	Velocity
-Map	Fader 7		Drum 7 Vel to Level		Fader	Velocity
-Map	Fader 8		Drum 8 Vel to Level		Fader	Velocity
-Map	_Var		Velocity			Velocity
+//Map	Fader 1		Drum 1 Vel to Level		Fader	Velocity
+//Map	Fader 2		Drum 2 Vel to Level		Fader	Velocity
+//Map	Fader 3		Drum 3 Vel to Level		Fader	Velocity
+//Map	Fader 4		Drum 4 Vel to Level		Fader	Velocity
+//Map	Fader 5		Drum 5 Vel to Level		Fader	Velocity
+//Map	Fader 6		Drum 6 Vel to Level		Fader	Velocity
+//Map	Fader 7		Drum 7 Vel to Level		Fader	Velocity
+//Map	Fader 8		Drum 8 Vel to Level		Fader	Velocity
+//Map	_Var		Velocity			Velocity
 
-Map	Fader 1		Drum 1 Length		Fader	Length
-Map	Fader 2		Drum 2 Length		Fader	Length
-Map	Fader 3		Drum 3 Length		Fader	Length
-Map	Fader 4		Drum 4 Length		Fader	Length
-Map	Fader 5		Drum 5 Length		Fader	Length
-Map	Fader 6		Drum 6 Length		Fader	Length
-Map	Fader 7		Drum 7 Length		Fader	Length
-Map	Fader 8		Drum 8 Length		Fader	Length
-Map	_Var		Length			Length
+//Map	Fader 1		Drum 1 Length		Fader	Length
+//Map	Fader 2		Drum 2 Length		Fader	Length
+//Map	Fader 3		Drum 3 Length		Fader	Length
+//Map	Fader 4		Drum 4 Length		Fader	Length
+//Map	Fader 5		Drum 5 Length		Fader	Length
+//Map	Fader 6		Drum 6 Length		Fader	Length
+//Map	Fader 7		Drum 7 Length		Fader	Length
+//Map	Fader 8		Drum 8 Length		Fader	Length
+//Map	_Var		Length			Length
 
 Scope	Propellerheads	MClass Equalizer
 Define Group	Keyboard Shortcut Variations	Low+Param 1	Param 2+Hi

@@ -1,0 +1,17 @@
+Propellerhead Remote Mapping File
+File Format Version	1.0.0
+Control Surface Manufacturer	KittenVillage
+Control Surface Model	AutoAutolaner
+Map Version	1.0.0
+
+Scope	Propellerheads	Reason Document
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	NewOverdub		New Overdub		
+Map	NewAltTake		New Alternative Take		
+Map	Pos		Song Position		
+//Map	Pos		Time Position		
+Map	Rec		Record		
+Map	Loop		Loop On/Off		
+Map	LeftLoop		Left Loop		
+Map	RightLoop		Right Loop		
+Map	TTEM		Target Track Enable Monitoring		

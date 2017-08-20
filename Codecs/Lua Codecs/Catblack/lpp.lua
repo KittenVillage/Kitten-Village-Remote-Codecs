@@ -2677,16 +2677,16 @@ function remote_deliver_midi(maxbytes,port)
 				if Scope_prev~=Scope then
 	
 					--detect Redrum
-					if(Scope=="Redrum") then
-						noscaleneeded = true	
-						do_update_pads = 0
-						g.clearpads = 1
-					else
+					--if(Scope=="Redrum") then
+						--noscaleneeded = true	
+						--do_update_pads = 0
+						--g.clearpads = 1
+					--else
 						if(noscaleneeded == true) then						
 							do_update_pads = 1
 						end
 						noscaleneeded = false
-					end
+					--end
 					--if we've landed on a Kong, _Scope reports "KONG" and we change to drum scale
 					if(Scope=="Kong" and scale_int~=7) then
 						if scale_from_parse==false then
@@ -2710,7 +2710,7 @@ function remote_deliver_midi(maxbytes,port)
 -- -----------------------------------------------------------------------------------------------		
 		if (do_update_pads==1) or (State.update==1) then
 -- TODO no more drumpad
-			if(Scope~='Redrum') then
+--			if(Scope~='Redrum') then
 
 				local padsysex = ""
 				for ve=1,8 do for ho=1,8 do 
@@ -2744,7 +2744,7 @@ function remote_deliver_midi(maxbytes,port)
 
 
 --]]				
-			end -- drumpad or not
+--			end -- drumpad or not
 			
 		do_update_pads=0
 		State.update=0
@@ -2883,7 +2883,9 @@ function remote_set_state(changed_items)
 
 
 	-- FL: Collect all changed states for redrum "drum playing" - this part blinks the 3rd row drum selection pads
+
 	for k,item_index in ipairs(changed_items) do
+--[[
 		if item_index == Itemnum.accent then
 			g.accent = remote.get_item_value(item_index)
 		end
@@ -2899,6 +2901,9 @@ function remote_set_state(changed_items)
 			local step_index = item_index - Itemnum.first_step_playing_item + 1
 			g.step_is_playing[step_index] = remote.get_item_value(item_index)
 		end
+		
+--]]
+
 -- old trackname or 'copy' so the first time you get it it doesnt update, but if you click around it does.
 -- so you can duplicate a device while in a new mode, sc, tr and no change
 
@@ -2925,6 +2930,7 @@ function remote_set_state(changed_items)
 		end
 	
 	end
+
 end
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 

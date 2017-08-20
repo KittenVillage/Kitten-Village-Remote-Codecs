@@ -1,0 +1,2153 @@
+Propellerhead Remote Mapping File
+File Format Version	1.0.0
+Control Surface Manufacturer	Catblack
+Control Surface Model	LaunchControl
+Map Version	1.0.7
+
+//generated June 2016 by Catblack
+
+Scope	Propellerheads	Reason Essentials Master Section
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Essentials Master Section"
+
+
+Scope	Propellerheads	Reason Master Section
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Reason Master Section"
+
+
+Scope	Propellerheads	Record Master Section
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Record Master Section"
+
+
+Scope	Propellerheads	Reason Essentials Main Mixer Channel
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Essentials Main Mixer Channel"
+
+
+Scope	Propellerheads	Kong Drum Designer
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Kong"
+
+
+Scope	Propellerheads	Redrum Drum Computer
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Redrum"
+
+
+Scope	Propellerheads	Thor Polysonic Synthesizer
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Thor"
+
+
+Scope	Propellerheads	SubTractor Analog Synthesizer
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"SubTractor"
+
+
+Scope	Propellerheads	Malstrom Graintable Synthesizer
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Malstrom"
+
+
+Scope	Propellerheads	ID8 Instrument Device
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ID8"
+
+
+Scope	Propellerheads	Dr.REX Loop Player
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Dr.REX"
+
+
+Scope	Propellerheads	NN-XT Advanced Sampler
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"NN-XT"
+
+
+Scope	Propellerheads	NN19 Digital Sampler
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"NN19"
+
+
+Scope	Propellerheads	Scream 4 Distortion
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Scream 4"
+
+
+Scope	Propellerheads	BV512 Digital Vocoder
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"BV512"
+
+
+Scope	Propellerheads	RV7000 Advanced Reverb
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"RV7000"
+
+
+Scope	Propellerheads	Neptune Pitch Adjuster
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Neptune"
+
+
+Scope	Propellerheads	Line 6 Guitar Amp
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Line 6 Guitar"
+
+
+Scope	Propellerheads	Line 6 Bass Amp
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Line 6 Bass"
+
+
+Scope	Propellerheads	MClass Equalizer
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"MClass Equalizer"
+
+
+Scope	Propellerheads	MClass Compressor
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"MClass Compressor"
+
+
+Scope	Propellerheads	MClass Maximizer
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"MClass Maximizer"
+
+
+Scope	Propellerheads	MClass Stereo Imager
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"MClass Stereo Imager"
+
+
+Scope	Propellerheads	RV-7 Digital Reverb
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"RV-7"
+
+
+Scope	Propellerheads	DDL-1 Digital Delay Line
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"DDL-1"
+
+
+Scope	Propellerheads	D-11 Foldback Distortion
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"D-11"
+
+
+Scope	Propellerheads	ECF-42 Envelope Controlled Filter
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ECF-42"
+
+
+Scope	Propellerheads	CF-101 Chorus/Flanger
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"CF-101"
+
+
+Scope	Propellerheads	PH-90 Phaser
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"PH-90"
+
+
+Scope	Propellerheads	UN-16 Unison
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"UN-16"
+
+
+Scope	Propellerheads	COMP-01 Compressor/Limiter
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"COMP-01"
+
+
+Scope	Propellerheads	PEQ-2 Two Band Parametric EQ
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"PEQ-2"
+
+
+Scope	Propellerheads	RPG-8 Monophonic Arpeggiator
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"RPG-8"
+
+
+Scope	Propellerheads	Matrix Pattern Sequencer
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Matrix"
+
+
+Scope	Propellerheads	Combinator
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Combinator"
+
+
+Scope	Propellerheads	Spider Audio Merger & Splitter
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Spider Audio"
+
+
+Scope	Propellerheads	Spider CV Merger & Splitter
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Spider CV"
+
+
+Scope	Propellerheads	Mixer 14:2
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Mixer 14:2"
+
+
+Scope	Propellerheads	Line Mixer 6:2
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Line Mixer 6:2"
+
+
+Scope	Propellerheads	Reason Main Mixer Channel
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Reason Main Mixer Channel"
+
+
+Scope	Propellerheads	Record Main Mixer Channel
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Record Main Mixer Channel"
+
+
+Scope	Propellerheads	ReBirth Input Machine
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ReBirth Input Machine"
+
+
+Scope	Propellerhead Software	se.propellerheads.externalmidiinstrument
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"externalmidiinstrument"
+
+
+Scope	Propellerheads	Pulveriser
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Pulveriser"
+
+
+Scope	Propellerheads	The Echo
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"The Echo"
+
+
+Scope	Propellerheads	Alligator
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Alligator"
+
+
+Scope	Propellerhead Software	se.propellerheads.Arpeggio
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Arpeggio"
+
+
+Scope	Propellerhead Software	se.propellerheads.Audiomatic
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Audiomatic"
+
+
+Scope	Propellerhead Software	se.propellerheads.NoteEcho
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"NoteEcho"
+
+
+Scope	Propellerhead Software	se.propellerheads.Pulsar
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Pulsar"
+
+
+Scope	Propellerhead Software	se.propellerheads.ReasonAmp
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ReasonAmp"
+
+
+Scope	Propellerhead Software	se.propellerheads.ReasonBassAmp
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ReasonBassAmp"
+
+
+Scope	Propellerhead Software	se.propellerheads.ScalesAndChords
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ScalesAndChords"
+
+
+Scope	SoundMod	ca.soundmod.Tritone
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Tritone"
+
+
+Scope	AirRaid Audio	ch.airraid.EChorus
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"EChorus"
+
+
+Scope	AirRaid Audio	ch.airraid.EDelay
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"EDelay"
+
+
+Scope	AirRaid Audio	ch.airraid.EDistort
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"EDistort"
+
+
+Scope	AirRaid Audio	ch.airraid.EFilter
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"EFilter"
+
+
+Scope	AirRaid Audio	ch.airraid.ELoFi
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ELoFi"
+
+
+Scope	AirRaid Audio	ch.airraid.ELoFi2
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ELoFi2"
+
+
+Scope	AirRaid Audio	ch.airraid.EPhaser
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"EPhaser"
+
+
+Scope	AirRaid Audio	ch.airraid.ESplitter
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ESplitter"
+
+
+Scope	AirRaid Audio	ch.airraid.EStereoLFO
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"EStereoLFO"
+
+
+Scope	AirRaid Audio	ch.airraid.Mutagen
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Mutagen"
+
+
+Scope	AirRaid Audio	ch.airraid.Pandemic
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Pandemic"
+
+
+Scope	AirRaid Audio	ch.airraid.Relapse
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Relapse"
+
+
+Scope	LAB ONE Recordings	co.uk.labonerecordings.BattleAxe
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"BattleAxe"
+
+
+Scope	LAB ONE Recordings	co.uk.labonerecordings.BlackKnightEq
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"BlackKnightEq"
+
+
+Scope	LAB ONE Recordings	co.uk.labonerecordings.Executioner
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Executioner"
+
+
+Scope	LAB ONE Recordings	co.uk.labonerecordings.MaceProComp
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"MaceProComp"
+
+
+Scope	LAB ONE Recordings	co.uk.labonerecordings.RedQueenEQ
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"RedQueenEQ"
+
+
+Scope	LAB ONE Recordings	co.uk.labonerecordings.ReQ131
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ReQ131"
+
+
+Scope	Aftermath Audio	com.aftermathaudio.CV8X4CVGenerator
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"CV8X4CVGenerator"
+
+
+Scope	Alien Seed Tech	com.alienseed.PSDN_Envelope
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"PSDN_Envelope"
+
+
+Scope	Amaloo Studio, LLC	com.amaloostudio.EXP1
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"EXP1"
+
+
+Scope	Audio Damage, Inc.	com.audiodamage.roughrider
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"roughrider"
+
+
+Scope	Audio Poison	com.audiopoison.Strontium90
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Strontium90"
+
+
+Scope	Bassment DSP	com.bassmentdsp.LotusCompressor
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"LotusCompressor"
+
+
+Scope	Bassment DSP	com.bassmentdsp.NSPedalBoard
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"NSPedalBoard"
+
+
+Scope	Bassment DSP	com.bassmentdsp.SA16Chorus
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"SA16Chorus"
+
+
+Scope	Black and Orange	com.blackandorange.AutoArp
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"AutoArp"
+
+
+Scope	Black and Orange	com.blackandorange.ReVolt
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ReVolt"
+
+
+Scope	Black and Orange	com.blackandorange.TrafficControl
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"TrafficControl"
+
+
+Scope	Blamsoft, Inc.	com.blamsoft.Breakout
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Breakout"
+
+
+Scope	Blamsoft, Inc.	com.blamsoft.CVMerger
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"CVMerger"
+
+
+Scope	Blamsoft, Inc.	com.blamsoft.CVSplitter
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"CVSplitter"
+
+
+Scope	Blamsoft, Inc.	com.blamsoft.DC1
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"DC1"
+
+
+Scope	Blamsoft, Inc.	com.blamsoft.DC9
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"DC9"
+
+
+Scope	Blamsoft, Inc.	com.blamsoft.Distributor
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Distributor"
+
+
+Scope	Blamsoft, Inc.	com.blamsoft.F16
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"F16"
+
+
+Scope	Blamsoft, Inc.	com.blamsoft.Mark_VIII
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Mark_VIII"
+
+
+Scope	Blamsoft, Inc.	com.blamsoft.Merger
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Merger"
+
+
+Scope	Blamsoft, Inc.	com.blamsoft.Movement
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Movement"
+
+
+Scope	Blamsoft, Inc.	com.blamsoft.Resampler
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Resampler"
+
+
+Scope	Blamsoft, Inc.	com.blamsoft.Splitter
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Splitter"
+
+
+Scope	Blamsoft, Inc.	com.blamsoft.t00b
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"t00b"
+
+
+Scope	Blamsoft, Inc.	com.blamsoft.Viking
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Viking"
+
+
+Scope	Blamsoft, Inc.	com.blamsoft.VO1
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"VO1"
+
+
+Scope	Blamsoft, Inc.	com.blamsoft.Zero
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Zero"
+
+
+Scope	Cakewalk	com.cakewalk.RE2A
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"RE2A"
+
+
+Scope	Deadman Audio Devices	com.deadmanaudiodevices.getlayedsound
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"getlayedsound"
+
+
+Scope	Deadman Audio Devices	com.deadmanaudiodevices.getlayedvoltage
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"getlayedvoltage"
+
+
+Scope	Deadman Audio Devices	com.deadmanaudiodevices.MasterGater
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"MasterGater"
+
+
+Scope	Deadman Audio Devices	com.deadmanaudiodevices.onenotestand
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"onenotestand"
+
+
+Scope	Devoloop	com.devoloop.Holedo
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Holedo"
+
+
+Scope	Devoloop	com.devoloop.SitBull
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"SitBull"
+
+
+Scope	DLD Technology	com.dldtechnology.as16
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"as16"
+
+
+Scope	DLD Technology	com.dldtechnology.cvgateway
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"cvgateway"
+
+
+Scope	DLD Technology	com.dldtechnology.cvmeter
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"cvmeter"
+
+
+Scope	DLD Technology	com.dldtechnology.dr4
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"dr4"
+
+
+Scope	DLD Technology	com.dldtechnology.headphonemonitor
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"headphonemonitor"
+
+
+Scope	DLD Technology	com.dldtechnology.megasaur
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"megasaur"
+
+
+Scope	DLD Technology	com.dldtechnology.respeech
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"respeech"
+
+
+Scope	DLD Technology	com.dldtechnology.revolution
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"revolution"
+
+
+Scope	DLD Technology	com.dldtechnology.snakebite
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"snakebite"
+
+
+Scope	DNA Labs	com.dnalabs.Hydronexius
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Hydronexius"
+
+
+Scope	Doodov Digital Design	com.doodov.SW4C
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"SW4C"
+
+
+Scope	Expert Sleepers	com.expertsleepers.SWVoiceController
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"SWVoiceController"
+
+
+Scope	Fiedler Audio	com.fiedler_audio.AD480RE
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"AD480RE"
+
+
+Scope	Flower Audio	com.flowerau.4Dyne
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"4Dyne"
+
+
+Scope	Flower Audio	com.flowerau.LoudnessMeter
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"LoudnessMeter"
+
+
+Scope	The Musicology Group	com.flyinggreendoor.HaasMixer
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"HaasMixer"
+
+
+Scope	FXpansion Audio UK Ltd.	com.fxpansion.DCAMBusComp
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"DCAMBusComp"
+
+
+Scope	FXpansion Audio UK Ltd.	com.fxpansion.DCAMChanComp
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"DCAMChanComp"
+
+
+Scope	FXpansion Audio UK Ltd.	com.fxpansion.DCAMEnvShaper
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"DCAMEnvShaper"
+
+
+Scope	FXpansion Audio UK Ltd.	com.fxpansion.EtchRack
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"EtchRack"
+
+
+Scope	FXpansion Audio UK Ltd.	com.fxpansion.Tres
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Tres"
+
+
+Scope	GForce Software	com.gforcesoftware.ReTron
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ReTron"
+
+
+Scope	Groovy Melon	com.groovymelon.MorfinXF
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"MorfinXF"
+
+
+Scope	Heavyocity	com.heavyocity.AeonOrganic
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"AeonOrganic"
+
+
+Scope	Heavyocity	com.heavyocity.AeonSynth
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"AeonSynth"
+
+
+Scope	IOx Audioware	com.ioxaudioware.onyx
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"onyx"
+
+
+Scope	IOx Audioware	com.ioxaudioware.titan
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"titan"
+
+
+Scope	iZotope, Inc	com.izotope.ozonemaximizer
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ozonemaximizer"
+
+
+Scope	Jiggery Pokery	com.jiggerypokery.Ammo100LA
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Ammo100LA"
+
+
+Scope	Jiggery Pokery	com.jiggerypokery.Ammo1200BR
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Ammo1200BR"
+
+
+Scope	Jiggery Pokery	com.jiggerypokery.Ammo400R
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Ammo400R"
+
+
+Scope	Jiggery Pokery	com.jiggerypokery.Anansi
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Anansi"
+
+
+Scope	Jiggery Pokery	com.jiggerypokery.Charlotte
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Charlotte"
+
+
+Scope	Jiggery Pokery	com.jiggerypokery.Chenille
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Chenille"
+
+
+Scope	Jiggery Pokery	com.jiggerypokery.Combo310U
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Combo310U"
+
+
+Scope	Jiggery Pokery	com.jiggerypokery.ComboB3T
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ComboB3T"
+
+
+Scope	Jiggery Pokery	com.jiggerypokery.ComboCompact
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ComboCompact"
+
+
+Scope	Jiggery Pokery	com.jiggerypokery.ComboContinental
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ComboContinental"
+
+
+Scope	Jiggery Pokery	com.jiggerypokery.ComboX705
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ComboX705"
+
+
+Scope	Jiggery Pokery	com.jiggerypokery.Itsy
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Itsy"
+
+
+Scope	Jiggery Pokery	com.jiggerypokery.JPSHarmonicSynth
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"JPSHarmonicSynth"
+
+
+Scope	Jiggery Pokery	com.jiggerypokery.Lolth
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Lolth"
+
+
+Scope	Jiggery Pokery	com.jiggerypokery.Miranda
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Miranda"
+
+
+Scope	Jiggery Pokery	com.jiggerypokery.Mordred
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Mordred"
+
+
+Scope	Jiggery Pokery	com.jiggerypokery.Republik
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Republik"
+
+
+Scope	Jiggery Pokery	com.jiggerypokery.Shelob
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Shelob"
+
+
+Scope	Jiggery Pokery	com.jiggerypokery.Steerpike
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Steerpike"
+
+
+Scope	Jiggery Pokery	com.jiggerypokery.Titus
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Titus"
+
+
+Scope	Jiggery Pokery	com.jiggerypokery.TMA1
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"TMA1"
+
+
+Scope	Jiggery Pokery	com.jiggerypokery.TMA4
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"TMA4"
+
+
+Scope	Jiggery Pokery	com.jiggerypokery.TMA9
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"TMA9"
+
+
+Scope	Josh Levy	com.joshlevy.KitchenSync
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"KitchenSync"
+
+
+Scope	Josh Levy	com.joshlevy.Synth808
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Synth808"
+
+
+Scope	Josh Levy	com.joshlevy.TickTick
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"TickTick"
+
+
+Scope	J-Yul Sound	com.jyulsound.PiscesLimiter
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"PiscesLimiter"
+
+
+Scope	J-Yul Sound	com.jyulsound.PiscesLimiterFree
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"PiscesLimiterFree"
+
+
+Scope	kiloHearts	com.kilohearts.Disperser
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Disperser"
+
+
+Scope	kiloHearts	com.kilohearts.Faturator
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Faturator"
+
+
+Scope	kiloHearts	com.kilohearts.khsONE
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"khsONE"
+
+
+Scope	Kuassa	com.kuassa.AmplifikationCreme
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"AmplifikationCreme"
+
+
+Scope	Kuassa	com.kuassa.AmplifikationVermilion
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"AmplifikationVermilion"
+
+
+Scope	Kuassa	com.kuassa.CerberusBassAmp
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"CerberusBassAmp"
+
+
+Scope	Kuassa	com.kuassa.EVEAT1
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"EVEAT1"
+
+
+Scope	Kuassa	com.kuassa.EVEAT4
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"EVEAT4"
+
+
+Scope	Kuassa	com.kuassa.EVEMP5
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"EVEMP5"
+
+
+Scope	Kuassa	com.kuassa.Kratos2Maximizer
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Kratos2Maximizer"
+
+
+Scope	Lectric Panda LLC	com.lectricpanda.Janitor
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Janitor"
+
+
+Scope	Lectric Panda LLC	com.lectricpanda.Korde
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Korde"
+
+
+Scope	Lectric Panda LLC	com.lectricpanda.MoPol
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"MoPol"
+
+
+Scope	Lectric Panda LLC	com.lectricpanda.Propulsion
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Propulsion"
+
+
+Scope	Lectric Panda LLC	com.lectricpanda.PSQ1684
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"PSQ1684"
+
+
+Scope	Lectric Panda LLC	com.lectricpanda.Shape
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Shape"
+
+
+Scope	Lectric Panda LLC	com.lectricpanda.Skope
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Skope"
+
+
+Scope	Lectric Panda LLC	com.lectricpanda.SkopeM4
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"SkopeM4"
+
+
+Scope	Lectric Panda LLC	com.lectricpanda.Spektrum
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Spektrum"
+
+
+Scope	McDSP	com.mcdsp.C670
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"C670"
+
+
+Scope	McDSP	com.mcdsp.E670
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"E670"
+
+
+Scope	McDSP	com.mcdsp.FRG4RE
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"FRG4RE"
+
+
+Scope	McDSP	com.mcdsp.FRGEEE
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"FRGEEE"
+
+
+Scope	McDSP	com.mcdsp.FutzBox
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"FutzBox"
+
+
+Scope	McDSP	com.mcdsp.MooQ
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"MooQ"
+
+
+Scope	McDSP	com.mcdsp.MooTube
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"MooTube"
+
+
+Scope	Devoloop	com.mikegazzaruso.DYNARAGE
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"DYNARAGE"
+
+
+Scope	MGSoft Audio Software	com.mikegazzaruso.Threeloo
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Threeloo"
+
+
+Scope	MGSoft Audio Software	com.mikegazzaruso.Unifylter
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Unifylter"
+
+
+Scope	Nucleus SoundLab	com.nucleussoundlab.Beat_Crush
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Beat_Crush"
+
+
+Scope	Numerical Sound	com.numericalSound.BassTiltFilters
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"BassTiltFilters"
+
+
+Scope	Numerical Sound	com.numericalSound.MidrangeTiltFilters
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"MidrangeTiltFilters"
+
+
+Scope	Numerical Sound	com.numericalSound.ReBassNarrow
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ReBassNarrow"
+
+
+Scope	Numerical Sound	com.numericalSound.ReBassWide
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ReBassWide"
+
+
+Scope	Numerical Sound	com.numericalSound.ReStereo
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ReStereo"
+
+
+Scope	Numerical Sound	com.numericalSound.RiVerbHalls
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"RiVerbHalls"
+
+
+Scope	Numerical Sound	com.numericalSound.RiVerbUpFrontSpaces
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"RiVerbUpFrontSpaces"
+
+
+Scope	Numerical Sound	com.numericalSound.ToneMutations
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ToneMutations"
+
+
+Scope	Numerical Sound	com.numericalSound.ToneMutationsVocals
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ToneMutationsVocals"
+
+
+Scope	Numerical Sound	com.numericalSound.TrebleTiltFilters
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"TrebleTiltFilters"
+
+
+Scope	Ochen K.	com.ochenk.4MER
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"4MER"
+
+
+Scope	Ochen K.	com.ochenk.ASeriesModularSynth1
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ASeriesModularSynth1"
+
+
+Scope	Ochen K.	com.ochenk.ASeriesModularSynth2
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ASeriesModularSynth2"
+
+
+Scope	Ochen K.	com.ochenk.CarveEQ
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"CarveEQ"
+
+
+Scope	Ochen K.	com.ochenk.Chip64
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Chip64"
+
+
+Scope	Ochen K.	com.ochenk.CVTuner
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"CVTuner"
+
+
+Scope	Ochen K.	com.ochenk.Driver
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Driver"
+
+
+Scope	Ochen K.	com.ochenk.EDS06sDrumSynth
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"EDS06sDrumSynth"
+
+
+Scope	Ochen K.	com.ochenk.GlitchEffect
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"GlitchEffect"
+
+
+Scope	Ochen K.	com.ochenk.MicroTune
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"MicroTune"
+
+
+Scope	Ochen K.	com.ochenk.PCV
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"PCV"
+
+
+Scope	Ochen K.	com.ochenk.PDT
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"PDT"
+
+
+Scope	Ochen K.	com.ochenk.Repeat
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Repeat"
+
+
+Scope	omino	com.omino.wbl3001
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"wbl3001"
+
+
+Scope	omino	com.omino.wbl5515
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"wbl5515"
+
+
+Scope	Peff	com.peff.Alias8cv
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Alias8cv"
+
+
+Scope	Peff	com.peff.Buffre
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Buffre"
+
+
+Scope	Peff	com.peff.crapre
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"crapre"
+
+
+Scope	Peff	com.peff.crapre2
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"crapre2"
+
+
+Scope	Peff	com.peff.CRAPREnumber2
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"CRAPREnumber2"
+
+
+Scope	Peff	com.peff.Directre
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Directre"
+
+
+Scope	Peff	com.peff.Spacre
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Spacre"
+
+
+Scope	Pepin Hazan	com.pepinhazan.FRONT8
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"FRONT8"
+
+
+Scope	Pepin Hazan	com.pepinhazan.RVL1Display
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"RVL1Display"
+
+
+Scope	pongasoft	com.pongasoft.AB12AudioSwitch
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"AB12AudioSwitch"
+
+
+Scope	pongasoft	com.pongasoft.ABSwitch
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ABSwitch"
+
+
+Scope	pongasoft	com.pongasoft.VAC6
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"VAC6"
+
+
+Scope	Primal Audio	com.primalaudio.Acid
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Acid"
+
+
+Scope	Primal Audio	com.primalaudio.FM4
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"FM4"
+
+
+Scope	Primal Audio	com.primalaudio.Ladder
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Ladder"
+
+
+Scope	Primal Audio	com.primalaudio.PMS20
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"PMS20"
+
+
+Scope	ProjectSAM	com.projectsam.Sampler
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Sampler"
+
+
+Scope	Quadelectra Audioworx	com.quadelectra.BeatChopRTS
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"BeatChopRTS"
+
+
+Scope	Quadelectra (Quadelectra Audioworx)	com.quadelectra.CVSuiteLineMixer
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"CVSuiteLineMixer"
+
+
+Scope	Quadelectra (Quadelectra Audioworx)	com.quadelectra.CVSuiteLineProcessor
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"CVSuiteLineProcessor"
+
+
+Scope	Quadelectra (Quadelectra Audioworx)	com.quadelectra.CVSuiteParametrix
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"CVSuiteParametrix"
+
+
+Scope	Quadelectra (Quadelectra Audioworx)	com.quadelectra.CVSuiteSignalRepeater
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"CVSuiteSignalRepeater"
+
+
+Scope	Quadelectra (Quadelectra Audioworx)	com.quadelectra.CVSuiteVectorizer
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"CVSuiteVectorizer"
+
+
+Scope	Quadelectra Audioworx	com.quadelectra.JackBox707
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"JackBox707"
+
+
+Scope	Quadelectra Audioworx	com.quadelectra.JackBox727
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"JackBox727"
+
+
+Scope	Quadelectra Audioworx	com.quadelectra.JackBox808
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"JackBox808"
+
+
+Scope	Quadelectra Audioworx	com.quadelectra.Jackbox909
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Jackbox909"
+
+
+Scope	Quadelectra Audioworx	com.quadelectra.JackBoxL1M
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"JackBoxL1M"
+
+
+Scope	Quadelectra Audioworx	com.quadelectra.JackBoxRZi
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"JackBoxRZi"
+
+
+Scope	Quadelectra Audioworx	com.quadelectra.Mercury
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Mercury"
+
+
+Scope	Quadelectra Audioworx	com.quadelectra.StereoSplitter
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"StereoSplitter"
+
+
+Scope	Quadelectra Audioworx	com.quadelectra.System9
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"System9"
+
+
+Scope	Quadelectra Audioworx	com.quadelectra.ThreePlex
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ThreePlex"
+
+
+Scope	Retouch Control	com.retouchcontrol.ChordSet
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ChordSet"
+
+
+Scope	Retouch Control	com.retouchcontrol.JammeR
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"JammeR"
+
+
+Scope	Retouch Control	com.retouchcontrol.Slider
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Slider"
+
+
+Scope	Retouch Control	com.retouchcontrol.XY8
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"XY8"
+
+
+Scope	Robotic Bean	com.roboticbean.AcoustiClap
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"AcoustiClap"
+
+
+Scope	Robotic Bean	com.roboticbean.CowBell
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"CowBell"
+
+
+Scope	Robotic Bean	com.roboticbean.ElectroClap
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ElectroClap"
+
+
+Scope	Robotic Bean	com.roboticbean.Euclid
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Euclid"
+
+
+Scope	Robotic Bean	com.roboticbean.Select
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Select"
+
+
+Scope	Robotic Bean	com.roboticbean.Step
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Step"
+
+
+Scope	Rob Papen	com.robpapen.PredatorRE
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"PredatorRE"
+
+
+Scope	Rob Papen	com.robpapen.PunchBDRE
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"PunchBDRE"
+
+
+Scope	Rob Papen	com.robpapen.Quad
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Quad"
+
+
+Scope	Rob Papen	com.robpapen.RGRE
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"RGRE"
+
+
+Scope	Rob Papen	com.robpapen.RPDistort
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"RPDistort"
+
+
+Scope	Rob Papen	com.robpapen.RPVerb
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"RPVerb"
+
+
+Scope	Rob Papen	com.robpapen.SubBoomBassRE
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"SubBoomBassRE"
+
+
+Scope	Rob Papen	com.robpapen.Vecto
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Vecto"
+
+
+Scope	ScuzzyEye	com.scuzzyeye.MS34
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"MS34"
+
+
+Scope	ScuzzyEye	com.scuzzyeye.SU27
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"SU27"
+
+
+Scope	Selig Audio, LLC	com.seligaudio.ReMark
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ReMark"
+
+
+Scope	Selig Audio	com.seligaudio.SeligDeEsser
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"SeligDeEsser"
+
+
+Scope	Selig Audio	com.seligaudio.SeligGain
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"SeligGain"
+
+
+Scope	Selig Audio	com.seligaudio.TheCurve
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"TheCurve"
+
+
+Scope	Softube	com.softube.re.ARange
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ARange"
+
+
+Scope	Softube	com.softube.re.Dynamite
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Dynamite"
+
+
+Scope	Softube	com.softube.re.FETCompressor
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"FETCompressor"
+
+
+Scope	Softube	com.softube.re.SaturationKnob
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"SaturationKnob"
+
+
+Scope	Softube	com.softube.re.SpringReverb
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"SpringReverb"
+
+
+Scope	Softube	com.softube.re.TSAR1
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"TSAR1"
+
+
+Scope	Softube	com.softube.re.TSAR1R
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"TSAR1R"
+
+
+Scope	Softube	com.softube.re.TubeDelay
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"TubeDelay"
+
+
+Scope	Softube	com.softube.re.TubeTechCC
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"TubeTechCC"
+
+
+Scope	Sonic Charge	com.soniccharge.Bitspeek
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Bitspeek"
+
+
+Scope	Sonic Charge	com.soniccharge.Echobode
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Echobode"
+
+
+Scope	SonicWorkflow	com.sonicworkflow.ReLabeler
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ReLabeler"
+
+
+Scope	Sononics	com.sononics.GSX
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"GSX"
+
+
+Scope	Sononics	com.sononics.Revival
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Revival"
+
+
+Scope	Soundiron LLC	com.soundiron.EmotionalPiano
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"EmotionalPiano"
+
+
+Scope	Spectral Scan Software	com.spectralscan.4PhaseLFO
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"4PhaseLFO"
+
+
+Scope	Sugar Bytes	com.sugarbytes.FilterPattern
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"FilterPattern"
+
+
+Scope	Sugar Bytes	com.sugarbytes.PitchDelay
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"PitchDelay"
+
+
+Scope	Sugar Bytes	com.sugarbytes.SliceArranger
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"SliceArranger"
+
+
+Scope	Sugar Bytes	com.sugarbytes.Spectralizer
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Spectralizer"
+
+
+Scope	Sugar Bytes	com.sugarbytes.Vinylizer
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Vinylizer"
+
+
+Scope	Sugar Bytes	com.sugarbytes.Vocodizer
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Vocodizer"
+
+
+Scope	Synapse Audio Software	com.synapseAudioSoftware.Antidote
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Antidote"
+
+
+Scope	Synapse Audio Software	com.synapseAudioSoftware.FatSpace
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"FatSpace"
+
+
+Scope	Synapse Audio Software	com.synapseAudioSoftware.SynapseChorus
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"SynapseChorus"
+
+
+Scope	Synapse Audio Software	com.synapseAudioSoftware.SynapseFilter
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"SynapseFilter"
+
+
+Scope	Synapse Audio Software	com.synapseAudioSoftware.SynapseGQ7
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"SynapseGQ7"
+
+
+Scope	Synapse Audio Software	com.synapseAudioSoftware.SynapseNinety
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"SynapseNinety"
+
+
+Scope	Synapse Audio Software	com.synapseAudioSoftware.SynapsePhaser
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"SynapsePhaser"
+
+
+Scope	Synapse Audio Software	com.synapseAudioSoftware.SynapseReverb1
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"SynapseReverb1"
+
+
+Scope	Synapse Audio Software	com.synapseAudioSoftware.SynapseRingMod
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"SynapseRingMod"
+
+
+Scope	Synapse Audio Software	com.synapseAudioSoftware.SynapseVintEQ
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"SynapseVintEQ"
+
+
+Scope	ThatMusicCompany	com.thatmusiccompany.DistortChain
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"DistortChain"
+
+
+Scope	ThatMusicCompany	com.thatmusiccompany.MrOverDrive
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"MrOverDrive"
+
+
+Scope	ThatMusicCompany	com.thatmusiccompany.T2Phaser
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"T2Phaser"
+
+
+Scope	The Chronologists	com.thechronologists.Constants
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Constants"
+
+
+Scope	The Chronologists	com.thechronologists.Divisor
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Divisor"
+
+
+Scope	The Chronologists	com.thechronologists.Equation
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Equation"
+
+
+Scope	The Chronologists	com.thechronologists.EquationJr
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"EquationJr"
+
+
+Scope	The Chronologists	com.thechronologists.Later
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Later"
+
+
+Scope	The Chronologists	com.thechronologists.Now
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Now"
+
+
+Scope	The Chronologists	com.thechronologists.Randrome
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Randrome"
+
+
+Scope	The Chronologists	com.thechronologists.RandromeJr
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"RandromeJr"
+
+
+Scope	The Chronologists	com.thechronologists.Scope
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Scope"
+
+
+Scope	The Chronologists	com.thechronologists.ScopeJr
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ScopeJr"
+
+
+Scope	The Chronologists	com.thechronologists.Truth
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Truth"
+
+
+Scope	Time Extend Audio Limited	com.timeextendaudio.MilkShake
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"MilkShake"
+
+
+Scope	u-he	com.uheplugins.Runciter
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Runciter"
+
+
+Scope	u-he	com.uheplugins.UhbikA
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"UhbikA"
+
+
+Scope	u-he	com.uheplugins.UhbikD
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"UhbikD"
+
+
+Scope	u-he	com.uheplugins.UhbikF
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"UhbikF"
+
+
+Scope	u-he	com.uheplugins.UhbikG
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"UhbikG"
+
+
+Scope	u-he	com.uheplugins.UhbikP
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"UhbikP"
+
+
+Scope	u-he	com.uheplugins.UhbikQ
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"UhbikQ"
+
+
+Scope	u-he	com.uheplugins.UhbikS
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"UhbikS"
+
+
+Scope	u-he	com.uheplugins.UhbikT
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"UhbikT"
+
+
+Scope	Unfiltered Audio	com.unfilteredaudio.G8Gate
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"G8Gate"
+
+
+Scope	Unfiltered Audio	com.unfilteredaudio.Renoun
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Renoun"
+
+
+Scope	Unfiltered Audio	com.unfilteredaudio.Yoko
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Yoko"
+
+
+Scope	Vibe Plant	com.vibeplant.DragonGate
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"DragonGate"
+
+
+Scope	Vibe Plant	com.vibeplant.Relight
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Relight"
+
+
+Scope	ZakunaProd	com.zakunaprod.Lithium
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Lithium"
+
+
+Scope	Normen Hansen	de.normenhansen.vmg01
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"vmg01"
+
+
+Scope	Zvork	fr.zvork.LeSpace
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"LeSpace"
+
+
+Scope	Zvork	fr.zvork.Noxious
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Noxious"
+
+
+Scope	Zvork	fr.zvork.Oberton
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Oberton"
+
+
+Scope	Zvork	fr.zvork.VoltCB1
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"VoltCB1"
+
+
+Scope	Zvork	fr.zvork.VoltSH1
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"VoltSH1"
+
+
+Scope	Zvork	fr.zvork.VoltSL1
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"VoltSL1"
+
+
+Scope	KORG	jp.co.korg.MonoPoly
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"MonoPoly"
+
+
+Scope	KORG	jp.co.korg.Polysix
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Polysix"
+
+
+Scope	Multi-D	nl.multid.CVMutant
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"CVMutant"
+
+
+Scope	Studio Corbach	nl.studiocorbach.MixfoodAmbiNature
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"MixfoodAmbiNature"
+
+
+Scope	Studio Corbach	nl.studiocorbach.MixfoodOrange
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"MixfoodOrange"
+
+
+Scope	Studio Corbach	nl.studiocorbach.MixfoodUnisonXs
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"MixfoodUnisonXs"
+
+
+Scope	WiZAudio	nl.wizaudio.PlayGate
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"PlayGate"
+
+
+Scope	WiZAudio	nl.wzwart.AdditiveOscillator
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"AdditiveOscillator"
+
+
+Scope	WiZAudio	nl.wzwart.TableOscillator
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"TableOscillator"
+
+
+Scope	Pitchblende	nz.co.pitchblende.AutoTheory
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"AutoTheory"
+
+
+Scope	DlogB	org.dlogb.SplitterEffect
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"SplitterEffect"
+
+
+Scope	Little IO	org.tytel.littlelfo
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"littlelfo"
+
+
+Scope	D16 Group Audio Software	pl.d16.Decimort2
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Decimort2"
+
+
+Scope	D16 Group Audio Software	pl.d16.Devastor2
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Devastor2"
+
+
+Scope	LaboratoriaIT.RU, LLC	ru.laboratoriait.AudioToCV
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"AudioToCV"
+
+
+Scope	CodeDiggers	ru.laboratoriait.DQ
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"DQ"
+
+
+Scope	LaboratoriaIT.RU, LLC	ru.laboratoriait.Filter
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Filter"
+
+
+Scope	Ravenherz	ru.ravenherz.DigitalVoltageComparator
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"DigitalVoltageComparator"
+
+
+Scope	Red Rock Sound	ru.redrocksound.C1A
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"C1A"
+
+
+Scope	Red Rock Sound	ru.redrocksound.C1L1
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"C1L1"
+
+
+Scope	Red Rock Sound	ru.redrocksound.C1S
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"C1S"
+
+
+Scope	Red Rock Sound	ru.redrocksound.Ivoks
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Ivoks"
+
+
+Scope	Red Rock Sound	ru.redrocksound.MBC
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"MBC"
+
+
+Scope	Red Rock Sound	ru.redrocksound.Measure
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Measure"
+
+
+Scope	Red Rock Sound	ru.redrocksound.PPM
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"PPM"
+
+
+Scope	Red Rock Sound	ru.redrocksound.RE128
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"RE128"
+
+
+Scope	Red Rock Sound	ru.redrocksound.RE180
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"RE180"
+
+
+Scope	Red Rock Sound	ru.redrocksound.RE181
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"RE181"
+
+
+Scope	Red Rock Sound	ru.redrocksound.RE200
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"RE200"
+
+
+Scope	Red Rock Sound	ru.redrocksound.RE202
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"RE202"
+
+
+Scope	Red Rock Sound	ru.redrocksound.RE302
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"RE302"
+
+
+Scope	Red Rock Sound	ru.redrocksound.RE60
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"RE60"
+
+
+Scope	Red Rock Sound	ru.redrocksound.Red
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Red"
+
+
+Scope	Red Rock Sound	ru.redrocksound.Reverb
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Reverb"
+
+
+Scope	Red Rock Sound	ru.redrocksound.VU
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"VU"
+
+
+Scope	Sputnik Audio	ru.sputnikaudio.SP1_Plate
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"SP1_Plate"
+
+
+Scope	Sputnik Audio	ru.sputnikaudio.SP2_Sib
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"SP2_Sib"
+
+
+Scope	Turn2on Software	ru.turn2on.Blackpole
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Blackpole"
+
+
+Scope	Turn2on Software	ru.turn2on.Meteora
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Meteora"
+
+
+Scope	Turn2on Software	ru.turn2on.Metro
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Metro"
+
+
+Scope	AudioRealism	se.audiorealism.abl3
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"abl3"
+
+
+Scope	AudioRealism	se.audiorealism.Dominator
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Dominator"
+
+
+Scope	AudioRealism	se.audiorealism.reabl2
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"reabl2"
+
+
+Scope	HaMu	se.hamu.MatchMaker
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"MatchMaker"
+
+
+Scope	HaMu	se.hamu.Mesher4B
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Mesher4B"
+
+
+Scope	HaMu	se.hamu.Mesher4K
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Mesher4K"
+
+
+Scope	HaMu	se.hamu.Mesher8B
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Mesher8B"
+
+
+Scope	HaMu	se.hamu.Mesher8K
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Mesher8K"
+
+
+Scope	HaMu	se.hamu.MidiTapper
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"MidiTapper"
+
+
+Scope	HaMu	se.hamu.Mingler
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Mingler"
+
+
+Scope	HaMu	se.hamu.ModPanel12
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ModPanel12"
+
+
+Scope	HaMu	se.hamu.ModPanel16
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ModPanel16"
+
+
+Scope	HaMu	se.hamu.ModPanel8
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ModPanel8"
+
+
+Scope	HaMu	se.hamu.ModSelsor
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ModSelsor"
+
+
+Scope	HaMu	se.hamu.ModSlewer
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ModSlewer"
+
+
+Scope	HaMu	se.hamu.ModStepper
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ModStepper"
+
+
+Scope	HaMu	se.hamu.ModSweeper
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ModSweeper"
+
+
+Scope	HaMu	se.hamu.MxSplirger
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"MxSplirger"
+
+
+Scope	HaMu	se.hamu.Newtrol_12
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Newtrol_12"
+
+
+Scope	HaMu	se.hamu.Newtrol_16
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Newtrol_16"
+
+
+Scope	HaMu	se.hamu.Newtrol_8
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Newtrol_8"
+
+
+Scope	LoveOne	se.loveone.Bakelite
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Bakelite"
+
+
+Scope	LoveOne	se.loveone.BZR1
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"BZR1"
+
+
+Scope	LoveOne	se.loveone.Neutron
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Neutron"
+
+
+Scope	Propellerhead Software	se.propellerheads.AcousticGuitarist
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"AcousticGuitarist"
+
+
+Scope	Propellerhead Software	se.propellerheads.AListDrummer
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"AListDrummer"
+
+
+Scope	Propellerhead Software	se.propellerheads.ElectricGuitaristPC
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ElectricGuitaristPC"
+
+
+Scope	Propellerhead Software	se.propellerheads.ElectricGuitaristPopC
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ElectricGuitaristPopC"
+
+
+Scope	Propellerhead Software	se.propellerheads.Parsec
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Parsec"
+
+
+Scope	Propellerhead Software	se.propellerheads.Polar
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Polar"
+
+
+Scope	Propellerhead Software	se.propellerheads.PX7
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"PX7"
+
+
+Scope	Propellerhead Software	se.propellerheads.RadicalKeys
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"RadicalKeys"
+
+
+Scope	Propellerhead Software	se.propellerheads.radicalpiano
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"radicalpiano"
+
+
+Scope	Propellerhead Software	se.propellerheads.Rotor
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Rotor"
+
+
+Scope	Propellerhead Software	se.propellerheads.Synchronous
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Synchronous"
+
+
+Scope	Skrock Music	se.skrockmusic.Aurora
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Aurora"
+
+
+Scope	Skrock Music	se.skrockmusic.Iridium
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Iridium"
+
+
+Scope	Skrock Music	se.skrockmusic.Nautilus
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Nautilus"
+
+
+Scope	Skrock Music	se.skrockmusic.Orbis
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Orbis"
+
+
+Scope	Skrock Music	se.skrockmusic.Solaris
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Solaris"
+
+
+Scope	The Musicology Group	the.musicologygroup.DigitalFilter
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"DigitalFilter"
+
+
+Scope	GVXT	uk.co.gvxt.GClip
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"GClip"
+
+
+Scope	Propellerheads	ReGroove Mixer
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"ReGroove Mixer"
+
+
+Scope	Propellerheads	Reason Document
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Reason Document"
+
+
+Scope	Propellerheads	Record Document
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Record Document"
+
+
+Scope	Propellerheads	Master Keyboard
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	_Scope		"Master Keyboard"
+
+
