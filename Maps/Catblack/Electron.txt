@@ -1,0 +1,17 @@
+Propellerhead Remote Mapping File					
+File Format Version	1.0.0				
+Control Surface Manufacturer	Catblack				
+Control Surface Model	Electron				
+Map Version	0.0.1				
+					
+					
+Scope	Propellerheads	Combinator			
+//	Control Surface Item	Key	Remotable Item	Scale	Mode
+Map	Knob 1		Rotary 1		
+Map	Knob 2		Rotary 2		
+Map	Knob 3		Rotary 3		
+Map	Knob 4		Rotary 4		
+Map	Knob 9		Button 1		
+Map	Knob 10		Button 2		
+Map	Knob 11		Button 3		
+Map	Knob 12		Button 4		

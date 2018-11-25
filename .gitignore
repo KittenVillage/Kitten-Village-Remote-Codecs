@@ -1,3 +1,4 @@
+*.bak
 Codecs/Lua Codecs/Akai/AKAI_MPD24.png
 Codecs/Lua Codecs/Akai/AkaiLPD8.lua
 Codecs/Lua Codecs/Akai/AkaiLPD8.luacodec
@@ -517,3 +518,29 @@ Codecs/Lua Codecs/Novation/Launchpad Mini Custom.png
 Codecs/Lua Codecs/Novation/Launchpad Pro custom.lua
 Codecs/Lua Codecs/Novation/Launchpad Pro custom.luacodec
 Codecs/Lua Codecs/Novation/Novation Automap Mixer.lua
+
+Maps/Akai/
+
+Maps/Nektar/
+
+Maps/Novation/
+
+Maps/Other/
+
+Maps/Randomiser/
+
+Maps/Remanola/
+
+Codecs/MIDI Codecs/
+
+Codecs/Novation/
+
+Codecs/Lua Codecs/Akai/
+
+Codecs/Lua Codecs/Nektar/
+
+Codecs/Lua Codecs/Novation/
+
+Codecs/Lua Codecs/Randomiser/
+
+Codecs/Lua Codecs/Remanola/

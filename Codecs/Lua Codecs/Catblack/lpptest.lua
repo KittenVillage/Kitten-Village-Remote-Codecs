@@ -2347,7 +2347,7 @@ if (event.port==2 and event.size==3) then
 					local padx = Pad[d].x
 					local pady = 9-Pad[d].y --because internal grids are t to b, lpp pads b to t
 					if  ret.x==0 then
-						table.insert(State.lightoff,table.concat({Pad[d].padhex,Grid.current.R[pady][padx],Grid.current.G[pady][padx],Grid.current.B[pady][padx]}," "))
+						table.insert(State.lightoff,table.concat({Pad[d].padhex,Grid.current.R[pady][padx],Grid.current.G[pady][padx],Grid.current.B[pady][padx]}," ")) -- Store the color of the pad for delivery later
 					else 
 						local rbvel=string.format("%02X",math.floor((.4*ret.z)+8))
 						local gvel=string.format("%02X",math.floor(.5*ret.z))
@@ -2489,11 +2489,11 @@ if event.size==3 then -- Note, button, channel pressure, fader
 -- must use a table because RDM doesn't fire off for every incoming event
 ---------------------------------------------------			
 				for _,d in pairs(dupes) do
-					if  ret.z==0 then
+					if  ret.z==0 then --note off
 						table.insert(State.lightoff,table.concat({Pad[d].padhex,Grid.current.R[pady][padx],Grid.current.G[pady][padx],Grid.current.B[pady][padx]}," "))
 					else 
 						local vel=string.format("%02X",math.floor(.5*ret.z)) -- COLOR OF Playing Pads
-						table.insert(State.lighton,table.concat({Pad[d].padhex,vel,vel,vel}," "))
+						table.insert(State.lighton,table.concat({Pad[d].padhex,vel,vel,vel}," ")) -- Grey based on velocity
 					end
 				end
 ---------------------------------------------------			
