@@ -214,11 +214,12 @@ if event.size==3 then -- Note, button, channel pressure, fader
 		ret.x = (ret.z==0) and 0 or 1 -- faking note on and off for the checks later. x is 'value', 0 or 1 for keyboard items.
 		local vel_pad = ret.z
 
---- etc... my launchpad codec does a whole lot of checking, some sysex is event.size=8, some 9 so we handle those differently
--- it's faster to do simple checks on event.size first than to just send countless remote.match_midi() repeatedly when you don't have to.
+--  etc... 
+-- my launchpad codec does a whole lot of checking, some sysex is event.size=8, some 9 so we handle those differently
+-- it's faster to do simple checks on event.size first than to just send countless remote.match_midi() repeatedly when you don't have to!
 
 
-
+--]]
 
 
 
