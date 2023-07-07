@@ -110,9 +110,14 @@ function remote_init(manufacturer, model)
 -- then building a msg and using remote.handle_input(msg) inside function remote_process_midi()
 -- with Itemnum.undo and a value of 1 will trigger the undo (in the remotemap's document scope.)
 -- And returning 'true' from remote_process_midi() absorbs the midi message 
--- before (I think) the auto-input defined in the input table.
--- I mention this because you just need to define it here and you can use it
--- in the remote map.
+-- before the auto-input defined in the input table (below, in this function.)
+-- I mention this because you just need to define it here and you can then use it
+-- in the remote map and in your codec.
+-- 
+-- Using a shifted button you could change the 'left' and 'right' buttons on transport controls
+-- to drop loop left or right markers when shift button pressed
+-- you'd want to have items for the markers and then tie those in the remotemap and intercept
+-- the button press and tell reason the event should go to the marker item instead.
 --
 -- Channel pressure is included because I was dealing with a grid controller with
 -- individual aftertouch on each pad, so i was able to use item definitions 
