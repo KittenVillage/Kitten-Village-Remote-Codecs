@@ -1,4 +1,5 @@
 *.bak
+*.py
 Codecs/Lua Codecs/Akai/AKAI_MPD24.png
 Codecs/Lua Codecs/Akai/AkaiLPD8.lua
 Codecs/Lua Codecs/Akai/AkaiLPD8.luacodec
