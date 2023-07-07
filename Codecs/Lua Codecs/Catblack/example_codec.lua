@@ -22,7 +22,7 @@ Itemnum={}
 -- You can then copy the error that reason throws into the clipboard 
 -- and then restart the codec in Reason's preferences.
 -- Also you can create tables on the fly to send it, like:
--- error({var1,var2,table1,table2})
+-- error(tableprint({var1,var2,table1,table2}))
 function tableprint (tbl, indent)
 	local output = ''
 	if not indent then indent = 0 end
@@ -71,9 +71,9 @@ function remote_init(manufacturer, model)
 		remote.define_items(items)
 
 -- some items need to be noted, so here's where Itemnum.thing is set
--- this is so we don't have to keep track of the item's index -- the order the items are defined above --
+-- this is so we don't have to keep track of the item's index -- the order the items are defined above in "local items={" --
 -- in remote.remote_set_state() or remote_on_auto_input() or other places.
--- turns itemnum="scope" in the definition into the variable Itemnum.scope
+-- turns itemnum="scope" in the definition into the variable Itemnum.scope *Lua vars are case sens!
 -- 
 for it=1,table.getn(items),1 do
 	if items[it].itemnum ~= nil then
