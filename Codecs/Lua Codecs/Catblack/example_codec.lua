@@ -203,6 +203,7 @@ end
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function remote_process_midi(event)
+--error(tableprint(event))
 -- in this function we can use event.size event.port and event.timestamp
 --[[
 	
