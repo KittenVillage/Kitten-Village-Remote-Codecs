@@ -6,9 +6,9 @@
 -- Global Variables
 --+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
--- Itemnum is the array set in remote_init for knowing what the item number is
+-- Item_Index is the array set in remote_init for knowing what the item number is
 -- when we need it for remote.handle_input (see below)
-Itemnum={}
+Item_Index={}
 
 
 
@@ -108,7 +108,7 @@ function remote_init(manufacturer, model)
 -- Then in function remote_process_midi() I can use 
 -- remote.match_midi("<100x>? yy zz",event) to detect a button press and check a toggle for shift
 -- then building a msg and using remote.handle_input(msg) inside function remote_process_midi()
--- with Itemnum.undo and a value of 1 will trigger the undo (in the remotemap's document scope.)
+-- with Item_Index.undo and a value of 1 will trigger the undo (in the remotemap's document scope.)
 -- And returning 'true' from remote_process_midi() absorbs the midi message 
 -- before the auto-input defined in the input table (below, in this function.)
 -- I mention this because you just need to define it here and you can then use it
@@ -131,15 +131,15 @@ function remote_init(manufacturer, model)
 -- 
 		local items={
 --			{name="Keyboard",input="keyboard"},
-			{name="_Scope", output="text", itemnum="scope"}, --device, e.g. "Thor" 
-			{name="_Var", output="text", itemnum="var"}, --variation, e.g. "Volume" or "Filters"
-			{name="Pitch Bend", input="value", min=0, max=16383, itemnum="pitchbend"},
-			{name="Modulation", input="value", min=0, max=127, itemnum="modulation"},
-			{name="Channel Pressure", input="value", min=0, max=127, itemnum="channelpressure"},
-			{name="TrackName", input="noinput", output="text", itemnum="trackname"},
-			{name="AllStop", input="button", output="nooutput", itemnum="allstop"},
-			{name="Redo", input="button", output="nooutput", itemnum="redo"},
-			{name="Undo", input="button", output="nooutput", itemnum="undo"},
+			{name="_Scope", output="text", item_index_name="scope"}, --device, e.g. "Thor" 
+			{name="_Var", output="text", item_index_name="var"}, --variation, e.g. "Volume" or "Filters"
+			{name="Pitch Bend", input="value", min=0, max=16383, item_index_name="pitchbend"},
+			{name="Modulation", input="value", min=0, max=127, item_index_name="modulation"},
+			{name="Channel Pressure", input="value", min=0, max=127, item_index_name="channelpressure"},
+			{name="TrackName", input="noinput", output="text", item_index_name="trackname"},
+			{name="AllStop", input="button", output="nooutput", item_index_name="allstop"},
+			{name="Redo", input="button", output="nooutput", item_index_name="redo"},
+			{name="Undo", input="button", output="nooutput", item_index_name="undo"},
 
 			{name="Fader 1", input="value", min=0, max=127, output="value"},
 			{name="Fader 2", input="value", min=0, max=127, output="value"}
@@ -149,17 +149,17 @@ function remote_init(manufacturer, model)
 		}
 		remote.define_items(items)
 
--- some items need to have their index known, so here's where Itemnum.thing is set
+-- some items need to have their index known, so here's where Item_Index.thing is set
 -- this is so we don't have to keep track of the item's index aka
 -- the order the items are defined in the items table above.--
 -- Used in remote.remote_set_state() or remote_on_auto_input() or other places.
--- turns itemnum="scope" in the table definition into the variable Itemnum.scope 
--- *Lua vars are case sens!* So our new Itemnum table lets us refer to a name rather
+-- turns item_index_name="scope" in the table definition into the variable Item_Index.scope 
+-- *Lua vars are case sens!* So our new Item_Index table lets us refer to a name rather
 -- an index number, very handy!
 -- 
 for it=1,table.getn(items),1 do
-	if items[it].itemnum ~= nil then
-		Itemnum[items[it].itemnum]=it
+	if items[it].item_index_name ~= nil then
+		Item_Index[items[it].item_index_name]=it
 	end
 end
 
@@ -169,8 +169,10 @@ end
 --inputs
 		local inputs={
 -- You can have 2 entries with the same name but different patterns!
+-- But Reason takes the first match if finds, then calls function remote_on_auto_input(item_index).
 -- These auto-inputs fire off if the callback function remote_process_midi(event)
--- does not return true. You can over-ride them there.
+-- does not return true. You can over-ride them there before they are matched here.
+-- if you need one midi message controlling two Remote items, use remote_process_midi()
 -- 
 			{pattern="b0 15 xx", name="Fader 1"},
 			{pattern="b0 16 xx", name="Fader 2"},
@@ -203,8 +205,10 @@ end
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function remote_process_midi(event)
---error(tableprint(event))
 -- in this function we can use event.size event.port and event.timestamp
+-
+-- error(tableprint(event)) -- uncomment and see for yourself!
+
 --[[
 	
 if event.port==1 then
@@ -224,9 +228,7 @@ if event.size==3 then -- Note, button, channel pressure, fader
 -- my launchpad codec does a whole lot of checking, some sysex is event.size=8, some 9 so we handle those differently
 -- it's faster to do simple checks on event.size first than to just send countless remote.match_midi() repeatedly when you don't have to!
 
-
 --]]
-
 
 
 -- 	ret = remote.match_midi("<100x>? yy zz",event) 
@@ -238,7 +240,7 @@ if event.size==3 then -- Note, button, channel pressure, fader
 -- return false -- incoming event gets passed to the autoinputs
 
 
-end --RPM
+end --remote_process_midi()
 -- 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -255,8 +257,8 @@ function remote_deliver_midi(maxbytes,port)
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- port is set in the luacodec file.
--- port is a var, not a table, this function runs when there's midi to send
--- My launchpad pro controller uses 2 ports and an if to keep from computing the data for 
+-- port is a var, not a table, this function runs when there's midi to send for that port.
+-- My launchpad pro controller uses 2 ports and an if statement to keep from computing the data for 
 -- each every time.
 
 
@@ -294,10 +296,13 @@ function remote_set_state(changed_items)
 --[[
 
 
---look for the _Scope constant. Kong reports "KONG". Could use for a variety of things
+-- look for the _Scope constant. Kong reports "KONG". Could use for a variety of things
+-- these are set in the remotemap. I grepped through a remotemap ages ago to include these!
+-- https://github.com/KittenVillage/Kitten-Village-Remote-Codecs/blob/master/Maps/Catblack/LP%20Pro.remotemap
+
  
-	Scope = remote.is_item_enabled(Itemnum.scope) and remote.get_item_text_value(Itemnum.scope) or ""
-	Variation = remote.is_item_enabled(Itemnum.var) and remote.get_item_text_value(Itemnum.var) or ""
+	Scope = remote.is_item_enabled(Item_Index.scope) and remote.get_item_text_value(Item_Index.scope) or ""
+	Variation = remote.is_item_enabled(Item_Index.var) and remote.get_item_text_value(Item_Index.var) or ""
 --]]
 
 
@@ -306,8 +311,11 @@ function remote_set_state(changed_items)
 
 -- old trackname or 'copy' so the first time you get it it doesnt update, but if you click around it does.
 -- so you can duplicate a device while in a new mode, sc, tr and no change
+-- Provided a trackname item, and an entry for it in the remotemap, you can get data from the 
+-- track name in the reason window into a running script. I use it to control the state of my grid
+-- on a track by track basis, provided it finds the string 'lpp'
 
-		if item_index == Itemnum.trackname then
+		if item_index == Item_Index.trackname then
 			local tn = string.lower(remote.get_item_text_value(item_index))
 			if tn ~= State.trackname then
 --				if not (string.find(tn,"transport") or string.find(tn," copy")) then
@@ -324,9 +332,7 @@ function remote_set_state(changed_items)
 					end
 				end
 				State.trackname=tn --saved for later
---error(State.trackname)
 			end
-			-- error(remote.get_item_text_value(item_index))
 		end --trackname
 --	end --for k
 --]]
