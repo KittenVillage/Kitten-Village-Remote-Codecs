@@ -106,10 +106,11 @@ function remote_init(manufacturer, model)
 -- But I wanted to use a third button as a shift button, so I remotemapped 
 -- Undo and Redo to the Undo and Redo items and also set items for the physical buttons.
 -- Then in function remote_process_midi() I can use 
--- remote.match_midi("<100x>? yy zz",event) to detect a button press and check a toggle for shift
+-- remote.match_midi("<100x>? yy zz",event) to detect a button press from the button
+-- and check a toggle for shift has been pressed.
 -- then building a msg and using remote.handle_input(msg) inside function remote_process_midi()
 -- with Item_Index.undo and a value of 1 will trigger the undo (in the remotemap's document scope.)
--- And returning 'true' from remote_process_midi() absorbs the midi message 
+-- And returning 'true' from remote_process_midi() stops the midi message 
 -- before the auto-input defined in the input table (below, in this function.)
 -- I mention this because you just need to define it here and you can then use it
 -- in the remote map and in your codec.
@@ -118,11 +119,6 @@ function remote_init(manufacturer, model)
 -- to drop loop left or right markers when shift button pressed
 -- you'd want to have items for the markers and then tie those in the remotemap and intercept
 -- the button press and tell reason the event should go to the marker item instead.
---
--- Channel pressure is included because I was dealing with a grid controller with
--- individual aftertouch on each pad, so i was able to use item definitions 
--- for each pad's aftertouch being pressed (not shown) then handled it as described above 
--- to translate that to a channel aftertouch message.
 --
 -- Trackname is defined below because the remote lua environment has 
 -- a callback function, remote_set_state(changed_items), that gets a table of 
