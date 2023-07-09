@@ -1,6 +1,6 @@
 --++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- Codec Starter for Reason
--- by Catblack@gmail.com paypal me a five-ish bucks if you find this useful.
+-- by Catblack@gmail.com 
 -- The purpose of this file is to get someone started on a lua codec file
 -- beyond what is in the Remote Codec Developer manual.
 -- 
