@@ -166,6 +166,7 @@ end
 		local inputs={
 -- You can have 2 entries with the same name but different patterns!
 -- But Reason takes the first match if finds, then calls function remote_on_auto_input(item_index).
+-- So two items with different names but the same pattern will match only the first!
 -- These auto-inputs fire off if the callback function remote_process_midi(event)
 -- does not return true. You can over-ride them there before they are matched here.
 -- if you need one midi message controlling two Remote items, use remote_process_midi()
