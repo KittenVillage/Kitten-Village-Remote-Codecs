@@ -216,10 +216,11 @@ if event.port==1 then
 -- -----------------------------------------------------------------------------------------------
 if event.size==3 then -- Note, button, channel pressure, fader
 
--- 1001 is 90 (note on) 1011 is B0 (controller)	
+-- 1001 is 90 (note on) 1011 is B0 (control change)	
 	local ret = remote.match_midi("<10x1>? yy zz",event) --find a pad, button on or off, Not aftouch
 	if(ret~=nil) then
 		local button = ret.x --  check 1 = button
+-- lua has a shortcut for if/then/else and it's fast!
 		ret.x = (ret.z==0) and 0 or 1 -- faking note on and off for the checks later. x is 'value', 0 or 1 for keyboard items.
 		local vel_pad = ret.z
 
