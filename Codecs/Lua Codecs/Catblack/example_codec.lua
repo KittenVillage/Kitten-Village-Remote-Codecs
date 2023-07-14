@@ -255,6 +255,7 @@ function remote_deliver_midi(maxbytes,port)
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- port is set in the luacodec file.
 -- port is a var, not a table, this function runs when there's midi to send for that port.
+-- You can do a check for which port is being currently called! 
 -- My launchpad pro controller uses 2 ports and an if statement to keep from computing the data for 
 -- each every time.
 
@@ -289,15 +290,11 @@ function remote_set_state(changed_items)
 
 
 
-
 --[[
-
-
 -- look for the _Scope constant. Kong reports "KONG". Could use for a variety of things
 -- these are set in the remotemap. I grepped through a remotemap ages ago to include these!
 -- https://github.com/KittenVillage/Kitten-Village-Remote-Codecs/blob/master/Maps/Catblack/LP%20Pro.remotemap
 
- 
 	Scope = remote.is_item_enabled(Item_Index.scope) and remote.get_item_text_value(Item_Index.scope) or ""
 	Variation = remote.is_item_enabled(Item_Index.var) and remote.get_item_text_value(Item_Index.var) or ""
 --]]
