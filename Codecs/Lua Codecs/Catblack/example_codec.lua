@@ -202,10 +202,12 @@ end
 
 -- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function remote_process_midi(event)
--- in this function we can use event.size event.port and event.timestamp
--
 -- error(tableprint(event)) -- uncomment and see for yourself!
 
+-- This is the function for matching a midi message and then using remote.handle_input(msg)
+-- to build a Remote event back into Reason.
+
+-- in this function we can use event.size event.port and event.timestamp
 --[[
 	
 if event.port==1 then
